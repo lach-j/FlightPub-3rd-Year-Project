@@ -14,11 +14,12 @@ public class AuthenticationService implements IAuthenticationService {
 
     private final IUserService userService;
 
+    @Override
     public String loginUser(String email, String password) {
         var user = userService.getUserByEmail(email);
         try {
             if (Objects.equals(user.getPassword(), PasswordHash.PBKDF2WithHmacSHA1Hash(password, email)))
-                return "REPLACE THIS WITH TOKEN GENERATION";
+                return "// TODO: REPLACE THIS WITH TOKEN GENERATION";
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             ex.printStackTrace();
         }
