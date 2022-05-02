@@ -6,4 +6,5 @@ public interface IUserService {
     User registerUser(User user);
     User updateUser(User user);
     void deleteUser(User user);
+    User getUserByEmail(String email);
 }
