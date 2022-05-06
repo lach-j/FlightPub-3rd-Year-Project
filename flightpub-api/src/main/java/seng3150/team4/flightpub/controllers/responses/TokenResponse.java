@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TokenResponse extends Response {
+public class TokenResponse extends StatusResponse {
 
     public TokenResponse(HttpStatus status, String token) {
         super(status);

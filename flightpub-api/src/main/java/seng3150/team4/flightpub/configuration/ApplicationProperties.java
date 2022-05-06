@@ -14,6 +14,19 @@ public class ApplicationProperties {
             private String host;
             private int port;
         }
+        public static class Ui {
+            private boolean ssl;
+            private String host;
+            private int port;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Email {
+        private String SENDGRID_API_KEY;
+        private String support_email;
+        private boolean ENABLED;
     }
 
 }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User implements IEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.User;
 
-import java.util.Calendar;
-import java.util.Date;
+import static seng3150.team4.flightpub.utility.TimeFunctions.minutesFromNow;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +32,5 @@ public class JwtHelperService implements IJwtHelperService {
                 .withIssuer(urlResolverService.getApiUrl())
                 .build();
         return verifier.verify(token);
-    }
-
-    private static Date minutesFromNow(long minutes) {
-        Calendar date = Calendar.getInstance();
-        long timeInSecs = date.getTimeInMillis();
-        return new Date(timeInSecs + (minutes * 60 * 1000));
     }
 }

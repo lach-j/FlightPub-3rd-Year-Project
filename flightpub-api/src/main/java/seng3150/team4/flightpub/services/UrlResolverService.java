@@ -14,6 +14,13 @@ public class UrlResolverService implements IUrlResolverService {
     @Value("${flightpub.url.api.port}")
     private String ApiPort;
 
+    @Value("${flightpub.url.ui.ssl}")
+    private boolean UiSsl;
+    @Value("${flightpub.url.ui.host}")
+    private String UiHost;
+    @Value("${flightpub.url.ui.port}")
+    private String UiPort;
+
     public String getApiUrl() {
         var scheme = ApiSsl ? "https" : "http";
 
@@ -27,7 +34,15 @@ public class UrlResolverService implements IUrlResolverService {
     }
 
     public String getUiUrl() {
-        return null;
+        var scheme = UiSsl ? "https" : "http";
+
+        return UriComponentsBuilder
+                .newInstance()
+                .scheme(scheme)
+                .host(UiHost)
+                .port(UiPort)
+                .build()
+                .toUriString();
     }
 
 }
