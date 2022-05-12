@@ -24,7 +24,7 @@ import {
 import React, {useState} from 'react';
 import {User} from "../models/User";
 
-export const AccountPage = () => {
+export const SearchResultsPage = () => {
     const [test, test2] = useState(0);
     return (
         <div>

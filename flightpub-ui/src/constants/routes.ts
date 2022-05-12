@@ -9,4 +9,5 @@ export const routes = {
     map: '/map',
     account: '/account',
     booking: '/booking',
+    searchResults: '/searchResults',
 };

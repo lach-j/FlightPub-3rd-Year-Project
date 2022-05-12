@@ -8,6 +8,7 @@ import { PasswordResetPage } from './pages/PasswordResetPage';
 import { SearchPage } from './pages/SearchPage';
 import { MapPage } from './pages/MapPage';
 import { AccountPage } from './pages/AccountPage';
+import { SearchResultsPage } from './pages/SearchResultsPage';
 function App() {
   return (
     <Routes>
@@ -18,7 +19,9 @@ function App() {
       <Route path={routes.search} element={<SearchPage />} />
       <Route path={routes.map} element={<MapPage />} />
       <Route path={routes.account} element={<AccountPage />} />
-       <Route path={"*"} element={<h1>Page Not Found</h1>} />
+      <Route path={routes.searchResults} element={<SearchResultsPage />} />
+      <Route path={"*"} element={<h1>Page Not Found</h1>} />
+
     </Routes>
   );
 }
