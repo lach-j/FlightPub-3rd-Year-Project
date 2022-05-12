@@ -11,7 +11,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Hartsfield Jackson Atlanta Intl"
+        "name": "Hartsfield Jackson Atlanta Intl",
+        "id": 0
       }
     },
     {
@@ -24,7 +25,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Chicago Ohare Intl"
+        "name": "Chicago Ohare Intl",
+        "id": 1
       }
     },
     {
@@ -37,7 +39,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Heathrow"
+        "name": "Heathrow",
+        "id": 2
       }
     },
     {
@@ -50,7 +53,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Charles De Gaulle"
+        "name": "Charles De Gaulle",
+        "id": 3
       }
     },
     {
@@ -63,7 +67,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Los Angeles Intl"
+        "name": "Los Angeles Intl",
+        "id": 4
       }
     },
     {
@@ -76,7 +81,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "John F Kennedy Intl"
+        "name": "John F Kennedy Intl",
+        "id": 5
       }
     },
     {
@@ -89,7 +95,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Schiphol"
+        "name": "Schiphol",
+        "id": 6
       }
     },
     {
@@ -102,7 +109,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Changi Intl"
+        "name": "Changi Intl",
+        "id": 7
       }
     },
     {
@@ -115,7 +123,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Miami Intl"
+        "name": "Miami Intl",
+        "id": 8
       }
     },
     {
@@ -128,7 +137,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Franz Josef Strauss"
+        "name": "Franz Josef Strauss",
+        "id": 9
       }
     },
     {
@@ -141,7 +151,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Hong Kong Intl"
+        "name": "Hong Kong Intl",
+        "id": 10
       }
     },
     {
@@ -154,7 +165,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Dubai Intl"
+        "name": "Dubai Intl",
+        "id": 11
       }
     },
     {
@@ -167,7 +179,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Gatwick"
+        "name": "Gatwick",
+        "id": 12
       }
     },
     {
@@ -180,7 +193,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Fiumicino"
+        "name": "Fiumicino",
+        "id": 13
       }
     },
     {
@@ -193,7 +207,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Barajas"
+        "name": "Barajas",
+        "id": 14
       }
     },
     {
@@ -206,7 +221,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Suvarnabhumi Intl"
+        "name": "Suvarnabhumi Intl",
+        "id": 15
       }
     },
     {
@@ -219,7 +235,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Lester B Pearson Intl"
+        "name": "Lester B Pearson Intl",
+        "id": 16
       }
     },
     {
@@ -232,7 +249,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Schwechat"
+        "name": "Schwechat",
+        "id": 17
       }
     },
     {
@@ -245,7 +263,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Narita Intl"
+        "name": "Narita Intl",
+        "id": 18
       }
     },
     {
@@ -258,7 +277,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Kuala Lumpur Intl"
+        "name": "Kuala Lumpur Intl",
+        "id": 19
       }
     },
     {
@@ -271,7 +291,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "San Francisco Intl"
+        "name": "San Francisco Intl",
+        "id": 20
       }
     },
     {
@@ -284,7 +305,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Sydney Intl"
+        "name": "Sydney Intl",
+        "id": 21
       }
     },
     {
@@ -297,7 +319,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Orly"
+        "name": "Orly",
+        "id": 22
       }
     },
     {
@@ -310,7 +333,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Doha Intl"
+        "name": "Doha Intl",
+        "id": 23
       }
     },
     {
@@ -323,7 +347,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Johannesburg Intl"
+        "name": "Johannesburg Intl",
+        "id": 24
       }
     },
     {
@@ -336,7 +361,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Helsinki Vantaa"
+        "name": "Helsinki Vantaa",
+        "id": 25
       }
     },
     {
@@ -349,7 +375,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "La Guardia"
+        "name": "La Guardia",
+        "id": 26
       }
     },
     {
@@ -362,7 +389,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Brisbane Intl"
+        "name": "Brisbane Intl",
+        "id": 27
       }
     },
     {
@@ -375,7 +403,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Melbourne Intl"
+        "name": "Melbourne Intl",
+        "id": 28
       }
     },
     {
@@ -388,7 +417,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Honolulu Intl"
+        "name": "Honolulu Intl",
+        "id": 29
       }
     },
     {
@@ -401,7 +431,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Galeao Antonio Carlos Jobim"
+        "name": "Galeao Antonio Carlos Jobim",
+        "id": 30
       }
     },
     {
@@ -414,7 +445,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Perth Intl"
+        "name": "Perth Intl",
+        "id": 31
       }
     },
     {
@@ -427,7 +459,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Cairns Intl"
+        "name": "Cairns Intl",
+        "id": 32
       }
     },
     {
@@ -440,7 +473,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Adelaide Intl"
+        "name": "Adelaide Intl",
+        "id": 33
       }
     },
     {
@@ -453,7 +487,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Darwin Intl"
+        "name": "Darwin Intl",
+        "id": 34
       }
     },
     {
@@ -466,7 +501,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Gold Coast"
+        "name": "Gold Coast",
+        "id": 35
       }
     },
     {
@@ -479,7 +515,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Canberra"
+        "name": "Canberra",
+        "id": 36
       }
     },
     {
@@ -492,7 +529,8 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
-        "name": "Hobart"
+        "name": "Hobart",
+        "id": 37
       }
     }
   ]

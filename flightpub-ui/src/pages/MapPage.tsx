@@ -27,8 +27,12 @@ export const MapPage = () => {
         {
           airportsGeoJSON.features.map((feature) => {
             return (
-              <Marker longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}>
-                <Icon cursor={'pointer'} as={MdLocalAirport} color={selectedAirport === feature ? 'red' : 'black'} fontSize={'3em'} onClick={() => {setSelectedAirport(feature)}}/>
+              <Marker longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}
+                      key={feature.properties.id}>
+                <Icon cursor={'pointer'} as={MdLocalAirport} color={selectedAirport === feature ? 'red' : 'black'}
+                      fontSize={'3em'} onClick={() => {
+                  onAirportSelected(feature)
+                }} />
               </Marker>
             );
           })
