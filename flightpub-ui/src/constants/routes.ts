@@ -5,4 +5,8 @@ export const routes = {
     accountManagement: '/account',
     forgotPassword: '/forgot',
     resetPassword: '/reset',
+    search: '/search',
+    map: '/map',
+    account: '/account',
+    booking: '/booking',
 };
