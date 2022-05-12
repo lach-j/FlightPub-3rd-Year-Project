@@ -9,7 +9,9 @@ import { SearchPage } from './pages/SearchPage';
 import { MapPage } from './pages/MapPage';
 import { AccountPage } from './pages/AccountPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
-function App() {
+
+
+export default function App() {
   return (
     <Routes>
       <Route path={routes.login} element={<LoginPage />} />
@@ -26,4 +28,3 @@ function App() {
   );
 }
 
-export default App;
