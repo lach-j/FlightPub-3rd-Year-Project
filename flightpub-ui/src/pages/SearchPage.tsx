@@ -85,12 +85,11 @@ const tags =
     {value: "toronto", label: "Toronto"}
     ]
 
-const handleSearch = (e: SyntheticEvent) => {
 
-}
 
 export const SearchPage = () => {
     {/*TODO: Change these hooks to a single 'Search' model */}
+    const [JSONString, setJSONString] = useState("");
 
     const [flightClass, setFlightClass] = useState("");
     const handleClassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -116,8 +115,19 @@ export const SearchPage = () => {
             setSelectedTags(selectedTags);
         }
     };
-
-
+    {/*TODO: Change these hooks to a single 'Search' model */}
+    function handleSearch() {
+        setJSONString(JSON.stringify([
+            {flightClass},
+            {flightType},
+            {numPassengers},
+            {selectedTags},
+            {arrivalLocation},
+            {departureLocation},
+            {arrivalDate},
+            {departureDate},
+        ],null, 2))
+    }
 
 
 
@@ -132,30 +142,36 @@ export const SearchPage = () => {
                         spacing={2}
                         align='stretch'>
                         <Box>
+                            <FormControl isRequired>
                             <FormLabel htmlFor='flightClass'>Class: </FormLabel>
                             <Select onChange={handleClassChange} name='flightClass' id='flightClass' placeholder='Select flight class' maxW={240}>
                                 <option>Economy</option>
                                 <option>Business</option>
                                 <option>First-class</option>
                             </Select>
+                            </FormControl>
                         </Box>
 
                         <Box>
+                            <FormControl isRequired>
                             <FormLabel htmlFor='flightType'>Type: </FormLabel>
                             <Select onChange={handleTypeChange} name='flightType' id='flightType' placeholder='Select flight Type' maxW={240}>
                                 <option>One-way</option>
                                 <option>Round trip</option>
                                 <option>Multi-city</option>
                             </Select>
+                            </FormControl>
                         </Box>
 
                         <Box>
+                            <FormControl isRequired>
                             <FormLabel>Number of Passengers</FormLabel>
                             <NumberInput allowMouseWheel={true}
                                          name={"passengers"}
                                          size='sm'
                                          min={1}
                                          maxW={16}
+
                                          onChange={setNumPassengers}
                                          defaultValue={1}>
                                 <NumberInputField />
@@ -164,6 +180,7 @@ export const SearchPage = () => {
                                     <NumberDecrementStepper />
                                 </NumberInputStepper>
                             </NumberInput>
+                            </FormControl>
                         </Box>
 
                         <Box>
@@ -183,6 +200,7 @@ export const SearchPage = () => {
                         </Box>
 
                         <Box>
+                            <FormControl isRequired>
                             <FormLabel>Arrival Location:</FormLabel>
                             <AutoComplete openOnFocus onChange={setArrivalLocation}>
                                 <AutoCompleteInput variant="filled" />
@@ -198,9 +216,11 @@ export const SearchPage = () => {
                                     ))}
                                 </AutoCompleteList>
                             </AutoComplete>
+                            </FormControl>
                         </Box>
 
                         <Box>
+                            <FormControl isRequired>
                             <FormLabel>Departure Location</FormLabel>
                             <AutoComplete openOnFocus onChange={setDepartureLocation}>
                                 <AutoCompleteInput variant="filled" />
@@ -216,16 +236,19 @@ export const SearchPage = () => {
                                     ))}
                                 </AutoCompleteList>
                             </AutoComplete>
+                            </FormControl>
                         </Box>
 
-                        <FormLabel>Departure Date</FormLabel>
-                        <DatePicker
-                            minDate={new Date()}
-                            selected={departureDate}
-                            onChange={(date:Date) => setDepartureDate(date)}
-                        />
                         <Box>
+                            <FormLabel>Departure Date</FormLabel>
+                            <DatePicker
+                                minDate={new Date()}
+                                selected={departureDate}
+                                onChange={(date:Date) => setDepartureDate(date)}
+                            />
+                        </Box>
 
+                        <Box>
                         <FormLabel>Arrival Date</FormLabel>
                         <DatePicker
                             minDate={new Date(departureDate)}
@@ -247,6 +270,9 @@ export const SearchPage = () => {
                 divider={<StackDivider borderColor='gray.200' />}
                 spacing={2}
                 align='stretch'>
+                <Box>
+                    <p>JSON: {JSONString}</p>
+                </Box>
                 <Box>
                     <p>Flight Class: {flightClass}</p>
                 </Box>
@@ -270,6 +296,9 @@ export const SearchPage = () => {
                 <Box>
                     <p>Arrival Date: {moment(arrivalDate).format("LL")} </p>
                     <p>Departure: {moment(departureDate).format("LL")}</p>
+                </Box>
+                <Box>
+                    <p></p>
                 </Box>
             </VStack>
         </Grid>
