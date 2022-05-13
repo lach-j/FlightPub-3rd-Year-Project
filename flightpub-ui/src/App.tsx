@@ -9,11 +9,13 @@ import { SearchPage } from './pages/SearchPage';
 import { MapPage } from './pages/MapPage';
 import { AccountPage } from './pages/AccountPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
+import {HomePage} from "./pages/HomePage";
 
 
 export default function App() {
   return (
     <Routes>
+      <Route path={routes.home} element={<HomePage />} />
       <Route path={routes.login} element={<LoginPage />} />
       <Route path={routes.register} element={<RegisterPage />} />
       <Route path={routes.forgotPassword} element={<ForgotPasswordPage />} />
