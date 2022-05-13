@@ -1,4 +1,4 @@
-export const airportsGeoJSON = {
+export const airportsGeoJSON: GeoJSON.FeatureCollection<GeoJSON.Point> = {
   "type": "FeatureCollection",
   "features": [
     {
@@ -11,8 +11,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3682",
         "name": "Hartsfield Jackson Atlanta Intl",
-        "id": 0
+        "city": "Atlanta",
+        "country": "United States",
+        "code": "ATL"
       }
     },
     {
@@ -25,8 +28,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3830",
         "name": "Chicago Ohare Intl",
-        "id": 1
+        "city": "Chicago",
+        "country": "United States",
+        "code": "ORD"
       }
     },
     {
@@ -39,8 +45,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "507",
         "name": "Heathrow",
-        "id": 2
+        "city": "London",
+        "country": "United Kingdom",
+        "code": "LHR"
       }
     },
     {
@@ -53,8 +62,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "1382",
         "name": "Charles De Gaulle",
-        "id": 3
+        "city": "Paris",
+        "country": "France",
+        "code": "CDG"
       }
     },
     {
@@ -67,8 +79,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3484",
         "name": "Los Angeles Intl",
-        "id": 4
+        "city": "Los Angeles",
+        "country": "United States",
+        "code": "LAX"
       }
     },
     {
@@ -81,8 +96,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3797",
         "name": "John F Kennedy Intl",
-        "id": 5
+        "city": "New York",
+        "country": "United States",
+        "code": "JFK"
       }
     },
     {
@@ -95,8 +113,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "580",
         "name": "Schiphol",
-        "id": 6
+        "city": "Amsterdam",
+        "country": "Netherlands",
+        "code": "AMS"
       }
     },
     {
@@ -109,8 +130,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3316",
         "name": "Changi Intl",
-        "id": 7
+        "city": "Singapore",
+        "country": "Singapore",
+        "code": "SIN"
       }
     },
     {
@@ -123,8 +147,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3576",
         "name": "Miami Intl",
-        "id": 8
+        "city": "Miami",
+        "country": "United States",
+        "code": "MIA"
       }
     },
     {
@@ -137,8 +164,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "346",
         "name": "Franz Josef Strauss",
-        "id": 9
+        "city": "Munich",
+        "country": "Germany",
+        "code": "MUC"
       }
     },
     {
@@ -151,8 +181,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3077",
         "name": "Hong Kong Intl",
-        "id": 10
+        "city": "Hong Kong",
+        "country": "Hong Kong",
+        "code": "HKG"
       }
     },
     {
@@ -165,8 +198,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "2188",
         "name": "Dubai Intl",
-        "id": 11
+        "city": "Dubai",
+        "country": "United Arab Emirates",
+        "code": "DXB"
       }
     },
     {
@@ -179,8 +215,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "502",
         "name": "Gatwick",
-        "id": 12
+        "city": "London",
+        "country": "United Kingdom",
+        "code": "LGW"
       }
     },
     {
@@ -193,8 +232,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "1555",
         "name": "Fiumicino",
-        "id": 13
+        "city": "Rome",
+        "country": "Italy",
+        "code": "FCO"
       }
     },
     {
@@ -207,8 +249,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "1229",
         "name": "Barajas",
-        "id": 14
+        "city": "Madrid",
+        "country": "Spain",
+        "code": "MAD"
       }
     },
     {
@@ -221,8 +266,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3885",
         "name": "Suvarnabhumi Intl",
-        "id": 15
+        "city": "Bangkok",
+        "country": "Thailand",
+        "code": "BKK"
       }
     },
     {
@@ -235,8 +283,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "193",
         "name": "Lester B Pearson Intl",
-        "id": 16
+        "city": "Toronto",
+        "country": "Canada",
+        "code": "YYZ"
       }
     },
     {
@@ -249,8 +300,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "1613",
         "name": "Schwechat",
-        "id": 17
+        "city": "Vienna",
+        "country": "Austria",
+        "code": "VIE"
       }
     },
     {
@@ -263,8 +317,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "2279",
         "name": "Narita Intl",
-        "id": 18
+        "city": "Tokyo",
+        "country": "Japan",
+        "code": "NRT"
       }
     },
     {
@@ -277,8 +334,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3304",
         "name": "Kuala Lumpur Intl",
-        "id": 19
+        "city": "Kuala Lumpur",
+        "country": "Malaysia",
+        "code": "KUL"
       }
     },
     {
@@ -291,8 +351,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3469",
         "name": "San Francisco Intl",
-        "id": 20
+        "city": "San Francisco",
+        "country": "United States",
+        "code": "SFO"
       }
     },
     {
@@ -305,8 +368,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3361",
         "name": "Sydney Intl",
-        "id": 21
+        "city": "Sydney",
+        "country": "Australia",
+        "code": "SYD"
       }
     },
     {
@@ -319,8 +385,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "1386",
         "name": "Orly",
-        "id": 22
+        "city": "Paris",
+        "country": "France",
+        "code": "ORY"
       }
     },
     {
@@ -333,8 +402,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "2241",
         "name": "Doha Intl",
-        "id": 23
+        "city": "Doha",
+        "country": "Qatar",
+        "code": "DOH"
       }
     },
     {
@@ -347,8 +419,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "813",
         "name": "Johannesburg Intl",
-        "id": 24
+        "city": "Johannesburg",
+        "country": "South Africa",
+        "code": "JNB"
       }
     },
     {
@@ -361,8 +436,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "421",
         "name": "Helsinki Vantaa",
-        "id": 25
+        "city": "Helsinki",
+        "country": "Finland",
+        "code": "HEL"
       }
     },
     {
@@ -375,8 +453,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3697",
         "name": "La Guardia",
-        "id": 26
+        "city": "New York",
+        "country": "United States",
+        "code": "LGA"
       }
     },
     {
@@ -389,8 +470,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3320",
         "name": "Brisbane Intl",
-        "id": 27
+        "city": "Brisbane",
+        "country": "Australia",
+        "code": "BNE"
       }
     },
     {
@@ -403,8 +487,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3339",
         "name": "Melbourne Intl",
-        "id": 28
+        "city": "Melbourne",
+        "country": "Australia",
+        "code": "MEL"
       }
     },
     {
@@ -417,8 +504,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3728",
         "name": "Honolulu Intl",
-        "id": 29
+        "city": "Honolulu",
+        "country": "United States",
+        "code": "HNL"
       }
     },
     {
@@ -431,8 +521,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "2560",
         "name": "Galeao Antonio Carlos Jobim",
-        "id": 30
+        "city": "Rio De Janeiro",
+        "country": "Brazil",
+        "code": "GIG"
       }
     },
     {
@@ -445,8 +538,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3351",
         "name": "Perth Intl",
-        "id": 31
+        "city": "Perth",
+        "country": "Australia",
+        "code": "PER"
       }
     },
     {
@@ -459,8 +555,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3322",
         "name": "Cairns Intl",
-        "id": 32
+        "city": "Cairns",
+        "country": "Australia",
+        "code": "CNS"
       }
     },
     {
@@ -473,8 +572,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3341",
         "name": "Adelaide Intl",
-        "id": 33
+        "city": "Adelaide",
+        "country": "Australia",
+        "code": "ADL"
       }
     },
     {
@@ -487,8 +589,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3999",
         "name": "Darwin Intl",
-        "id": 34
+        "city": "Darwin",
+        "country": "Australia",
+        "code": "DRW"
       }
     },
     {
@@ -501,8 +606,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3321",
         "name": "Gold Coast",
-        "id": 35
+        "city": "Coolangatta",
+        "country": "Australia",
+        "code": "OOL"
       }
     },
     {
@@ -515,8 +623,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3355",
         "name": "Canberra",
-        "id": 36
+        "city": "Canberra",
+        "country": "Australia",
+        "code": "CBR"
       }
     },
     {
@@ -529,8 +640,11 @@ export const airportsGeoJSON = {
         ]
       },
       "properties": {
+        "id": "3336",
         "name": "Hobart",
-        "id": 37
+        "city": "Hobart",
+        "country": "Australia",
+        "code": "HBA"
       }
     }
   ]
