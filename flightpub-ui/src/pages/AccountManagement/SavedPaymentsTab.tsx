@@ -1,24 +1,33 @@
 import {
-  Button, Checkbox,
+  Button,
+  Checkbox,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   HStack,
-  Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
   useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
 import { dummySavedPayments } from '../../data/SavedPayments';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SavedPayment } from './SavedPaymentTypes';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const [savedPayments, setSavedPayments] = useState(dummySavedPayments);
+  const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
   const {
     isOpen: isOpenAddPayment,
@@ -29,9 +38,12 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   const handleAddPayment = () => {
     setIsLoading(true);
     // Simulate api delay with timeout
-
+    let updated = savedPayments;
     if (savedPaymentData) {
-      setSavedPayments([...savedPayments, savedPaymentData])
+      if (savedPaymentData.isDefault) updated = updated.map((p) => {
+        return { ...p, isDefault: false };
+      });
+      setSavedPayments([...updated, savedPaymentData]);
     }
 
     setTimeout(() => {
@@ -49,13 +61,46 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   };
 
   const handleDeletePayment = (payment: SavedPayment) => {
-    setSavedPayments([...savedPayments.filter(p => p !== payment)])
-  }
+    setSavedPayments([...savedPayments.filter(p => p !== payment)]);
+  };
 
-  const handleSavedPaymentUpdate = (field: string, value: string) => {
+  useEffect(() => {
+    if (savedPayments.length > 0 && !savedPayments.some(p => p.isDefault === true)) {
+      let updated = [...savedPayments];
+      updated[0].isDefault = true;
+      setSavedPayments(updated);
+    }
+  }, [savedPayments]);
+
+  const handleSavedPaymentUpdate = (field: string, value: any) => {
     let updatedValue = { ...savedPaymentData, [field]: value } as SavedPayment;
     setSavedPaymentData(updatedValue);
   };
+  const handleEditPayment = (payment: SavedPayment) => {
+    setIsEdititng(savedPayments.findIndex(p => p === payment));
+    setSavedPaymentData(payment);
+    onOpenAddPayment();
+  };
+
+  const handleUpdatePayment = () => {
+    if (!(typeof isEdititng === 'number')) return;
+
+    let updated = [...savedPayments];
+    setIsLoading(true);
+    if (savedPaymentData) {
+      if (savedPaymentData.isDefault) updated = updated.map((p) => {
+        return { ...p, isDefault: false };
+      });
+      updated[isEdititng] = savedPaymentData;
+      setSavedPayments(updated);
+      onCloseAddPayment();
+      setIsLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    if (!isOpenAddPayment) setIsEdititng(null);
+  }, [isOpenAddPayment])
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
@@ -130,7 +175,13 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
       </HStack>
 
       <Flex gap={'1em'} alignItems={'flex-start'} flexWrap={'wrap'}>
-        {savedPayments.map((payment) => <SavedPaymentComponent payment={payment} onDelete={() => handleDeletePayment(payment)} onEdit={() => {}} />)}
+        {
+          savedPayments.map((payment) =>
+            <SavedPaymentComponent payment={payment}
+                                   onDelete={() => handleDeletePayment(payment)}
+                                   onEdit={() => handleEditPayment(payment)} />,
+          )
+        }
       </Flex>
 
       <Modal isOpen={isOpenAddPayment} onClose={onCloseAddPayment}>
@@ -160,15 +211,22 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <Flex justifyContent={'space-between'} w={'full'}>
               <HStack>
                 <Checkbox checked={savedPaymentData?.isDefault}
-                          onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.value)}>Set as
+                          onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.checked)}>Set as
                   default?</Checkbox>
               </HStack>
               <HStack>
-                <Button onClick={handleAddPayment}
-                        colorScheme={'green'}
-                        rightIcon={<BiPlus />}>
-                  Add
-                </Button>
+                {typeof isEdititng === 'number' ?
+                  <Button onClick={handleUpdatePayment}
+                          colorScheme={'green'}>
+                    Update
+                  </Button>
+                  :
+                  <Button onClick={handleAddPayment}
+                          colorScheme={'green'}
+                          rightIcon={<BiPlus />}>
+                    Add
+                  </Button>
+                }
                 <Button onClick={onCloseAddPayment}>Cancel</Button>
               </HStack>
             </Flex> </ModalFooter>
