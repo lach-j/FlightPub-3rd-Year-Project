@@ -7,21 +7,14 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Spinner,
-  toast,
   useToast,
-  FormErrorMessage,
   FormLabel,
   FormControl,
   Input,
   Button,
   Box,
   Flex,
-  useEditableControls,
-  ButtonGroup,
   IconButton,
-  Editable,
-  EditablePreview,
-  EditableInput,
   Text,
   HStack,
   VStack,
@@ -29,13 +22,26 @@ import {
   Divider,
   Modal,
   ModalOverlay,
-  Center, Tabs, TabList, Tab, TabPanels, TabPanel, Icon, Badge,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Icon,
+  Badge,
+  Stat,
+  StatLabel,
+  StatHelpText,
+  ModalContent,
+  ModalHeader, ModalBody, ModalFooter, Select, Checkbox,
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { AiFillCreditCard, BiTrash } from 'react-icons/all';
+import { AiFillBank, AiFillCreditCard, BiLinkExternal, BiPlus, BiTrash, ImPaypal } from 'react-icons/all';
+
+import { savedPayments } from '../data/SavedPayments';
 
 const editProfileForm: {
   inputs: Array<{ label: string; name: string; type?: string }>;
@@ -58,6 +64,11 @@ export const AccountPage = () => {
     onOpen: onOpenModal,
     onClose: onCloseModal,
   } = useDisclosure();
+  const {
+    isOpen: isOpenAddPayment,
+    onOpen: onOpenAddPayment,
+    onClose: onCloseAddPayment,
+  } = useDisclosure();
   const cancelRef = React.useRef(null);
   const toast = useToast();
 
@@ -68,12 +79,16 @@ export const AccountPage = () => {
     lname: 'Johnson',
     ph: '+6112345678',
   });
+  const [isDirty, setIsDirty] = useState<boolean>(false);
+
   const [passwordData, setPasswordData] = useState<any>({
     current: '',
     password: '',
     confirm: '',
   });
-  const [isDirty, setIsDirty] = useState<boolean>(false);
+
+  const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
+
 
   // event handling
   const handleDetailsUpdate = (field: string, value: string) => {
@@ -83,8 +98,12 @@ export const AccountPage = () => {
   };
 
   const handlePasswordInputUpdate = (field: string, value: string) => {
-    if (value === userData[field]) return;
     setPasswordData({ ...passwordData, [field]: value });
+  };
+
+  const handleSavedPaymentUpdate = (field: string, value: string) => {
+    let updatedValue = { ...savedPaymentData, [field]: value } as SavedPayment;
+    setSavedPaymentData(updatedValue);
   };
 
   const handleDelete = () => {
@@ -145,14 +164,97 @@ export const AccountPage = () => {
     }, 2000);
   };
 
+  const handleAddPayment = () => {
+    onOpenModal();
+    // Simulate api delay with timeout
+    setTimeout(() => {
+      toast({
+        title: 'Payment added',
+        description: 'A new payment method has been added to your account.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+      onCloseModal();
+      onCloseAddPayment();
+    }, 2000);
+  };
+
   // validation
   const passwordResetIsValid = (): boolean => {
     return Object.values(passwordData).some(input => !input || input === '');
   };
 
+  const renderPaymentDetails = () => {
+    switch (savedPaymentData?.type) {
+      case 'card':
+        return (
+          <VStack mt={'1em'} gap={'1em'}>
+            <FormControl>
+              <FormLabel>Card Number</FormLabel>
+              <Input value={savedPaymentData.cardNumber}
+                     onChange={(event) => handleSavedPaymentUpdate('cardNumber', event.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Expiry Date</FormLabel>
+              <Input value={savedPaymentData.expiry}
+                     onChange={(event) => handleSavedPaymentUpdate('expiry', event.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Cardholder Name</FormLabel>
+              <Input value={savedPaymentData.cardholder}
+                     onChange={(event) => handleSavedPaymentUpdate('cardholder', event.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>CCV</FormLabel>
+              <Input type={'number'} value={savedPaymentData.ccv}
+                     onChange={(event) => handleSavedPaymentUpdate('ccv', event.target.value)} />
+            </FormControl>
+          </VStack>
+        );
+      case 'paypal':
+        return (
+          <VStack mt={'1em'} gap={'1em'}>
+            <FormControl>
+              <FormLabel>PayPal Email</FormLabel>
+              <Input value={savedPaymentData.email}
+                     onChange={(event) => handleSavedPaymentUpdate('email', event.target.value)} />
+            </FormControl>
+            <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
+          </VStack>
+        );
+      case 'directDebit':
+        // type: 'directDebit';
+        // bsb: number;
+        // accNumber: number;
+        // accName: string;
+        return (
+          <VStack mt={'1em'} gap={'1em'}>
+            <FormControl>
+              <FormLabel>BSB</FormLabel>
+              <Input type={'number'}
+                      value={savedPaymentData.bsb}
+                     onChange={(event) => handleSavedPaymentUpdate('bsb', event.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Account Number</FormLabel>
+              <Input type={'number'} value={savedPaymentData.accNumber}
+                     onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Account Name</FormLabel>
+              <Input value={savedPaymentData.accName}
+                     onChange={(event) => handleSavedPaymentUpdate('accName', event.target.value)} />
+            </FormControl>
+          </VStack>
+        );
+    }
+  };
+
   return (
     <Flex justifyContent={'center'} p={'5em'}>
-      <Box w={'50em'}>
+      <Box w={'80%'}>
         <Tabs variant={'enclosed'}>
           <TabList>
             <Tab>My Details</Tab>
@@ -235,8 +337,14 @@ export const AccountPage = () => {
               </form>
             </TabPanel>
             <TabPanel>
-              <Heading mb={'1em'}>Saved Payments</Heading>
-              <SavedPayment />
+              <HStack mb={'1em'} justifyContent={'space-between'} alignItems={'center'}>
+                <Heading>Saved Payments</Heading>
+                <Button onClick={() => {setSavedPaymentData(null); onOpenAddPayment()}} colorScheme={'green'} rightIcon={<BiPlus />}>Add New Payment</Button>
+              </HStack>
+
+              <Flex gap={'1em'} alignItems={'flex-start'} flexWrap={'wrap'}>
+                {savedPayments.map((payment) => <SavedPayment payment={payment} />)}
+              </Flex>
             </TabPanel>
           </TabPanels>
         </Tabs>
@@ -271,6 +379,45 @@ export const AccountPage = () => {
         <Modal isOpen={isOpenModal} onClose={onCloseModal}>
           <ModalOverlay />
           <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
+        </Modal>
+        <Modal isOpen={isOpenAddPayment} onClose={onCloseAddPayment}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add a New Payment Method</ModalHeader>
+            <ModalBody>
+              <FormControl>
+                <FormLabel>Payment Nickname</FormLabel>
+                <Input value={savedPaymentData?.nickname}
+                       onChange={(event) => handleSavedPaymentUpdate('nickname', event.target.value)}/>
+              </FormControl>
+              <FormControl mt={'1em'}>
+                <FormLabel>Payment Type</FormLabel>
+              <Select value={savedPaymentData?.type}
+                      onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}>
+                <option>Select an option</option>
+                <option value='card'>Card</option>
+                <option value='directDebit'>Direct Debit</option>
+                <option value='paypal'>PayPal</option>
+              </Select>
+              </FormControl>
+              {renderPaymentDetails()}
+            </ModalBody>
+            <ModalFooter>
+
+              <Flex justifyContent={'space-between'} w={'full'}>
+                <HStack>
+                  <Checkbox checked={savedPaymentData?.isDefault} onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.value)}>Set as default?</Checkbox>
+                </HStack>
+                <HStack>
+                <Button onClick={handleAddPayment}
+                        colorScheme={'green'}
+                        rightIcon={<BiPlus />}>
+                  Add
+                </Button>
+                <Button onClick={onCloseAddPayment}>Cancel</Button>
+              </HStack>
+              </Flex>           </ModalFooter>
+          </ModalContent>
         </Modal>
       </Box>
     </Flex>
@@ -347,25 +494,104 @@ const CustomEditible = (
 };
 
 
-const SavedPayment = () => {
+type PaymentType =
+  | DirectDebitPayment
+  | CardPayment
+  | PaypalPayment
+
+interface DirectDebitPayment extends Payment {
+  type: 'directDebit';
+  bsb: number;
+  accNumber: number;
+  accName: string;
+}
+
+interface CardPayment extends Payment {
+  type: 'card';
+  cardNumber: string;
+  expiry: string;
+  cardholder?: string;
+  ccv?: number;
+}
+
+interface PaypalPayment extends Payment {
+  type: 'paypal';
+  email: string;
+  token?: string;
+}
+
+interface Payment {
+  type: 'card' | 'directDebit' | 'paypal';
+}
+
+export type SavedPayment = PaymentType & {
+  nickname: string;
+  isDefault?: boolean;
+}
+
+const SavedPayment = ({ payment }: { payment: SavedPayment }) => {
+
+  const formatBSB = (bsb: number): string => bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
+
+  const renderPaymentDetails = () => {
+    switch (payment.type) {
+      case 'card':
+        return (
+          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
+            <Icon as={AiFillCreditCard} fontSize={'5xl'} />
+            <Stat flex={'none'}>
+              <StatLabel>{payment.cardNumber}</StatLabel>
+              <StatHelpText>CARD NUMBER</StatHelpText>
+            </Stat>
+            <Stat flex={'none'}>
+
+              <StatLabel>{payment.expiry}</StatLabel>
+              <StatHelpText>EXPIRES</StatHelpText>
+            </Stat>
+          </Flex>
+        );
+      case 'paypal':
+        return (
+          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
+            <Icon as={ImPaypal} fontSize={'5xl'} />
+            <Stat flex={'none'}>
+              <StatLabel>{payment.email}</StatLabel>
+              <StatHelpText>PAYPAL EMAIL</StatHelpText>
+            </Stat>
+          </Flex>
+        );
+      case 'directDebit':
+        return (
+          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
+            <Icon as={AiFillBank} fontSize={'5xl'} />
+            <Stat flex={'none'}>
+              <StatLabel>{formatBSB(payment.bsb)}</StatLabel>
+              <StatHelpText>BSB</StatHelpText>
+            </Stat>
+            <Stat flex={'none'}>
+
+              <StatLabel>{payment.accNumber}</StatLabel>
+              <StatHelpText>ACC NUMBER</StatHelpText>
+            </Stat>
+          </Flex>
+        );
+    }
+  };
+
   return (
     <Box border={'1px'} w={'20em'} h={'10em'} p={'1em'} rounded={'2xl'}>
       <VStack h={'full'}>
         <Flex justifyContent={'space-between'} w={'full'}>
           <HStack>
-            <Text>My Nickname</Text>
-            <Badge>Default</Badge>
+            <Text>{payment.nickname}</Text>
+            {payment?.isDefault && <Badge colorScheme={'blue'}>Default</Badge>}
           </HStack>
           <HStack>
             <IconButton aria-label={'delete'} icon={<BiTrash />} size={'sm'} variant='outline' colorScheme='red' />
             <IconButton aria-label={'edit'} icon={<EditIcon />} size={'sm'} variant='outline' colorScheme='black' />
           </HStack>
         </Flex>
-        <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
-          <Icon as={AiFillCreditCard} fontSize={'5xl'} />
-          <Text>●●●●1234</Text>
-          <Text>Expires: 12/12/24</Text>
-        </Flex>
+        {renderPaymentDetails()}
       </VStack>
     </Box>
   );
