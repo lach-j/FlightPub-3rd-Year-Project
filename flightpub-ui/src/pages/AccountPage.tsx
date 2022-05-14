@@ -29,12 +29,13 @@ import {
   Divider,
   Modal,
   ModalOverlay,
-  Center,
+  Center, Tabs, TabList, Tab, TabPanels, TabPanel, Icon, Badge,
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useRef, useState } from 'react';
 import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { AiFillCreditCard, BiTrash } from 'react-icons/all';
 
 const editProfileForm: {
   inputs: Array<{ label: string; name: string; type?: string }>;
@@ -142,7 +143,7 @@ export const AccountPage = () => {
       onCloseModal();
       setIsDirty(false);
     }, 2000);
-  }
+  };
 
   // validation
   const passwordResetIsValid = (): boolean => {
@@ -152,76 +153,93 @@ export const AccountPage = () => {
   return (
     <Flex justifyContent={'center'} p={'5em'}>
       <Box w={'50em'}>
-        <Heading mb={'1em'}>My Details</Heading>
-        <form>
-          <VStack gap={'1em'}>
-            {editProfileForm.inputs.map((input) => (
-              <CustomEditible
-                name={input.name}
-                value={userData?.[input.name]}
-                label={input.label}
-                type={input?.type || 'text'}
-                onSave={(value) => handleDetailsUpdate(input.name, value)}
-              />
-            ))}
-            <HStack w={'full'} gap={'1em'}>
-              <Button
-                colorScheme={'blue'}
-                disabled={!isDirty}
-                onClick={handleSaveChanges}
-              >
-                Save
+        <Tabs variant={'enclosed'}>
+          <TabList>
+            <Tab>My Details</Tab>
+            <Tab>Change Password</Tab>
+            <Tab>Saved Payments</Tab>
+          </TabList>
+
+          <TabPanels mt={'1em'}>
+            <TabPanel>
+              <Heading mb={'1em'}>My Details</Heading>
+              <form>
+                <VStack gap={'1em'}>
+                  {editProfileForm.inputs.map((input) => (
+                    <CustomEditible
+                      name={input.name}
+                      value={userData?.[input.name]}
+                      label={input.label}
+                      type={input?.type || 'text'}
+                      onSave={(value) => handleDetailsUpdate(input.name, value)}
+                    />
+                  ))}
+                  <HStack w={'full'} gap={'1em'}>
+                    <Button
+                      colorScheme={'blue'}
+                      disabled={!isDirty}
+                      onClick={handleSaveChanges}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      colorScheme={'gray'}
+                      disabled={!isDirty}
+                      onClick={handleDiscardChanges}
+                    >
+                      Discard Changes
+                    </Button>
+                  </HStack>
+                </VStack>
+              </form>
+              <Divider mt={'2em'} mb={'3em'} />
+              <Button colorScheme='red' variant={'outline'} onClick={onOpen}>
+                Delete Account
               </Button>
-              <Button
-                colorScheme={'gray'}
-                disabled={!isDirty}
-                onClick={handleDiscardChanges}
-              >
-                Discard Changes
-              </Button>
-            </HStack>
-          </VStack>
-        </form>
-        <Divider mt={'2em'} mb={'3em'} />
-        <Heading mb={'1em'}>Change Password</Heading>
-        <form>
-          <VStack gap={'1em'}>
-            <FormControl isRequired={true}>
-              <FormLabel>Current Password</FormLabel>
-              <Input
-                type={'password'}
-                value={passwordData.current}
-                onChange={event => handlePasswordInputUpdate('current', event.target.value)} />
-            </FormControl>
-            <FormControl isRequired={true}>
-              <FormLabel>New Password</FormLabel>
-              <Input
-                type={'password'}
-                value={passwordData.password}
-                onChange={event => handlePasswordInputUpdate('password', event.target.value)} />
-            </FormControl>
-            <FormControl isRequired={true}>
-              <FormLabel>Confirm New Password</FormLabel>
-              <Input
-                type={'password'}
-                value={passwordData.confirm}
-                onChange={event => handlePasswordInputUpdate('confirm', event.target.value)} />
-            </FormControl>
-            <HStack w={'full'} gap={'1em'}>
-              <Button
-                colorScheme={'blue'}
-                disabled={passwordResetIsValid()}
-                onClick={handleChangePassword}
-              >
-                Change Password
-              </Button>
-            </HStack>
-          </VStack>
-        </form>
-        <Divider mt={'2em'} mb={'3em'} />
-        <Button colorScheme='red' variant={'outline'} onClick={onOpen}>
-          Delete Account
-        </Button>
+            </TabPanel>
+            <TabPanel>
+              <Heading mb={'1em'}>Change Password</Heading>
+              <form>
+                <VStack gap={'1em'}>
+                  <FormControl isRequired={true}>
+                    <FormLabel>Current Password</FormLabel>
+                    <Input
+                      type={'password'}
+                      value={passwordData.current}
+                      onChange={event => handlePasswordInputUpdate('current', event.target.value)} />
+                  </FormControl>
+                  <FormControl isRequired={true}>
+                    <FormLabel>New Password</FormLabel>
+                    <Input
+                      type={'password'}
+                      value={passwordData.password}
+                      onChange={event => handlePasswordInputUpdate('password', event.target.value)} />
+                  </FormControl>
+                  <FormControl isRequired={true}>
+                    <FormLabel>Confirm New Password</FormLabel>
+                    <Input
+                      type={'password'}
+                      value={passwordData.confirm}
+                      onChange={event => handlePasswordInputUpdate('confirm', event.target.value)} />
+                  </FormControl>
+                  <HStack w={'full'} gap={'1em'}>
+                    <Button
+                      colorScheme={'blue'}
+                      disabled={passwordResetIsValid()}
+                      onClick={handleChangePassword}
+                    >
+                      Change Password
+                    </Button>
+                  </HStack>
+                </VStack>
+              </form>
+            </TabPanel>
+            <TabPanel>
+              <Heading mb={'1em'}>Saved Payments</Heading>
+              <SavedPayment />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
 
         <AlertDialog
           isOpen={isOpen}
@@ -252,7 +270,7 @@ export const AccountPage = () => {
         </AlertDialog>
         <Modal isOpen={isOpenModal} onClose={onCloseModal}>
           <ModalOverlay />
-            <Spinner style={{position: 'absolute', top: '50vh', left: '50vw'}} />
+          <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
         </Modal>
       </Box>
     </Flex>
@@ -325,5 +343,30 @@ const CustomEditible = (
         )}
       </HStack>
     </FormControl>
+  );
+};
+
+
+const SavedPayment = () => {
+  return (
+    <Box border={'1px'} w={'20em'} h={'10em'} p={'1em'} rounded={'2xl'}>
+      <VStack h={'full'}>
+        <Flex justifyContent={'space-between'} w={'full'}>
+          <HStack>
+            <Text>My Nickname</Text>
+            <Badge>Default</Badge>
+          </HStack>
+          <HStack>
+            <IconButton aria-label={'delete'} icon={<BiTrash />} size={'sm'} variant='outline' colorScheme='red' />
+            <IconButton aria-label={'edit'} icon={<EditIcon />} size={'sm'} variant='outline' colorScheme='black' />
+          </HStack>
+        </Flex>
+        <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
+          <Icon as={AiFillCreditCard} fontSize={'5xl'} />
+          <Text>●●●●1234</Text>
+          <Text>Expires: 12/12/24</Text>
+        </Flex>
+      </VStack>
+    </Box>
   );
 };
