@@ -7,7 +7,7 @@ import { routes } from './constants/routes';
 import { PasswordResetPage } from './pages/PasswordResetPage';
 import { SearchPage } from './pages/SearchPage';
 import { MapPage } from './pages/MapPage';
-import { AccountPage } from './pages/AccountPage';
+import { AccountPage } from './pages/AccountManagement/AccountPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 function App() {
   return (
