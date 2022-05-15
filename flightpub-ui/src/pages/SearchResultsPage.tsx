@@ -1,15 +1,36 @@
 import {
-    Text,
-    Thead, Table, Tr, Th, Tbody, Td,
+    Box,
+    Button,
+    Center,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Grid,
+    Heading,
+    Input,
+    Link,
+    Stack,
+    useToast,
+    Thead,
+    Table,
+    Tr,
+    Th,
+    Tbody,
+    Td,
 } from '@chakra-ui/react';
 import {
     TriangleDownIcon, TriangleUpIcon,
 } from '@chakra-ui/icons';
-import React from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 
 const columns = [
-    {accessor: 'DepartureTime', Header: 'Departure Time'},
+    {accessor: 'AirlineName', Header: 'Airline'},
     {accessor: 'DepartureAirport', Header: 'Departure Airport'},
+    {accessor: 'DepartureTime', Header: 'Departure Time'},
+    {accessor: 'ArrivalTime', Header: 'Arrival Time'},
+    {accessor: "DestinationAirport", Header: 'Destination Airport'},
+    {accessor: 'StopOverAirport', Header: 'Stop Over'},
+    {accessor: 'Price', Header: 'Price'},
 ]
 
 const flights = [
@@ -74,7 +95,6 @@ const flights = [
         "Price" : 1311.99
     }
 ]
-
 
 export function SearchResultsPage() {
     return (
