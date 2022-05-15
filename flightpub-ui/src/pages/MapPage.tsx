@@ -1,17 +1,17 @@
 import { Box, Button, Flex, Heading, Icon, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
-import Map, { GeolocateControl, Marker, Popup } from 'react-map-gl';
+import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import { useTable } from 'react-table';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MdLocalAirport } from 'react-icons/all';
 import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import { flights } from '../data/flights';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const flightColumns = [
   { Header: 'Destination', accessor: 'ArrivalCode' },
   { Header: 'Departure Time', accessor: 'DepartureTime' },
-  { Header: 'Price', accessor: 'Price', Cell: (props: any) => `$${props.value}` },
+  { Header: 'Price', accessor: 'Price', Cell: (props: any) => `$${props.value.toFixed(2)}` },
   // {Header: 'Destination', accessor: 'ArrivalCode'},
   // {Header: 'Destination', accessor: 'ArrivalCode'},
 ];
@@ -20,6 +20,7 @@ const flightColumns = [
 export const MapPage = () => {
   const [selectedAirport, setSelectedAirport] = useState<GeoJSON.Feature<GeoJSON.Geometry> | undefined>();
   const navigate = useNavigate();
+  const geolocateRef = useRef<GeolocateControlRef>(null);
   const onAirportSelected = (airportFeature: GeoJSON.Feature<GeoJSON.Geometry>) => {
 
     if (airportFeature === selectedAirport) {
@@ -100,10 +101,11 @@ export const MapPage = () => {
         <Table columns={flightColumns} data={flightsFromHere} />
       </Box>
       <Map
+        onLoad={() => geolocateRef?.current?.trigger()}
         initialViewState={{
-          longitude: -122.4,
-          latitude: 37.8,
-          zoom: 8,
+          longitude: 0,
+          latitude: 0,
+          zoom: 3,
         }}
         style={{ width: '100%', height: '100%' }}
         mapStyle='mapbox://styles/mapbox/streets-v11'
@@ -121,8 +123,16 @@ export const MapPage = () => {
                   <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
                     <Stat>
                       <StatLabel>{flight?.DepartureTime}</StatLabel>
-                      <StatNumber>{`$${flight?.Price}`}</StatNumber>
-                      <StatHelpText>{flight?.StopOverCode ? `1 Stopover (${flight.StopOverCode})` : 'Direct'}</StatHelpText>
+                      <StatNumber>{`$${flight?.Price.toFixed(2)}`}</StatNumber>
+
+                      <StatHelpText>{flight?.StopOverCode ? '1 Stopover' : 'Direct'}
+                        {flight.StopOverCode &&
+                          <Text textDecoration={'underline'} textDecorationStyle={'dashed'}
+                                title={flight.StopOverAirport || undefined}>
+                            {`(${flight.StopOverCode})`}
+                          </Text>
+                        }</StatHelpText>
+
                     </Stat>
                     <Box ml='3'>
                       <Text fontWeight='bold' fontSize={'md'}>
@@ -147,7 +157,7 @@ export const MapPage = () => {
               ;
           })
         }
-        <GeolocateControl onGeolocate={handleGeolocate} />
+        <GeolocateControl ref={geolocateRef} onGeolocate={handleGeolocate} fitBoundsOptions={{ maxZoom: 4 }} />
       </Map>
     </Box>
   );
