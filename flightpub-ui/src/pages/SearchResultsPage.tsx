@@ -22,6 +22,11 @@ import {
     RangeSliderTrack,
     RangeSliderFilledTrack,
     RangeSliderThumb,
+    Slider,
+    SliderTrack,
+    SliderFilledTrack,
+    SliderThumb,
+    SliderMark,
 } from '@chakra-ui/react';
 import {
     TriangleDownIcon, TriangleUpIcon,
@@ -115,6 +120,20 @@ const flights = [
     }
 ]
 
+
+function convertMsToHM(milliseconds: number) {
+    let seconds = Math.floor(milliseconds / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    seconds = seconds % 60;
+    minutes = seconds >= 30 ? minutes + 1 : minutes;
+    minutes = minutes % 60;
+    // hours = hours % 24;
+
+    return (hours + " hrs " + minutes + " mins");
+}
+
 export function SearchResultsPage() {
     const [results, setResults] = useState(flights);
     const [sortField, setSortField] = useState('DepartureTime');
@@ -122,6 +141,7 @@ export function SearchResultsPage() {
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(10000);
     const [airlineFilter, setAirlineFilter] = useState('');
+    const [durationFilter, setDurationFilter] = useState(180000000);
 
     const sortByField = (field: string) => {
         let order = -1;
@@ -142,12 +162,17 @@ export function SearchResultsPage() {
         setAirlineFilter(event.target.value);
     }
 
+    const filterByDuration = (val: number) => {
+        setDurationFilter(val);
+    }
+
     return (
         <div>
             <div>
-                Min Price: {minPrice}
-                Max Price: {maxPrice}
+                Min Price: ${minPrice} <br/>
+                Max Price: ${maxPrice}
             </div>
+
             <RangeSlider
                 aria-label={['min', 'max']}
                 onChangeEnd={(val) => filterByPrice(val)}
@@ -161,6 +186,23 @@ export function SearchResultsPage() {
                 <RangeSliderThumb index={0} />
                 <RangeSliderThumb index={1} />
             </RangeSlider>
+
+            <div>
+                Max Duration: {durationFilter/3600000} hours
+            </div>
+            <Slider
+                aria-label='slider-ex-1'
+                onChangeEnd={(val) => filterByDuration(val * 3600000)}
+                min={0}
+                max={50}
+                defaultValue={50}
+                >
+                <SliderTrack>
+                    <SliderFilledTrack/>
+                </SliderTrack>
+                <SliderThumb/>
+            </Slider>
+
             <Select placeholder="No Filter" onChange={filterByAirline}>
                 {airlines.map((airline) =>
                 <option value={airline["AirlineName"]}>{airline["AirlineName"]}</option>
@@ -174,6 +216,7 @@ export function SearchResultsPage() {
                                 {column.Header}
                             </Th>
                         )}
+                        <Th>Duration</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -186,12 +229,16 @@ export function SearchResultsPage() {
                                 return false;
                             }
                         }
-                        return true
+                        if ((Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime)) > durationFilter) {
+                            return false;
+                        }
+                        return true;
                     }).map((result: any) =>
                         <Tr>
                             {columns.map((column) =>
                                 <Td>{result[column.accessor]}</Td>
                             )}
+                            <Td>{convertMsToHM(Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime))}</Td>
                         </Tr>
                     )}
                 </Tbody>
