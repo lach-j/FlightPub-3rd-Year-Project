@@ -31,7 +31,10 @@ import {
 import {
     TriangleDownIcon, TriangleUpIcon,
 } from '@chakra-ui/icons';
+import { Link as RouteLink, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
 import React, { SyntheticEvent, useState } from 'react';
+
 const columns = [
     {accessor: 'AirlineName', Header: 'Airline'},
     {accessor: 'DepartureAirport', Header: 'Departure Airport'},
@@ -217,6 +220,7 @@ export function SearchResultsPage() {
                             </Th>
                         )}
                         <Th>Duration</Th>
+                        <Th></Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -239,6 +243,11 @@ export function SearchResultsPage() {
                                 <Td>{result[column.accessor]}</Td>
                             )}
                             <Td>{convertMsToHM(Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime))}</Td>
+                            <Td>
+                                <Link as={RouteLink} to={routes.booking}>
+                                    Add to Cart
+                                </Link>
+                            </Td>
                         </Tr>
                     )}
                 </Tbody>
