@@ -47,7 +47,7 @@ const columns = [
     {accessor: 'DepartureTime', Header: 'Departure Time'},
     {accessor: 'ArrivalTime', Header: 'Arrival Time'},
     {accessor: "DestinationAirport", Header: 'Destination Airport'},
-    {accessor: 'StopOverAirport', Header: 'Stop Over'},
+    {accessor: 'StopOverAirport', Header: 'Stop Over', transform: (value: any) => value || '---'},
     {accessor: 'Price', Header: 'Price', transform: (value: any) => `$${value}`},
 ]
 
@@ -203,10 +203,11 @@ export function SearchResultsPage() {
     const toast = useToast();
 
     return (
-        <div>
+        <Box p={'1em'}>
              <HStack
                 divider={<StackDivider borderColor='gray.200' />}
                 spacing={10}
+                alignItems={'flex-start'}
                 >
                 <Box w='300px' pt='30px' pl='30px'>
                     <VStack
@@ -323,6 +324,6 @@ export function SearchResultsPage() {
                     </Table>
                 </Center>
             </HStack>
-        </div>
+        </Box>
     )
 }
