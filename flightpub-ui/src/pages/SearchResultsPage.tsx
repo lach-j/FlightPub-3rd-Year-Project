@@ -17,6 +17,10 @@ import {
     Th,
     Tbody,
     Td,
+    RangeSlider,
+    RangeSliderTrack,
+    RangeSliderFilledTrack,
+    RangeSliderThumb,
 } from '@chakra-ui/react';
 import {
     TriangleDownIcon, TriangleUpIcon,
@@ -99,8 +103,10 @@ export function SearchResultsPage() {
     const [results, setResults] = useState(flights);
     const [sortField, setSortField] = useState('DepartureTime');
     const [ascending, setAscending] = useState(true);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(10000);
+
     const sortByField = (field: string) => {
-        console.log(field)
         let order = -1;
         if (sortField === field) {
             order = ascending ? -1 : 1;
@@ -110,26 +116,55 @@ export function SearchResultsPage() {
         setSortField(field)
     }
 
+    const filterByPrice = (val: number[]) => {
+        setMinPrice(val[0]);
+        setMaxPrice(val[1]);
+    }
+
     return (
-        <Table>
-            <Thead>
-                <Tr>
-                    {columns.map((column) =>
-                        <Th onClick={() => sortByField(column.accessor)}>
-                            {column.Header}
-                        </Th>
-                    )}
-                </Tr>
-            </Thead>
-            <Tbody>
-                {results.map((result: any) =>
+        <div>
+            <div>
+                Min Price: {minPrice}
+                Max Price: {maxPrice}
+            </div>
+            <RangeSlider
+                aria-label={['min', 'max']}
+                onChangeEnd={(val) => filterByPrice(val)}
+                min={0}
+                max={10000}
+                defaultValue={[0, 10000]}
+            >
+                <RangeSliderTrack>
+                    <RangeSliderFilledTrack />
+                </RangeSliderTrack>
+                <RangeSliderThumb index={0} />
+                <RangeSliderThumb index={1} />
+            </RangeSlider>
+            <Table>
+                <Thead>
                     <Tr>
                         {columns.map((column) =>
-                            <Td>{result[column.accessor]}</Td>
+                            <Th onClick={() => sortByField(column.accessor)}>
+                                {column.Header}
+                            </Th>
                         )}
                     </Tr>
-                )}
-            </Tbody>
-        </Table>
+                </Thead>
+                <Tbody>
+                    {results.filter(function(result) {
+                        if (result.Price < minPrice || result.Price > maxPrice) {
+                            return false;
+                        }
+                        return true
+                    }).map((result: any) =>
+                        <Tr>
+                            {columns.map((column) =>
+                                <Td>{result[column.accessor]}</Td>
+                            )}
+                        </Tr>
+                    )}
+                </Tbody>
+            </Table>
+        </div>
     )
 }
