@@ -14,6 +14,9 @@ import {
     FormLabel,
     Select,
     Center,
+    Checkbox,
+    HStack,
+    Tooltip,
 } from '@chakra-ui/react';
 import React, {useState, SyntheticEvent} from 'react';
 import DatePicker from "react-datepicker";
@@ -27,6 +30,7 @@ import {
     AutoCompleteList,
 } from "@choc-ui/chakra-autocomplete";
 import moment from "moment";
+import { SearchIcon } from '@chakra-ui/icons';
 
 export interface Item {
     label: string;
@@ -102,6 +106,9 @@ export const SearchPage = () => {
     }
     const [numPassengers, setNumPassengers] = useState("");
 
+    const [flexibleRange, setFlexibleRange] = useState("");
+    const [flexEnabled, setFlexEnabled] = useState(true);
+
     const [departureDate, setDepartureDate] = useState(new Date());
     const [arrivalDate, setArrivalDate] = useState(new Date());
 
@@ -126,6 +133,7 @@ export const SearchPage = () => {
             {departureLocation},
             {arrivalDate},
             {departureDate},
+            {flexibleRange},
         ],null, 2))
     }
 
@@ -256,10 +264,40 @@ export const SearchPage = () => {
                             onChange={(date:Date) => setArrivalDate(date)} />
 
 
+                        </Box>
+                        <Box>
+                            <Checkbox name={"flexEnabled"}
+                                      colorScheme='green'
+                                      onChange={(e) => setFlexEnabled(!flexEnabled)}>
+                                Enable FlexSearch?&nbsp;
+                            </Checkbox>
+                            <Tooltip hasArrow label='FlexSearch increases increases the date range for your chosen arrival and departure dates'  color='white'>
+                                <SearchIcon boxSize={3} />
+                            </Tooltip>
+                        </Box>
+                        <Box>
+                            <p>+/- days</p>
+                            <NumberInput allowMouseWheel={true}
+                                         name={"flexibleRange"}
+                                         size='sm'
+                                         min={1}
+                                         maxW={16}
+                                         isDisabled={flexEnabled}
+                                         onChange={setFlexibleRange}
+                                         defaultValue={1}>
+                                <NumberInputField />
+                                <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                </NumberInputStepper>
+                            </NumberInput>
+                        </Box>
+                        <Box>
                             <Button type="submit" colorScheme="red">
                                 Search
                             </Button>
                         </Box>
+
 
                     </VStack>
                 </FormControl>
@@ -298,7 +336,8 @@ export const SearchPage = () => {
                     <p>Departure: {moment(departureDate).format("LL")}</p>
                 </Box>
                 <Box>
-                    <p></p>
+                    <p>Flex?: {flexEnabled.valueOf()} </p>
+                    <p>FlexRange: {flexibleRange}</p>
                 </Box>
             </VStack>
         </Grid>
