@@ -32,6 +32,7 @@ const App = () => {
       {hasNavbar() && <Header />}
       <Box flex={1}>
       <Routes>
+        <Route path={routes.home} element={<HomePage />} />
         <Route path={routes.login} element={<LoginPage />} />
         <Route path={routes.register} element={<RegisterPage />} />
         <Route path={routes.forgotPassword} element={<ForgotPasswordPage />} />
