@@ -175,119 +175,127 @@ export function SearchResultsPage() {
         setDurationFilter(val);
     }
 
+    const toast = useToast();
+
     return (
         <div>
-            <VStack
+             <HStack
                 divider={<StackDivider borderColor='gray.200' />}
                 spacing={10}
-            >
-                <Box h='100px'><Text>Your website here</Text></Box>
-                 <HStack
-                    divider={<StackDivider borderColor='gray.200' />}
-                    spacing={10}
-                    >
-                    <Box w='300px' >
+                >
+                <Box w='300px' pt='30px' pl='30px'>
+                    <VStack
+                        divider={<StackDivider borderColor='gray.200' />}
+                        spacing={10}
+                        align='stretch'>
                         <VStack
-                            divider={<StackDivider borderColor='gray.200' />}
-                            spacing={10}
+                            spacing={4}
                             align='stretch'>
-                            <VStack
-                                spacing={4}
-                                align='stretch'>
-                                <Text>Min Price: ${minPrice}</Text>
-                                <Text>Max Price: ${maxPrice}</Text>
+                            <Text>Min Price: ${minPrice}</Text>
+                            <Text>Max Price: ${maxPrice}</Text>
 
-                                <RangeSlider
-                                    aria-label={['min', 'max']}
-                                    onChangeEnd={(val) => filterByPrice(val)}
-                                    min={0}
-                                    max={10000}
-                                    defaultValue={[0, 10000]}
-                                >
-                                    <RangeSliderTrack>
-                                        <RangeSliderFilledTrack />
-                                    </RangeSliderTrack>
-                                    <RangeSliderThumb index={0} />
-                                    <RangeSliderThumb index={1} />
-                                </RangeSlider>
-                            </VStack>
-
-                            <VStack
-                                spacing={4}
-                                align='stretch'>
-                                <Text>Max Duration: {durationFilter/3600000} hours</Text>
-
-                                <Slider
-                                    aria-label='slider-ex-1'
-                                    onChangeEnd={(val) => filterByDuration(val * 3600000)}
-                                    min={0}
-                                    max={50}
-                                    defaultValue={50}
-                                >
-                                    <SliderTrack>
-                                        <SliderFilledTrack/>
-                                    </SliderTrack>
-                                    <SliderThumb/>
-                                </Slider>
-                            </VStack>
-
-                            <VStack
-                                spacing={4}
-                                align='stretch'>
-                                <Text>Airline:</Text>
-                                <Select placeholder="No Filter" onChange={filterByAirline}>
-                                    {airlines.map((airline) =>
-                                        <option value={airline["AirlineName"]}>{airline["AirlineName"]}</option>
-                                    )}
-                                </Select>
-                            </VStack>
+                            <RangeSlider
+                                aria-label={['min', 'max']}
+                                onChangeEnd={(val) => filterByPrice(val)}
+                                min={0}
+                                max={10000}
+                                defaultValue={[0, 10000]}
+                            >
+                                <RangeSliderTrack>
+                                    <RangeSliderFilledTrack />
+                                </RangeSliderTrack>
+                                <RangeSliderThumb index={0} />
+                                <RangeSliderThumb index={1} />
+                            </RangeSlider>
                         </VStack>
-                    </Box>
-                    <Center flex='1'>
-                        <Table width='90%'>
-                            <Thead>
+
+                        <VStack
+                            spacing={4}
+                            align='stretch'>
+                            <Text>Max Duration: {durationFilter/3600000} hours</Text>
+
+                            <Slider
+                                aria-label='slider-ex-1'
+                                onChangeEnd={(val) => filterByDuration(val * 3600000)}
+                                min={0}
+                                max={50}
+                                defaultValue={50}
+                            >
+                                <SliderTrack>
+                                    <SliderFilledTrack/>
+                                </SliderTrack>
+                                <SliderThumb/>
+                            </Slider>
+                        </VStack>
+
+                        <VStack
+                            spacing={4}
+                            align='stretch'>
+                            <Text>Airline:</Text>
+                            <Select placeholder="No Filter" onChange={filterByAirline}>
+                                {airlines.map((airline) =>
+                                    <option value={airline["AirlineName"]}>{airline["AirlineName"]}</option>
+                                )}
+                            </Select>
+                        </VStack>
+                    </VStack>
+                </Box>
+                <Center flex='1'>
+                    <Table width='90%'>
+                        <Thead>
+                            <Tr>
+                                {columns.map((column) =>
+                                    <Th onClick={() => sortByField(column.accessor)}>
+                                        {column.Header}
+                                    </Th>
+                                )}
+                                <Th>Duration</Th>
+                                <Th></Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {results.filter(function(result) {
+                                if (result.Price < minPrice || result.Price > maxPrice) {
+                                    return false;
+                                }
+                                if (airlineFilter !== '') {
+                                    if (airlineFilter !== result.AirlineName) {
+                                        return false;
+                                    }
+                                }
+                                if ((Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime)) > durationFilter) {
+                                    return false;
+                                }
+                                return true;
+                            }).map((result: any) =>
                                 <Tr>
                                     {columns.map((column) =>
-                                        <Th onClick={() => sortByField(column.accessor)}>
-                                            {column.Header}
-                                        </Th>
+                                        <Td>{result[column.accessor]}</Td>
                                     )}
-                                    <Th>Duration</Th>
-                                    <Th></Th>
+                                    <Td>{convertMsToHM(Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime))}</Td>
+                                    <Td>
+                                        <Button type="button"
+                                                colorScheme="red"
+                                                onClick={() =>
+                                                    toast({
+                                                        title: 'Success!',
+                                                        description:
+                                                            'Flight added to cart successfully.',
+                                                        status: 'success',
+                                                        duration: 9000,
+                                                        isClosable: true,
+                                                        position: 'top',
+                                                    })
+                                                }>
+                                            Add to Cart
+                                        </Button>
+                                    </Td>
                                 </Tr>
-                            </Thead>
-                            <Tbody>
-                                {results.filter(function(result) {
-                                    if (result.Price < minPrice || result.Price > maxPrice) {
-                                        return false;
-                                    }
-                                    if (airlineFilter !== '') {
-                                        if (airlineFilter !== result.AirlineName) {
-                                            return false;
-                                        }
-                                    }
-                                    if ((Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime)) > durationFilter) {
-                                        return false;
-                                    }
-                                    return true;
-                                }).map((result: any) =>
-                                    <Tr>
-                                        {columns.map((column) =>
-                                            <Td>{result[column.accessor]}</Td>
-                                        )}
-                                        <Td>{convertMsToHM(Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime))}</Td>
-                                        <Td>
-                                            <Link as={RouteLink} to={routes.booking}>
-                                                Add to Cart
-                                            </Link>
-                                        </Td>
-                                    </Tr>
-                                )}
-                            </Tbody>
-                        </Table>
-                    </Center>
-                </HStack>
-            </VStack>
+                            )}
+                        </Tbody>
+                    </Table>
+                </Center>
+            </HStack>
         </div>
     )
 }
