@@ -1,6 +1,6 @@
 import React from 'react';
-import {Box, Button, Center, Grid, VStack} from "@chakra-ui/react";
-import logo from '../logo.png';
+import {Box, Button, Center, Grid, StackDivider, VStack} from "@chakra-ui/react";
+import logo from '../FlightPubLogo.png';
 
 console.log(logo);
 
@@ -10,17 +10,18 @@ export const HomePage = () => {
         <Grid>
             <Center>
                 <VStack
-                    spacing={2}
-                    align='center'>
-                    <Box>
-                        <img src={logo} alt="Logo" width={'20%'}/>
-                    </Box>
+                    spacing={10}
+                    align='center'
+                    divider={<StackDivider borderColor='white'/>}>
+                    <Center  backgroundColor='gray.600' maxW="1000px" mx="auto">
+                        <img src={logo} alt="Logo" width='1000px'/>
+                    </Center>
                     <Box>
                         <form>
-                            <Button type="submit" colorScheme="red">
+                            <Button type="submit" colorScheme="red" width='500px'>
                                 Search For a Flight
                             </Button>
-                            <Button type="submit" colorScheme="red">
+                            <Button type="submit" colorScheme="red" width='500px'>
                                 I'm Feeling Lucky
                             </Button>
                         </form>
