@@ -1,47 +1,44 @@
-import React from "react"
-import {Box, chakra, Text, HStack, Center} from "@chakra-ui/react"
-import {Link} from "react-router-dom";
+import React from 'react';
+import { Box, Button, Flex, HStack, IconButton, Image, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { NavLink } from 'react-router-dom';
+import { FaShoppingCart, FaUser } from 'react-icons/all';
+import { routes } from '../constants/routes';
 
 export default function Header() {
-    return(
-        <chakra.header id ="header">
-            <Center>
-                <Box
-                    border="2px"
-                    borderColor="gray.200"
-                    p="10"
-                    borderRadius="2xl"
-                    w="md"
-                >
-            <HStack as="nav">
-                <Link to={"/map"}>
-                    <Text display="block">
-                        Map Page
-                    </Text>
-                </Link>
-
-                <Link to={"/search"}>
-                    <Text display="block">
-                        Search
-                    </Text>
-                </Link>
-
-                <Link to={"/account"}>
-                    <Text display="block">
-                        Account Page
-                    </Text>
-                </Link>
-
-                <Link to={"/booking"}>
-                    <Text display="block">
-                        Booking page
-                    </Text>
-                </Link>
-            </HStack>
-                </Box>
-            </Center>
-        </chakra.header>
-    )
+  return (
+    <Box h='75' bg='black'>
+      <Flex alignItems='center' justifyContent='space-between' h='full' paddingRight={'2em'}>
+        <Image />
+        <HStack spacing='5'>
+          <Button as={NavLink} to={routes.default}>Home</Button>
+          <Button as={NavLink} to={routes.search}>Search</Button>
+          <Menu>
+            <MenuButton as={IconButton} icon={<FaUser />} >
+              Profile
+            </MenuButton>
+            <MenuList>
+              <MenuItem as={NavLink} to={routes.login}>
+                Login
+              </MenuItem>
+              <MenuItem as={NavLink} to={routes.register}>
+                Register
+              </MenuItem>
+              <MenuItem as={NavLink} to={routes.account}>
+                My Account
+              </MenuItem>
+              <MenuItem as={NavLink} to={routes.login}>
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
+          <IconButton
+            aria-label={'cart'}
+            icon={<FaShoppingCart />}
+          />
+        </HStack>
+      </Flex>
+    </Box>
+  );
 }
 
 

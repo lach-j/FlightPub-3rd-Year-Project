@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Grid,
   Heading,
   Input,
   Link,
@@ -76,7 +75,7 @@ export const RegisterPage = () => {
   };
 
   const handleLoginDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setRegisterRequest({
       ...registerRequest,
@@ -84,73 +83,71 @@ export const RegisterPage = () => {
     });
   };
   return (
-    <Grid w="100vw" h="100vh" p="5">
-      <Center>
-        <Box
-          border="2px"
-          borderColor="gray.200"
-          p="10"
-          borderRadius="2xl"
-          w="md"
-        >
-          <form onSubmit={handleRegister}>
-            <Stack spacing="12">
-              <Box>
-                <Heading>Sign Up</Heading>
-              </Box>
-              <Box>
-                <Stack spacing="3">
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>Email</FormLabel>
-                    <Input
-                      name="email"
-                      value={registerRequest.email}
-                      onChange={handleLoginDetailsChange}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>First Name</FormLabel>
-                    <Input
-                      name="firstName"
-                      value={registerRequest.firstName}
-                      onChange={handleLoginDetailsChange}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>Last Name</FormLabel>
-                    <Input
-                      name="lastName"
-                      value={registerRequest.lastName}
-                      onChange={handleLoginDetailsChange}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>Password</FormLabel>
-                    <Input
-                      type="password"
-                      name="password"
-                      value={registerRequest.password}
-                      onChange={handleLoginDetailsChange}
-                    />
-                    <FormErrorMessage>
-                      The email and/or password provided are incorrect
-                    </FormErrorMessage>
-                  </FormControl>
-                </Stack>
-              </Box>
-              <Button type="submit" isLoading={loading} colorScheme="red">
-                Sign Up
-              </Button>
-              <Box textAlign="center">
-                Already have an account?{' '}
-                <Link as={RouteLink} to={routes.login}>
-                  Sign In
-                </Link>
-              </Box>
-            </Stack>
-          </form>
-        </Box>
-      </Center>
-    </Grid>
+    <Center w='full' h={'full'} p='5'>
+      <Box
+        border='2px'
+        borderColor='gray.200'
+        p='10'
+        borderRadius='2xl'
+        w='md'
+      >
+        <form onSubmit={handleRegister}>
+          <Stack spacing='12'>
+            <Box>
+              <Heading>Sign Up</Heading>
+            </Box>
+            <Box>
+              <Stack spacing='3'>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    name='email'
+                    value={registerRequest.email}
+                    onChange={handleLoginDetailsChange}
+                  />
+                </FormControl>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>First Name</FormLabel>
+                  <Input
+                    name='firstName'
+                    value={registerRequest.firstName}
+                    onChange={handleLoginDetailsChange}
+                  />
+                </FormControl>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>Last Name</FormLabel>
+                  <Input
+                    name='lastName'
+                    value={registerRequest.lastName}
+                    onChange={handleLoginDetailsChange}
+                  />
+                </FormControl>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type='password'
+                    name='password'
+                    value={registerRequest.password}
+                    onChange={handleLoginDetailsChange}
+                  />
+                  <FormErrorMessage>
+                    The email and/or password provided are incorrect
+                  </FormErrorMessage>
+                </FormControl>
+              </Stack>
+            </Box>
+            <Button type='submit' isLoading={loading} colorScheme='red'>
+              Sign Up
+            </Button>
+            <Box textAlign='center'>
+              Already have an account?{' '}
+              <Link as={RouteLink} to={routes.login}>
+                Sign In
+              </Link>
+            </Box>
+          </Stack>
+        </form>
+      </Box>
+    </Center>
   );
 };

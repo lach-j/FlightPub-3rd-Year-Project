@@ -76,8 +76,7 @@ export const LoginPage = ({
     setAuthRequest({ ...authRequest, [event.target.name]: event.target.value });
   };
   return (
-    <Grid w="100vw" h="100vh" p="5">
-      <Center>
+      <Center w="full" h={'full'} p="5">
         <Box
           border="2px"
           borderColor="gray.200"
@@ -129,6 +128,5 @@ export const LoginPage = ({
           </form>
         </Box>
       </Center>
-    </Grid>
   );
 };
