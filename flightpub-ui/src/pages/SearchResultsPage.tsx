@@ -22,7 +22,6 @@ import {
     TriangleDownIcon, TriangleUpIcon,
 } from '@chakra-ui/icons';
 import React, { SyntheticEvent, useState } from 'react';
-
 const columns = [
     {accessor: 'AirlineName', Header: 'Airline'},
     {accessor: 'DepartureAirport', Header: 'Departure Airport'},
@@ -97,15 +96,33 @@ const flights = [
 ]
 
 export function SearchResultsPage() {
+    const [results, setResults] = useState(flights);
+    const [sortField, setSortField] = useState('DepartureTime');
+    const [ascending, setAscending] = useState(true);
+    const sortByField = (field: string) => {
+        console.log(field)
+        let order = -1;
+        if (sortField === field) {
+            order = ascending ? -1 : 1;
+            setAscending(!ascending);
+        }
+        setResults([...results.sort((a: any, b: any) => a?.[field] < b?.[field] ? order : -1*order)])
+        setSortField(field)
+    }
+
     return (
         <Table>
             <Thead>
                 <Tr>
-                    {columns.map((column) => <Th>{column.Header}</Th>)}
+                    {columns.map((column) =>
+                        <Th onClick={() => sortByField(column.accessor)}>
+                            {column.Header}
+                        </Th>
+                    )}
                 </Tr>
             </Thead>
             <Tbody>
-                {flights.map((result: any) =>
+                {results.map((result: any) =>
                     <Tr>
                         {columns.map((column) =>
                             <Td>{result[column.accessor]}</Td>
