@@ -48,7 +48,7 @@ const columns = [
     {accessor: 'ArrivalTime', Header: 'Arrival Time'},
     {accessor: "DestinationAirport", Header: 'Destination Airport'},
     {accessor: 'StopOverAirport', Header: 'Stop Over'},
-    {accessor: 'Price', Header: 'Price'},
+    {accessor: 'Price', Header: 'Price', transform: (value: any) => `$${value}`},
 ]
 
 const airlines = [
@@ -145,7 +145,9 @@ function convertMsToHM(milliseconds: number) {
 
 export function SearchResultsPage() {
     const [results, setResults] = useState(flights);
-    const [sortField, setSortField] = useState('DepartureTime');
+    const [sortField, setSortField] = useState('');
+    const [ascendingCol, setAscendingCol] = useState('');
+    const [descendingCol, setDescendingCol] = useState('');
     const [ascending, setAscending] = useState(true);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(10000);
@@ -154,9 +156,18 @@ export function SearchResultsPage() {
 
     const sortByField = (field: string) => {
         let order = -1;
+
+        setAscendingCol('');
+        setDescendingCol('');
+        setAscendingCol(field);
+
         if (sortField === field) {
             order = ascending ? -1 : 1;
             setAscending(!ascending);
+            if (!ascending) {
+                setAscendingCol('');
+                setDescendingCol(field);
+            }
         }
         setResults([...results.sort((a: any, b: any) => a?.[field] < b?.[field] ? order : -1*order)])
         setSortField(field)
@@ -173,6 +184,20 @@ export function SearchResultsPage() {
 
     const filterByDuration = (val: number) => {
         setDurationFilter(val);
+    }
+
+    const sortIcon = (col: string) => {
+        if (col === ascendingCol) {
+            return (
+                <TriangleUpIcon/>
+            )
+        }
+        if (col === descendingCol){
+            return (
+                <TriangleDownIcon/>
+            )
+        }
+        return;
     }
 
     const toast = useToast();
@@ -246,7 +271,10 @@ export function SearchResultsPage() {
                             <Tr>
                                 {columns.map((column) =>
                                     <Th onClick={() => sortByField(column.accessor)}>
-                                        {column.Header}
+                                        <HStack spacing={3}>
+                                            <Text>{column.Header}</Text>
+                                            {sortIcon(column.accessor)}
+                                        </HStack>
                                     </Th>
                                 )}
                                 <Th>Duration</Th>
@@ -270,8 +298,7 @@ export function SearchResultsPage() {
                             }).map((result: any) =>
                                 <Tr>
                                     {columns.map((column) =>
-                                        <Td>{result[column.accessor]}</Td>
-                                    )}
+                                        <Td>{column?.transform ? column.transform(result[column.accessor]) : result[column.accessor]}</Td>                                    )}
                                     <Td>{convertMsToHM(Date.parse(result.ArrivalTime) - Date.parse(result.DepartureTime))}</Td>
                                     <Td>
                                         <Button type="button"
