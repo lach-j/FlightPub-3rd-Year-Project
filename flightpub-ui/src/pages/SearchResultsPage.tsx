@@ -9,6 +9,7 @@ import {
     Heading,
     Input,
     Link,
+    Select,
     Stack,
     useToast,
     Thead,
@@ -34,6 +35,21 @@ const columns = [
     {accessor: "DestinationAirport", Header: 'Destination Airport'},
     {accessor: 'StopOverAirport', Header: 'Stop Over'},
     {accessor: 'Price', Header: 'Price'},
+]
+
+const airlines = [
+    {
+        "AirlineName": "KLM-Royal Dutch Airlines",
+    },
+    {
+        "AirlineName": "Finnair",
+    },
+    {
+        "AirlineName": "Emirates Airlines",
+    },
+    {
+        "AirlineName": "Delta Air lines",
+    }
 ]
 
 const flights = [
@@ -105,6 +121,7 @@ export function SearchResultsPage() {
     const [ascending, setAscending] = useState(true);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(10000);
+    const [airlineFilter, setAirlineFilter] = useState('');
 
     const sortByField = (field: string) => {
         let order = -1;
@@ -119,6 +136,10 @@ export function SearchResultsPage() {
     const filterByPrice = (val: number[]) => {
         setMinPrice(val[0]);
         setMaxPrice(val[1]);
+    }
+
+    const filterByAirline = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setAirlineFilter(event.target.value);
     }
 
     return (
@@ -140,6 +161,11 @@ export function SearchResultsPage() {
                 <RangeSliderThumb index={0} />
                 <RangeSliderThumb index={1} />
             </RangeSlider>
+            <Select placeholder="No Filter" onChange={filterByAirline}>
+                {airlines.map((airline) =>
+                <option value={airline["AirlineName"]}>{airline["AirlineName"]}</option>
+                    )}
+            </Select>
             <Table>
                 <Thead>
                     <Tr>
@@ -154,6 +180,11 @@ export function SearchResultsPage() {
                     {results.filter(function(result) {
                         if (result.Price < minPrice || result.Price > maxPrice) {
                             return false;
+                        }
+                        if (airlineFilter !== '') {
+                            if (airlineFilter !== result.AirlineName) {
+                                return false;
+                            }
                         }
                         return true
                     }).map((result: any) =>
