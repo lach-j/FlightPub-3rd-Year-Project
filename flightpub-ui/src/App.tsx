@@ -1,4 +1,5 @@
 import React from 'react';
+import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { RegisterPage } from './pages/RegisterPage';
