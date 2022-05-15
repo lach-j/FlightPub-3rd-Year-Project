@@ -20,9 +20,9 @@ export default function Header() {
                     </Text>
                 </Link>
 
-                <Link to={"https://www.wikipedia.org/"}>
+                <Link to={"/search"}>
                     <Text display="block">
-                        Main Page
+                        Search
                     </Text>
                 </Link>
 
