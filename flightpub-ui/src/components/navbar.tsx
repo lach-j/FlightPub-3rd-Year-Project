@@ -6,7 +6,7 @@ import { routes } from '../constants/routes';
 
 export default function Header() {
   return (
-    <Box h='75' bg='black'>
+    <Box minH='75' h='75' bg='black'>
       <Flex alignItems='center' justifyContent='space-between' h='full' paddingRight={'2em'}>
         <Image />
         <HStack spacing='5'>
