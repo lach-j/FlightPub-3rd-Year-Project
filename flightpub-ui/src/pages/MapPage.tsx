@@ -1,28 +1,17 @@
-import {
-  Badge,
-  Box, Button,
-  Flex,
-  Heading,
-  Icon,
-  Stat, StatHelpText, StatLabel, StatNumber,
-  Text,
-} from '@chakra-ui/react';
-import Map, {
-  Marker,
-  GeolocateControl, Source, Layer, Popup,
-} from 'react-map-gl';
+import { Box, Button, Flex, Heading, Icon, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import Map, { GeolocateControl, Marker, Popup } from 'react-map-gl';
 import { useTable } from 'react-table';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MdLocalAirport, FaMapMarkerAlt } from 'react-icons/all';
+import { MdLocalAirport } from 'react-icons/all';
 import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import { flights } from '../data/flights';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const flightColumns = [
   { Header: 'Destination', accessor: 'ArrivalCode' },
   { Header: 'Departure Time', accessor: 'DepartureTime' },
-  { Header: 'Price', accessor: 'Price',  Cell: (props: any) => `$${props.value}` },
+  { Header: 'Price', accessor: 'Price', Cell: (props: any) => `$${props.value}` },
   // {Header: 'Destination', accessor: 'ArrivalCode'},
   // {Header: 'Destination', accessor: 'ArrivalCode'},
 ];
@@ -30,7 +19,6 @@ const flightColumns = [
 
 export const MapPage = () => {
   const [selectedAirport, setSelectedAirport] = useState<GeoJSON.Feature<GeoJSON.Geometry> | undefined>();
-  const [userLocation, setUserLocation] = useState<{ latitude: number, longitude: number }>();
   const navigate = useNavigate();
   const onAirportSelected = (airportFeature: GeoJSON.Feature<GeoJSON.Geometry>) => {
 
@@ -62,7 +50,7 @@ export const MapPage = () => {
   };
 
   const getFlight = (departureCode: string, arrivalCode: string) => {
-    let flight = flights.find(f => f.DepartureCode === departureCode && f.ArrivalCode === arrivalCode)
+    let flight = flights.find(f => f.DepartureCode === departureCode && f.ArrivalCode === arrivalCode);
     if (!flight) return;
     return {
       ...flight,
@@ -70,9 +58,9 @@ export const MapPage = () => {
         dateStyle: 'short',
         timeStyle: 'short',
         hour12: false,
-      })
-    }
-  }
+      }),
+    };
+  };
 
   const calculateDistance = (point1: number[], point2: number[]) => {
     return Math.sqrt(Math.pow(
@@ -102,7 +90,7 @@ export const MapPage = () => {
 
   const getUrlParams = (params: any) => {
     return Object.keys(params).map(key => key + '=' + params[key]).join('&');
-  }
+  };
   const flightsFromHere = getFlightsForSelectedAirport(selectedAirport);
   return (
     <Box h={'100vh'} display={'flex'}>
@@ -123,34 +111,37 @@ export const MapPage = () => {
       >
         {
           airportsGeoJSON.features.map((feature) => {
-            let flight = getFlight(selectedAirport?.properties?.code, feature?.properties?.code)
+            let flight = getFlight(selectedAirport?.properties?.code, feature?.properties?.code);
             let hasFlights = getFlightsForSelectedAirport(feature).length > 0;
             return (
               <>
-              {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false} longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}>
-                <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
-                  <Stat>
-                    <StatLabel>{flight?.DepartureTime}</StatLabel>
-                    <StatNumber>{`$${flight?.Price}`}</StatNumber>
-                    <StatHelpText>{flight?.StopOverCode ? `1 Stopover (${flight.StopOverCode})` : 'Direct'}</StatHelpText>
-                  </Stat>
-                  <Box ml='3'>
-                    <Text fontWeight='bold' fontSize={'md'}>
-                      {flight?.DestinationAirport}
-                    </Text>
-                    <Text fontSize='sm'>{flight?.AirlineName}</Text>
-                    <Button colorScheme={'red'} size={'sm'} onClick={() => navigate('/book?' + getUrlParams(flight))}>Book now</Button>
-                  </Box>
-                </Flex>
-              </Popup>}
-                    <Marker longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}
-                            key={feature?.properties?.id}>
-                      <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
-                            color={hasFlights ? (selectedAirport === feature ? 'red' : 'black') : 'lightgray'}
-                            fontSize={'3em'} onClick={() => {
-                        onAirportSelected(feature);
-                      }} />
-                    </Marker>
+                {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false}
+                                  longitude={feature.geometry.coordinates[0]}
+                                  latitude={feature.geometry.coordinates[1]}>
+                  <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
+                    <Stat>
+                      <StatLabel>{flight?.DepartureTime}</StatLabel>
+                      <StatNumber>{`$${flight?.Price}`}</StatNumber>
+                      <StatHelpText>{flight?.StopOverCode ? `1 Stopover (${flight.StopOverCode})` : 'Direct'}</StatHelpText>
+                    </Stat>
+                    <Box ml='3'>
+                      <Text fontWeight='bold' fontSize={'md'}>
+                        {flight?.DestinationAirport}
+                      </Text>
+                      <Text fontSize='sm'>{flight?.AirlineName}</Text>
+                      <Button colorScheme={'red'} size={'sm'} onClick={() => navigate('/book?' + getUrlParams(flight))}>Book
+                        now</Button>
+                    </Box>
+                  </Flex>
+                </Popup>}
+                <Marker longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}
+                        key={feature?.properties?.id}>
+                  <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
+                        color={hasFlights ? (selectedAirport === feature ? 'red' : 'black') : 'lightgray'}
+                        fontSize={'3em'} onClick={() => {
+                    onAirportSelected(feature);
+                  }} />
+                </Marker>
               </>
             )
               ;
@@ -162,7 +153,7 @@ export const MapPage = () => {
   );
 };
 
-const Table = ({ columns, data }: { columns: Array<{ Header: string, accessor: string}>, data: any }) => {
+const Table = ({ columns, data }: { columns: Array<{ Header: string, accessor: string }>, data: any }) => {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
