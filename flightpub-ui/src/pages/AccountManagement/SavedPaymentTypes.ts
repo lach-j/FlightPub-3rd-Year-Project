@@ -2,6 +2,7 @@ type PaymentType =
   | DirectDebitPayment
   | CardPayment
   | PaypalPayment
+  | Saved
 
 interface DirectDebitPayment extends Payment {
   type: 'directDebit';
@@ -24,8 +25,12 @@ interface PaypalPayment extends Payment {
   token?: string;
 }
 
+interface Saved extends Payment {
+  type: 'saved';
+}
+
 interface Payment {
-  type: 'card' | 'directDebit' | 'paypal';
+  type: 'card' | 'directDebit' | 'paypal' | 'saved';
 }
 
 export type SavedPayment = PaymentType & {
