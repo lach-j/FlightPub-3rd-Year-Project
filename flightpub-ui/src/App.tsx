@@ -1,15 +1,18 @@
 import React from 'react';
-import { HomePage } from './pages/HomePage'
-import { LoginPage } from './pages/LoginPage';
+import {
+  AccountPage,
+  BookingPage,
+  ForgotPasswordPage,
+  HomePage,
+  LoginPage,
+  MapPage,
+  PasswordResetPage,
+  RegisterPage,
+  SearchPage,
+  SearchResultsPage,
+} from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { RegisterPage } from './pages/RegisterPage';
-import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { routes } from './constants/routes';
-import { PasswordResetPage } from './pages/PasswordResetPage';
-import { SearchPage } from './pages/SearchPage';
-import { MapPage } from './pages/MapPage';
-import { AccountPage } from './pages/AccountManagement/AccountPage';
-import { SearchResultsPage } from './pages/SearchResultsPage';
 import Header from './components/navbar';
 import { Box, Flex } from '@chakra-ui/react';
 
@@ -42,6 +45,7 @@ const App = () => {
         <Route path={routes.map} element={<MapPage />} />
         <Route path={routes.account} element={<AccountPage />} />
         <Route path={routes.searchResults} element={<SearchResultsPage />} />
+        <Route path={routes.booking} element={<BookingPage />} />
         <Route path={"*"} element={<h1>Page Not Found</h1>} />
       </Routes>
       </Box>

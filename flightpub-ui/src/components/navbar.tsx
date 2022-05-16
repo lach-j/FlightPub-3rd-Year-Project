@@ -34,6 +34,8 @@ export default function Header() {
           <IconButton
             aria-label={'cart'}
             icon={<FaShoppingCart />}
+            as={NavLink}
+            to={routes.booking}
           />
         </HStack>
       </Flex>
