@@ -6,7 +6,8 @@ import { MdLocalAirport } from 'react-icons/all';
 import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import { flights } from '../data/flights';
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
+import {routes} from "../constants/routes";
 
 const flightColumns = [
   { Header: 'Destination', accessor: 'ArrivalCode' },
@@ -139,7 +140,7 @@ export const MapPage = () => {
                         {flight?.DestinationAirport}
                       </Text>
                       <Text fontSize='sm'>{flight?.AirlineName}</Text>
-                      <Button colorScheme={'red'} size={'sm'} onClick={() => navigate('/book?' + getUrlParams(flight))}>Book
+                      <Button colorScheme={'red'} size={'sm'} as={NavLink} to={routes.booking}>Book
                         now</Button>
                     </Box>
                   </Flex>

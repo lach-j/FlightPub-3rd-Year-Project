@@ -15,6 +15,8 @@ import {flights} from "../data/flights";
 import {countries} from "../data/countries";
 import {SavedPayment} from "./AccountManagement/SavedPaymentTypes";
 import {dummySavedPayments} from "../data/SavedPayments";
+import {NavLink} from "react-router-dom";
+import {routes} from "../constants/routes";
 
 
 export const BookingPage = () => {
@@ -216,6 +218,8 @@ export const BookingPage = () => {
               Book Now
             </Button>
             <Button
+              as={NavLink}
+              to={routes.search}
               colorScheme={'gray'}
             >
               Continue Searching
