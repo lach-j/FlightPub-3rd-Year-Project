@@ -95,7 +95,7 @@ export const MapPage = () => {
   };
   const flightsFromHere = getFlightsForSelectedAirport(selectedAirport);
   return (
-    <Box h={'100vh'} display={'flex'}>
+    <Box h={'full'} display={'flex'}>
       <Box w={'30em'} p={'1em'}>
         <Heading
           fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>

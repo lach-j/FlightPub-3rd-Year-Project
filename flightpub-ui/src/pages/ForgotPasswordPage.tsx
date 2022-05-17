@@ -41,6 +41,15 @@ export const ForgotPasswordPage = ({
       api
         .httpPost(endpoints.forgot, authRequest)
         .then((authResponse) => {
+          toast({
+            title: 'Email Sent',
+            description:
+                'If there is an account associated with the provided email, you will receive an email containing instructions to reset your password.',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+            position: 'top',
+          });
           redirectUser();
         })
         .catch((err: ApiError) => {

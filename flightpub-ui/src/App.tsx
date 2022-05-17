@@ -13,7 +13,7 @@ import {
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
-import Header from './components/navbar';
+import Header from './components/Header';
 import { Box, Flex } from '@chakra-ui/react';
 
 const noNavbar = [
@@ -37,9 +37,9 @@ const App = () => {
       <Box flex={1}>
       <Routes>
         <Route path={routes.home} element={<HomePage />} />
-        <Route path={routes.login} element={<LoginPage />} />
+        <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
         <Route path={routes.register} element={<RegisterPage />} />
-        <Route path={routes.forgotPassword} element={<ForgotPasswordPage />} />
+        <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />
         <Route path={routes.resetPassword} element={<PasswordResetPage redirectPath={routes.login} />} />
         <Route path={routes.search} element={<SearchPage />} />
         <Route path={routes.map} element={<MapPage />} />
