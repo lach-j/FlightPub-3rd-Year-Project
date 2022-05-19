@@ -14,7 +14,7 @@ public class StatusResponse implements Response {
     private int status;
     private String statusText;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String message;
+    protected String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
     private final LocalDateTime timestamp;
