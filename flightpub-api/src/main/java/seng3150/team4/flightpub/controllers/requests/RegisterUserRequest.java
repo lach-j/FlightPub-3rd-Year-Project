@@ -39,6 +39,13 @@ public class RegisterUserRequest extends Validatable {
         }
         validationResult.addError(passwordErrors);
 
+        if (isNullOrEmpty(firstName)) {
+            validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
+        }
+        if (isNullOrEmpty(lastName)) {
+            validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
+        }
+
         return validationResult;
     }
 }
