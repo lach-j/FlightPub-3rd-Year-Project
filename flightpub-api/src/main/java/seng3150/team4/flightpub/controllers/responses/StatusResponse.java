@@ -25,6 +25,11 @@ public class StatusResponse implements Response {
         this.statusText = status.getReasonPhrase();
     }
 
+    public StatusResponse(HttpStatus status, String message) {
+        this(status);
+        this.message = message;
+    }
+
     public StatusResponse() {
         this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
     }
