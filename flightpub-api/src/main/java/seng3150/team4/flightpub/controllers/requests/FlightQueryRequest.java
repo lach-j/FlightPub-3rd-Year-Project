@@ -3,12 +3,15 @@ package seng3150.team4.flightpub.controllers.requests;
 import lombok.Getter;
 import lombok.Setter;
 import seng3150.team4.flightpub.core.search.FlexiDate;
+import seng3150.team4.flightpub.core.validation.ErrorConstants;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
 @Getter
 @Setter
@@ -24,12 +27,14 @@ public class FlightQueryRequest extends Validatable {
     public ValidationResult getErrors() {
         var errors = new ValidationResult();
 
-        if (departureDate != null && departureDate.getMaxDateTime().isBefore(LocalDateTime.now())) {
-            errors.addError(
-                    new ValidationError("fromDate")
-                            .addError("Cannot query past flights")
-            );
+        var departureDateErrors = new ValidationError("departureDate");
+        if (!isNullOrEmpty(departureDate)) {
+            if (departureDate.getMaxDateTime().isBefore(LocalDateTime.now()))
+                departureDateErrors.addError("Cannot query past flights");
+            if (departureDate.getFlex() < 0 || departureDate.getFlex() > 7)
+                departureDateErrors.addError("\"flex\" field must be between 0 and 7");
         }
+        errors.addError(departureDateErrors);
 
         return errors;
     }

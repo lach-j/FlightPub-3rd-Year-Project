@@ -1,4 +1,4 @@
-package seng3150.team4.flightpub;
+package seng3150.team4.flightpub.controllers;
 
 
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,6 @@ import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.services.IFlightService;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/flights")
@@ -24,6 +22,7 @@ public class FlightController {
 
     @GetMapping("/search")
     public Response getFlights(FlightQueryRequest req) {
+        req.validate();
         return new EntityCollectionResponse<>(flightService.searchFlights(req));
     }
 }
