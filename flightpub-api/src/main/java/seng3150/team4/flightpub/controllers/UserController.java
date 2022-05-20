@@ -20,6 +20,8 @@ public class UserController {
 
     @PostMapping(path = "/users")
     public ResponseEntity<? extends Response> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
+        registerUserRequest.validate();
+
         var user = userFromRequest(registerUserRequest);
 
         var savedUser = userService.registerUser(user);
