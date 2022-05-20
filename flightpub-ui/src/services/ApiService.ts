@@ -69,7 +69,10 @@ const toParams = (obj?: any) => {
 const flattenObj = (obj: any, parent?: string, res: any = {}) => {
   for(let key in obj){
     let propName = parent ? parent + '.' + key : key;
-    if(typeof obj[key] == 'object'){
+
+    if (Array.isArray(obj[key])) {
+      res[propName] = obj[key].join(',');
+    } else if(typeof obj[key] == 'object'){
       flattenObj(obj[key], propName, res);
     } else {
       res[propName] = obj[key];
