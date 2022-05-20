@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 @IdClass(FlightId.class)
 @Table(name = "flights")
-public class Flight implements Serializable {
+public class Flight implements IEntity, Serializable {
 
     @Id
     private String airlineCode;
