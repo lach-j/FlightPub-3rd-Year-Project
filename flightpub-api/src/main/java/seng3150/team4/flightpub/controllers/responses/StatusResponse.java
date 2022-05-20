@@ -14,7 +14,7 @@ public class StatusResponse implements Response {
     private int status;
     private String statusText;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String message;
+    protected String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
     private final LocalDateTime timestamp;
@@ -23,6 +23,11 @@ public class StatusResponse implements Response {
         this();
         this.status = status.value();
         this.statusText = status.getReasonPhrase();
+    }
+
+    public StatusResponse(HttpStatus status, String message) {
+        this(status);
+        this.message = message;
     }
 
     public StatusResponse() {
