@@ -4,8 +4,8 @@ const baseOptions: RequestInit = {
   headers: { 'Content-Type': 'application/json' },
 };
 
-export const httpGet = async (endpoint: string): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
+export const httpGet = async (endpoint: string, params?: object): Promise<any> => {
+  const res = await fetch(`${apiBaseUrl}${endpoint}${params && toParams(params)}`, {
     ...baseOptions,
     method: 'get',
   });
@@ -58,4 +58,22 @@ export class ApiError extends Error {
     this.statusCode = statusCode;
     this.data = data;
   }
+}
+
+const toParams = (obj?: any) => {
+  let  flatObj = flattenObj(obj);
+  return '?' + Object.keys(flatObj).map(key => key + '=' + flatObj[key]).join('&');
+}
+
+
+const flattenObj = (obj: any, parent?: string, res: any = {}) => {
+  for(let key in obj){
+    let propName = parent ? parent + '.' + key : key;
+    if(typeof obj[key] == 'object'){
+      flattenObj(obj[key], propName, res);
+    } else {
+      res[propName] = obj[key];
+    }
+  }
+  return res;
 }
