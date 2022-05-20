@@ -8,7 +8,6 @@ import seng3150.team4.flightpub.core.search.FlexiDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@SpringBootTest
 public class FlexiDateTests {
 
     @Test
