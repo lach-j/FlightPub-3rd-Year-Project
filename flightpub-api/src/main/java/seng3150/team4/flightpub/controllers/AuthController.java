@@ -23,6 +23,8 @@ public class AuthController {
     @PostMapping(path = "/login")
     public ResponseEntity<? extends Response> loginUser(@RequestBody LoginRequest loginRequest) {
 
+        loginRequest.validate();
+
         var token = authenticationService.loginUser(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
@@ -40,6 +42,7 @@ public class AuthController {
 
     @PostMapping(path = "/reset")
     public ResponseEntity<? extends Response> resetPasswordWithToken(@RequestBody ResetPasswordRequest loginRequest) {
+        loginRequest.validate();
         authenticationService.resetPassword(
                 loginRequest.getToken(),
                 loginRequest.getPassword()
@@ -50,6 +53,7 @@ public class AuthController {
 
     @PostMapping(path = "/forgot")
     public ResponseEntity<? extends Response> sendResetEmail(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        forgotPasswordRequest.validate();
         authenticationService.sendResetEmail(forgotPasswordRequest.getEmail());
         return ResponseEntity.accepted().body(new StatusResponse(HttpStatus.ACCEPTED));
     }

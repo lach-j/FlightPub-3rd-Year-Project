@@ -19,6 +19,10 @@ public class UserService implements IUserService {
 
     @Override
     public User registerUser(User user) {
+        var duplicateUser = userRepository.findByEmail(user.getEmail());
+        if (duplicateUser.isPresent())
+            throw new EntityExistsException(String.format("User with email %s already exists", user.getEmail()));
+
         User savedUser = userRepository.save(user);
         var registerTemplate = new RegisterEmailTemplate();
 
@@ -34,7 +38,7 @@ public class UserService implements IUserService {
     @Override
     public User updateUser(User user) {
         var userExists = userRepository.existsById(user.getId());
-        if (!userExists) throw new EntityExistsException(String.format("User with id %s already exists", user.getId()));
+        if (!userExists) throw new EntityExistsException(String.format("User with id %s was not found", user.getId()));
 
         return userRepository.save(user);
     }
