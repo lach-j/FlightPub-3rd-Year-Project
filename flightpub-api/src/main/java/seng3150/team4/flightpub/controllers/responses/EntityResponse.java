@@ -1,6 +1,5 @@
 package seng3150.team4.flightpub.controllers.responses;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import seng3150.team4.flightpub.domain.models.IEntity;
 
