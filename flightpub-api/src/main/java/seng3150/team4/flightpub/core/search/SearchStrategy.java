@@ -51,6 +51,6 @@ public abstract class SearchStrategy {
     private void paginate(TypedQuery<Flight> results) {
         int pageNum = getValueOrDefault(flightQuery.getPage(), 0);
         results.setFirstResult(pageNum);
-        results.setMaxResults(1000);
+        results.setMaxResults(100);
     }
 }

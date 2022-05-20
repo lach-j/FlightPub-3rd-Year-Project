@@ -24,6 +24,9 @@ public class KnownSearchStrategy extends SearchStrategy {
         if (flightQuery.getDepartureCode() != null)
             predicates.add(cb.equal(flight.get("departureCode"), flightQuery.getDepartureCode()));
 
+        if (flightQuery.getDestinationCode() != null)
+            predicates.add(cb.equal(flight.get("destinationCode"), flightQuery.getDestinationCode()));
+
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
         return getResults();
