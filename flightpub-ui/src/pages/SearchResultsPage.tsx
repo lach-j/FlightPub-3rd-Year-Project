@@ -106,9 +106,12 @@ export function SearchResultsPage() {
     const [maxPrice, setMaxPrice] = useState(10000);
     const [airlineFilter, setAirlineFilter] = useState('');
     const [durationFilter, setDurationFilter] = useState(180000000);
+    const [query, setQuery] = useState();
 
     useEffect(() => {
-        setResults(state as Flight[])
+        const {results, query} = state as {query: any, results: Flight[]};
+        setResults(results)
+        setQuery(query)
     }, [state])
 
     const sortByField = (field: string) => {

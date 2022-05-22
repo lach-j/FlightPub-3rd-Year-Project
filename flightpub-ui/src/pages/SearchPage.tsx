@@ -254,7 +254,7 @@ export const SearchPage = () => {
   function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onOpen();
-    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, { state: results })).finally(() => onClose());
+    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, { state: {query: searchQuery, results} })).finally(onClose);
   }
 
   const handleTicketUpdate = (value: number, classCode: string) => {
