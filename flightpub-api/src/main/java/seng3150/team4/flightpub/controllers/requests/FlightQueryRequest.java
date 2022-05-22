@@ -2,14 +2,14 @@ package seng3150.team4.flightpub.controllers.requests;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.MultiValueMap;
 import seng3150.team4.flightpub.core.search.FlexiDate;
-import seng3150.team4.flightpub.core.validation.ErrorConstants;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
@@ -19,7 +19,8 @@ public class FlightQueryRequest extends Validatable {
     private FlexiDate departureDate;
     private String departureCode;
     private String destinationCode;
-    private List<String> tickets;
+
+    private Map<String, Integer> tickets;
     private Boolean returnFlight;
 
     private int page;
