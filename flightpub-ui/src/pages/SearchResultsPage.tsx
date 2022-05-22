@@ -177,8 +177,7 @@ export function SearchResultsPage() {
                         <VStack
                             spacing={4}
                             align='stretch'>
-                            <Text>Min Price: ${minPrice}</Text>
-                            <Text>Max Price: ${maxPrice}</Text>
+                            <Text>Price: ${minPrice} - ${maxPrice}</Text>
 
                             <RangeSlider
                                 aria-label={['min', 'max']}
