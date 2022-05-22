@@ -22,10 +22,10 @@ public class KnownSearchStrategy extends SearchStrategy {
         }
 
         if (flightQuery.getDepartureCode() != null)
-            predicates.add(cb.equal(flight.get("departureCode"), flightQuery.getDepartureCode()));
+            predicates.add(cb.equal(flight.get("departureLocation").get("destinationCode"), flightQuery.getDepartureCode()));
 
         if (flightQuery.getDestinationCode() != null)
-            predicates.add(cb.equal(flight.get("destinationCode"), flightQuery.getDestinationCode()));
+            predicates.add(cb.equal(flight.get("arrivalLocation").get("destinationCode"), flightQuery.getDestinationCode()));
 
 
         query.where(cb.and(predicates.toArray(new Predicate[0])));
