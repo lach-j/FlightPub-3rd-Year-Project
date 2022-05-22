@@ -100,6 +100,8 @@ export function SearchResultsPage() {
     const [airlineFilter, setAirlineFilter] = useState('');
     const [durationFilter, setDurationFilter] = useState(180000000);
     const [query, setQuery] = useState();
+    const [maxDuration, setMaxDuration] = useState(180000000)
+    const [minDuration, setMinDuration] = useState(0)
 
     const [airlines, setAirlines] = useState<Airline[]>([]);
 
@@ -112,6 +114,12 @@ export function SearchResultsPage() {
         const {results, query} = state as {query: any, results: Flight[]};
         setResults(results)
         setQuery(query)
+        const flightTimes = results.map(r => r.duration);
+        const maxDuration = Math.max(...flightTimes);
+        const minDuration = Math.min(...flightTimes);
+        setMaxDuration(maxDuration);
+        setMinDuration(minDuration)
+        setDurationFilter(maxDuration);
     }, [state])
 
     const sortByField = (field: string) => {
@@ -197,14 +205,15 @@ export function SearchResultsPage() {
                         <VStack
                             spacing={4}
                             align='stretch'>
-                            <Text>Max Duration: {durationFilter/3600000} hours</Text>
+                            <Text>Max Duration: {Math.floor(durationFilter/60)} hours</Text>
 
                             <Slider
                                 aria-label='slider-ex-1'
-                                onChangeEnd={(val) => filterByDuration(val * 3600000)}
-                                min={0}
-                                max={50}
-                                defaultValue={50}
+                                onChangeEnd={(val) => filterByDuration(val)}
+                                min={minDuration}
+                                max={maxDuration}
+                                defaultValue={maxDuration}
+                                isDisabled={minDuration === maxDuration}
                             >
                                 <SliderTrack>
                                     <SliderFilledTrack/>
@@ -251,7 +260,7 @@ export function SearchResultsPage() {
                                         return false;
                                     }
                                 }
-                                if ((Date.parse(result.arrivalTime) - Date.parse(result.departureTime)) > durationFilter) {
+                                if (result.duration > durationFilter) {
                                     return false;
                                 }
                                 return true;
