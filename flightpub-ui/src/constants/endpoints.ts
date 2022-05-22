@@ -4,5 +4,6 @@ export const endpoints = {
     reset: "/reset",
     users: "/users",
     flights: "/flights",
-    flightSearch: "/flights/search"
+    flightSearch: "/flights/search",
+    airlines: "/airlines"
 }

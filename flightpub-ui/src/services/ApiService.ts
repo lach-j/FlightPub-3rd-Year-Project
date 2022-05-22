@@ -5,7 +5,7 @@ const baseOptions: RequestInit = {
 };
 
 export const httpGet = async (endpoint: string, params?: object): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}${params && toParams(params)}`, {
+  const res = await fetch(`${apiBaseUrl}${endpoint}${params ? toParams(params) : ''}`, {
     ...baseOptions,
     method: 'get',
   });

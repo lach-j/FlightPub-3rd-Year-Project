@@ -29,6 +29,8 @@ import {
 import { useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import * as _ from 'lodash';
+import { httpGet } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
 
 interface ColumnDefinition<T> {
     accessor: T;
@@ -47,21 +49,6 @@ const columns: ColumnDefinition<any>[] = [
     {accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---'},
     {accessor: 'price', Header: 'Price', transform: (value: any) => `$${value}`},
     {accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value)},
-]
-
-const airlines = [
-    {
-        "AirlineName": "KLM-Royal Dutch Airlines",
-    },
-    {
-        "AirlineName": "Finnair",
-    },
-    {
-        "AirlineName": "Emirates Airlines",
-    },
-    {
-        "AirlineName": "Delta Air lines",
-    }
 ]
 
 interface Destination {
@@ -85,6 +72,12 @@ interface Flight {
 }
 
 
+interface Airline {
+    airlineCode: string;
+    airlineName: string;
+    countryCode: string;
+}
+
 function convertMinsToHM(minutes: number) {
     let hours = Math.floor(minutes / 60);
 
@@ -107,6 +100,13 @@ export function SearchResultsPage() {
     const [airlineFilter, setAirlineFilter] = useState('');
     const [durationFilter, setDurationFilter] = useState(180000000);
     const [query, setQuery] = useState();
+
+    const [airlines, setAirlines] = useState<Airline[]>([]);
+
+    useEffect(() => {
+        httpGet(endpoints.airlines)
+          .then(setAirlines);
+    }, [])
 
     useEffect(() => {
         const {results, query} = state as {query: any, results: Flight[]};
@@ -218,8 +218,8 @@ export function SearchResultsPage() {
                             align='stretch'>
                             <Text>Airline:</Text>
                             <Select placeholder="No Filter" onChange={filterByAirline}>
-                                {airlines.map((airline) =>
-                                    <option value={airline["AirlineName"]}>{airline["AirlineName"]}</option>
+                                {airlines.filter(airline => results.map(a => a.airlineCode).includes(airline.airlineCode)).map((airline) =>
+                                    <option value={airline.airlineCode}>{airline.airlineName}</option>
                                 )}
                             </Select>
                         </VStack>
