@@ -33,7 +33,7 @@ import { endpoints } from '../constants/endpoints';
 interface ColumnDefinition<T> {
   accessor: T;
   Header: string;
-  transform?: (value: string) => string;
+  transform?: (value: any) => string;
 }
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
@@ -42,21 +42,25 @@ const formatDateTime = (value: string): string => new Date(value).toLocaleString
   hour12: false,
 });
 
-const columns: ColumnDefinition<any>[] = [
-  { accessor: 'airlineCode', Header: 'Airline' },
-  { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
-  { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
-  { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
-  { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
-  { accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
-  { accessor: 'price', Header: 'Price', transform: (value: any) => `$${value}` },
-  { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
-];
+const getMinPriceString = (prices: Price[]) => {
+  if (!prices) return '';
+  let minPrice = Math.min(...prices.map(p => p.price))
+  return `$${minPrice}`;
+}
+
+
 
 interface Destination {
   destinationCode: string;
   airport: string;
   countryCode: string;
+}
+
+interface Price {
+  classCode: string;
+  price: number;
+  priceLeg1?: number;
+  priceLeg2?: number;
 }
 
 interface Flight {
@@ -69,7 +73,7 @@ interface Flight {
   stopOverLocation: Destination;
   arrivalTimeStopOver: string;
   departureTimeStopOver: string;
-  price: number;
+  prices: Price[];
   duration: number;
 }
 
@@ -106,6 +110,17 @@ export function SearchResultsPage() {
   const [minDuration, setMinDuration] = useState(0);
 
   const [airlines, setAirlines] = useState<Airline[]>([]);
+
+  const columns: ColumnDefinition<any>[] = [
+    { accessor: 'airlineCode', Header: 'Airline', transform: value => airlines.find(a => a.airlineCode === value)?.airlineName},
+    { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
+    { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
+    { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
+    { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
+    { accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
+    { accessor: 'prices', Header: 'Price', transform: getMinPriceString },
+    { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
+  ];
 
   useEffect(() => {
     httpGet(endpoints.airlines)
@@ -254,7 +269,7 @@ export function SearchResultsPage() {
             </Thead>
             <Tbody>
               {results.filter((result) => {
-                if (result.price < minPrice || result.price > maxPrice) {
+                if (result.prices.filter( p => p.price < minPrice).length > 0 || result.prices.filter( p => p.price > maxPrice).length > 0) {
                   return false;
                 }
                 if (airlineFilter !== '') {

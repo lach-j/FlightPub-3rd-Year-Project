@@ -268,8 +268,6 @@ export const SearchPage = () => {
     { key: 'PME', label: 'Premium Economy' },
   ];
 
-  console.log(toParams(searchQuery))
-
   return (
     <Box p={'2em'}>
       <Center>
