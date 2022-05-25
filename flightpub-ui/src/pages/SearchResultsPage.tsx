@@ -29,12 +29,7 @@ import React, { useEffect, useState } from 'react';
 import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
-
-interface ColumnDefinition<T> {
-  accessor: T;
-  Header: string;
-  transform?: (value: any) => string;
-}
+import { Airline, Flight, Price, ColumnDefinition } from '../models';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
@@ -42,48 +37,13 @@ const formatDateTime = (value: string): string => new Date(value).toLocaleString
   hour12: false,
 });
 
-const getMinPriceString = (prices: Price[]) => {
+const getPriceString = (prices: Price[]) => {
   if (!prices) return '';
-  let minPrice = Math.min(...prices.map(p => p.price))
-  return `$${minPrice}`;
+  let pricesVals = prices.map(p => p.price);
+  let minPrice = Math.min(...pricesVals)
+  let maxPrice = Math.max(...pricesVals)
+  return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
 }
-
-
-
-interface Destination {
-  destinationCode: string;
-  airport: string;
-  countryCode: string;
-}
-
-interface Price {
-  classCode: string;
-  price: number;
-  priceLeg1?: number;
-  priceLeg2?: number;
-}
-
-interface Flight {
-  airlineCode: string;
-  flightNumber: string;
-  departureTime: string;
-  departureLocation: Destination;
-  arrivalLocation: Destination;
-  arrivalTime: string;
-  stopOverLocation: Destination;
-  arrivalTimeStopOver: string;
-  departureTimeStopOver: string;
-  prices: Price[];
-  duration: number;
-}
-
-
-interface Airline {
-  airlineCode: string;
-  airlineName: string;
-  countryCode: string;
-}
-
 function convertMinsToHM(minutes: number) {
   let hours = Math.floor(minutes / 60);
 
@@ -118,7 +78,7 @@ export function SearchResultsPage() {
     { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
     { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
     { accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
-    { accessor: 'prices', Header: 'Price', transform: getMinPriceString },
+    { accessor: 'prices', Header: 'Price', transform: getPriceString },
     { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
   ];
 
