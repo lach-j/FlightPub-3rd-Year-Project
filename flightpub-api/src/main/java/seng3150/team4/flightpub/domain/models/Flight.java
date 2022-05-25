@@ -6,27 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import seng3150.team4.flightpub.Price;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@IdClass(FlightId.class)
 @Table(name = "flights")
 public class Flight implements IEntity, Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
     private String airlineCode;
-    @Id
     private String flightNumber;
-    @Id
     private LocalDateTime departureTime;
 
     private LocalDateTime arrivalTimeStopOver;
@@ -47,4 +47,9 @@ public class Flight implements IEntity, Serializable {
     @ManyToOne
     @JoinColumn(name = "stopOverCode")
     private Destination stopOverLocation;
+
+    @JsonManagedReference
+    @OneToMany
+    @JoinColumn(name = "FlightId", referencedColumnName = "Id")
+    private Set<Price> prices;
 }
