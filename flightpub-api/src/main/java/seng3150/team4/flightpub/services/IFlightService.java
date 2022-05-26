@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IFlightService {
     List<Flight> searchFlights(FlightQueryRequest request);
+
+    List<Flight> getCheapestFlights(String destination);
 }

@@ -57,6 +57,7 @@ export function SearchResultsPage() {
   const { state } = useLocation();
 
   const [results, setResults] = useState<Flight[]>([]);
+
   const [sortField, setSortField] = useState('');
   const [ascendingCol, setAscendingCol] = useState('');
   const [descendingCol, setDescendingCol] = useState('');
@@ -66,7 +67,6 @@ export function SearchResultsPage() {
   const [airlineFilter, setAirlineFilter] = useState('');
   const [durationFilter, setDurationFilter] = useState(180000000);
   const [query, setQuery] = useState();
-
   const [maxDuration, setMaxDuration] = useState(180000000);
   const [minDuration, setMinDuration] = useState(0);
 

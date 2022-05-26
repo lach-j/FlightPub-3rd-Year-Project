@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
@@ -25,4 +26,9 @@ public class FlightController {
         req.validate();
         return new EntityCollectionResponse<>(flightService.searchFlights(req));
     }
+    @GetMapping("/recommended/{destination}")
+    public Response getCheapestFlights(@PathVariable String destination) {
+        return new EntityCollectionResponse<>(flightService.getCheapestFlights(destination));
+    }
+
 }
