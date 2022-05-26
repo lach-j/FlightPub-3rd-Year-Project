@@ -6,6 +6,7 @@ import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
 import seng3150.team4.flightpub.core.search.KnownSearchStrategy;
 import seng3150.team4.flightpub.core.search.SearchStrategy;
 import seng3150.team4.flightpub.domain.models.Flight;
+import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,10 +19,14 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 public class FlightService implements IFlightService {
     @PersistenceContext
     private EntityManager em;
+    private final IFlightRepository flightRepo;
 
     public List<Flight> searchFlights(FlightQueryRequest query) {
         var strategy = resolveSearchStrategy(query).setEntityManager(em);
         return strategy.search();
+    }
+    public List<Flight> getCheapestFlights(String departure) {
+        return flightRepo.getCheapestFlightsFromDest(departure);
     }
 
     private static SearchStrategy resolveSearchStrategy(FlightQueryRequest query) {
