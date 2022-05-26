@@ -5,5 +5,7 @@ export const endpoints = {
     users: "/users",
     flights: "/flights",
     flightSearch: "/flights/search",
+    mapSearch: "/flights/search/map",
+    departureCount: "/flights/search/count/departure",
     airlines: "/airlines"
 }

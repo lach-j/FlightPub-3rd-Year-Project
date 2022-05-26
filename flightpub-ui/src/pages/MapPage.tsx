@@ -23,21 +23,28 @@ import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { ColumnDefinition, Flight } from '../models';
+import { ColumnDefinition, Flight, DestinationCount, Price } from '../models';
 import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 
+const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+  hour12: false,
+});
+
 const flightColumns: ColumnDefinition<any>[] = [
-  { Header: 'Destination', accessor: 'ArrivalCode' },
-  { Header: 'Departure Time', accessor: 'DepartureTime' },
-  { Header: 'Price', accessor: 'Price', transform: (props: any) => `$${props.value.toFixed(2)}` },
+  { Header: 'Destination', accessor: 'arrivalLocation.destinationCode' },
+  { Header: 'Departure Time', accessor: 'departureTime', transform: formatDateTime },
+  { Header: 'Price', accessor: 'prices', transform: (price: Price[]) => `$${price[0]?.price.toFixed(2)}` },
 ];
 
 
 export const MapPage = () => {
   const [selectedAirport, setSelectedAirport] = useState<GeoJSON.Feature<GeoJSON.Geometry> | undefined>();
   const [flights, setFlights] = useState<Flight[]>([]);
+  const [departureCount, setDepartureCount] = useState<DestinationCount[]>([]);
   const navigate = useNavigate();
   const geolocateRef = useRef<GeolocateControlRef>(null);
   const onAirportSelected = (airportFeature: GeoJSON.Feature<GeoJSON.Geometry>) => {
@@ -50,8 +57,13 @@ export const MapPage = () => {
   };
 
   useEffect(() => {
-    httpGet(endpoints.mapSearch).then(setFlights);
+    httpGet(endpoints.departureCount).then(setDepartureCount);
   }, [])
+
+  useEffect(() => {
+    httpGet(endpoints.mapSearch + '/' +  selectedAirport?.properties?.code)
+      .then(setFlights)
+  }, [selectedAirport])
 
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
@@ -96,32 +108,12 @@ export const MapPage = () => {
     ));
   };
 
-  const getFlightsForSelectedAirport = (selected: any) => {
-    return flights.filter((flight) => {
-      return flight.departureLocation.destinationCode === selected?.properties?.code;
-    }).sort(
-      (a, b) => a.departureTime > b.departureTime ? 1 : -1).map((f) => {
-      return {
-        ...f,
-        DepartureTime: new Date(f.departureTime).toLocaleString('en-AU', {
-          dateStyle: 'short',
-          timeStyle: 'short',
-          hour12: false,
-        }),
-      };
-    });
-  };
-
-  const getUrlParams = (params: any) => {
-    return Object.keys(params).map(key => key + '=' + params[key]).join('&');
-  };
-  const flightsFromHere = getFlightsForSelectedAirport(selectedAirport);
   return (
     <Box h={'full'} display={'flex'}>
       <Box w={'30em'} p={'1em'}>
         <Heading
           fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>
-        <ResultsTable columns={flightColumns} flights={flightsFromHere} />
+        <ResultsTable columns={flightColumns} flights={flights} />
       </Box>
       <Map
         onLoad={() => geolocateRef?.current?.trigger()}
@@ -137,7 +129,7 @@ export const MapPage = () => {
         {
           airportsGeoJSON.features.map((feature) => {
             let flight = getFlight(selectedAirport?.properties?.code, feature?.properties?.code);
-            let hasFlights = getFlightsForSelectedAirport(feature).length > 0;
+            let hasFlights = departureCount.find(f => f.destinationCode === feature.properties?.code)
             return (
               <>
                 {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false}
