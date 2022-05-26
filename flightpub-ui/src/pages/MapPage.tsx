@@ -111,7 +111,7 @@ export const MapPage = () => {
 
   return (
     <Box h={'full'} display={'flex'} position={'absolute'} top={0} left={0} right={0} bottom={0}>
-      <Box w={'fit-content'} flex={1} p={'1em'} overflow={'auto'}>
+      <Box w={'max-content'} p={'1em'} overflow={'auto'}>
         <Heading
           fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
