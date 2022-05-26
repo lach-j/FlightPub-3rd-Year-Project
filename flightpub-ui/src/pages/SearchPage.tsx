@@ -1,370 +1,517 @@
 import {
-    Box,
-    Text,
-    Button,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    VStack,
-    Grid,
-    StackDivider,
-    FormControl,
-    FormLabel,
-    Select,
-    Center,
-    Checkbox,
-    HStack,
-    Tooltip,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  FormControl,
+  FormLabel,
+  HStack,
+  Modal,
+  ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Select,
+  Spinner,
+  StackDivider,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
-import React, {useState, SyntheticEvent, FormEventHandler, FormEvent} from 'react';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import {User} from "../models/User";
-import {CUIAutoComplete} from 'chakra-ui-autocomplete'
-import {
-    AutoComplete,
-    AutoCompleteInput,
-    AutoCompleteItem,
-    AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
-import moment from "moment";
-import {SearchIcon} from '@chakra-ui/icons';
-import {useNavigate} from "react-router-dom";
-import {routes} from "../constants/routes";
+import React, { FormEvent, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete';
+import { SearchIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { httpGet, toParams } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
 
 export interface Item {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
 }
 
 const tags2 = [
-    {label: "Beach", value: "beach"},
-    {label: "Snow", value: "snow"},
-    {label: "Holiday", value: "holiday"},
-    {label: "Family-Friendly", value: "family-friendly"},
-    {label: "Sports", value: "sports"},
-    {label: "Romantic", value: "romantic"},
-    {label: "Asia", value: "asia"},
-]
+  { label: 'Beach', value: 'beach' },
+  { label: 'Snow', value: 'snow' },
+  { label: 'Holiday', value: 'holiday' },
+  { label: 'Family-Friendly', value: 'family-friendly' },
+  { label: 'Sports', value: 'sports' },
+  { label: 'Romantic', value: 'romantic' },
+  { label: 'Asia', value: 'asia' },
+];
 
-const tags =
-    [
-        {value: "adelaide", label: "Adelaide"},
-        {value: "amsterdam", label: "Amsterdam"},
-        {value: "atlanta", label: "Atlanta"},
-        {value: "bangkok", label: "Bangkok"},
-        {value: "brisbane", label: "Brisbane"},
-        {value: "canberra", label: "Canberra"},
-        {value: "paris - charles de gaulle", label: "Paris - Charles De Gaulle"},
-        {value: "cairns", label: "Cairns"},
-        {value: "doha", label: "Doha"},
-        {value: "darwin", label: "Darwin"},
-        {value: "dubai", label: "Dubai"},
-        {value: "rome-fiumicino", label: "Rome-Fiumicino"},
-        {value: "rio de janeiro", label: "Rio De Janeiro"},
-        {value: "hobart", label: "Hobart"},
-        {value: "helsinki", label: "Helsinki"},
-        {value: "hong kong", label: "Hong Kong"},
-        {value: "honolulu", label: "Honolulu"},
-        {value: "new york - jfk", label: "New York - JFK"},
-        {value: "johannesburg", label: "Johannesburg"},
-        {value: "kuala lumpur", label: "Kuala Lumpur"},
-        {value: "los angeles", label: "Los Angeles"},
-        {value: "new york - laguardia", label: "New York - Laguardia"},
-        {value: "london-gatwick", label: "London-Gatwick"},
-        {value: "london-heathrow", label: "London-Heathrow"},
-        {value: "madrid", label: "Madrid"},
-        {value: "melbourne", label: "Melbourne"},
-        {value: "miami", label: "Miami"},
-        {value: "munich", label: "Munich"},
-        {value: "tokyo - narita", label: "Tokyo - Narita"},
-        {value: "gold coast", label: "Gold Coast"},
-        {value: "chicago - ohare intl.", label: "Chicago - OHare Intl."},
-        {value: "paris - orly", label: "Paris - Orly"},
-        {value: "perth", label: "Perth"},
-        {value: "san francisco", label: "San Francisco"},
-        {value: "singapore", label: "Singapore"},
-        {value: "sydney", label: "Sydney"},
-        {value: "vienna", label: "Vienna"},
-        {value: "toronto", label: "Toronto"}
-    ]
+const airports = [
+  {
+    code: 'ADL',
+    label: 'Adelaide',
+  },
+  {
+    code: 'AMS',
+    label: 'Amsterdam',
+  },
+  {
+    code: 'ATL',
+    label: 'Atlanta',
+  },
+  {
+    code: 'BKK',
+    label: 'Bangkok',
+  },
+  {
+    code: 'BNE',
+    label: 'Brisbane',
+  },
+  {
+    code: 'CBR',
+    label: 'Canberra',
+  },
+  {
+    code: 'CDG',
+    label: 'Paris - Charles De Gaulle',
+  },
+  {
+    code: 'CNS',
+    label: 'Cairns',
+  },
+  {
+    code: 'DOH',
+    label: 'Doha',
+  },
+  {
+    code: 'DRW',
+    label: 'Darwin',
+  },
+  {
+    code: 'DXB',
+    label: 'Dubai',
+  },
+  {
+    code: 'FCO',
+    label: 'Rome-Fiumicino',
+  },
+  {
+    code: 'GIG',
+    label: 'Rio De Janeiro',
+  },
+  {
+    code: 'HBA',
+    label: 'Hobart',
+  },
+  {
+    code: 'HEL',
+    label: 'Helsinki',
+  },
+  {
+    code: 'HKG',
+    label: 'Hong Kong',
+  },
+  {
+    code: 'HNL',
+    label: 'Honolulu',
+  },
+  {
+    code: 'JFK',
+    label: 'New York - JFK',
+  },
+  {
+    code: 'JNB',
+    label: 'Johannesburg',
+  },
+  {
+    code: 'KUL',
+    label: 'Kuala Lumpur',
+  },
+  {
+    code: 'LAX',
+    label: 'Los Angeles',
+  },
+  {
+    code: 'LGA',
+    label: 'New York - Laguardia',
+  },
+  {
+    code: 'LGW',
+    label: 'London-Gatwick',
+  },
+  {
+    code: 'LHR',
+    label: 'London-Heathrow',
+  },
+  {
+    code: 'MAD',
+    label: 'Madrid',
+  },
+  {
+    code: 'MEL',
+    label: 'Melbourne',
+  },
+  {
+    code: 'MIA',
+    label: 'Miami',
+  },
+  {
+    code: 'MUC',
+    label: 'Munich',
+  },
+  {
+    code: 'NRT',
+    label: 'Tokyo - Narita',
+  },
+  {
+    code: 'OOL',
+    label: 'Gold Coast',
+  },
+  {
+    code: 'ORD',
+    label: 'Chicago - OHare Intl.',
+  },
+  {
+    code: 'ORY',
+    label: 'Paris - Orly',
+  },
+  {
+    code: 'PER',
+    label: 'Perth',
+  },
+  {
+    code: 'SFO',
+    label: 'San Francisco',
+  },
+  {
+    code: 'SIN',
+    label: 'Singapore',
+  },
+  {
+    code: 'SYD',
+    label: 'Sydney',
+  },
+  {
+    code: 'VIE',
+    label: 'Vienna',
+  },
+  {
+    code: 'YYZ',
+    label: 'Toronto',
+  },
+];
 
+interface FlexiDate {
+  date: string;
+  flex?: number;
+}
+
+interface SearchQuery {
+  departureDate: FlexiDate;
+  departureCode?: string;
+  destinationCode?: string;
+  tickets?: Map<string, number>;
+  returnFlight?: boolean;
+}
 
 export const SearchPage = () => {
-    const navigate = useNavigate();
-    {/*TODO: Change these hooks to a single 'Search' model */
-    }
-    const [JSONString, setJSONString] = useState("");
+  const navigate = useNavigate();
+  const [flexEnabled, setFlexEnabled] = useState(false);
 
-    const [flightClass, setFlightClass] = useState("");
-    const handleClassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setFlightClass(event.target.value)
-    }
+  const formatDate = (date: Date) => {
+    let d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
 
-    const [flightType, setFlightType] = useState("");
-    const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setFlightType(event.target.value)
-    }
-    const [numPassengers, setNumPassengers] = useState("");
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
 
-    const [flexibleRange, setFlexibleRange] = useState("");
-    const [flexEnabled, setFlexEnabled] = useState(true);
+    return [year, month, day].join('-');
+  };
 
-    const [departureDate, setDepartureDate] = useState(new Date());
-    const [arrivalDate, setArrivalDate] = useState(new Date());
+  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+    departureDate: { date: formatDate(new Date()) },
+  });
 
-    const [arrivalLocation, setArrivalLocation] = useState("");
-    const [departureLocation, setDepartureLocation] = useState("");
-    const [selectedTags, setSelectedTags] = React.useState<Item[]>([]);
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
+  const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
+    setSearchQuery({ ...searchQuery, [field]: value });
+  };
 
-    const handleSelectedItemsChange = (selectedTags?: Item[]) => {
-        if (selectedTags) {
-            setSelectedTags(selectedTags);
-        }
-    };
-    {/*TODO: Change these hooks to a single 'Search' model */
-    }
+  function handleSearch(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onOpen();
+    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, { state: {query: searchQuery, results} })).finally(onClose);
+  }
 
-    function handleSearch(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setJSONString(JSON.stringify([
-            {flightClass},
-            {flightType},
-            {numPassengers},
-            {selectedTags},
-            {arrivalLocation},
-            {departureLocation},
-            {arrivalDate},
-            {departureDate},
-            {flexibleRange},
-        ], null, 2))
-        navigate(routes.searchResults);
-    }
+  const handleTicketUpdate = (value: number, classCode: string) => {
+    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value))
+  }
 
+  const ticketOptions = [
+    { key: 'BUS', label: 'Business Class' },
+    { key: 'ECO', label: 'Economy' },
+    { key: 'FIR', label: 'First Class' },
+    { key: 'PME', label: 'Premium Economy' },
+  ];
 
-    return (
-        <Box p={'2em'}>
-            <Center>
-                <form onSubmit={handleSearch}>
-                    <FormControl as='fieldset'>
-                        <FormLabel as='legend' fontSize={'2xl'}>Search flights</FormLabel>
-                        <VStack gap={'2em'}>
-                            <HStack alignItems={'flex-start'} divider={<StackDivider borderColor='gray.200'/>}
-                                    gap={'3em'}>
-                                <VStack
-                                    divider={<StackDivider borderColor='gray.200'/>}
-                                    spacing={2}
-                                    align='stretch'>
-                                    <Box>
-                                        <FormControl isRequired>
-                                            <FormLabel htmlFor='flightClass'>Class: </FormLabel>
-                                            <Select onChange={handleClassChange} name='flightClass' id='flightClass'
-                                                    placeholder='Select flight class' maxW={240}>
-                                                <option>Economy</option>
-                                                <option>Business</option>
-                                                <option>First-class</option>
-                                            </Select>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box>
-                                        <FormControl isRequired>
-                                            <FormLabel htmlFor='flightType'>Type: </FormLabel>
-                                            <Select onChange={handleTypeChange} name='flightType' id='flightType'
-                                                    placeholder='Select flight Type' maxW={240}>
-                                                <option>One-way</option>
-                                                <option>Round trip</option>
-                                                <option>Multi-city</option>
-                                            </Select>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box>
-                                        <FormControl isRequired>
-                                            <FormLabel>Number of Passengers</FormLabel>
-                                            <NumberInput allowMouseWheel={true}
-                                                         name={"passengers"}
-                                                         size='sm'
-                                                         min={1}
-                                                         maxW={16}
-
-                                                         onChange={setNumPassengers}
-                                                         defaultValue={1}>
-                                                <NumberInputField/>
-                                                <NumberInputStepper>
-                                                    <NumberIncrementStepper/>
-                                                    <NumberDecrementStepper/>
-                                                </NumberInputStepper>
-                                            </NumberInput>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box>
-                                        <CUIAutoComplete
-                                            tagStyleProps={{
-                                                rounded: 'full'
-                                            }}
-                                            label="Select preferred tags"
-                                            placeholder="Select a tag"
-                                            disableCreateItem={true}
-                                            items={tags2}
-                                            selectedItems={selectedTags}
-                                            onSelectedItemsChange={(changes) =>
-                                                handleSelectedItemsChange(changes.selectedItems)
-                                            }
-                                        />
-                                    </Box>
-                                </VStack>
-                                <VStack
-                                    divider={<StackDivider borderColor='gray.200'/>}
-                                    spacing={2}
-                                    align='stretch'>
-                                    <Box>
-                                        <FormControl isRequired>
-                                            <FormLabel>Arrival Location:</FormLabel>
-                                            <AutoComplete openOnFocus onChange={setArrivalLocation}>
-                                                <AutoCompleteInput variant="filled"/>
-                                                <AutoCompleteList>
-                                                    {tags.map((tag, cNum) => (
-                                                        <AutoCompleteItem
-                                                            key={`option-${cNum}`}
-                                                            value={tag.label}
-                                                            align="center"
-                                                        >
-                                                            <Text ml="4">{tag.label}</Text>
-                                                        </AutoCompleteItem>
-                                                    ))}
-                                                </AutoCompleteList>
-                                            </AutoComplete>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box>
-                                        <FormControl isRequired>
-                                            <FormLabel>Departure Location</FormLabel>
-                                            <AutoComplete openOnFocus onChange={setDepartureLocation}>
-                                                <AutoCompleteInput variant="filled"/>
-                                                <AutoCompleteList>
-                                                    {tags.map((tag, cNum) => (
-                                                        <AutoCompleteItem
-                                                            key={`option-${cNum}`}
-                                                            value={tag.label}
-                                                            align="center"
-                                                        >
-                                                            <Text ml="4">{tag.label}</Text>
-                                                        </AutoCompleteItem>
-                                                    ))}
-                                                </AutoCompleteList>
-                                            </AutoComplete>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box>
-                                        <FormLabel>Departure Date</FormLabel>
-                                        <DatePicker
-                                            minDate={new Date()}
-                                            selected={departureDate}
-                                            onChange={(date: Date) => setDepartureDate(date)}
-                                            locale={'en-AU'}
-
-                                        />
-                                    </Box>
-
-                                    <Box>
-                                        <FormLabel>Arrival Date</FormLabel>
-                                        <DatePicker
-                                            minDate={new Date(departureDate)}
-                                            selected={arrivalDate}
-                                            onChange={(date: Date) => setArrivalDate(date)}
-                                            locale={'en-AU'}
-                                        />
-
-
-                                    </Box>
-                                    <Box>
-                                        <Checkbox name={"flexEnabled"}
-                                                  colorScheme='green'
-                                                  onChange={(e) => setFlexEnabled(!e.target.checked)}>
-                                            Enable FlexSearch?&nbsp;
-                                        </Checkbox>
-                                        <Tooltip hasArrow
-                                                 label='FlexSearch increases increases the date range for your chosen arrival and departure dates'
-                                                 color='white'>
-                                            <SearchIcon boxSize={3}/>
-                                        </Tooltip>
-                                    </Box>
-                                    <Box>
-                                        <p>+/- days</p>
-                                        <NumberInput allowMouseWheel={true}
-                                                     name={"flexibleRange"}
-                                                     size='sm'
-                                                     min={1}
-                                                     maxW={16}
-                                                     isDisabled={flexEnabled}
-                                                     onChange={setFlexibleRange}
-                                                     defaultValue={1}>
-                                            <NumberInputField/>
-                                            <NumberInputStepper>
-                                                <NumberIncrementStepper/>
-                                                <NumberDecrementStepper/>
-                                            </NumberInputStepper>
-                                        </NumberInput>
-                                    </Box>
-
-
-                                </VStack>
-                            </HStack>
-                            <Box>
-                                <Button type="submit" colorScheme="red">
-                                    Search
-                                </Button>
+  return (
+    <Box p={'2em'}>
+      <Center>
+        <form onSubmit={handleSearch}>
+          <FormControl as='fieldset'>
+            <FormLabel as='legend' fontSize={'2xl'}>
+              Search flights
+            </FormLabel>
+            <VStack gap={'2em'}>
+              <HStack
+                alignItems={'flex-start'}
+                divider={<StackDivider borderColor='gray.200' />}
+                gap={'3em'}
+              >
+                <VStack
+                  divider={<StackDivider borderColor='gray.200' />}
+                  spacing={2}
+                  align='stretch'
+                >
+                  <Box>
+                    <FormControl isRequired>
+                      <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
+                      <Accordion allowToggle w={'20em'}>
+                        <AccordionItem>
+                          <AccordionButton>
+                            <Box flex='1' textAlign='left'>
+                              {`Total: ${Object.values(
+                                searchQuery?.tickets || {},
+                              ).reduce(
+                                (prev, current) => prev + (current || 0),
+                                0,
+                              )}`}
                             </Box>
-                        </VStack>
+                            <AccordionIcon />
+                          </AccordionButton>
+                          <AccordionPanel p={0}>
+                            <Table>
+                              <Thead>
+                                <Tr>
+                                  <Th>Class</Th>
+                                  <Th>Quantity</Th>
+                                </Tr>
+                              </Thead>
+                              <Tbody>
+                                {ticketOptions.map((option) => (
+                                  <Tr key={option.key}>
+                                    <Td>{option.label}</Td>
+                                    <Td>
+                                      <NumberInput
+                                        w={'5em'}
+                                        onChange={(value) =>
+                                          handleTicketUpdate(value ? parseInt(value) : 0, option.key)
+                                        }
+                                        defaultValue={0}
+                                        min={0}
+                                        allowMouseWheel
+                                      >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                          <NumberIncrementStepper />
+                                          <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                      </NumberInput>
+                                    </Td>
+                                  </Tr>
+                                ))}
+                              </Tbody>
+                            </Table>
+                          </AccordionPanel>
+                        </AccordionItem>
+                      </Accordion>
                     </FormControl>
-                </form>
-            </Center>
+                  </Box>
+                  <Box>
+                    <FormControl isRequired>
+                      <FormLabel htmlFor='flightType'>Type: </FormLabel>
+                      <Select
+                        onChange={(e) =>
+                          handleSearchQueryUpdate(
+                            'returnFlight',
+                            e.target.value === 'return',
+                          )
+                        }
+                        name='flightType'
+                        id='flightType'
+                        placeholder='Select flight Type'
+                        maxW={240}
+                      >
+                        <option value={'one-way'}>One-way</option>
+                        <option value={'return'}>Round trip</option>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </VStack>
+                <VStack
+                  divider={<StackDivider borderColor='gray.200' />}
+                  spacing={2}
+                  align='stretch'
+                >
+                  <Box>
+                    <FormControl isRequired>
+                      <FormLabel>Departure Location</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        onChange={(value) =>
+                          handleSearchQueryUpdate('departureCode', value)
+                        }
+                      >
+                        <AutoCompleteInput variant='filled' />
+                        <AutoCompleteList>
+                          {airports.map(({ code, label }) => (
+                            <AutoCompleteItem
+                              key={code}
+                              value={code}
+                              align='center'
+                            >
+                              <Text ml='4'>{label}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
 
-            <VStack
-                divider={<StackDivider borderColor='gray.200'/>}
-                spacing={2}
-                align='stretch'>
-                <Box>
-                    <p>JSON: {JSONString}</p>
-                </Box>
-                <Box>
-                    <p>Flight Class: {flightClass}</p>
-                </Box>
-                <Box>
-                    <p>Flight Type: {flightType}</p>
-                </Box>
-                <Box>
-                    <p>Number of Passengers: {numPassengers}</p>
-                </Box>
-                <Box>
-                    <ul>
-                        Tags: {selectedTags.map(itemtest => (
-                        <li key={itemtest.label}>{itemtest.value}</li>
-                    ))}
-                    </ul>
-                </Box>
-                <Box>
-                    <p>Arrival Location: {arrivalLocation}</p>
-                    <p>Departure Location: {departureLocation}</p>
-                </Box>
-                <Box>
-                    <p>Arrival Date: {moment(arrivalDate).format("LL")} </p>
-                    <p>Departure: {moment(departureDate).format("LL")}</p>
-                </Box>
-                <Box>
-                    <p>{`Flex?: ${!flexEnabled ? 'true' : 'false'}`}</p>
-                    <p>FlexRange: {flexibleRange}</p>
-                </Box>
+                  <Box>
+                    <FormControl isRequired>
+                      <FormLabel>Arrival Location:</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        onChange={(value) =>
+                          handleSearchQueryUpdate('destinationCode', value)
+                        }
+                      >
+                        <AutoCompleteInput variant='filled' />
+                        <AutoCompleteList>
+                          {airports.map(({ code, label }) => (
+                            <AutoCompleteItem
+                              key={code}
+                              value={code}
+                              align='center'
+                            >
+                              <Text ml='4'>{label}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
+
+                  <Box>
+                    <FormControl>
+                      <FormLabel>Departure Date</FormLabel>
+                      <DatePicker
+                        dateFormat='dd/MM/yyyy'
+                        minDate={new Date()}
+                        selected={new Date(searchQuery.departureDate.date)}
+                        onChange={(date: Date) =>
+                          handleSearchQueryUpdate('departureDate', {
+                            ...searchQuery?.departureDate,
+                            date: formatDate(date),
+                          })
+                        }
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box>
+                    <FormControl>
+                      <FormLabel>Departure Date</FormLabel>
+                      <DatePicker
+                        dateFormat='dd/MM/yyyy'
+                        minDate={new Date()}
+                        selected={new Date(searchQuery.departureDate.date)}
+                        onChange={(date: Date) =>
+                          handleSearchQueryUpdate('departureDate', {
+                            ...searchQuery?.departureDate,
+                            date: formatDate(date),
+                          })
+                        }
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box>
+                    <Checkbox
+                      name={'flexEnabled'}
+                      colorScheme='green'
+                      onChange={(e) => {
+                        setFlexEnabled(e.target.checked);
+                        handleSearchQueryUpdate('departureDate', {
+                          ...searchQuery?.departureDate,
+                          flex: e.target.checked ? 1 : 0,
+                        });
+                      }}
+                    >
+                      Enable FlexSearch?&nbsp;
+                    </Checkbox>
+                    <Tooltip
+                      hasArrow
+                      label='FlexSearch increases increases the date range for your chosen arrival and departure dates'
+                      color='white'
+                    >
+                      <SearchIcon boxSize={3} />
+                    </Tooltip>
+                  </Box>
+                  {flexEnabled && (
+                    <Box>
+                      <p>+/- days</p>
+                      <NumberInput
+                        allowMouseWheel={true}
+                        name={'flexibleRange'}
+                        size='sm'
+                        min={1}
+                        maxW={16}
+                        isDisabled={!flexEnabled}
+                        onChange={(e) =>
+                          handleSearchQueryUpdate('departureDate', {
+                            ...searchQuery?.departureDate,
+                            flex: parseInt(e || '0'),
+                          })
+                        }
+                        defaultValue={1}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </Box>
+                  )}
+                </VStack>
+              </HStack>
+              <Box>
+                <Button type='submit' colorScheme='red'>
+                  Search
+                </Button>
+              </Box>
             </VStack>
-        </Box>
-
-
-    );
+          </FormControl>
+        </form>
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
+      </Modal>
+    </Box>
+  );
 };

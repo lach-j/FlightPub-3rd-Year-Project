@@ -2,8 +2,6 @@ import React from 'react';
 import {Box, Button, Center, Grid, StackDivider, VStack} from "@chakra-ui/react";
 import logo from '../FlightPubLogo.png';
 
-console.log(logo);
-
 export const HomePage = () => {
 
     return (

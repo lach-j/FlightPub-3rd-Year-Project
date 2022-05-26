@@ -22,7 +22,10 @@ public class Validators {
         return new ArrayList<String>(){};
     }
 
-    public static boolean isNullOrEmpty(String str) {
-        return str == null || str.isEmpty();
+    public static <T> boolean isNullOrEmpty(T obj) {
+        if (obj == null) return true;
+        if (obj instanceof String)
+            return ((String) obj).isEmpty();
+        return false;
     }
 }

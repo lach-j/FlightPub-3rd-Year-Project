@@ -1,25 +1,43 @@
-import { Box, Button, Flex, Heading, Icon, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber, Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
-import { useTable } from 'react-table';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MdLocalAirport } from 'react-icons/all';
 import { airportsGeoJSON } from '../data/airportsGeoJSON';
-import { flights } from '../data/flights';
-import { useRef, useState } from 'react';
-import {NavLink, useNavigate} from 'react-router-dom';
-import {routes} from "../constants/routes";
+import React, { useEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { ColumnDefinition, Flight } from '../models';
+import * as _ from 'lodash';
+import { httpGet } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
 
-const flightColumns = [
+const flightColumns: ColumnDefinition<any>[] = [
   { Header: 'Destination', accessor: 'ArrivalCode' },
   { Header: 'Departure Time', accessor: 'DepartureTime' },
-  { Header: 'Price', accessor: 'Price', Cell: (props: any) => `$${props.value.toFixed(2)}` },
-  // {Header: 'Destination', accessor: 'ArrivalCode'},
-  // {Header: 'Destination', accessor: 'ArrivalCode'},
+  { Header: 'Price', accessor: 'Price', transform: (props: any) => `$${props.value.toFixed(2)}` },
 ];
 
 
 export const MapPage = () => {
   const [selectedAirport, setSelectedAirport] = useState<GeoJSON.Feature<GeoJSON.Geometry> | undefined>();
+  const [flights, setFlights] = useState<Flight[]>([]);
   const navigate = useNavigate();
   const geolocateRef = useRef<GeolocateControlRef>(null);
   const onAirportSelected = (airportFeature: GeoJSON.Feature<GeoJSON.Geometry>) => {
@@ -30,6 +48,10 @@ export const MapPage = () => {
     }
     setSelectedAirport(airportFeature);
   };
+
+  useEffect(() => {
+    httpGet(endpoints.mapSearch).then(setFlights);
+  }, [])
 
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
@@ -52,11 +74,11 @@ export const MapPage = () => {
   };
 
   const getFlight = (departureCode: string, arrivalCode: string) => {
-    let flight = flights.find(f => f.DepartureCode === departureCode && f.ArrivalCode === arrivalCode);
+    let flight = flights.find(f => f.departureLocation.destinationCode === departureCode && f.arrivalLocation.destinationCode === arrivalCode);
     if (!flight) return;
     return {
       ...flight,
-      DepartureTime: new Date(flight?.DepartureTime).toLocaleString('en-AU', {
+      DepartureTime: new Date(flight?.departureTime).toLocaleString('en-AU', {
         dateStyle: 'short',
         timeStyle: 'short',
         hour12: false,
@@ -76,12 +98,12 @@ export const MapPage = () => {
 
   const getFlightsForSelectedAirport = (selected: any) => {
     return flights.filter((flight) => {
-      return flight.DepartureCode === selected?.properties?.code;
+      return flight.departureLocation.destinationCode === selected?.properties?.code;
     }).sort(
-      (a, b) => a.DepartureTime > b.DepartureTime ? 1 : -1).map((f) => {
+      (a, b) => a.departureTime > b.departureTime ? 1 : -1).map((f) => {
       return {
         ...f,
-        DepartureTime: new Date(f.DepartureTime).toLocaleString('en-AU', {
+        DepartureTime: new Date(f.departureTime).toLocaleString('en-AU', {
           dateStyle: 'short',
           timeStyle: 'short',
           hour12: false,
@@ -99,7 +121,7 @@ export const MapPage = () => {
       <Box w={'30em'} p={'1em'}>
         <Heading
           fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>
-        <Table columns={flightColumns} data={flightsFromHere} />
+        <ResultsTable columns={flightColumns} flights={flightsFromHere} />
       </Box>
       <Map
         onLoad={() => geolocateRef?.current?.trigger()}
@@ -124,22 +146,22 @@ export const MapPage = () => {
                   <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
                     <Stat>
                       <StatLabel>{flight?.DepartureTime}</StatLabel>
-                      <StatNumber>{`$${flight?.Price.toFixed(2)}`}</StatNumber>
+                      <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber>
 
-                      <StatHelpText>{flight?.StopOverCode ? '1 Stopover' : 'Direct'}
-                        {flight.StopOverCode &&
+                      <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'}
+                        {flight.stopOverLocation &&
                           <Text textDecoration={'underline'} textDecorationStyle={'dashed'}
-                                title={flight.StopOverAirport || undefined}>
-                            {`(${flight.StopOverCode})`}
+                                title={flight.stopOverLocation.airport || undefined}>
+                            {`(${flight.stopOverLocation.destinationCode})`}
                           </Text>
                         }</StatHelpText>
 
                     </Stat>
                     <Box ml='3'>
                       <Text fontWeight='bold' fontSize={'md'}>
-                        {flight?.DestinationAirport}
+                        {flight?.arrivalLocation.airport}
                       </Text>
-                      <Text fontSize='sm'>{flight?.AirlineName}</Text>
+                      <Text fontSize='sm'>{flight.airlineCode}</Text>
                       <Button colorScheme={'red'} size={'sm'} as={NavLink} to={routes.booking}>Book
                         now</Button>
                     </Box>
@@ -164,43 +186,28 @@ export const MapPage = () => {
   );
 };
 
-const Table = ({ columns, data }: { columns: Array<{ Header: string, accessor: string }>, data: any }) => {
-  // Use the state and functions returned from useTable to build your UI
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  });
-
-  // Render the UI for your table
+const ResultsTable = ({columns,flights}: { columns: ColumnDefinition<any>[], flights: Flight[] }) => {
   return (
-    <table {...getTableProps()}>
-      <thead>
-      {headerGroups.map(headerGroup => (
-        <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map(column => (
-            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-          ))}
-        </tr>
-      ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-      {rows.map((row, i) => {
-        prepareRow(row);
-        return (
-          <tr {...row.getRowProps()}>
-            {row.cells.map(cell => {
-              return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-            })}
-          </tr>
-        );
-      })}
-      </tbody>
-    </table>
-  );
+    <Table width='90%'>
+      <Thead>
+        <Tr>
+          {columns.map((column) =>
+            <Th>
+              <HStack spacing={3}>
+                <Text>{column.Header}</Text>
+              </HStack>
+            </Th>,
+          )}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {flights
+          .map((result: any) =>
+            <Tr>
+              {columns.map((column) =>
+                <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+            </Tr>,
+          )}
+      </Tbody>
+    </Table>);
 };
