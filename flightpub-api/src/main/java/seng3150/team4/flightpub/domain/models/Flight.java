@@ -11,7 +11,6 @@ import seng3150.team4.flightpub.Price;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity

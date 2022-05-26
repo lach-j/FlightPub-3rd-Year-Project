@@ -34,7 +34,7 @@ const App = () => {
   return (
     <Flex direction={'column'} height={'100vh'} >
       {hasNavbar() && <Header />}
-      <Box flex={1}>
+      <Box position={'relative'} height={'100%'} >
       <Routes>
         <Route path={routes.home} element={<HomePage />} />
         <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
