@@ -66,8 +66,10 @@ export function SearchResultsPage() {
   const [airlineFilter, setAirlineFilter] = useState('');
   const [durationFilter, setDurationFilter] = useState(180000000);
   const [query, setQuery] = useState();
+
   const [maxDuration, setMaxDuration] = useState(180000000);
   const [minDuration, setMinDuration] = useState(0);
+
 
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
@@ -97,6 +99,7 @@ export function SearchResultsPage() {
     setMaxDuration(maxDuration);
     setMinDuration(minDuration);
     setDurationFilter(maxDuration);
+
   }, [state]);
 
   const sortByField = (field: string) => {
@@ -212,6 +215,7 @@ export function SearchResultsPage() {
           </VStack>
         </Box>
         <Center flex='1'>
+
           <Table width='90%'>
             <Thead>
               <Tr>
@@ -228,6 +232,16 @@ export function SearchResultsPage() {
               </Tr>
             </Thead>
             <Tbody>
+              {/*TODO OSOSOSOSOSOSOSOSOSOSOSOSOSOSOOSOSOSOSOSOoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/}
+
+              {results.map((result: any) =>
+                  <Tr>
+                    {columns.map((column) =>
+                        <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+                  {/*  chuck here after*/}
+                  </Tr>,
+              )}
+
               {results.filter((result) => {
                 if (result.prices.filter( p => p.price < minPrice).length > 0 || result.prices.filter( p => p.price > maxPrice).length > 0) {
                   return false;
