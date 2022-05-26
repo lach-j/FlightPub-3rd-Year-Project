@@ -40,4 +40,9 @@ public class FlightController {
     public Response mapSearchCount() {
         return new EntityCollectionResponse<>(flightService.destinationsCount());
     }
+
+    @GetMapping("/recommended/{destination}")
+    public Response getCheapestFlights(@PathVariable String destination) {
+        return new EntityCollectionResponse<>(flightService.getCheapestFlights(destination));
+    }
 }

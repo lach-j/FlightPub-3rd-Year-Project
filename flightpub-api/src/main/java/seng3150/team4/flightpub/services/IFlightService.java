@@ -13,4 +13,6 @@ public interface IFlightService {
     List<Flight> mapSearch(String departureCode);
 
     List<DestinationCount> destinationsCount();
+
+    List<Flight> getCheapestFlights(String destination);
 }
