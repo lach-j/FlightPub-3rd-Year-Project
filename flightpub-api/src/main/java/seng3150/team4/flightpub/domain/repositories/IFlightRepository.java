@@ -10,7 +10,7 @@ import seng3150.team4.flightpub.domain.models.FlightId;
 import java.util.List;
 
 public interface IFlightRepository extends CrudRepository<Flight, FlightId> {
-    @Query("SELECT f FROM Flight f WHERE f.departureLocation.destinationCode = ?1 ORDER BY f.departureTime")
+    @Query("SELECT f FROM Flight f WHERE f.departureLocation.destinationCode = ?1 AND f.departureTime > current_date AND f.prices.size > 0 ORDER BY f.departureTime")
     List<Flight> findByDestination(String destination, Pageable pageable);
 
     @Query("SELECT new seng3150.team4.flightpub.domain.models.DestinationCount(f.departureLocation.destinationCode, count(f)) FROM Flight f WHERE f.departureTime > CURRENT_DATE GROUP BY f.departureLocation.destinationCode")
