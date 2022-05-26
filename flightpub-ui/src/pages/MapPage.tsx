@@ -8,7 +8,8 @@ import {
   Stat,
   StatHelpText,
   StatLabel,
-  StatNumber, Table,
+  StatNumber,
+  Table,
   Tbody,
   Td,
   Text,
@@ -23,7 +24,7 @@ import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { ColumnDefinition, Flight, DestinationCount, Price } from '../models';
+import { ColumnDefinition, DestinationCount, Flight, Price } from '../models';
 import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
@@ -58,12 +59,12 @@ export const MapPage = () => {
 
   useEffect(() => {
     httpGet(endpoints.departureCount).then(setDepartureCount);
-  }, [])
+  }, []);
 
   useEffect(() => {
-    httpGet(endpoints.mapSearch + '/' +  selectedAirport?.properties?.code)
-      .then(setFlights)
-  }, [selectedAirport])
+    httpGet(endpoints.mapSearch + '/' + selectedAirport?.properties?.code)
+      .then(setFlights);
+  }, [selectedAirport]);
 
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
@@ -109,11 +110,13 @@ export const MapPage = () => {
   };
 
   return (
-    <Box h={'full'} display={'flex'}>
-      <Box w={'30em'} p={'1em'}>
+    <Box h={'full'} display={'flex'} position={'absolute'} top={0} left={0} right={0} bottom={0}>
+      <Box w={'fit-content'} p={'1em'} overflow={'auto'}>
         <Heading
           fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>
-        <ResultsTable columns={flightColumns} flights={flights} />
+        <Box>
+          <ResultsTable columns={flightColumns} flights={flights} />
+        </Box>
       </Box>
       <Map
         onLoad={() => geolocateRef?.current?.trigger()}
@@ -129,7 +132,7 @@ export const MapPage = () => {
         {
           airportsGeoJSON.features.map((feature) => {
             let flight = getFlight(selectedAirport?.properties?.code, feature?.properties?.code);
-            let hasFlights = departureCount.find(f => f.destinationCode === feature.properties?.code)
+            let hasFlights = departureCount.find(f => f.destinationCode === feature.properties?.code);
             return (
               <>
                 {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false}
@@ -178,7 +181,7 @@ export const MapPage = () => {
   );
 };
 
-const ResultsTable = ({columns,flights}: { columns: ColumnDefinition<any>[], flights: Flight[] }) => {
+const ResultsTable = ({ columns, flights }: { columns: ColumnDefinition<any>[], flights: Flight[] }) => {
   return (
     <Table width='90%'>
       <Thead>
@@ -192,7 +195,7 @@ const ResultsTable = ({columns,flights}: { columns: ColumnDefinition<any>[], fli
           )}
         </Tr>
       </Thead>
-      <Tbody>
+      <Tbody overflowY={'scroll'} maxH={'100%'} h={'100%'}>
         {flights
           .map((result: any) =>
             <Tr>
