@@ -1,4 +1,4 @@
-import { airports } from '../data/airportsGeoJSON';
+import { airports } from '../data/airports';
 
 export type Position = [number, number]
 

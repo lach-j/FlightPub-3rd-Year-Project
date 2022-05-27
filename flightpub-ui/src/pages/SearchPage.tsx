@@ -30,6 +30,7 @@ import {
   Tooltip,
   Tr,
   useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import React, { FormEvent, useState } from 'react';
@@ -39,8 +40,9 @@ import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } f
 import { SearchIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { httpGet } from '../services/ApiService';
+import { ApiError, httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
+import { airports } from '../data/airports';
 
 export interface Item {
   label: string;
@@ -55,161 +57,6 @@ const tags2 = [
   { label: 'Sports', value: 'sports' },
   { label: 'Romantic', value: 'romantic' },
   { label: 'Asia', value: 'asia' },
-];
-
-const airports = [
-  {
-    code: 'ADL',
-    label: 'Adelaide',
-  },
-  {
-    code: 'AMS',
-    label: 'Amsterdam',
-  },
-  {
-    code: 'ATL',
-    label: 'Atlanta',
-  },
-  {
-    code: 'BKK',
-    label: 'Bangkok',
-  },
-  {
-    code: 'BNE',
-    label: 'Brisbane',
-  },
-  {
-    code: 'CBR',
-    label: 'Canberra',
-  },
-  {
-    code: 'CDG',
-    label: 'Paris - Charles De Gaulle',
-  },
-  {
-    code: 'CNS',
-    label: 'Cairns',
-  },
-  {
-    code: 'DOH',
-    label: 'Doha',
-  },
-  {
-    code: 'DRW',
-    label: 'Darwin',
-  },
-  {
-    code: 'DXB',
-    label: 'Dubai',
-  },
-  {
-    code: 'FCO',
-    label: 'Rome-Fiumicino',
-  },
-  {
-    code: 'GIG',
-    label: 'Rio De Janeiro',
-  },
-  {
-    code: 'HBA',
-    label: 'Hobart',
-  },
-  {
-    code: 'HEL',
-    label: 'Helsinki',
-  },
-  {
-    code: 'HKG',
-    label: 'Hong Kong',
-  },
-  {
-    code: 'HNL',
-    label: 'Honolulu',
-  },
-  {
-    code: 'JFK',
-    label: 'New York - JFK',
-  },
-  {
-    code: 'JNB',
-    label: 'Johannesburg',
-  },
-  {
-    code: 'KUL',
-    label: 'Kuala Lumpur',
-  },
-  {
-    code: 'LAX',
-    label: 'Los Angeles',
-  },
-  {
-    code: 'LGA',
-    label: 'New York - Laguardia',
-  },
-  {
-    code: 'LGW',
-    label: 'London-Gatwick',
-  },
-  {
-    code: 'LHR',
-    label: 'London-Heathrow',
-  },
-  {
-    code: 'MAD',
-    label: 'Madrid',
-  },
-  {
-    code: 'MEL',
-    label: 'Melbourne',
-  },
-  {
-    code: 'MIA',
-    label: 'Miami',
-  },
-  {
-    code: 'MUC',
-    label: 'Munich',
-  },
-  {
-    code: 'NRT',
-    label: 'Tokyo - Narita',
-  },
-  {
-    code: 'OOL',
-    label: 'Gold Coast',
-  },
-  {
-    code: 'ORD',
-    label: 'Chicago - OHare Intl.',
-  },
-  {
-    code: 'ORY',
-    label: 'Paris - Orly',
-  },
-  {
-    code: 'PER',
-    label: 'Perth',
-  },
-  {
-    code: 'SFO',
-    label: 'San Francisco',
-  },
-  {
-    code: 'SIN',
-    label: 'Singapore',
-  },
-  {
-    code: 'SYD',
-    label: 'Sydney',
-  },
-  {
-    code: 'VIE',
-    label: 'Vienna',
-  },
-  {
-    code: 'YYZ',
-    label: 'Toronto',
-  },
 ];
 
 interface FlexiDate {
@@ -228,17 +75,10 @@ interface SearchQuery {
 export const SearchPage = () => {
   const navigate = useNavigate();
   const [flexEnabled, setFlexEnabled] = useState(false);
+  const toast = useToast();
 
   const formatDate = (date: Date) => {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
+    return new Date(date).toISOString().split('T')[0];
   };
 
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({
@@ -259,7 +99,17 @@ export const SearchPage = () => {
         query: searchQuery,
         results,
       },
-    })).finally(onClose);
+    }))
+      .catch((err: ApiError) => {
+        toast({
+          title: 'An Error Has Occurred',
+          description: 'An error has occurred, please try again later.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top',
+        });
+      }).finally(onClose);
   }
 
   const handleTicketUpdate = (value: number, classCode: string) => {
@@ -383,13 +233,13 @@ export const SearchPage = () => {
                       >
                         <AutoCompleteInput variant='filled' />
                         <AutoCompleteList>
-                          {airports.map(({ code, label }) => (
+                          {airports.map(({ code, city }) => (
                             <AutoCompleteItem
                               key={code}
                               value={code}
                               align='center'
                             >
-                              <Text ml='4'>{label}</Text>
+                              <Text ml='4'>{city}</Text>
                             </AutoCompleteItem>
                           ))}
                         </AutoCompleteList>
@@ -402,19 +252,22 @@ export const SearchPage = () => {
                       <FormLabel>Arrival Location:</FormLabel>
                       <AutoComplete
                         openOnFocus
+                        defaultValue={''}
+                        emptyState={true}
                         onChange={(value) =>
                           handleSearchQueryUpdate('destinationCode', value)
                         }
                       >
-                        <AutoCompleteInput variant='filled' />
+                        <AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                                           variant='filled' />
                         <AutoCompleteList>
-                          {airports.map(({ code, label }) => (
+                          {airports.map(({ code, city }) => (
                             <AutoCompleteItem
                               key={code}
                               value={code}
                               align='center'
                             >
-                              <Text ml='4'>{label}</Text>
+                              <Text ml='4'>{city}</Text>
                             </AutoCompleteItem>
                           ))}
                         </AutoCompleteList>

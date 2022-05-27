@@ -28,7 +28,7 @@ import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airport, findNearestAirport } from '../utility/geolocation';
-import { airports } from '../data/airportsGeoJSON';
+import { airports } from '../data/airports';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
