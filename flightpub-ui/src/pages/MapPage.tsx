@@ -20,7 +20,6 @@ import {
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MdLocalAirport } from 'react-icons/all';
-import { airportsGeoJSON } from '../data/airportsGeoJSON';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -28,6 +27,8 @@ import { ColumnDefinition, DestinationCount, Flight, Price } from '../models';
 import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
+import { Airport, findNearestAirport } from '../utility/geolocation';
+import { airports } from '../data/airportsGeoJSON';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
@@ -43,12 +44,12 @@ const flightColumns: ColumnDefinition<any>[] = [
 
 
 export const MapPage = () => {
-  const [selectedAirport, setSelectedAirport] = useState<GeoJSON.Feature<GeoJSON.Geometry> | undefined>();
+  const [selectedAirport, setSelectedAirport] = useState<Airport | undefined>();
   const [flights, setFlights] = useState<Flight[]>([]);
   const [departureCount, setDepartureCount] = useState<DestinationCount[]>([]);
   const navigate = useNavigate();
   const geolocateRef = useRef<GeolocateControlRef>(null);
-  const onAirportSelected = (airportFeature: GeoJSON.Feature<GeoJSON.Geometry>) => {
+  const onAirportSelected = (airportFeature: Airport) => {
 
     if (airportFeature === selectedAirport) {
       setSelectedAirport(undefined);
@@ -62,28 +63,13 @@ export const MapPage = () => {
   }, []);
 
   useEffect(() => {
-    httpGet(endpoints.mapSearch + '/' + selectedAirport?.properties?.code)
+    httpGet(endpoints.mapSearch + '/' + selectedAirport?.code)
       .then(setFlights);
   }, [selectedAirport]);
 
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
     setSelectedAirport(findNearestAirport([longitude, latitude]));
-  };
-
-  const findNearestAirport = (userLocation: [number, number]): GeoJSON.Feature<GeoJSON.Geometry> | undefined => {
-    if (!userLocation) return;
-    let airports = airportsGeoJSON.features;
-    let nearest = airports[0];
-    let distance = calculateDistance(userLocation, airports[0].geometry.coordinates);
-    airports.slice(1).forEach(airport => {
-      let tempDist = calculateDistance(userLocation, airport.geometry.coordinates);
-      if (tempDist < distance) {
-        distance = tempDist;
-        nearest = airport;
-      }
-    });
-    return nearest;
   };
 
   const getFlight = (departureCode: string, arrivalCode: string) => {
@@ -99,21 +85,11 @@ export const MapPage = () => {
     };
   };
 
-  const calculateDistance = (point1: number[], point2: number[]) => {
-    return Math.sqrt(Math.pow(
-      (point2[0] - point1[0]),
-      2,
-    ) + Math.pow(
-      (point2[1] - point1[1]),
-      2,
-    ));
-  };
-
   return (
     <Box h={'full'} display={'flex'} position={'absolute'} top={0} left={0} right={0} bottom={0}>
       <Box w={'max-content'} p={'1em'} overflow={'auto'}>
         <Heading
-          fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.properties?.name} (${selectedAirport?.properties?.code})` : 'Select an airport to view flights'}</Heading>
+          fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
           <ResultsTable columns={flightColumns} flights={flights} />
         </Box>
@@ -130,14 +106,14 @@ export const MapPage = () => {
         mapboxAccessToken={'pk.eyJ1IjoiYzMzNTAxMzEiLCJhIjoiY2wwZXp1YzJoMG82MjNkcXQ5YmxsbWRtMCJ9.hoJ4MvSxn7j0J89DVLWaQw'}
       >
         {
-          airportsGeoJSON.features.map((feature) => {
-            let flight = getFlight(selectedAirport?.properties?.code, feature?.properties?.code);
-            let hasFlights = departureCount.find(f => f.destinationCode === feature.properties?.code);
+          airports.map((airport) => {
+            let flight = selectedAirport && getFlight(selectedAirport?.code, airport?.code);
+            let hasFlights = departureCount.find(f => f.destinationCode === airport.code);
             return (
               <>
                 {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false}
-                                  longitude={feature.geometry.coordinates[0]}
-                                  latitude={feature.geometry.coordinates[1]}>
+                                  longitude={airport.coordinates[0]}
+                                  latitude={airport.coordinates[1]}>
                   <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
                     <Stat>
                       <StatLabel>{flight?.DepartureTime}</StatLabel>
@@ -162,12 +138,12 @@ export const MapPage = () => {
                     </Box>
                   </Flex>
                 </Popup>}
-                <Marker longitude={feature.geometry.coordinates[0]} latitude={feature.geometry.coordinates[1]}
-                        key={feature?.properties?.id}>
+                <Marker longitude={airport.coordinates[0]} latitude={airport.coordinates[1]}
+                        key={airport?.id}>
                   <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
-                        color={hasFlights ? (selectedAirport === feature ? 'red' : 'black') : 'lightgray'}
+                        color={hasFlights ? (selectedAirport === airport ? 'red' : 'black') : 'lightgray'}
                         fontSize={'3em'} onClick={() => {
-                    onAirportSelected(feature);
+                    onAirportSelected(airport);
                   }} />
                 </Marker>
               </>
