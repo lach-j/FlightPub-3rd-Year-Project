@@ -1,13 +1,16 @@
 import {
   AlertDialog,
   AlertDialogBody,
-  AlertDialogContent, AlertDialogFooter,
+  AlertDialogContent,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
   Divider,
   Heading,
-  HStack, useDisclosure, useToast,
+  HStack,
+  useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';

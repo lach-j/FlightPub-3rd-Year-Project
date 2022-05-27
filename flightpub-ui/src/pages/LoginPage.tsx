@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Grid,
   Heading,
   Input,
   Link,
@@ -20,8 +19,8 @@ import { endpoints } from '../constants/endpoints';
 import { routes } from '../constants/routes';
 
 export const LoginPage = ({
-  redirectPath
-}: {
+                            redirectPath,
+                          }: {
   redirectPath?: string;
 }) => {
   const [loading, setLoading] = useState(false);
@@ -71,62 +70,62 @@ export const LoginPage = ({
   };
 
   const handleLoginDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setAuthRequest({ ...authRequest, [event.target.name]: event.target.value });
   };
   return (
-      <Center w="full" h={'full'} p="5">
-        <Box
-          border="2px"
-          borderColor="gray.200"
-          p="10"
-          borderRadius="2xl"
-          w="md"
-        >
-          <form onSubmit={handleLogin}>
-            <Stack spacing="12">
-              <Box>
-                <Heading>Sign In</Heading>
-              </Box>
-              <Box>
-                <Stack spacing="3">
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>Email</FormLabel>
-                    <Input
-                      name="email"
-                      value={authRequest.email}
-                      onChange={handleLoginDetailsChange}
-                    />
-                  </FormControl>
-                  <FormControl isDisabled={loading} isInvalid={authError}>
-                    <FormLabel>Password</FormLabel>
-                    <Input
-                      type="password"
-                      name="password"
-                      onChange={handleLoginDetailsChange}
-                    />
-                    <FormErrorMessage>{errMessage}</FormErrorMessage>
-                  </FormControl>
-                  <Box textAlign="right">
-                    <Link as={RouteLink} to={routes.forgotPassword}>
-                      Forgot Password?
-                    </Link>
-                  </Box>
-                </Stack>
-              </Box>
-              <Button type="submit" isLoading={loading} colorScheme="red">
-                Log In
-              </Button>
-              <Box textAlign="center">
-                Don't have an account?{' '}
-                <Link as={RouteLink} to={routes.register}>
-                  Register Here
-                </Link>
-              </Box>
-            </Stack>
-          </form>
-        </Box>
-      </Center>
+    <Center w='full' h={'full'} p='5'>
+      <Box
+        border='2px'
+        borderColor='gray.200'
+        p='10'
+        borderRadius='2xl'
+        w='md'
+      >
+        <form onSubmit={handleLogin}>
+          <Stack spacing='12'>
+            <Box>
+              <Heading>Sign In</Heading>
+            </Box>
+            <Box>
+              <Stack spacing='3'>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    name='email'
+                    value={authRequest.email}
+                    onChange={handleLoginDetailsChange}
+                  />
+                </FormControl>
+                <FormControl isDisabled={loading} isInvalid={authError}>
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type='password'
+                    name='password'
+                    onChange={handleLoginDetailsChange}
+                  />
+                  <FormErrorMessage>{errMessage}</FormErrorMessage>
+                </FormControl>
+                <Box textAlign='right'>
+                  <Link as={RouteLink} to={routes.forgotPassword}>
+                    Forgot Password?
+                  </Link>
+                </Box>
+              </Stack>
+            </Box>
+            <Button type='submit' isLoading={loading} colorScheme='red'>
+              Log In
+            </Button>
+            <Box textAlign='center'>
+              Don't have an account?{' '}
+              <Link as={RouteLink} to={routes.register}>
+                Register Here
+              </Link>
+            </Box>
+          </Stack>
+        </form>
+      </Box>
+    </Center>
   );
 };

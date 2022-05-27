@@ -1,15 +1,15 @@
 import {
-  useDisclosure,
-  Spinner,
   Box,
   Flex,
   Modal,
   ModalOverlay,
-  Tabs,
-  TabList,
+  Spinner,
   Tab,
-  TabPanels,
+  TabList,
   TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
 import { SavedPaymentsTab } from './SavedPaymentsTab';
@@ -26,7 +26,7 @@ export const AccountPage = () => {
 
   const handleLoading = (isLoading: boolean) => {
     isLoading ? onOpenModal() : onCloseModal();
-  }
+  };
 
   return (
     <Flex justifyContent={'center'} p={'5em'}>

@@ -3,7 +3,7 @@ export * from './LoginPage';
 export * from './AccountManagement/AccountPage';
 export * from './MapPage';
 export * from './ForgotPasswordPage';
-export * from  './HomePage';
+export * from './HomePage';
 export * from './PasswordResetPage';
 export * from './RegisterPage';
 export * from './SearchPage';

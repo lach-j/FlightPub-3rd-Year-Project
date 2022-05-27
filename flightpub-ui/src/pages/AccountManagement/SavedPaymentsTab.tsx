@@ -97,10 +97,10 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (!isOpenAddPayment) setIsEdititng(null);
-  }, [isOpenAddPayment])
+  }, [isOpenAddPayment]);
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {

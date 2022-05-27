@@ -16,7 +16,11 @@ import { EditIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { SavedPayment } from './SavedPaymentTypes';
 
-export const SavedPaymentComponent = ({ payment, onDelete, onEdit }: { payment: SavedPayment, onDelete: () => void, onEdit: () => void }) => {
+export const SavedPaymentComponent = ({
+                                        payment,
+                                        onDelete,
+                                        onEdit,
+                                      }: { payment: SavedPayment, onDelete: () => void, onEdit: () => void }) => {
   const formatBSB = (bsb: number): string => bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
   const renderPaymentDetails = () => {
     switch (payment.type) {
@@ -72,8 +76,10 @@ export const SavedPaymentComponent = ({ payment, onDelete, onEdit }: { payment: 
             {payment?.isDefault && <Badge colorScheme={'blue'}>Default</Badge>}
           </HStack>
           <HStack>
-            <IconButton onClick={onDelete} aria-label={'delete'} icon={<BiTrash />} size={'sm'} variant='outline' colorScheme='red' />
-            <IconButton onClick={onEdit} aria-label={'edit'} icon={<EditIcon />} size={'sm'} variant='outline' colorScheme='black' />
+            <IconButton onClick={onDelete} aria-label={'delete'} icon={<BiTrash />} size={'sm'} variant='outline'
+                        colorScheme='red' />
+            <IconButton onClick={onEdit} aria-label={'edit'} icon={<EditIcon />} size={'sm'} variant='outline'
+                        colorScheme='black' />
           </HStack>
         </Flex>
         {renderPaymentDetails()}

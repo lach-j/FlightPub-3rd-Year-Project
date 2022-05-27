@@ -39,7 +39,7 @@ import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } f
 import { SearchIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { httpGet, toParams } from '../services/ApiService';
+import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 
 export interface Item {
@@ -254,12 +254,17 @@ export const SearchPage = () => {
   function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onOpen();
-    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, { state: {query: searchQuery, results} })).finally(onClose);
+    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, {
+      state: {
+        query: searchQuery,
+        results,
+      },
+    })).finally(onClose);
   }
 
   const handleTicketUpdate = (value: number, classCode: string) => {
-    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value))
-  }
+    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value));
+  };
 
   const ticketOptions = [
     { key: 'BUS', label: 'Business Class' },

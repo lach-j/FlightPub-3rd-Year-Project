@@ -29,7 +29,7 @@ import React, { useEffect, useState } from 'react';
 import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
-import { Airline, Flight, Price, ColumnDefinition } from '../models';
+import { Airline, ColumnDefinition, Flight, Price } from '../models';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
@@ -40,10 +40,11 @@ const formatDateTime = (value: string): string => new Date(value).toLocaleString
 const getPriceString = (prices: Price[]) => {
   if (!prices) return '';
   let pricesVals = prices.map(p => p.price);
-  let minPrice = Math.min(...pricesVals)
-  let maxPrice = Math.max(...pricesVals)
+  let minPrice = Math.min(...pricesVals);
+  let maxPrice = Math.max(...pricesVals);
   return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
-}
+};
+
 function convertMinsToHM(minutes: number) {
   let hours = Math.floor(minutes / 60);
 
@@ -74,7 +75,11 @@ export function SearchResultsPage() {
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
   const columns: ColumnDefinition<any>[] = [
-    { accessor: 'airlineCode', Header: 'Airline', transform: value => airlines.find(a => a.airlineCode === value)?.airlineName},
+    {
+      accessor: 'airlineCode',
+      Header: 'Airline',
+      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName,
+    },
     { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
     { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
     { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
@@ -235,15 +240,15 @@ export function SearchResultsPage() {
               {/*TODO OSOSOSOSOSOSOSOSOSOSOSOSOSOSOOSOSOSOSOSOoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/}
 
               {results.map((result: any) =>
-                  <Tr>
-                    {columns.map((column) =>
-                        <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+                <Tr>
+                  {columns.map((column) =>
+                    <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
                   {/*  chuck here after*/}
-                  </Tr>,
+                </Tr>,
               )}
 
               {results.filter((result) => {
-                if (result.prices.filter( p => p.price < minPrice).length > 0 || result.prices.filter( p => p.price > maxPrice).length > 0) {
+                if (result.prices.filter(p => p.price < minPrice).length > 0 || result.prices.filter(p => p.price > maxPrice).length > 0) {
                   return false;
                 }
                 if (airlineFilter !== '') {
