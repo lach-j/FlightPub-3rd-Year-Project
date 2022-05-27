@@ -21,7 +21,7 @@ import {
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
 import { dummySavedPayments } from '../../data/SavedPayments';
 import React, { useEffect, useState } from 'react';
-import { SavedPayment } from './SavedPaymentTypes';
+import { SavedPayment } from '../../models';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {

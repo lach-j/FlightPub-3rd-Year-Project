@@ -1,4 +1,4 @@
-import { SavedPayment } from '../pages/AccountManagement/SavedPaymentTypes';
+import { SavedPayment } from '../models/SavedPaymentTypes';
 
 export const dummySavedPayments: SavedPayment[] = [
   { nickname: 'My Card', type: 'card', expiry: '03/23', cardNumber: '●●●●1234' },

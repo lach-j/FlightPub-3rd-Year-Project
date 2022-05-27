@@ -14,7 +14,7 @@ import {
 import { AiFillBank, AiFillCreditCard, BiTrash, ImPaypal } from 'react-icons/all';
 import { EditIcon } from '@chakra-ui/icons';
 import React from 'react';
-import { SavedPayment } from './SavedPaymentTypes';
+import { SavedPayment } from '../../models';
 
 export const SavedPaymentComponent = ({
                                         payment,

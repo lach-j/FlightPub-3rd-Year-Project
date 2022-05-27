@@ -26,7 +26,7 @@ import React, { useState } from 'react';
 
 import { flights } from '../data/flights';
 import { countries } from '../data/countries';
-import { SavedPayment } from './AccountManagement/SavedPaymentTypes';
+import { SavedPayment } from '../models';
 import { dummySavedPayments } from '../data/SavedPayments';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -41,23 +41,27 @@ export const BookingPage = () => {
     switch (savedPaymentData?.type) {
       case 'card':
         return (
-          <VStack mt={'1em'} gap={'1em'} w={'full'}><HStack w={'full'} gap={'1em'}>
-            <FormControl>
-              <FormLabel>Card Number</FormLabel>
-              <Input />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Cardholder Name</FormLabel>
-              <Input />
-            </FormControl></HStack><HStack w={'full'} gap={'1em'}>
-            <FormControl>
-              <FormLabel>Expiry Date</FormLabel>
-              <Input />
-            </FormControl>
-            <FormControl>
-              <FormLabel>CCV</FormLabel>
-              <Input />
-            </FormControl></HStack>
+          <VStack mt={'1em'} gap={'1em'} w={'full'}>
+            <HStack w={'full'} gap={'1em'}>
+              <FormControl>
+                <FormLabel>Card Number</FormLabel>
+                <Input />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Cardholder Name</FormLabel>
+                <Input />
+              </FormControl>
+            </HStack>
+            <HStack w={'full'} gap={'1em'}>
+              <FormControl>
+                <FormLabel>Expiry Date</FormLabel>
+                <Input />
+              </FormControl>
+              <FormControl>
+                <FormLabel>CCV</FormLabel>
+                <Input />
+              </FormControl>
+            </HStack>
           </VStack>
         );
       case 'paypal':
@@ -120,41 +124,42 @@ export const BookingPage = () => {
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}><Flex w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-                <Stat textAlign={'left'} flex={'none'}>
-                  <StatLabel>{new Date(flight?.DepartureTime).toLocaleString('en-AU', {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
-                    hour12: false,
-                  })}</StatLabel>
-                  <StatNumber>{flight?.DepartureCode}</StatNumber>
-                  <StatHelpText>DEPARTURE</StatHelpText>
-                </Stat>
-                {flight?.StopOverCode && <>
-                  <HiOutlineArrowNarrowRight />
-                  <Stat textAlign={'center'} flex={'none'}>
-                    <StatLabel>{new Date(flight?.ArrivalTimeStopOver || '').toLocaleString('en-AU', {
+              <AccordionPanel pb={4}>
+                <Flex w={'full'} justifyContent={'space-between'} alignItems={'center'}>
+                  <Stat textAlign={'left'} flex={'none'}>
+                    <StatLabel>{new Date(flight?.DepartureTime).toLocaleString('en-AU', {
                       dateStyle: 'short',
                       timeStyle: 'short',
                       hour12: false,
-                    }) + ' - ' + new Date(flight?.DepartureTimeStopOver || '').toLocaleString('en-AU', {
+                    })}</StatLabel>
+                    <StatNumber>{flight?.DepartureCode}</StatNumber>
+                    <StatHelpText>DEPARTURE</StatHelpText>
+                  </Stat>
+                  {flight?.StopOverCode && <>
+                    <HiOutlineArrowNarrowRight />
+                    <Stat textAlign={'center'} flex={'none'}>
+                      <StatLabel>{new Date(flight?.ArrivalTimeStopOver || '').toLocaleString('en-AU', {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                        hour12: false,
+                      }) + ' - ' + new Date(flight?.DepartureTimeStopOver || '').toLocaleString('en-AU', {
+                        timeStyle: 'short',
+                        hour12: false,
+                      })}</StatLabel>
+                      <StatNumber>{flight?.StopOverCode}</StatNumber>
+                      <StatHelpText>STOPOVER</StatHelpText>
+                    </Stat></>}
+                  <HiOutlineArrowNarrowRight />
+                  <Stat textAlign={'right'} flex={'none'}>
+                    <StatLabel>{new Date(flight?.ArrivalTime).toLocaleString('en-AU', {
+                      dateStyle: 'short',
                       timeStyle: 'short',
                       hour12: false,
                     })}</StatLabel>
-                    <StatNumber>{flight?.StopOverCode}</StatNumber>
-                    <StatHelpText>STOPOVER</StatHelpText>
-                  </Stat></>}
-                <HiOutlineArrowNarrowRight />
-                <Stat textAlign={'right'} flex={'none'}>
-                  <StatLabel>{new Date(flight?.ArrivalTime).toLocaleString('en-AU', {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
-                    hour12: false,
-                  })}</StatLabel>
-                  <StatNumber>{flight?.ArrivalCode}</StatNumber>
-                  <StatHelpText>ARRIVAL</StatHelpText>
-                </Stat>
-              </Flex>
+                    <StatNumber>{flight?.ArrivalCode}</StatNumber>
+                    <StatHelpText>ARRIVAL</StatHelpText>
+                  </Stat>
+                </Flex>
               </AccordionPanel>
             </AccordionItem>)}
         </Accordion>
