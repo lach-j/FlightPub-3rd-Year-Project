@@ -49,9 +49,9 @@ export const MapPage = () => {
     setSelectedAirport(airportFeature);
   };
 
-  useEffect(() => {
-    httpGet(endpoints.mapSearch).then(setFlights);
-  }, [])
+  // useEffect(() => {
+  //   httpGet(endpoints.mapSearch).then(setFlights);
+  // }, [])
 
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
