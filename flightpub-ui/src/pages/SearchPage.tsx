@@ -248,7 +248,7 @@ export const SearchPage = () => {
                   </Box>
 
                   <Box>
-                    <FormControl isRequired>
+                    <FormControl>
                       <FormLabel>Arrival Location:</FormLabel>
                       <AutoComplete
                         openOnFocus

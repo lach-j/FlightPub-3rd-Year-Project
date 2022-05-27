@@ -29,12 +29,7 @@ import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { airports } from '../data/airports';
-
-const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
-  dateStyle: 'short',
-  timeStyle: 'short',
-  hour12: false,
-});
+import { formatDateTime } from '../utility/formatting';
 
 const flightColumns: ColumnDefinition<any>[] = [
   { Header: 'Destination', accessor: 'arrivalLocation.destinationCode' },

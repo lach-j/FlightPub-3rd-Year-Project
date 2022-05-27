@@ -5,7 +5,7 @@ import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
-import { convertMinsToHM } from '../utility/formatting';
+import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { DataTable } from '../components/DataTable';
 
 export const HomePage = () => {
@@ -14,13 +14,6 @@ export const HomePage = () => {
   const [userLocation, setUserLocation] = useState<any>();
   const [airport, setAirport] = useState<Airport | undefined>();
   const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-    hour12: false,
-  });
-
 
   const getMinPriceString = (prices: Price[]) => {
     if (!prices) return '---';
@@ -45,7 +38,7 @@ export const HomePage = () => {
     {
       accessor: 'airlineCode',
       Header: 'Airline',
-      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName,
+      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName || value,
     },
     { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
     { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },

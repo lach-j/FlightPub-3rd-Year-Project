@@ -13,3 +13,10 @@ export const convertMinsToHM = (minutes: number) => {
   minutes = minutes % 60;
   return (hours + ' hrs ' + minutes + ' mins');
 };
+
+export const formatDateTime = (value: string): string =>
+  new Date(value).toLocaleString('en-AU', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    hour12: false,
+  });

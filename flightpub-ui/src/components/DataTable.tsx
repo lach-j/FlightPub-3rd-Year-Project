@@ -49,7 +49,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
       <Thead>
         <Tr>
           {columns.map((column) =>
-            <Th onClick={() => handleColumnSort(column)}>
+            <Th userSelect={'none'} onClick={() => handleColumnSort(column)}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
                 {column === sortingColumn && sortIcon()}
