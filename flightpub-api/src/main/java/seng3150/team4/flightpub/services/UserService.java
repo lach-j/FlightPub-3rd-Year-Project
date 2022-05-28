@@ -14,53 +14,54 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class UserService implements IUserService {
 
-    private final IUserRepository userRepository;
-    private final IEmailSenderService emailSenderService;
+  private final IUserRepository userRepository;
+  private final IEmailSenderService emailSenderService;
 
-    @Override
-    public User registerUser(User user) {
-        var duplicateUser = userRepository.findByEmail(user.getEmail());
-        if (duplicateUser.isPresent())
-            throw new EntityExistsException(String.format("User with email %s already exists", user.getEmail()));
+  @Override
+  public User registerUser(User user) {
+    var duplicateUser = userRepository.findByEmail(user.getEmail());
+    if (duplicateUser.isPresent())
+      throw new EntityExistsException(
+          String.format("User with email %s already exists", user.getEmail()));
 
-        User savedUser = userRepository.save(user);
-        var registerTemplate = new RegisterEmailTemplate();
+    User savedUser = userRepository.save(user);
+    var registerTemplate = new RegisterEmailTemplate();
 
-        registerTemplate.setFirstName(savedUser.getFirstName());
+    registerTemplate.setFirstName(savedUser.getFirstName());
 
-        emailSenderService.sendTemplateEmail(
-                new Email(savedUser.getEmail()),
-                registerTemplate
-        );
-        return savedUser;
-    }
+    emailSenderService.sendTemplateEmail(new Email(savedUser.getEmail()), registerTemplate);
+    return savedUser;
+  }
 
-    @Override
-    public User updateUser(User user) {
-        var userExists = userRepository.existsById(user.getId());
-        if (!userExists) throw new EntityExistsException(String.format("User with id %s was not found", user.getId()));
+  @Override
+  public User updateUser(User user) {
+    var userExists = userRepository.existsById(user.getId());
+    if (!userExists)
+      throw new EntityExistsException(String.format("User with id %s was not found", user.getId()));
 
-        return userRepository.save(user);
-    }
+    return userRepository.save(user);
+  }
 
-    @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
+  @Override
+  public void deleteUser(User user) {
+    userRepository.delete(user);
+  }
 
-    @Override
-    public User getUserByEmail(String email) {
-        var user = userRepository.findByEmail(email);
-        if (user.isEmpty()) throw new EntityNotFoundException(String.format("User with email %s was not found", email));
+  @Override
+  public User getUserByEmail(String email) {
+    var user = userRepository.findByEmail(email);
+    if (user.isEmpty())
+      throw new EntityNotFoundException(String.format("User with email %s was not found", email));
 
-        return user.get();
-    }
+    return user.get();
+  }
 
-    @Override
-    public User getUserById(long userId) {
-        var user = userRepository.findById(userId);
-        if (user.isEmpty()) throw new EntityNotFoundException(String.format("User with id %s was not found", userId));
+  @Override
+  public User getUserById(long userId) {
+    var user = userRepository.findById(userId);
+    if (user.isEmpty())
+      throw new EntityNotFoundException(String.format("User with id %s was not found", userId));
 
-        return user.get();
-    }
+    return user.get();
+  }
 }

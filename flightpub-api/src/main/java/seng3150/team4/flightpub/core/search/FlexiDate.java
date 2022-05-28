@@ -12,15 +12,16 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class FlexiDate {
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate date;
-    private int flex;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  private LocalDate date;
 
-    public LocalDateTime getMinDateTime() {
-        return date.minusDays(flex).atStartOfDay();
-    }
+  private int flex;
 
-    public LocalDateTime getMaxDateTime() {
-        return date.plusDays(flex).atTime(23, 59, 59);
-    }
+  public LocalDateTime getMinDateTime() {
+    return date.minusDays(flex).atStartOfDay();
+  }
+
+  public LocalDateTime getMaxDateTime() {
+    return date.plusDays(flex).atTime(23, 59, 59);
+  }
 }

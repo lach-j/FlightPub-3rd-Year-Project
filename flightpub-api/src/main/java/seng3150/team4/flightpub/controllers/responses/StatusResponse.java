@@ -11,36 +11,39 @@ import java.time.ZoneOffset;
 @Getter
 @Setter
 public class StatusResponse implements Response {
-    private int status;
-    private String statusText;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected String message;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object data;
-    private final LocalDateTime timestamp;
+  private int status;
+  private String statusText;
 
-    public StatusResponse(HttpStatus status) {
-        this();
-        this.status = status.value();
-        this.statusText = status.getReasonPhrase();
-    }
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  protected String message;
 
-    public StatusResponse(HttpStatus status, String message) {
-        this(status);
-        this.message = message;
-    }
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Object data;
 
-    public StatusResponse() {
-        this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
-    }
+  private final LocalDateTime timestamp;
 
-    public Response message(String message) {
-        this.message = message;
-        return this;
-    }
+  public StatusResponse(HttpStatus status) {
+    this();
+    this.status = status.value();
+    this.statusText = status.getReasonPhrase();
+  }
 
-    public Response data(Object data) {
-        this.data = data;
-        return this;
-    }
+  public StatusResponse(HttpStatus status, String message) {
+    this(status);
+    this.message = message;
+  }
+
+  public StatusResponse() {
+    this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
+  }
+
+  public Response message(String message) {
+    this.message = message;
+    return this;
+  }
+
+  public Response data(Object data) {
+    this.data = data;
+    return this;
+  }
 }

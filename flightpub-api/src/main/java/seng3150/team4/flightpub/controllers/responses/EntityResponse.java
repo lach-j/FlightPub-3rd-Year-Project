@@ -5,10 +5,9 @@ import seng3150.team4.flightpub.domain.models.IEntity;
 
 public class EntityResponse<T extends IEntity> implements Response {
 
-    @JsonUnwrapped
-    T entity;
+  @JsonUnwrapped T entity;
 
-    public EntityResponse(T entity) {
-        this.entity = entity;
-    }
+  public EntityResponse(T entity) {
+    this.entity = entity;
+  }
 }

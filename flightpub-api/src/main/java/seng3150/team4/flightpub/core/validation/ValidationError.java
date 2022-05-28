@@ -5,29 +5,29 @@ import java.util.List;
 
 public class ValidationError {
 
-    private final String fieldName;
-    private final List<String> errors = new ArrayList<>();
+  private final String fieldName;
+  private final List<String> errors = new ArrayList<>();
 
-    public ValidationError(String fieldName) {
-        this.fieldName = fieldName;
-    }
+  public ValidationError(String fieldName) {
+    this.fieldName = fieldName;
+  }
 
-    public ValidationError addError(String error, Object... params) {
-        var err = String.format(error, params);
-        errors.add(err);
-        return this;
-    }
+  public ValidationError addError(String error, Object... params) {
+    var err = String.format(error, params);
+    errors.add(err);
+    return this;
+  }
 
-    public ValidationError addErrors(List<String> results) {
-        errors.addAll(results);
-        return this;
-    }
+  public ValidationError addErrors(List<String> results) {
+    errors.addAll(results);
+    return this;
+  }
 
-    public List<String> getErrors() {
-        return errors;
-    }
+  public List<String> getErrors() {
+    return errors;
+  }
 
-    public String getFieldName() {
-        return fieldName;
-    }
+  public String getFieldName() {
+    return fieldName;
+  }
 }

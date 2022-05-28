@@ -8,13 +8,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 
-
 @ControllerAdvice
 public class GenericExceptionAdvice {
-    @ResponseBody
-    @ExceptionHandler(UnsupportedOperationException.class)
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    Response entityAlreadyExistsHandler(UnsupportedOperationException ex) {
-        return new StatusResponse(HttpStatus.NOT_IMPLEMENTED, ex.getMessage());
-    }
+  @ResponseBody
+  @ExceptionHandler(UnsupportedOperationException.class)
+  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  Response entityAlreadyExistsHandler(UnsupportedOperationException ex) {
+    return new StatusResponse(HttpStatus.NOT_IMPLEMENTED, ex.getMessage());
+  }
 }

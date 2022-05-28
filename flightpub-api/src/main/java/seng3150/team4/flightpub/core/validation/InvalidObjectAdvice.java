@@ -10,10 +10,10 @@ import seng3150.team4.flightpub.controllers.responses.Response;
 
 @ControllerAdvice
 public class InvalidObjectAdvice {
-    @ResponseBody
-    @ExceptionHandler(InvalidObjectException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Response requestNotValidHandler(InvalidObjectException ex) {
-        return new InvalidObjectResponse(ex.getResult(), ex.getMessage());
-    }
+  @ResponseBody
+  @ExceptionHandler(InvalidObjectException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Response requestNotValidHandler(InvalidObjectException ex) {
+    return new InvalidObjectResponse(ex.getResult(), ex.getMessage());
+  }
 }

@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DestinationCount implements IEntity {
-    private String destinationCode;
-    private long count;
+  private String destinationCode;
+  private long count;
 }

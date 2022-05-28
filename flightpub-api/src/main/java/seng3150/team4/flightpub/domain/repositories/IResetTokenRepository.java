@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import seng3150.team4.flightpub.domain.models.ResetToken;
 
 public interface IResetTokenRepository extends CrudRepository<ResetToken, String> {
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM ResetToken rt WHERE rt.userId = ?1")
-    void removeTokensByUser(long userId);
+  @Transactional
+  @Modifying
+  @Query("DELETE FROM ResetToken rt WHERE rt.userId = ?1")
+  void removeTokensByUser(long userId);
 }

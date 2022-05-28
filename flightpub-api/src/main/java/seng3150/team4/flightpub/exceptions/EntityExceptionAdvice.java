@@ -13,17 +13,17 @@ import javax.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class EntityExceptionAdvice {
-    @ResponseBody
-    @ExceptionHandler(EntityExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Response entityAlreadyExistsHandler(EntityExistsException ex) {
-        return new StatusResponse(HttpStatus.CONFLICT, ex.getMessage());
-    }
+  @ResponseBody
+  @ExceptionHandler(EntityExistsException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Response entityAlreadyExistsHandler(EntityExistsException ex) {
+    return new StatusResponse(HttpStatus.CONFLICT, ex.getMessage());
+  }
 
-    @ResponseBody
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Response entityNotFoundHandler(EntityNotFoundException ex) {
-        return new StatusResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
+  @ResponseBody
+  @ExceptionHandler(EntityNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  Response entityNotFoundHandler(EntityNotFoundException ex) {
+    return new StatusResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+  }
 }

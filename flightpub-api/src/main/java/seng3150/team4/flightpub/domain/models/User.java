@@ -11,12 +11,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class User implements IEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(unique = true)
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String password;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+
+  @Column(unique = true)
+  private String email;
+
+  private String firstName;
+  private String lastName;
+  private String password;
 }

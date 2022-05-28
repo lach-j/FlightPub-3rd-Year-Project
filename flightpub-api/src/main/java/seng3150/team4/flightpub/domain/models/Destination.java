@@ -17,9 +17,9 @@ import javax.persistence.Table;
 @Setter
 @ToString
 public class Destination implements IEntity {
-    @Id
-    private String destinationCode;
-    private String airport;
-    @Column(name = "CountryCode3")
-    private String countryCode;
+  @Id private String destinationCode;
+  private String airport;
+
+  @Column(name = "CountryCode3")
+  private String countryCode;
 }

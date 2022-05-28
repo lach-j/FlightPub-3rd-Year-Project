@@ -13,15 +13,13 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class ResetToken implements IEntity {
-    @Id
-    String token;
-    long userId;
-    Date expiresAt;
+  @Id String token;
+  long userId;
+  Date expiresAt;
 
-    public ResetToken(String token, long userId, Date expiresAt) {
-        this.token = token;
-        this.userId = userId;
-        this.expiresAt = expiresAt;
-    }
-
+  public ResetToken(String token, long userId, Date expiresAt) {
+    this.token = token;
+    this.userId = userId;
+    this.expiresAt = expiresAt;
+  }
 }

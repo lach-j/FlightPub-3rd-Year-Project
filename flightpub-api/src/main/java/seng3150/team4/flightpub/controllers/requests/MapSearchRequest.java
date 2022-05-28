@@ -8,10 +8,10 @@ import seng3150.team4.flightpub.core.validation.ValidationResult;
 @Getter
 @Setter
 public class MapSearchRequest extends Validatable {
-    private String departureCode;
+  private String departureCode;
 
-    @Override
-    protected ValidationResult getErrors() {
-        return new ValidationResult();
-    }
+  @Override
+  protected ValidationResult getErrors() {
+    return new ValidationResult();
+  }
 }

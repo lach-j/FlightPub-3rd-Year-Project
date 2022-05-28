@@ -4,9 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TimeFunctions {
-    public static Date minutesFromNow(long minutes) {
-        Calendar date = Calendar.getInstance();
-        long timeInSecs = date.getTimeInMillis();
-        return new Date(timeInSecs + (minutes * 60 * 1000));
-    }
+  public static Date minutesFromNow(long minutes) {
+    Calendar date = Calendar.getInstance();
+    long timeInSecs = date.getTimeInMillis();
+    return new Date(timeInSecs + (minutes * 60 * 1000));
+  }
 }

@@ -16,27 +16,24 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class Price {
-    @JsonIgnore
-    @Id
-    private Long flightId;
+  @JsonIgnore @Id private Long flightId;
 
-    @Id
-    private String classCode;
+  @Id private String classCode;
 
-    @JsonBackReference
-    @MapsId("flightId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FlightId", nullable = false)
-    private Flight flight;
+  @JsonBackReference
+  @MapsId("flightId")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "FlightId", nullable = false)
+  private Flight flight;
 
-    @Column(name = "Price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+  @Column(name = "Price", nullable = false, precision = 10, scale = 2)
+  private BigDecimal price;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Column(name = "PriceLeg1", precision = 10, scale = 2)
-    private BigDecimal priceLeg1;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Column(name = "PriceLeg1", precision = 10, scale = 2)
+  private BigDecimal priceLeg1;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Column(name = "PriceLeg2", precision = 10, scale = 2)
-    private BigDecimal priceLeg2;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Column(name = "PriceLeg2", precision = 10, scale = 2)
+  private BigDecimal priceLeg2;
 }

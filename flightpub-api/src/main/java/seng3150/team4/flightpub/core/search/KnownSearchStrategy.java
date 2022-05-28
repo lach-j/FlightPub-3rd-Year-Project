@@ -9,26 +9,35 @@ import java.util.List;
 
 public class KnownSearchStrategy extends SearchStrategy {
 
-    public KnownSearchStrategy(FlightQueryRequest flightQuery) {
-        super(flightQuery);
+  public KnownSearchStrategy(FlightQueryRequest flightQuery) {
+    super(flightQuery);
+  }
+
+  @Override
+  public List<Flight> search() {
+    List<Predicate> predicates = new ArrayList<>() {};
+    if (flightQuery.getDepartureDate() != null) {
+      predicates.add(
+          cb.greaterThan(
+              flight.get("departureTime"), flightQuery.getDepartureDate().getMinDateTime()));
+      predicates.add(
+          cb.lessThan(
+              flight.get("departureTime"), flightQuery.getDepartureDate().getMaxDateTime()));
     }
 
-    @Override
-    public List<Flight> search() {
-        List<Predicate> predicates = new ArrayList<>(){};
-        if (flightQuery.getDepartureDate() != null) {
-            predicates.add(cb.greaterThan(flight.get("departureTime"), flightQuery.getDepartureDate().getMinDateTime()));
-            predicates.add(cb.lessThan(flight.get("departureTime"), flightQuery.getDepartureDate().getMaxDateTime()));
-        }
+    if (flightQuery.getDepartureCode() != null)
+      predicates.add(
+          cb.equal(
+              flight.get("departureLocation").get("destinationCode"),
+              flightQuery.getDepartureCode()));
 
-        if (flightQuery.getDepartureCode() != null)
-            predicates.add(cb.equal(flight.get("departureLocation").get("destinationCode"), flightQuery.getDepartureCode()));
+    if (flightQuery.getDestinationCode() != null)
+      predicates.add(
+          cb.equal(
+              flight.get("arrivalLocation").get("destinationCode"),
+              flightQuery.getDestinationCode()));
 
-        if (flightQuery.getDestinationCode() != null)
-            predicates.add(cb.equal(flight.get("arrivalLocation").get("destinationCode"), flightQuery.getDestinationCode()));
-
-
-        query.where(cb.and(predicates.toArray(new Predicate[0])));
-        return getResults();
-    }
+    query.where(cb.and(predicates.toArray(new Predicate[0])));
+    return getResults();
+  }
 }

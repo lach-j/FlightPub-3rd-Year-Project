@@ -10,10 +10,10 @@ import org.springframework.http.HttpStatus;
 @Setter
 public class TokenResponse extends StatusResponse {
 
-    public TokenResponse(HttpStatus status, String token) {
-        super(status);
-        this.token = token;
-    }
+  public TokenResponse(HttpStatus status, String token) {
+    super(status);
+    this.token = token;
+  }
 
-    private String token;
+  private String token;
 }

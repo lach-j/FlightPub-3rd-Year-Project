@@ -21,34 +21,35 @@ import java.util.Set;
 @Table(name = "flights")
 public class Flight implements IEntity, Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
-    private String airlineCode;
-    private String flightNumber;
-    private LocalDateTime departureTime;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long Id;
 
-    private LocalDateTime arrivalTimeStopOver;
-    private LocalDateTime departureTimeStopOver;
-    private LocalDateTime arrivalTime;
-    private int duration;
-    private Integer durationSecondLeg;
+  private String airlineCode;
+  private String flightNumber;
+  private LocalDateTime departureTime;
 
-    @ManyToOne
-    @JoinColumn(name = "departureCode", nullable = false)
-    private Destination departureLocation;
+  private LocalDateTime arrivalTimeStopOver;
+  private LocalDateTime departureTimeStopOver;
+  private LocalDateTime arrivalTime;
+  private int duration;
+  private Integer durationSecondLeg;
 
-    @ManyToOne
-    @JoinColumn(name = "destinationCode", nullable = false)
-    private Destination arrivalLocation;
+  @ManyToOne
+  @JoinColumn(name = "departureCode", nullable = false)
+  private Destination departureLocation;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ManyToOne
-    @JoinColumn(name = "stopOverCode")
-    private Destination stopOverLocation;
+  @ManyToOne
+  @JoinColumn(name = "destinationCode", nullable = false)
+  private Destination arrivalLocation;
 
-    @JsonManagedReference
-    @OneToMany
-    @JoinColumn(name = "FlightId", referencedColumnName = "Id")
-    private Set<Price> prices;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @ManyToOne
+  @JoinColumn(name = "stopOverCode")
+  private Destination stopOverLocation;
+
+  @JsonManagedReference
+  @OneToMany
+  @JoinColumn(name = "FlightId", referencedColumnName = "Id")
+  private Set<Price> prices;
 }
