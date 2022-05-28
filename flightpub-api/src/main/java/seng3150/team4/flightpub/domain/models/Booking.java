@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -14,6 +16,6 @@ public class Booking implements IEntity {
     private long id;
     private long userId;
     @ElementCollection
-    private Set<long> flightId;
+    private Set<long> flightIds;
     private LocalDateTime dateBooked;
 }

@@ -6,23 +6,75 @@ import {
   AccordionPanel,
   Box, Button,
   Flex, FormControl, FormLabel,
-  Heading, HStack, Input, Select, Stat, StatHelpText, StatLabel, StatNumber, Switch, Text, VStack,
+  Heading, HStack, Input, Select, Stat, StatHelpText, StatLabel, StatNumber, Switch, Text, useToast, VStack,
 } from '@chakra-ui/react';
 import {BiLinkExternal, HiOutlineArrowNarrowRight} from 'react-icons/all';
-import React, {useState} from 'react';
-
+import React, {SyntheticEvent, useState} from 'react';
+import * as api from '../services/ApiService';
+import { ApiError } from '../services/ApiService';
 import {flights} from "../data/flights";
 import {countries} from "../data/countries";
 import {SavedPayment} from "./AccountManagement/SavedPaymentTypes";
 import {dummySavedPayments} from "../data/SavedPayments";
 import {NavLink} from "react-router-dom";
 import {routes} from "../constants/routes";
+import { Booking } from "../models/Booking";
+import { endpoints } from '../constants/endpoints';
 
 
 export const BookingPage = () => {
 
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState(false);
   const bookedFlights = flights.slice(2, 4);
+  const [bookingRequest, setBookingRequest] = useState<Booking>({
+    userId: 193450320483029459968201039495,
+    flightIds: new Set<any>(),
+  });
+  const toast = useToast();
+
+  const handleBooking = (e: SyntheticEvent) => {
+    let fs = new Set<any>();
+    fs.add(284967381943058239104);
+    fs.add(274930147492940506);
+
+    bookingRequest.flightIds = fs;
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      api
+          .httpPost(endpoints.book, bookingRequest)
+          .then(() => {
+            toast({
+              title: 'Booking Confirmed',
+              description: 'Your booking was made successfully',
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+              position: 'top',
+            });
+          })
+          .catch((err: ApiError) => {
+            if (err.statusCode === 401) {
+              setAuthError(true);
+            } else {
+              toast( {
+                title: 'Error.',
+                description:
+                    'An internal error has occurred, please try again later.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top',
+              });
+            }
+          })
+          .finally(() => setLoading(false));
+      return false;
+    }, 1000);
+    setAuthError(false);
+  };
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
@@ -212,7 +264,7 @@ export const BookingPage = () => {
           {savedPaymentData?.type !== 'saved' &&
               <Switch mt={'2em'}>Save payment for future transactions?</Switch>}
           <HStack w={'full'} gap={'1em'} mt={'2em'}>
-            <Button
+            <Button onClick={handleBooking}
               colorScheme={'red'}
             >
               Book Now
