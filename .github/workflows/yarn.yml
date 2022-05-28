@@ -1,4 +1,4 @@
-name: CI
+name: Build UI
 on:
   push:
     branches: [ develop ]
@@ -6,6 +6,8 @@ on:
     branches: [ develop ]
 jobs:
   build:
+    env:
+      CI: false
     name: check-ui
     runs-on: ubuntu-latest
     steps:
