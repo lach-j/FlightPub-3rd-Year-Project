@@ -8,9 +8,10 @@ type DataTableProps = {
   columns: ColumnDefinition<any>[],
   data: any[],
   sortable?: boolean;
+  keyAccessor: string;
 }
 
-export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, sortable = false }) => {
+export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, sortable = false, keyAccessor }) => {
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -49,7 +50,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
       <Thead>
         <Tr>
           {columns.map((column) =>
-            <Th userSelect='none' onClick={() => handleColumnSort(column)}>
+            <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
                 {column === sortingColumn && sortIcon()}
@@ -59,12 +60,13 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
         </Tr>
       </Thead>
       <Tbody>
-        {data.sort(sortFunc).map((result: any) =>
-          <Tr>
+        {data.sort(sortFunc).map((result: any) => {
+          console.log(_.get(result, keyAccessor))
+          return <Tr key={_.get(result, keyAccessor)}>
             {columns.map((column) =>
-              <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+              <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
             {children}
-          </Tr>,
+          </Tr>}
         )}
       </Tbody>
     </Table>

@@ -3,19 +3,12 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
   Icon,
   Stat,
   StatHelpText,
   StatLabel,
   StatNumber,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
 } from '@chakra-ui/react';
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -24,17 +17,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { ColumnDefinition, DestinationCount, Flight, Price } from '../models';
-import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { airports } from '../data/airports';
-import { formatDateTime } from '../utility/formatting';
+import { formatDateTime, getMinMaxPriceString } from '../utility/formatting';
+import { DataTable } from '../components/DataTable';
 
 const flightColumns: ColumnDefinition<any>[] = [
-  { Header: 'Destination', accessor: 'arrivalLocation.destinationCode' },
+  { Header: 'Destination', accessor: 'arrivalLocation.airport' },
   { Header: 'Departure Time', accessor: 'departureTime', transform: formatDateTime },
-  { Header: 'Price', accessor: 'prices', transform: (price: Price[]) => `$${price[0]?.price.toFixed(2)}` },
+  { Header: 'Price', accessor: 'prices', transform: (prices: Price[]) => getMinMaxPriceString(prices) },
 ];
 
 
@@ -86,7 +79,7 @@ export const MapPage = () => {
         <Heading
           fontSize='1.5em'>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
-          <ResultsTable columns={flightColumns} flights={flights} />
+          <DataTable columns={flightColumns} data={flights} keyAccessor='id' />
         </Box>
       </Box>
       <Map
@@ -150,30 +143,4 @@ export const MapPage = () => {
       </Map>
     </Box>
   );
-};
-
-const ResultsTable = ({ columns, flights }: { columns: ColumnDefinition<any>[], flights: Flight[] }) => {
-  return (
-    <Table width='90%'>
-      <Thead>
-        <Tr>
-          {columns.map((column) =>
-            <Th>
-              <HStack spacing={3}>
-                <Text>{column.Header}</Text>
-              </HStack>
-            </Th>,
-          )}
-        </Tr>
-      </Thead>
-      <Tbody overflowY='scroll' maxH='100%' h='100%'>
-        {flights
-          .map((result: any) =>
-            <Tr>
-              {columns.map((column) =>
-                <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-            </Tr>,
-          )}
-      </Tbody>
-    </Table>);
 };

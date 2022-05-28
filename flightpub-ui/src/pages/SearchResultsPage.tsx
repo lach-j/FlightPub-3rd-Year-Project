@@ -53,10 +53,6 @@ export function SearchResultsPage() {
 
   const [results, setResults] = useState<Flight[]>([]);
 
-  const [sortField, setSortField] = useState('');
-  const [ascendingCol, setAscendingCol] = useState('');
-  const [descendingCol, setDescendingCol] = useState('');
-  const [ascending, setAscending] = useState(true);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
   const [airlineFilter, setAirlineFilter] = useState('');
@@ -225,7 +221,7 @@ export function SearchResultsPage() {
           </VStack>
         </Box>
         <Center flex='1'>
-          <DataTable columns={columns} data={results.filter(filterResults)} sortable>
+          <DataTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable>
             <Td>
               <Button type='button'
                       colorScheme='red'

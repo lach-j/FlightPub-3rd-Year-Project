@@ -78,7 +78,7 @@ export const HomePage = () => {
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
-            <DataTable columns={columns} data={recommended}>
+            <DataTable columns={columns} data={recommended} keyAccessor='id'>
               <Td>
                 <Button type='button'
                         colorScheme='red'
