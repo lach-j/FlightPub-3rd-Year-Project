@@ -15,24 +15,24 @@ import static seng3150.team4.flightpub.core.validation.Validators.passwordValida
 @Setter
 @NoArgsConstructor
 public class ResetPasswordRequest extends Validatable {
-    private String password;
-    private String token;
+  private String password;
+  private String token;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var results = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var results = new ValidationResult();
 
-        var passwordErrors = new ValidationError("password");
-        if (isNullOrEmpty(password)) {
-            passwordErrors.addError(ErrorConstants.REQUIRED);
-        } else {
-            passwordErrors.addErrors(passwordValidator(password));
-        }
-        results.addError(passwordErrors);
-
-        if (isNullOrEmpty(token))
-            results.addError(new ValidationError("token").addError(ErrorConstants.REQUIRED));
-
-        return results;
+    var passwordErrors = new ValidationError("password");
+    if (isNullOrEmpty(password)) {
+      passwordErrors.addError(ErrorConstants.REQUIRED);
+    } else {
+      passwordErrors.addErrors(passwordValidator(password));
     }
+    results.addError(passwordErrors);
+
+    if (isNullOrEmpty(token))
+      results.addError(new ValidationError("token").addError(ErrorConstants.REQUIRED));
+
+    return results;
+  }
 }

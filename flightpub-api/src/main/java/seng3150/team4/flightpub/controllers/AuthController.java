@@ -18,43 +18,40 @@ import seng3150.team4.flightpub.services.IAuthenticationService;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final IAuthenticationService authenticationService;
+  private final IAuthenticationService authenticationService;
 
-    @PostMapping(path = "/login")
-    public ResponseEntity<? extends Response> loginUser(@RequestBody LoginRequest loginRequest) {
+  @PostMapping(path = "/login")
+  public ResponseEntity<? extends Response> loginUser(@RequestBody LoginRequest loginRequest) {
 
-        loginRequest.validate();
+    loginRequest.validate();
 
-        var token = authenticationService.loginUser(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-        );
+    var token =
+        authenticationService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if (token == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(
-                            new StatusResponse(HttpStatus.UNAUTHORIZED)
-                            .message("The email or password provided is incorrect.")
-                    );
+    if (token == null)
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(
+              new StatusResponse(HttpStatus.UNAUTHORIZED)
+                  .message("The email or password provided is incorrect."));
 
-        return ResponseEntity.ok(new TokenResponse(HttpStatus.OK, token));
-    }
+    return ResponseEntity.ok(new TokenResponse(HttpStatus.OK, token));
+  }
 
-    @PostMapping(path = "/reset")
-    public ResponseEntity<? extends Response> resetPasswordWithToken(@RequestBody ResetPasswordRequest loginRequest) {
-        loginRequest.validate();
-        authenticationService.resetPassword(
-                loginRequest.getToken(),
-                loginRequest.getPassword()
-        );
+  @PostMapping(path = "/reset")
+  public ResponseEntity<? extends Response> resetPasswordWithToken(
+      @RequestBody ResetPasswordRequest loginRequest) {
+    loginRequest.validate();
+    authenticationService.resetPassword(loginRequest.getToken(), loginRequest.getPassword());
 
-        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK).message("The password was reset successfully"));
-    }
+    return ResponseEntity.ok(
+        new StatusResponse(HttpStatus.OK).message("The password was reset successfully"));
+  }
 
-    @PostMapping(path = "/forgot")
-    public ResponseEntity<? extends Response> sendResetEmail(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        forgotPasswordRequest.validate();
-        authenticationService.sendResetEmail(forgotPasswordRequest.getEmail());
-        return ResponseEntity.accepted().body(new StatusResponse(HttpStatus.ACCEPTED));
-    }
+  @PostMapping(path = "/forgot")
+  public ResponseEntity<? extends Response> sendResetEmail(
+      @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+    forgotPasswordRequest.validate();
+    authenticationService.sendResetEmail(forgotPasswordRequest.getEmail());
+    return ResponseEntity.accepted().body(new StatusResponse(HttpStatus.ACCEPTED));
+  }
 }

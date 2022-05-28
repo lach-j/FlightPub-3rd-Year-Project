@@ -8,7 +8,8 @@ import {
   Grid,
   Heading,
   Input,
-  Link, Spinner,
+  Link,
+  Spinner,
   Stack,
   useToast,
 } from '@chakra-ui/react';

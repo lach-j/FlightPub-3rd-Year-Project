@@ -30,6 +30,7 @@ import {
   Tooltip,
   Tr,
   useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import React, { FormEvent, useState } from 'react';
@@ -39,8 +40,9 @@ import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } f
 import { SearchIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { httpGet, toParams } from '../services/ApiService';
+import { ApiError, httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
+import { airports } from '../data/airports';
 
 export interface Item {
   label: string;
@@ -55,161 +57,6 @@ const tags2 = [
   { label: 'Sports', value: 'sports' },
   { label: 'Romantic', value: 'romantic' },
   { label: 'Asia', value: 'asia' },
-];
-
-const airports = [
-  {
-    code: 'ADL',
-    label: 'Adelaide',
-  },
-  {
-    code: 'AMS',
-    label: 'Amsterdam',
-  },
-  {
-    code: 'ATL',
-    label: 'Atlanta',
-  },
-  {
-    code: 'BKK',
-    label: 'Bangkok',
-  },
-  {
-    code: 'BNE',
-    label: 'Brisbane',
-  },
-  {
-    code: 'CBR',
-    label: 'Canberra',
-  },
-  {
-    code: 'CDG',
-    label: 'Paris - Charles De Gaulle',
-  },
-  {
-    code: 'CNS',
-    label: 'Cairns',
-  },
-  {
-    code: 'DOH',
-    label: 'Doha',
-  },
-  {
-    code: 'DRW',
-    label: 'Darwin',
-  },
-  {
-    code: 'DXB',
-    label: 'Dubai',
-  },
-  {
-    code: 'FCO',
-    label: 'Rome-Fiumicino',
-  },
-  {
-    code: 'GIG',
-    label: 'Rio De Janeiro',
-  },
-  {
-    code: 'HBA',
-    label: 'Hobart',
-  },
-  {
-    code: 'HEL',
-    label: 'Helsinki',
-  },
-  {
-    code: 'HKG',
-    label: 'Hong Kong',
-  },
-  {
-    code: 'HNL',
-    label: 'Honolulu',
-  },
-  {
-    code: 'JFK',
-    label: 'New York - JFK',
-  },
-  {
-    code: 'JNB',
-    label: 'Johannesburg',
-  },
-  {
-    code: 'KUL',
-    label: 'Kuala Lumpur',
-  },
-  {
-    code: 'LAX',
-    label: 'Los Angeles',
-  },
-  {
-    code: 'LGA',
-    label: 'New York - Laguardia',
-  },
-  {
-    code: 'LGW',
-    label: 'London-Gatwick',
-  },
-  {
-    code: 'LHR',
-    label: 'London-Heathrow',
-  },
-  {
-    code: 'MAD',
-    label: 'Madrid',
-  },
-  {
-    code: 'MEL',
-    label: 'Melbourne',
-  },
-  {
-    code: 'MIA',
-    label: 'Miami',
-  },
-  {
-    code: 'MUC',
-    label: 'Munich',
-  },
-  {
-    code: 'NRT',
-    label: 'Tokyo - Narita',
-  },
-  {
-    code: 'OOL',
-    label: 'Gold Coast',
-  },
-  {
-    code: 'ORD',
-    label: 'Chicago - OHare Intl.',
-  },
-  {
-    code: 'ORY',
-    label: 'Paris - Orly',
-  },
-  {
-    code: 'PER',
-    label: 'Perth',
-  },
-  {
-    code: 'SFO',
-    label: 'San Francisco',
-  },
-  {
-    code: 'SIN',
-    label: 'Singapore',
-  },
-  {
-    code: 'SYD',
-    label: 'Sydney',
-  },
-  {
-    code: 'VIE',
-    label: 'Vienna',
-  },
-  {
-    code: 'YYZ',
-    label: 'Toronto',
-  },
 ];
 
 interface FlexiDate {
@@ -228,17 +75,10 @@ interface SearchQuery {
 export const SearchPage = () => {
   const navigate = useNavigate();
   const [flexEnabled, setFlexEnabled] = useState(false);
+  const toast = useToast();
 
   const formatDate = (date: Date) => {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
+    return new Date(date).toISOString().split('T')[0];
   };
 
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({
@@ -254,12 +94,27 @@ export const SearchPage = () => {
   function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onOpen();
-    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, { state: {query: searchQuery, results} })).finally(onClose);
+    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, {
+      state: {
+        query: searchQuery,
+        results,
+      },
+    }))
+      .catch((err: ApiError) => {
+        toast({
+          title: 'An Error Has Occurred',
+          description: 'An error has occurred, please try again later.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top',
+        });
+      }).finally(onClose);
   }
 
   const handleTicketUpdate = (value: number, classCode: string) => {
-    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value))
-  }
+    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value));
+  };
 
   const ticketOptions = [
     { key: 'BUS', label: 'Business Class' },
@@ -269,14 +124,14 @@ export const SearchPage = () => {
   ];
 
   return (
-    <Box p={'2em'}>
+    <Box p='2em'>
       <Center>
         <form onSubmit={handleSearch}>
           <FormControl as='fieldset'>
-            <FormLabel as='legend' fontSize={'2xl'}>
+            <FormLabel as='legend' fontSize='2xl'>
               Search flights
             </FormLabel>
-            <VStack gap={'2em'}>
+            <VStack gap='2em'>
               <HStack
                 alignItems={'flex-start'}
                 divider={<StackDivider borderColor='gray.200' />}
@@ -290,7 +145,7 @@ export const SearchPage = () => {
                   <Box>
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
-                      <Accordion allowToggle w={'20em'}>
+                      <Accordion allowToggle w='20em'>
                         <AccordionItem>
                           <AccordionButton>
                             <Box flex='1' textAlign='left'>
@@ -356,8 +211,8 @@ export const SearchPage = () => {
                         placeholder='Select flight Type'
                         maxW={240}
                       >
-                        <option value={'one-way'}>One-way</option>
-                        <option value={'return'}>Round trip</option>
+                        <option value='one-way'>One-way</option>
+                        <option value='return'>Round trip</option>
                       </Select>
                     </FormControl>
                   </Box>
@@ -378,13 +233,13 @@ export const SearchPage = () => {
                       >
                         <AutoCompleteInput variant='filled' />
                         <AutoCompleteList>
-                          {airports.map(({ code, label }) => (
+                          {airports.map(({ code, city }) => (
                             <AutoCompleteItem
                               key={code}
                               value={code}
                               align='center'
                             >
-                              <Text ml='4'>{label}</Text>
+                              <Text ml='4'>{city}</Text>
                             </AutoCompleteItem>
                           ))}
                         </AutoCompleteList>
@@ -393,23 +248,26 @@ export const SearchPage = () => {
                   </Box>
 
                   <Box>
-                    <FormControl isRequired>
+                    <FormControl>
                       <FormLabel>Arrival Location:</FormLabel>
                       <AutoComplete
                         openOnFocus
+                        defaultValue={''}
+                        emptyState={true}
                         onChange={(value) =>
                           handleSearchQueryUpdate('destinationCode', value)
                         }
                       >
-                        <AutoCompleteInput variant='filled' />
+                        <AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                                           variant='filled' />
                         <AutoCompleteList>
-                          {airports.map(({ code, label }) => (
+                          {airports.map(({ code, city }) => (
                             <AutoCompleteItem
                               key={code}
                               value={code}
                               align='center'
                             >
-                              <Text ml='4'>{label}</Text>
+                              <Text ml='4'>{city}</Text>
                             </AutoCompleteItem>
                           ))}
                         </AutoCompleteList>

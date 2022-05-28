@@ -16,33 +16,34 @@ import seng3150.team4.flightpub.utility.PasswordHash;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IUserService userService;
+  private final IUserService userService;
 
-    @PostMapping(path = "/users")
-    public ResponseEntity<? extends Response> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
-        registerUserRequest.validate();
+  @PostMapping(path = "/users")
+  public ResponseEntity<? extends Response> registerUser(
+      @RequestBody RegisterUserRequest registerUserRequest) {
+    registerUserRequest.validate();
 
-        var user = userFromRequest(registerUserRequest);
+    var user = userFromRequest(registerUserRequest);
 
-        var savedUser = userService.registerUser(user);
+    var savedUser = userService.registerUser(user);
 
-        return ResponseEntity.ok().body(new EntityResponse<>(savedUser));
+    return ResponseEntity.ok().body(new EntityResponse<>(savedUser));
+  }
+
+  private static User userFromRequest(RegisterUserRequest request) {
+    User user = new User();
+
+    try {
+      user.setPassword(
+          PasswordHash.PBKDF2WithHmacSHA1Hash(request.getPassword(), request.getEmail()));
+    } catch (Exception ex) {
+      throw new RuntimeException("Password hash failed");
     }
 
-    private static User userFromRequest(RegisterUserRequest request) {
-        User user = new User();
+    user.setEmail(request.getEmail());
+    user.setFirstName(request.getFirstName());
+    user.setLastName(request.getLastName());
 
-        try {
-            user.setPassword(PasswordHash.PBKDF2WithHmacSHA1Hash(request.getPassword(), request.getEmail()));
-        } catch (Exception ex) {
-            throw new RuntimeException("Password hash failed");
-        }
-
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-
-        return user;
-    }
-
+    return user;
+  }
 }

@@ -7,38 +7,31 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-
 public class ResetPasswordTemplate extends EmailTemplate {
 
-    private static final String TEMPLATE_ID = "d-ab61283fd041483ab1b1b6cfe2f4cc9f";
-    private static final String FROM_NAME = "FlightPub Support";
+  private static final String TEMPLATE_ID = "d-ab61283fd041483ab1b1b6cfe2f4cc9f";
+  private static final String FROM_NAME = "FlightPub Support";
 
-    @Setter
-    private String firstName;
-    @Setter
-    private String resetToken;
+  @Setter private String firstName;
+  @Setter private String resetToken;
 
-    private final String UI_URL;
+  private final String UI_URL;
 
-    public ResetPasswordTemplate(String uiUrl) {
-        super(TEMPLATE_ID, FROM_NAME);
-        this.UI_URL = uiUrl;
-    }
+  public ResetPasswordTemplate(String uiUrl) {
+    super(TEMPLATE_ID, FROM_NAME);
+    this.UI_URL = uiUrl;
+  }
 
-    private String getResetTokenUrl() {
-        return UriComponentsBuilder
-                .fromHttpUrl(UI_URL)
-                .path("reset")
-                .queryParam("token", URLEncoder.encode(resetToken, StandardCharsets.UTF_8))
-                .build()
-                .toUriString();
-    }
+  private String getResetTokenUrl() {
+    return UriComponentsBuilder.fromHttpUrl(UI_URL)
+        .path("reset")
+        .queryParam("token", URLEncoder.encode(resetToken, StandardCharsets.UTF_8))
+        .build()
+        .toUriString();
+  }
 
-    @Override
-    public Map<String, Object> getMappedValues() {
-        return Map.of(
-                "firstName", firstName,
-                "resetUrl", getResetTokenUrl()
-                );
-    }
+  @Override
+  public Map<String, Object> getMappedValues() {
+    return Map.of("firstName", firstName, "resetUrl", getResetTokenUrl());
+  }
 }

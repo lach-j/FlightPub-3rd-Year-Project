@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import seng3150.team4.flightpub.domain.models.User;
 
 public interface IJwtHelperService {
-    DecodedJWT verifyToken(String token) throws JWTVerificationException;
-    String generateToken(User user);
+  DecodedJWT verifyToken(String token) throws JWTVerificationException;
+
+  String generateToken(User user);
 }

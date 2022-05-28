@@ -15,22 +15,21 @@ import static seng3150.team4.flightpub.utility.TimeFunctions.minutesFromNow;
 @RequiredArgsConstructor
 public class JwtHelperService implements IJwtHelperService {
 
-    private final UrlResolverService urlResolverService;
+  private final UrlResolverService urlResolverService;
 
-    public String generateToken(User user) {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-        return JWT.create()
-                .withIssuer(urlResolverService.getApiUrl())
-                .withExpiresAt(minutesFromNow(60 * 24))
-                .withClaim("id", user.getId())
-                .sign(algorithm);
-    }
+  public String generateToken(User user) {
+    Algorithm algorithm = Algorithm.HMAC256("secret");
+    return JWT.create()
+        .withIssuer(urlResolverService.getApiUrl())
+        .withExpiresAt(minutesFromNow(60 * 24))
+        .withClaim("id", user.getId())
+        .sign(algorithm);
+  }
 
-    public DecodedJWT verifyToken(String token) throws JWTVerificationException {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-        JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(urlResolverService.getApiUrl())
-                .build();
-        return verifier.verify(token);
-    }
+  public DecodedJWT verifyToken(String token) throws JWTVerificationException {
+    Algorithm algorithm = Algorithm.HMAC256("secret");
+    JWTVerifier verifier =
+        JWT.require(algorithm).withIssuer(urlResolverService.getApiUrl()).build();
+    return verifier.verify(token);
+  }
 }

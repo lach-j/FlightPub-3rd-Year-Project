@@ -14,38 +14,38 @@ import static seng3150.team4.flightpub.core.validation.Validators.*;
 @Setter
 @NoArgsConstructor
 public class RegisterUserRequest extends Validatable {
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
+  private String email;
+  private String password;
+  private String firstName;
+  private String lastName;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var validationResult = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var validationResult = new ValidationResult();
 
-        var emailErrors = new ValidationError("email");
-        if (isNullOrEmpty(email)) {
-            emailErrors.addError(ErrorConstants.REQUIRED);
-        } else {
-            emailErrors.addErrors(emailValidator(email));
-        }
-        validationResult.addError(emailErrors);
-
-        var passwordErrors = new ValidationError("password");
-        if (isNullOrEmpty(password)) {
-            passwordErrors.addError(ErrorConstants.REQUIRED);
-        } else {
-            passwordErrors.addErrors(passwordValidator(password));
-        }
-        validationResult.addError(passwordErrors);
-
-        if (isNullOrEmpty(firstName)) {
-            validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
-        }
-        if (isNullOrEmpty(lastName)) {
-            validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
-        }
-
-        return validationResult;
+    var emailErrors = new ValidationError("email");
+    if (isNullOrEmpty(email)) {
+      emailErrors.addError(ErrorConstants.REQUIRED);
+    } else {
+      emailErrors.addErrors(emailValidator(email));
     }
+    validationResult.addError(emailErrors);
+
+    var passwordErrors = new ValidationError("password");
+    if (isNullOrEmpty(password)) {
+      passwordErrors.addError(ErrorConstants.REQUIRED);
+    } else {
+      passwordErrors.addErrors(passwordValidator(password));
+    }
+    validationResult.addError(passwordErrors);
+
+    if (isNullOrEmpty(firstName)) {
+      validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
+    }
+    if (isNullOrEmpty(lastName)) {
+      validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
+    }
+
+    return validationResult;
+  }
 }

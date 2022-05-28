@@ -1,0 +1,22 @@
+name: Build UI
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+jobs:
+  build:
+    env:
+      CI: false
+    name: check-ui
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.14.0'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+        working-directory: ./flightpub-ui
+      - run: yarn build
+        working-directory: ./flightpub-ui
