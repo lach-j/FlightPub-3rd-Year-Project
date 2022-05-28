@@ -41,8 +41,8 @@ export const BookingPage = () => {
     switch (savedPaymentData?.type) {
       case 'card':
         return (
-          <VStack mt={'1em'} gap={'1em'} w={'full'}>
-            <HStack w={'full'} gap={'1em'}>
+          <VStack mt='1em' gap='1em' w='full'>
+            <HStack w='full' gap='1em'>
               <FormControl>
                 <FormLabel>Card Number</FormLabel>
                 <Input />
@@ -52,7 +52,7 @@ export const BookingPage = () => {
                 <Input />
               </FormControl>
             </HStack>
-            <HStack w={'full'} gap={'1em'}>
+            <HStack w='full' gap='1em'>
               <FormControl>
                 <FormLabel>Expiry Date</FormLabel>
                 <Input />
@@ -66,7 +66,7 @@ export const BookingPage = () => {
         );
       case 'paypal':
         return (
-          <VStack mt={'1em'} gap={'1em'} w={'full'}>
+          <VStack mt='1em' gap='1em' w='full'>
             <FormControl>
               <FormLabel>PayPal Email</FormLabel>
               <Input />
@@ -76,14 +76,14 @@ export const BookingPage = () => {
         );
       case 'directDebit':
         return (
-          <HStack w={'full'} mt={'1em'} gap={'1em'}>
+          <HStack w='full' mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>BSB</FormLabel>
-              <Input type={'number'} />
+              <Input type='number' />
             </FormControl>
             <FormControl>
               <FormLabel>Account Number</FormLabel>
-              <Input type={'number'} />
+              <Input type='number' />
             </FormControl>
             <FormControl>
               <FormLabel>Account Name</FormLabel>
@@ -101,21 +101,21 @@ export const BookingPage = () => {
   };
 
   return (
-    <Flex justifyContent={'center'} p={'5em'}>
-      <Flex justifyContent={'center'} direction={'column'} w={'50em'}>
-        <Heading fontSize={'3xl'} mb={'1em'}>Finalise Booking</Heading>
+    <Flex justifyContent='center' p='5em'>
+      <Flex justifyContent='center' direction='column' w='50em'>
+        <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
         <Text>Flights:</Text>
-        <Accordion mb={'1em'} allowToggle={true} maxW={'full'} w={'full'}>
+        <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
           {bookedFlights.map((flight) =>
             <AccordionItem>
               <h2>
                 <AccordionButton>
                   <Box flex='1' textAlign='left'>
-                    <Flex width={'full'} justifyContent={'space-between'}>
+                    <Flex width='full' justifyContent='space-between'>
                       <HStack>
-                        <Text fontWeight={'bold'}>{flight.DepartureCode}</Text>
+                        <Text fontWeight='bold'>{flight.DepartureCode}</Text>
                         <HiOutlineArrowNarrowRight />
-                        <Text fontWeight={'bold'}>{flight.ArrivalCode}</Text>
+                        <Text fontWeight='bold'>{flight.ArrivalCode}</Text>
                       </HStack>
                       <Text>{`$${flight.Price}`}</Text>
                       <Text>{flight.AirlineName}</Text>
@@ -125,8 +125,8 @@ export const BookingPage = () => {
                 </AccordionButton>
               </h2>
               <AccordionPanel pb={4}>
-                <Flex w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-                  <Stat textAlign={'left'} flex={'none'}>
+                <Flex w='full' justifyContent='space-between' alignItems='center'>
+                  <Stat textAlign='left' flex='none'>
                     <StatLabel>{new Date(flight?.DepartureTime).toLocaleString('en-AU', {
                       dateStyle: 'short',
                       timeStyle: 'short',
@@ -137,7 +137,7 @@ export const BookingPage = () => {
                   </Stat>
                   {flight?.StopOverCode && <>
                     <HiOutlineArrowNarrowRight />
-                    <Stat textAlign={'center'} flex={'none'}>
+                    <Stat textAlign='center' flex='none'>
                       <StatLabel>{new Date(flight?.ArrivalTimeStopOver || '').toLocaleString('en-AU', {
                         dateStyle: 'short',
                         timeStyle: 'short',
@@ -150,7 +150,7 @@ export const BookingPage = () => {
                       <StatHelpText>STOPOVER</StatHelpText>
                     </Stat></>}
                   <HiOutlineArrowNarrowRight />
-                  <Stat textAlign={'right'} flex={'none'}>
+                  <Stat textAlign='right' flex='none'>
                     <StatLabel>{new Date(flight?.ArrivalTime).toLocaleString('en-AU', {
                       dateStyle: 'short',
                       timeStyle: 'short',
@@ -163,11 +163,11 @@ export const BookingPage = () => {
               </AccordionPanel>
             </AccordionItem>)}
         </Accordion>
-        <Text mb={'4em'}>{`Subtotal: $${bookedFlights.reduce((partialSum, a) => partialSum + a.Price, 0)}`}</Text>
+        <Text mb='4em'>{`Subtotal: $${bookedFlights.reduce((partialSum, a) => partialSum + a.Price, 0)}`}</Text>
         <form>
-          <Heading fontSize={'xl'}>Billing Details</Heading>
+          <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
-            <HStack w={'full'}>
+            <HStack w='full'>
               <FormControl flex={1}>
                 <FormLabel>First Name</FormLabel>
                 <Input />
@@ -189,7 +189,7 @@ export const BookingPage = () => {
               <FormLabel>Address line 2</FormLabel>
               <Input />
             </FormControl>
-            <HStack w={'full'}>
+            <HStack w='full'>
               <FormControl flex={2}>
                 <FormLabel>City</FormLabel>
                 <Input />
@@ -199,7 +199,7 @@ export const BookingPage = () => {
                 <Input />
               </FormControl>
             </HStack>
-            <HStack w={'full'}>
+            <HStack w='full'>
               <FormControl flex={2}>
                 <FormLabel>Country</FormLabel>
                 <Select>
@@ -212,9 +212,9 @@ export const BookingPage = () => {
               </FormControl>
             </HStack>
           </VStack>
-          <Heading fontSize={'xl'} mt={'2em'}>Payment Details</Heading>
+          <Heading fontSize='xl' mt='2em'>Payment Details</Heading>
           <VStack>
-            <FormControl mt={'1em'}>
+            <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
               <Select value={savedPaymentData?.type}
                       onChange={(event) => setSavedPaymentData({ type: event.target.value } as SavedPayment)}>
@@ -228,8 +228,8 @@ export const BookingPage = () => {
             {renderPaymentDetails()}
           </VStack>
           {savedPaymentData?.type !== 'saved' &&
-            <Switch mt={'2em'}>Save payment for future transactions?</Switch>}
-          <HStack w={'full'} gap={'1em'} mt={'2em'}>
+            <Switch mt='2em'>Save payment for future transactions?</Switch>}
+          <HStack w='full' gap='1em' mt='2em'>
             <Button
               colorScheme={'red'}
             >

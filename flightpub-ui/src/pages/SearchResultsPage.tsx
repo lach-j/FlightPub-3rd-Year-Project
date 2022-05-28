@@ -161,7 +161,7 @@ export function SearchResultsPage() {
   const toast = useToast();
 
   return (
-    <Box p={'1em'}>
+    <Box p='1em'>
       <HStack
         divider={<StackDivider borderColor='gray.200' />}
         spacing={10}

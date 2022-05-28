@@ -29,16 +29,16 @@ export const AccountPage = () => {
   };
 
   return (
-    <Flex justifyContent={'center'} p={'5em'}>
-      <Box w={'80%'}>
-        <Tabs variant={'enclosed'}>
+    <Flex justifyContent='center' p='5em'>
+      <Box w='80%'>
+        <Tabs variant='enclosed'>
           <TabList>
             <Tab>My Details</Tab>
             <Tab>Change Password</Tab>
             <Tab>Saved Payments</Tab>
           </TabList>
 
-          <TabPanels mt={'1em'}>
+          <TabPanels mt='1em'>
             <TabPanel>
               <MyDetailsTab setIsLoading={handleLoading} />
             </TabPanel>

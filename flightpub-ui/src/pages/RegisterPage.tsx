@@ -83,7 +83,7 @@ export const RegisterPage = () => {
     });
   };
   return (
-    <Center w='full' h={'full'} p='5'>
+    <Center w='full' h='full' p='5'>
       <Box
         border='2px'
         borderColor='gray.200'

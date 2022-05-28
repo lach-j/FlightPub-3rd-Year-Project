@@ -26,13 +26,13 @@ export const SavedPaymentComponent = ({
     switch (payment.type) {
       case 'card':
         return (
-          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
-            <Icon as={AiFillCreditCard} fontSize={'5xl'} />
-            <Stat flex={'none'}>
+          <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
+            <Icon as={AiFillCreditCard} fontSize='5xl' />
+            <Stat flex='none'>
               <StatLabel>{payment.cardNumber}</StatLabel>
               <StatHelpText>CARD NUMBER</StatHelpText>
             </Stat>
-            <Stat flex={'none'}>
+            <Stat flex='none'>
 
               <StatLabel>{payment.expiry}</StatLabel>
               <StatHelpText>EXPIRES</StatHelpText>
@@ -41,9 +41,9 @@ export const SavedPaymentComponent = ({
         );
       case 'paypal':
         return (
-          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
-            <Icon as={ImPaypal} fontSize={'5xl'} />
-            <Stat flex={'none'}>
+          <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
+            <Icon as={ImPaypal} fontSize='5xl' />
+            <Stat flex='none'>
               <StatLabel>{payment.email}</StatLabel>
               <StatHelpText>PAYPAL EMAIL</StatHelpText>
             </Stat>
@@ -51,13 +51,13 @@ export const SavedPaymentComponent = ({
         );
       case 'directDebit':
         return (
-          <Flex justifyContent={'space-between'} w={'full'} alignItems={'center'} flex={1}>
-            <Icon as={AiFillBank} fontSize={'5xl'} />
-            <Stat flex={'none'}>
+          <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
+            <Icon as={AiFillBank} fontSize='5xl' />
+            <Stat flex='none'>
               <StatLabel>{formatBSB(payment.bsb)}</StatLabel>
               <StatHelpText>BSB</StatHelpText>
             </Stat>
-            <Stat flex={'none'}>
+            <Stat flex='none'>
 
               <StatLabel>{payment.accNumber}</StatLabel>
               <StatHelpText>ACC NUMBER</StatHelpText>
@@ -68,17 +68,17 @@ export const SavedPaymentComponent = ({
   };
 
   return (
-    <Box border={'1px'} w={'20em'} h={'10em'} p={'1em'} rounded={'2xl'}>
-      <VStack h={'full'}>
-        <Flex justifyContent={'space-between'} w={'full'}>
+    <Box border='1px' w='20em' h='10em' p='1em' rounded='2xl'>
+      <VStack h='full'>
+        <Flex justifyContent='space-between' w='full'>
           <HStack>
             <Text>{payment.nickname}</Text>
-            {payment?.isDefault && <Badge colorScheme={'blue'}>Default</Badge>}
+            {payment?.isDefault && <Badge colorScheme='blue'>Default</Badge>}
           </HStack>
           <HStack>
-            <IconButton onClick={onDelete} aria-label={'delete'} icon={<BiTrash />} size={'sm'} variant='outline'
+            <IconButton onClick={onDelete} aria-label='delete' icon={<BiTrash />} size='sm' variant='outline'
                         colorScheme='red' />
-            <IconButton onClick={onEdit} aria-label={'edit'} icon={<EditIcon />} size={'sm'} variant='outline'
+            <IconButton onClick={onEdit} aria-label='edit' icon={<EditIcon />} size='sm' variant='outline'
                         colorScheme='black' />
           </HStack>
         </Flex>

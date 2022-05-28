@@ -32,9 +32,9 @@ const App = () => {
   };
 
   return (
-    <Flex direction={'column'} height={'100vh'}>
+    <Flex direction='column' height='100vh'>
       {hasNavbar() && <Header />}
-      <Box position={'relative'} height={'100%'}>
+      <Box position='relative' height='100%'>
         <Routes>
           <Route path={routes.home} element={<HomePage />} />
           <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
@@ -46,7 +46,7 @@ const App = () => {
           <Route path={routes.account} element={<AccountPage />} />
           <Route path={routes.searchResults} element={<SearchResultsPage />} />
           <Route path={routes.booking} element={<BookingPage />} />
-          <Route path={'*'} element={<h1>Page Not Found</h1>} />
+          <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>
       </Box>
     </Flex>

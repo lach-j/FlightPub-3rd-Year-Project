@@ -124,14 +124,14 @@ export const SearchPage = () => {
   ];
 
   return (
-    <Box p={'2em'}>
+    <Box p='2em'>
       <Center>
         <form onSubmit={handleSearch}>
           <FormControl as='fieldset'>
-            <FormLabel as='legend' fontSize={'2xl'}>
+            <FormLabel as='legend' fontSize='2xl'>
               Search flights
             </FormLabel>
-            <VStack gap={'2em'}>
+            <VStack gap='2em'>
               <HStack
                 alignItems={'flex-start'}
                 divider={<StackDivider borderColor='gray.200' />}
@@ -145,7 +145,7 @@ export const SearchPage = () => {
                   <Box>
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
-                      <Accordion allowToggle w={'20em'}>
+                      <Accordion allowToggle w='20em'>
                         <AccordionItem>
                           <AccordionButton>
                             <Box flex='1' textAlign='left'>
@@ -211,8 +211,8 @@ export const SearchPage = () => {
                         placeholder='Select flight Type'
                         maxW={240}
                       >
-                        <option value={'one-way'}>One-way</option>
-                        <option value={'return'}>Round trip</option>
+                        <option value='one-way'>One-way</option>
+                        <option value='return'>Round trip</option>
                       </Select>
                     </FormControl>
                   </Box>

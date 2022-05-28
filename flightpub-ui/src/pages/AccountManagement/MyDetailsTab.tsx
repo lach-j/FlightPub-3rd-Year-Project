@@ -92,9 +92,9 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
 
   return (
     <>
-      <Heading mb={'1em'}>My Details</Heading>
+      <Heading mb='1em'>My Details</Heading>
       <form>
-        <VStack gap={'1em'}>
+        <VStack gap='1em'>
           {editProfileForm.inputs.map((input) => (
             <CustomEditible
               name={input.name}
@@ -104,7 +104,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
               onSave={(value) => handleDetailsUpdate(input.name, value)}
             />
           ))}
-          <HStack w={'full'} gap={'1em'}>
+          <HStack w='full' gap='1em'>
             <Button
               colorScheme={'blue'}
               disabled={!isDirty}
@@ -122,8 +122,8 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
           </HStack>
         </VStack>
       </form>
-      <Divider mt={'2em'} mb={'3em'} />
-      <Button colorScheme='red' variant={'outline'} onClick={onOpen}>
+      <Divider mt='2em' mb='3em' />
+      <Button colorScheme='red' variant='outline' onClick={onOpen}>
         Delete Account
       </Button>
 

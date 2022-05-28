@@ -81,10 +81,10 @@ export const MapPage = () => {
   };
 
   return (
-    <Box h={'full'} display={'flex'} position={'absolute'} top={0} left={0} right={0} bottom={0}>
-      <Box w={'max-content'} p={'1em'} overflow={'auto'}>
+    <Box h='full' display='flex' position='absolute' top={0} left={0} right={0} bottom={0}>
+      <Box w='max-content' p='1em' overflow='auto'>
         <Heading
-          fontSize={'1.5em'}>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
+          fontSize='1.5em'>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
           <ResultsTable columns={flightColumns} flights={flights} />
         </Box>
@@ -106,17 +106,17 @@ export const MapPage = () => {
             let hasFlights = departureCount.find(f => f.destinationCode === airport.code);
             return (
               <>
-                {flight && <Popup maxWidth={'unset'} closeButton={false} closeOnClick={false}
+                {flight && <Popup maxWidth='unset' closeButton={false} closeOnClick={false}
                                   longitude={airport.coordinates[0]}
                                   latitude={airport.coordinates[1]}>
-                  <Flex w={'max-content'} p={'0.5em'} gap={'1em'}>
+                  <Flex w='max-content' p='0.5em' gap='1em'>
                     <Stat>
                       <StatLabel>{flight?.DepartureTime}</StatLabel>
                       <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber>
 
                       <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'}
                         {flight.stopOverLocation &&
-                          <Text textDecoration={'underline'} textDecorationStyle={'dashed'}
+                          <Text textDecoration='underline' textDecorationStyle={'dashed'}
                                 title={flight.stopOverLocation.airport || undefined}>
                             {`(${flight.stopOverLocation.destinationCode})`}
                           </Text>
@@ -124,11 +124,11 @@ export const MapPage = () => {
 
                     </Stat>
                     <Box ml='3'>
-                      <Text fontWeight='bold' fontSize={'md'}>
+                      <Text fontWeight='bold' fontSize='md'>
                         {flight?.arrivalLocation.airport}
                       </Text>
                       <Text fontSize='sm'>{flight.airlineCode}</Text>
-                      <Button colorScheme={'red'} size={'sm'} as={NavLink} to={routes.booking}>Book
+                      <Button colorScheme='red' size='sm' as={NavLink} to={routes.booking}>Book
                         now</Button>
                     </Box>
                   </Flex>
@@ -137,7 +137,7 @@ export const MapPage = () => {
                         key={airport?.id}>
                   <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
                         color={hasFlights ? (selectedAirport === airport ? 'red' : 'black') : 'lightgray'}
-                        fontSize={'3em'} onClick={() => {
+                        fontSize='3em' onClick={() => {
                     onAirportSelected(airport);
                   }} />
                 </Marker>
@@ -166,7 +166,7 @@ const ResultsTable = ({ columns, flights }: { columns: ColumnDefinition<any>[], 
           )}
         </Tr>
       </Thead>
-      <Tbody overflowY={'scroll'} maxH={'100%'} h={'100%'}>
+      <Tbody overflowY='scroll' maxH='100%' h='100%'>
         {flights
           .map((result: any) =>
             <Tr>

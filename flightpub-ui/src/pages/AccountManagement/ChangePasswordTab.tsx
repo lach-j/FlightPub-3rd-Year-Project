@@ -35,9 +35,9 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
 
   return (
     <>
-      <Heading mb={'1em'}>Change Password</Heading>
+      <Heading mb='1em'>Change Password</Heading>
       <form>
-        <VStack gap={'1em'}>
+        <VStack gap='1em'>
           <FormControl isRequired={true}>
             <FormLabel>Current Password</FormLabel>
             <Input
@@ -59,7 +59,7 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
               value={passwordData.confirm}
               onChange={event => handlePasswordInputUpdate('confirm', event.target.value)} />
           </FormControl>
-          <HStack w={'full'} gap={'1em'}>
+          <HStack w='full' gap='1em'>
             <Button
               colorScheme={'blue'}
               disabled={passwordResetIsValid()}
