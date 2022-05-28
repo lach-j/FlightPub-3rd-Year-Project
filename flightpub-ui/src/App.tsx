@@ -20,37 +20,37 @@ const noNavbar = [
   routes.login,
   routes.register,
   routes.forgotPassword,
-  routes.resetPassword
-]
+  routes.resetPassword,
+];
 
 const App = () => {
 
   const location = useLocation();
 
   const hasNavbar = (): boolean => {
-    return !noNavbar.some(r => r === location.pathname)
-  }
+    return !noNavbar.some(r => r === location.pathname);
+  };
 
   return (
-    <Flex direction={'column'} height={'100vh'} >
+    <Flex direction='column' height='100vh'>
       {hasNavbar() && <Header />}
-      <Box position={'relative'} height={'100%'} >
-      <Routes>
-        <Route path={routes.home} element={<HomePage />} />
-        <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
-        <Route path={routes.register} element={<RegisterPage />} />
-        <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />
-        <Route path={routes.resetPassword} element={<PasswordResetPage redirectPath={routes.login} />} />
-        <Route path={routes.search} element={<SearchPage />} />
-        <Route path={routes.map} element={<MapPage />} />
-        <Route path={routes.account} element={<AccountPage />} />
-        <Route path={routes.searchResults} element={<SearchResultsPage />} />
-        <Route path={routes.booking} element={<BookingPage />} />
-        <Route path={"*"} element={<h1>Page Not Found</h1>} />
-      </Routes>
+      <Box position='relative' height='100%'>
+        <Routes>
+          <Route path={routes.home} element={<HomePage />} />
+          <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
+          <Route path={routes.register} element={<RegisterPage />} />
+          <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />
+          <Route path={routes.resetPassword} element={<PasswordResetPage redirectPath={routes.login} />} />
+          <Route path={routes.search} element={<SearchPage />} />
+          <Route path={routes.map} element={<MapPage />} />
+          <Route path={routes.account} element={<AccountPage />} />
+          <Route path={routes.searchResults} element={<SearchResultsPage />} />
+          <Route path={routes.booking} element={<BookingPage />} />
+          <Route path='*' element={<h1>Page Not Found</h1>} />
+        </Routes>
       </Box>
     </Flex>
   );
-}
+};
 
 export default App;

@@ -13,23 +13,17 @@ import {
   SliderThumb,
   SliderTrack,
   StackDivider,
-  Table,
-  Tbody,
   Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import * as _ from 'lodash';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
-import { Airline, Flight, Price, ColumnDefinition } from '../models';
+import { Airline, ColumnDefinition, Flight, Price } from '../models';
+import { DataTable } from '../components/DataTable';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
@@ -40,10 +34,11 @@ const formatDateTime = (value: string): string => new Date(value).toLocaleString
 const getPriceString = (prices: Price[]) => {
   if (!prices) return '';
   let pricesVals = prices.map(p => p.price);
-  let minPrice = Math.min(...pricesVals)
-  let maxPrice = Math.max(...pricesVals)
+  let minPrice = Math.min(...pricesVals);
+  let maxPrice = Math.max(...pricesVals);
   return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
-}
+};
+
 function convertMinsToHM(minutes: number) {
   let hours = Math.floor(minutes / 60);
 
@@ -58,10 +53,6 @@ export function SearchResultsPage() {
 
   const [results, setResults] = useState<Flight[]>([]);
 
-  const [sortField, setSortField] = useState('');
-  const [ascendingCol, setAscendingCol] = useState('');
-  const [descendingCol, setDescendingCol] = useState('');
-  const [ascending, setAscending] = useState(true);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
   const [airlineFilter, setAirlineFilter] = useState('');
@@ -73,15 +64,50 @@ export function SearchResultsPage() {
 
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
+
+  const getMinPrice = (prices: Price[]) => Math.min(...prices.map(p => p.price));
+  const getMaxPrice = (prices: Price[]) => Math.max(...prices.map(p => p.price));
+
   const columns: ColumnDefinition<any>[] = [
-    { accessor: 'airlineCode', Header: 'Airline', transform: value => airlines.find(a => a.airlineCode === value)?.airlineName},
-    { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
-    { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
-    { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
-    { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
-    { accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
-    { accessor: 'prices', Header: 'Price', transform: getPriceString },
-    { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
+    {
+      accessor: 'airlineCode',
+      Header: 'Airline',
+      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName,
+    },
+    {
+      accessor: 'departureLocation.airport',
+      Header: 'Departure Airport'
+    },
+    {
+      accessor: 'departureTime',
+      Header: 'Departure Time',
+      transform: formatDateTime
+    },
+    {
+      accessor: 'arrivalTime',
+      Header: 'Arrival Time',
+      transform: formatDateTime
+    },
+    {
+      accessor: 'arrivalLocation.airport',
+      Header: 'Destination Airport' 
+    },
+    {
+      accessor: 'stopOverLocation.airport',
+      Header: 'Stop Over',
+      transform: (value: any) => value || '---'
+    },
+    {
+      accessor: 'prices',
+      Header: 'Price',
+      transform: getPriceString,
+      sortValue: (prices: Price[], descending) => descending ? getMaxPrice(prices) : getMinPrice(prices),
+    },
+    {
+      accessor: 'duration',
+      Header: 'Duration',
+      transform: (value: any) => convertMinsToHM(value)
+    },
   ];
 
   useEffect(() => {
@@ -102,25 +128,6 @@ export function SearchResultsPage() {
 
   }, [state]);
 
-  const sortByField = (field: string) => {
-    let order = -1;
-
-    setAscendingCol('');
-    setDescendingCol('');
-    setAscendingCol(field);
-
-    if (sortField === field) {
-      order = ascending ? -1 : 1;
-      setAscending(!ascending);
-      if (!ascending) {
-        setAscendingCol('');
-        setDescendingCol(field);
-      }
-    }
-    setResults([...results.sort((a: any, b: any) => a?.[field] < b?.[field] ? order : -1 * order)]);
-    setSortField(field);
-  };
-
   const filterByPrice = (val: number[]) => {
     setMinPrice(val[0]);
     setMaxPrice(val[1]);
@@ -134,24 +141,23 @@ export function SearchResultsPage() {
     setDurationFilter(val);
   };
 
-  const sortIcon = (col: string) => {
-    if (col === ascendingCol) {
-      return (
-        <TriangleUpIcon />
-      );
-    }
-    if (col === descendingCol) {
-      return (
-        <TriangleDownIcon />
-      );
-    }
-    return;
+  const filterResults = (result: Flight) => {
+    if (
+      result.prices.filter(p => p.price < minPrice).length > 0
+      || result.prices.filter(p => p.price > maxPrice).length > 0
+    ) return false;
+
+    if (airlineFilter && airlineFilter !== result.airlineCode) return false;
+
+    if (result.duration > durationFilter) return false;
+
+    return true;
   };
 
   const toast = useToast();
 
   return (
-    <Box p={'1em'}>
+    <Box p='1em'>
       <HStack
         divider={<StackDivider borderColor='gray.200' />}
         spacing={10}
@@ -215,71 +221,25 @@ export function SearchResultsPage() {
           </VStack>
         </Box>
         <Center flex='1'>
-
-          <Table width='90%'>
-            <Thead>
-              <Tr>
-                {columns.map((column) =>
-                  <Th onClick={() => sortByField(column.accessor)}>
-                    <HStack spacing={3}>
-                      <Text>{column.Header}</Text>
-                      {sortIcon(column.accessor)}
-                    </HStack>
-                  </Th>,
-                )}
-                <Th>Duration</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {/*TODO OSOSOSOSOSOSOSOSOSOSOSOSOSOSOOSOSOSOSOSOoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/}
-
-              {results.map((result: any) =>
-                  <Tr>
-                    {columns.map((column) =>
-                        <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-                  {/*  chuck here after*/}
-                  </Tr>,
-              )}
-
-              {results.filter((result) => {
-                if (result.prices.filter( p => p.price < minPrice).length > 0 || result.prices.filter( p => p.price > maxPrice).length > 0) {
-                  return false;
-                }
-                if (airlineFilter !== '') {
-                  if (airlineFilter !== result.airlineCode) {
-                    return false;
-                  }
-                }
-                if (result.duration > durationFilter) {
-                  return false;
-                }
-                return true;
-              }).map((result: any) =>
-                <Tr>
-                  {columns.map((column) =>
-                    <Td>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-                  <Td>
-                    <Button type='button'
-                            colorScheme='red'
-                            onClick={() =>
-                              toast({
-                                title: 'Success!',
-                                description:
-                                  'Flight added to cart successfully.',
-                                status: 'success',
-                                duration: 9000,
-                                isClosable: true,
-                                position: 'top',
-                              })
-                            }>
-                      Add to Cart
-                    </Button>
-                  </Td>
-                </Tr>,
-              )}
-            </Tbody>
-          </Table>
+          <DataTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable>
+            <Td>
+              <Button type='button'
+                      colorScheme='red'
+                      onClick={() =>
+                        toast({
+                          title: 'Success!',
+                          description:
+                            'Flight added to cart successfully.',
+                          status: 'success',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top',
+                        })
+                      }>
+                Add to Cart
+              </Button>
+            </Td>
+          </DataTable>
         </Center>
       </HStack>
     </Box>

@@ -21,7 +21,7 @@ import {
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
 import { dummySavedPayments } from '../../data/SavedPayments';
 import React, { useEffect, useState } from 'react';
-import { SavedPayment } from './SavedPaymentTypes';
+import { SavedPayment } from '../../models';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
@@ -97,16 +97,16 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (!isOpenAddPayment) setIsEdititng(null);
-  }, [isOpenAddPayment])
+  }, [isOpenAddPayment]);
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
       case 'card':
         return (
-          <VStack mt={'1em'} gap={'1em'}>
+          <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>Card Number</FormLabel>
               <Input value={savedPaymentData.cardNumber}
@@ -124,14 +124,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             </FormControl>
             <FormControl>
               <FormLabel>CCV</FormLabel>
-              <Input type={'number'} value={savedPaymentData.ccv}
+              <Input type='number' value={savedPaymentData.ccv}
                      onChange={(event) => handleSavedPaymentUpdate('ccv', event.target.value)} />
             </FormControl>
           </VStack>
         );
       case 'paypal':
         return (
-          <VStack mt={'1em'} gap={'1em'}>
+          <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>PayPal Email</FormLabel>
               <Input value={savedPaymentData.email}
@@ -142,7 +142,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
         );
       case 'directDebit':
         return (
-          <VStack mt={'1em'} gap={'1em'}>
+          <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>BSB</FormLabel>
               <Input type={'number'}
@@ -151,7 +151,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             </FormControl>
             <FormControl>
               <FormLabel>Account Number</FormLabel>
-              <Input type={'number'} value={savedPaymentData.accNumber}
+              <Input type='number' value={savedPaymentData.accNumber}
                      onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)} />
             </FormControl>
             <FormControl>
@@ -166,15 +166,15 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
 
   return (
     <>
-      <HStack mb={'1em'} justifyContent={'space-between'} alignItems={'center'}>
+      <HStack mb='1em' justifyContent='space-between' alignItems='center'>
         <Heading>Saved Payments</Heading>
         <Button onClick={() => {
           setSavedPaymentData(null);
           onOpenAddPayment();
-        }} colorScheme={'green'} rightIcon={<BiPlus />}>Add New Payment</Button>
+        }} colorScheme='green' rightIcon={<BiPlus />}>Add New Payment</Button>
       </HStack>
 
-      <Flex gap={'1em'} alignItems={'flex-start'} flexWrap={'wrap'}>
+      <Flex gap='1em' alignItems='flex-start' flexWrap='wrap'>
         {
           savedPayments.map((payment) =>
             <SavedPaymentComponent payment={payment}
@@ -194,7 +194,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <Input value={savedPaymentData?.nickname}
                      onChange={(event) => handleSavedPaymentUpdate('nickname', event.target.value)} />
             </FormControl>
-            <FormControl mt={'1em'}>
+            <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
               <Select value={savedPaymentData?.type}
                       onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}>
@@ -208,7 +208,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
           </ModalBody>
           <ModalFooter>
 
-            <Flex justifyContent={'space-between'} w={'full'}>
+            <Flex justifyContent='space-between' w='full'>
               <HStack>
                 <Checkbox checked={savedPaymentData?.isDefault}
                           onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.checked)}>Set as
@@ -217,7 +217,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <HStack>
                 {typeof isEdititng === 'number' ?
                   <Button onClick={handleUpdatePayment}
-                          colorScheme={'green'}>
+                          colorScheme='green'>
                     Update
                   </Button>
                   :
