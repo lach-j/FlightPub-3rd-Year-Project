@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -16,6 +18,6 @@ public class Booking implements IEntity {
     private long id;
     private long userId;
     @ElementCollection
-    private Set<long> flightIds;
+    private Set<Long> flightIds;
     private LocalDateTime dateBooked;
 }

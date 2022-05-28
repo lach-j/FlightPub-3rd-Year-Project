@@ -1,7 +1,13 @@
 package seng3150.team4.flightpub.services;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.repositories.IBookingRepository;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +23,7 @@ public class BookingService implements IBookingService {
 
     @Override
     public void deleteBooking(Booking booking) {
-        bookingRepository.delete(Booking);
+        bookingRepository.delete(booking);
     }
 
     @Override
@@ -29,11 +35,11 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<Booking> getBookingsByUserId(long userId){
+    public Optional<List<Booking>> getBookingsByUserId(long userId){
         var bookings = bookingRepository.findByUserId(userId);
         if (bookings.isEmpty()) throw new EntityNotFoundException(String.format("No bookings for user with id %s found", userId));
 
-        return bookings.get();
+        return bookings;
     }
 
 }
