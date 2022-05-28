@@ -29,17 +29,12 @@ export const BookingPage = () => {
   const [authError, setAuthError] = useState(false);
   const bookedFlights = flights.slice(2, 4);
   const [bookingRequest, setBookingRequest] = useState<Booking>({
-    userId: 193450320483029459968201039495,
-    flightIds: new Set<any>(),
+    userId: 2,
+    flightIds: [1, 2000, 500],
   });
   const toast = useToast();
 
   const handleBooking = (e: SyntheticEvent) => {
-    let fs = new Set<any>();
-    fs.add(284967381943058239104);
-    fs.add(274930147492940506);
-
-    bookingRequest.flightIds = fs;
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {

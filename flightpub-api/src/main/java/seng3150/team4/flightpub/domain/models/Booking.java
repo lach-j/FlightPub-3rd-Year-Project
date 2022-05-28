@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,7 +19,13 @@ public class Booking implements IEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long userId;
-    @ElementCollection
-    private Set<Long> flightIds;
+
+    @ManyToMany
+    @JoinTable(
+            name = "bookFlight",
+            joinColumns = {@JoinColumn(name = "bookingId")},
+            inverseJoinColumns = {@JoinColumn(name = "flightId")}
+    )
+    private Set<Flight> flights = new HashSet<>();
     private LocalDateTime dateBooked;
 }

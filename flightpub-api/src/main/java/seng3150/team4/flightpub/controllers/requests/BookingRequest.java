@@ -22,8 +22,6 @@ public class BookingRequest extends Validatable {
 
     private Set<Long> flightIds;
 
-    private LocalDateTime dateBooked;
-
     @Override
     protected ValidationResult getErrors() {
         return new ValidationResult();

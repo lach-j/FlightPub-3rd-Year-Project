@@ -25,7 +25,7 @@ public class BookingController {
 
         var booking = bookingFromRequest(bookingRequest);
 
-        var savedBooking = bookingService.makeBooking(booking);
+        var savedBooking = bookingService.makeBooking(booking, bookingRequest.getFlightIds());
 
         return ResponseEntity.ok().body(new EntityResponse<>(savedBooking));
     }
@@ -34,7 +34,6 @@ public class BookingController {
         Booking booking = new Booking();
 
         booking.setUserId(request.getUserId());
-        booking.setFlightIds(request.getFlightIds());
         booking.setDateBooked(LocalDateTime.now());
 
         return booking;
