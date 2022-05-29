@@ -46,7 +46,7 @@ const App = () => {
           <Route path={routes.search} element={<SearchPage />} />
           <Route path={routes.map} element={<MapPage />} />
           <Route path={routes.account} element={<AccountPage />} />
-          <Route path={routes.searchResults} element={<SearchResultsPage />} />
+          <Route path={routes.searchResults} element={<SearchResultsPage cartState={[cart, setCart]}/>} />
           <Route path={routes.booking} element={<BookingPage />} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>
