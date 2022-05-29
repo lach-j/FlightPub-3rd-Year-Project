@@ -8,9 +8,7 @@ import seng3150.team4.flightpub.domain.models.Flight;
 
 import java.util.List;
 
-/**
- * Repository for making CRUD transactions on the Flights database table.
- */
+/** Repository for making CRUD transactions on the Flights database table. */
 public interface IFlightRepository extends CrudRepository<Flight, Long> {
 
   // Find all flights that depart from the specified destination and are in the future

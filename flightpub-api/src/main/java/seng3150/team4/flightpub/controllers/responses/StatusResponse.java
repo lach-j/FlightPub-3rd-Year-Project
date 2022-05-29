@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-/**
- * Response for returning HttpStatus codes/messages
- */
+/** Response for returning HttpStatus codes/messages */
 @Getter
 @Setter
 public class StatusResponse implements Response {

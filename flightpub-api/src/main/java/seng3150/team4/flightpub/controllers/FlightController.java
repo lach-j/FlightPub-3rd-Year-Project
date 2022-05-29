@@ -52,4 +52,11 @@ public class FlightController {
     var cheapest = flightService.getCheapestFlights(destination);
     return new EntityCollectionResponse<>(cheapest);
   }
+
+  @GetMapping("/fetchById/{ids}")
+  public Response getFlightById(@PathVariable String ids) {
+    ids = ids;
+
+    return new EntityCollectionResponse<>(flightService.getFlightByIds(ids));
+  }
 }

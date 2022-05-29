@@ -6,9 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 import seng3150.team4.flightpub.domain.models.ResetToken;
 
-/**
- * Repository for making CRUD transactions on the ResetToken database table.
- */
+/** Repository for making CRUD transactions on the ResetToken database table. */
 public interface IResetTokenRepository extends CrudRepository<ResetToken, String> {
   @Transactional
   @Modifying

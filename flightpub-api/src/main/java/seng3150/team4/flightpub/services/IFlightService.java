@@ -6,9 +6,7 @@ import seng3150.team4.flightpub.domain.models.Flight;
 
 import java.util.List;
 
-/**
- * Interface to define FlightService methods
- */
+/** Interface to define FlightService methods */
 public interface IFlightService {
   List<Flight> searchFlights(FlightQueryRequest request);
 
@@ -17,4 +15,6 @@ public interface IFlightService {
   List<DestinationCount> destinationsCount();
 
   List<Flight> getCheapestFlights(String destination);
+
+  List<Flight> getFlightByIds(String ids);
 }

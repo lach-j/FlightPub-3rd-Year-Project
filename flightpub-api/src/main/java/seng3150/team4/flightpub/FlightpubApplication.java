@@ -4,9 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
-/**
- * Application main class
- */
+/** Application main class */
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class FlightpubApplication {

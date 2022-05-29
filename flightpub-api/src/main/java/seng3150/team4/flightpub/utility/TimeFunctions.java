@@ -3,9 +3,7 @@ package seng3150.team4.flightpub.utility;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Utility class for time transformation methods
- */
+/** Utility class for time transformation methods */
 public class TimeFunctions {
   public static Date minutesFromNow(long minutes) {
     // Get the current date as a Calendar

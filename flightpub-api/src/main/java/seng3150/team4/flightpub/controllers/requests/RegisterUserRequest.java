@@ -33,7 +33,6 @@ public class RegisterUserRequest extends Validatable {
     }
     validationResult.addError(emailErrors);
 
-
     // Ensure password was provided and is valid
     var passwordErrors = new ValidationError("password");
     if (isNullOrEmpty(password)) {

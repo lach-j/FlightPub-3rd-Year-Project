@@ -64,7 +64,8 @@ public class AuthenticationService implements IAuthenticationService {
       // Get the user from the database
       user = userService.getUserByEmail(email);
     } catch (EntityNotFoundException ex) {
-      // If the user does not exist then handle exception silently. For security/privacy reasons, we do not want to
+      // If the user does not exist then handle exception silently. For security/privacy reasons, we
+      // do not want to
       // return this error as it will show if this email is registered on the system
       return;
     }

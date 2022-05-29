@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-/**
- * Extends StatusResponse, includes field for JWT
- */
+/** Extends StatusResponse, includes field for JWT */
 @NoArgsConstructor
 @Getter
 @Setter

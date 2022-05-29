@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Icon, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MdLocalAirport } from 'react-icons/all';

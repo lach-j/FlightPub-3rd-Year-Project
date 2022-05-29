@@ -1,17 +1,20 @@
-import { HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, { useState } from 'react';
-import { ColumnDefinition } from '../models';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
-type DataTableProps = {
+type ResultsTableProps = {
   columns: ColumnDefinition<any>[],
   data: any[],
   sortable?: boolean;
   keyAccessor: string;
+  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }
 
-export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, sortable = false, keyAccessor }) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, children, sortable = false, keyAccessor, cartState }) => {
+  const toast = useToast();
+  const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -65,6 +68,24 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
             {columns.map((column) =>
               <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
             {children}
+            <Td>
+                <Button type='button'
+                          colorScheme='red'
+                          onClick={() => {
+                            setCart(cart => [...cart, result]);
+                            toast({
+                              title: 'Success!',
+                              description:
+                                'Flight added to cart successfully.',
+                              status: 'success',
+                              duration: 9000,
+                              isClosable: true,
+                              position: 'top',
+                            })
+                          }}>
+                              Add to Cart
+                    </Button>
+            </Td>
           </Tr>}
         )}
       </Tbody>

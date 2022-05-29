@@ -12,9 +12,7 @@ import java.util.Map;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
-/**
- * Request for flight search
- */
+/** Request for flight search */
 @Getter
 @Setter
 public class FlightQueryRequest extends Validatable {

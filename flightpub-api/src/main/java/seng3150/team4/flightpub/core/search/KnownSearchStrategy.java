@@ -7,9 +7,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SearchStrategy used for Known Search
- */
+/** SearchStrategy used for Known Search */
 public class KnownSearchStrategy extends SearchStrategy {
 
   public KnownSearchStrategy(FlightQueryRequest flightQuery) {
