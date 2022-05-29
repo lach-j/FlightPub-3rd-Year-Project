@@ -7,6 +7,8 @@ import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
+import { NavLink } from 'react-router-dom';
+import { routes } from '../constants/routes';
 
 export function HomePage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
 
@@ -80,14 +82,9 @@ export function HomePage({ cartState }: { cartState: [Flight[], Dispatch<SetStat
             <img src={logo} alt='Logo' width='1000px' />
           </Center>
           <Box>
-            <form>
-              <Button type='submit' colorScheme='red' width='500px'>
-                Search For a Flight
-              </Button>
-              <Button type='submit' colorScheme='red' width='500px'>
-                I'm Feeling Lucky
-              </Button>
-            </form>
+            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
+              Search For a Flight
+            </Button>
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>

@@ -52,6 +52,7 @@ const App = () => {
       {hasNavbar() && <Header cartState={cartState} />}
       <Box position='relative' height='100%'>
         <Routes>
+          <Route path={routes.default} element={<HomePage cartState={cartState} />} />
           <Route path={routes.home} element={<HomePage cartState={cartState} />} />
           <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
           <Route path={routes.register} element={<RegisterPage />} />
