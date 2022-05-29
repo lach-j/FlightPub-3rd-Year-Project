@@ -11,7 +11,8 @@ type DataTableProps = {
   keyAccessor: string;
 }
 
-export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, sortable = false, keyAccessor }) => {
+export let DataTable: React.FC<DataTableProps>;
+DataTable = ({columns, data, children, sortable = false, keyAccessor}) => {
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -42,33 +43,30 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
     }
   };
 
-  const sortIcon = () => descending ? <TriangleDownIcon /> : <TriangleUpIcon />;
+  const sortIcon = () => descending ? <TriangleDownIcon/> : <TriangleUpIcon/>;
 
-  return (
-    <Table width='100%'>
-      <TableCaption>Prices subject to change. T&C's apply</TableCaption>
-      <Thead>
-        <Tr>
-          {columns.map((column) =>
-            <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
-              <HStack spacing={3}>
-                <Text>{column.Header}</Text>
-                {column === sortingColumn && sortIcon()}
-              </HStack>
-            </Th>,
-          )}
+  return (<Table width='100%'>
+    <TableCaption>Prices subject to change. T&C's apply</TableCaption>
+    <Thead>
+      <Tr>
+        {columns.map((column) => <Th userSelect='none' onClick={() => handleColumnSort(column)}
+                                     key={column.accessor}>
+          <HStack spacing={3}>
+            <Text>{column.Header}</Text>
+            {column === sortingColumn && sortIcon()}
+          </HStack>
+        </Th>,)}
+      </Tr>
+    </Thead>
+    <Tbody>
+      {data.sort(sortFunc).map((result: any) => {
+        console.log(_.get(result, keyAccessor))
+        return <Tr key={_.get(result, keyAccessor)}>
+          {columns.map((column) => <Td
+              key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+          {children}
         </Tr>
-      </Thead>
-      <Tbody>
-        {data.sort(sortFunc).map((result: any) => {
-          console.log(_.get(result, keyAccessor))
-          return <Tr key={_.get(result, keyAccessor)}>
-            {columns.map((column) =>
-              <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-            {children}
-          </Tr>}
-        )}
-      </Tbody>
-    </Table>
-  );
+      })}
+    </Tbody>
+  </Table>);
 };

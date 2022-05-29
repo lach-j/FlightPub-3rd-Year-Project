@@ -1,3 +1,4 @@
+//Defines column definitions for DataTable
 export interface ColumnDefinition<T> {
   accessor: T;
   Header: string;

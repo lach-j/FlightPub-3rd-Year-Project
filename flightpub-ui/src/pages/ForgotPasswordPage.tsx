@@ -33,9 +33,11 @@ export const ForgotPasswordPage = ({
   const redirectUser = () => {
     navigate(redirectPath || '/');
   };
+  //Handles submission of user email from form
   const handleLogin = (e: SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
+    //for when user forgets password
     setTimeout(() => {
       api
         .httpPost(endpoints.forgot, authRequest)
@@ -51,11 +53,13 @@ export const ForgotPasswordPage = ({
           });
           redirectUser();
         })
+          //for invalid email address
         .catch((err: ApiError) => {
           if (err.statusCode === 400) {
             setAuthError(true);
             setErrMessage('The email is not a valid email address');
           } else if (err.statusCode === 202) {
+            //for 202 error
           } else {
             toast({
               title: 'Error.',
@@ -68,12 +72,14 @@ export const ForgotPasswordPage = ({
             });
           }
         })
+          //if email is valid
         .finally(() => setLoading(false));
       return false;
     }, 1000);
     setAuthError(false);
   };
 
+  //Handles update of email input, updating value
   const handleLoginDetailsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {

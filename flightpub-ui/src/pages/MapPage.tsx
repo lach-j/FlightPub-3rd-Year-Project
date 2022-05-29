@@ -24,19 +24,30 @@ import { airports } from '../data/airports';
 import { formatDateTime, getMinMaxPriceString } from '../utility/formatting';
 import { DataTable } from '../components/DataTable';
 
+//Defines DataTable columns for flight table
 const flightColumns: ColumnDefinition<any>[] = [
   { Header: 'Destination', accessor: 'arrivalLocation.airport' },
   { Header: 'Departure Time', accessor: 'departureTime', transform: formatDateTime },
   { Header: 'Price', accessor: 'prices', transform: (prices: Price[]) => getMinMaxPriceString(prices) },
 ];
 
-
 export const MapPage = () => {
+  // selectedAiport : airport selected by user on map
   const [selectedAirport, setSelectedAirport] = useState<Airport | undefined>();
+
+  // flights : Defines list of outgoing flights from a location
   const [flights, setFlights] = useState<Flight[]>([]);
+
+  //departureCount : defines number of outgoing flights
   const [departureCount, setDepartureCount] = useState<DestinationCount[]>([]);
+
+  //enables react programatic navigation
   const navigate = useNavigate();
+
+  // useRef hook from react-map-gl package
   const geolocateRef = useRef<GeolocateControlRef>(null);
+
+  //Updates selectedAirport upon UI selection
   const onAirportSelected = (airportFeature: Airport) => {
 
     if (airportFeature === selectedAirport) {
@@ -46,20 +57,24 @@ export const MapPage = () => {
     setSelectedAirport(airportFeature);
   };
 
+  //Defines departureCount onload
   useEffect(() => {
     httpGet(endpoints.departureCount).then(setDepartureCount);
   }, []);
 
+  //Determines outgoing flghts from closest airport on-load
   useEffect(() => {
     httpGet(endpoints.mapSearch + '/' + selectedAirport?.code)
       .then(setFlights);
   }, [selectedAirport]);
 
+  // Determines user location and finds nearest airport to user
   const handleGeolocate = ({ coords }: { coords: GeolocationCoordinates }) => {
     const { latitude, longitude } = coords;
     setSelectedAirport(findNearestAirport([longitude, latitude]));
   };
 
+  //Returns flight information based on selected flight given departure and arrival code
   const getFlight = (departureCode: string, arrivalCode: string) => {
     let flight = flights.find(f => f.departureLocation.destinationCode === departureCode && f.arrivalLocation.destinationCode === arrivalCode);
     if (!flight) return;
@@ -77,12 +92,16 @@ export const MapPage = () => {
     <Box h='full' display='flex' position='absolute' top={0} left={0} right={0} bottom={0}>
       <Box w='max-content' p='1em' overflow='auto'>
         <Heading
+            //Displays users selected airport or prompts user to select airport
           fontSize='1.5em'>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
+          //DataTable for outgoing flights from a destination
           <DataTable columns={flightColumns} data={flights} keyAccessor='id' />
         </Box>
       </Box>
+      //Visual map element provided by package react-map-gl
       <Map
+          //Default settings for map
         onLoad={() => geolocateRef?.current?.trigger()}
         initialViewState={{
           longitude: 0,
@@ -94,38 +113,44 @@ export const MapPage = () => {
         mapboxAccessToken={'pk.eyJ1IjoiYzMzNTAxMzEiLCJhIjoiY2wwZXp1YzJoMG82MjNkcXQ5YmxsbWRtMCJ9.hoJ4MvSxn7j0J89DVLWaQw'}
       >
         {
+          //Populates map with airport markers and popup elements to select outgoing flights
           airports.map((airport) => {
+            //finds departure and arrival airport information
             let flight = selectedAirport && getFlight(selectedAirport?.code, airport?.code);
+            //List of outgoing flights
             let hasFlights = departureCount.find(f => f.destinationCode === airport.code);
             return (
               <>
+                //Popup UI element for outgoing flights on map based on airport co-ordinates
                 {flight && <Popup maxWidth='unset' closeButton={false} closeOnClick={false}
                                   longitude={airport.coordinates[0]}
                                   latitude={airport.coordinates[1]}>
                   <Flex w='max-content' p='0.5em' gap='1em'>
                     <Stat>
-                      <StatLabel>{flight?.DepartureTime}</StatLabel>
-                      <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber>
+                      <StatLabel>{flight?.DepartureTime}</StatLabel> //Flight departure time
+                      <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber> //Flight price
 
-                      <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'}
-                        {flight.stopOverLocation &&
+                      <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'} //Flight type
+                        {flight.stopOverLocation && //stopOver location if exists
                           <Text textDecoration='underline' textDecorationStyle={'dashed'}
-                                title={flight.stopOverLocation.airport || undefined}>
-                            {`(${flight.stopOverLocation.destinationCode})`}
+                                title={flight.stopOverLocation.airport || undefined}> //stopover airport
+                            {`(${flight.stopOverLocation.destinationCode})`} //stopover airport code
                           </Text>
                         }</StatHelpText>
 
                     </Stat>
                     <Box ml='3'>
                       <Text fontWeight='bold' fontSize='md'>
-                        {flight?.arrivalLocation.airport}
+                        {flight?.arrivalLocation.airport} //arrival airport information
                       </Text>
-                      <Text fontSize='sm'>{flight.airlineCode}</Text>
+                      <Text fontSize='sm'>{flight.airlineCode}</Text> //flight airline
                       <Button colorScheme='red' size='sm' as={NavLink} to={routes.booking}>Book
-                        now</Button>
+                        now</Button> //book flight button on Map UI element
                     </Box>
                   </Flex>
                 </Popup>}
+
+                //Populates map with airport locations
                 <Marker longitude={airport.coordinates[0]} latitude={airport.coordinates[1]}
                         key={airport?.id}>
                   <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
@@ -135,10 +160,12 @@ export const MapPage = () => {
                   }} />
                 </Marker>
               </>
+
             )
               ;
           })
         }
+        //Wrapper for geolocatecontrol that updates user location on map
         <GeolocateControl ref={geolocateRef} onGeolocate={handleGeolocate} fitBoundsOptions={{ maxZoom: 4 }} />
       </Map>
     </Box>

@@ -49,6 +49,8 @@ export interface Item {
   value: string;
 }
 
+
+//tags information for search, currently not implemented
 const tags2 = [
   { label: 'Beach', value: 'beach' },
   { label: 'Snow', value: 'snow' },
@@ -59,11 +61,12 @@ const tags2 = [
   { label: 'Asia', value: 'asia' },
 ];
 
+//container for flexidate information, contains date and flex-date range
 interface FlexiDate {
   date: string;
   flex?: number;
 }
-
+//container for search query
 interface SearchQuery {
   departureDate: FlexiDate;
   departureCode?: string;
@@ -72,35 +75,40 @@ interface SearchQuery {
   returnFlight?: boolean;
 }
 
+
 export const SearchPage = () => {
-  const navigate = useNavigate();
-  const [flexEnabled, setFlexEnabled] = useState(false);
+  const navigate = useNavigate();   //enables react programmatic navigation
+  const [flexEnabled, setFlexEnabled] = useState(false); //state for tracking whether user has selected flexdate option
   const toast = useToast();
 
+  //Formats from JavaScript Date type to string
   const formatDate = (date: Date) => {
     return new Date(date).toISOString().split('T')[0];
   };
-
+  //authRequest : stores search query request
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({
     departureDate: { date: formatDate(new Date()) },
   });
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
+  //Handles update of search query input, updating value(s)
   const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
     setSearchQuery({ ...searchQuery, [field]: value });
   };
 
+  //Handles search event for search form
   function handleSearch(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+    e.preventDefault();  //prevents stand HTML form submission protocol
     onOpen();
+    //gets flight in formation from search query
     httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, {
       state: {
         query: searchQuery,
         results,
       },
     }))
-      .catch((err: ApiError) => {
+      .catch((err: ApiError) => { //error handling
         toast({
           title: 'An Error Has Occurred',
           description: 'An error has occurred, please try again later.',
@@ -111,7 +119,7 @@ export const SearchPage = () => {
         });
       }).finally(onClose);
   }
-
+//Handles update of ticket type form input
   const handleTicketUpdate = (value: number, classCode: string) => {
     handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value));
   };
@@ -143,6 +151,7 @@ export const SearchPage = () => {
                   align='stretch'
                 >
                   <Box>
+                    //Ticket type input
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
                       <Accordion allowToggle w='20em'>
@@ -167,6 +176,7 @@ export const SearchPage = () => {
                                 </Tr>
                               </Thead>
                               <Tbody>
+                                //Dropdown for ticket type
                                 {ticketOptions.map((option) => (
                                   <Tr key={option.key}>
                                     <Td>{option.label}</Td>
@@ -197,6 +207,7 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
                   <Box>
+                    //Handles type of flight (return or one-way)
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightType'>Type: </FormLabel>
                       <Select
@@ -223,6 +234,7 @@ export const SearchPage = () => {
                   align='stretch'
                 >
                   <Box>
+                    //Departure location input
                     <FormControl isRequired>
                       <FormLabel>Departure Location</FormLabel>
                       <AutoComplete
@@ -246,7 +258,7 @@ export const SearchPage = () => {
                       </AutoComplete>
                     </FormControl>
                   </Box>
-
+                  //Arrival location input
                   <Box>
                     <FormControl>
                       <FormLabel>Arrival Location:</FormLabel>
@@ -275,6 +287,7 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
 
+                  //Departure date input
                   <Box>
                     <FormControl>
                       <FormLabel>Departure Date</FormLabel>
@@ -291,6 +304,7 @@ export const SearchPage = () => {
                       />
                     </FormControl>
                   </Box>
+                  //Departure date input
                   <Box>
                     <FormControl>
                       <FormLabel>Departure Date</FormLabel>
@@ -307,6 +321,8 @@ export const SearchPage = () => {
                       />
                     </FormControl>
                   </Box>
+
+                  //Flex-date input
                   <Box>
                     <Checkbox
                       name={'flexEnabled'}
@@ -357,6 +373,7 @@ export const SearchPage = () => {
                   )}
                 </VStack>
               </HStack>
+              //Submission button
               <Box>
                 <Button type='submit' colorScheme='red'>
                   Search

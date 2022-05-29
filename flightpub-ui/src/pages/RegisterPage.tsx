@@ -21,7 +21,10 @@ import { endpoints } from '../constants/endpoints';
 
 export const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
+  //authError: boolean state, set to true when a registration error has occured
   const [authError, setAuthError] = useState(false);
+
+  //authRequest : stores registration request with email, password, firstName, lastName parameters
   const [registerRequest, setRegisterRequest] = useState<User>({
     email: '',
     password: '',
@@ -30,17 +33,19 @@ export const RegisterPage = () => {
   });
   const toast = useToast();
 
+  //enables react programmatic navigation
   const navigate = useNavigate();
   const redirectUser = () => {
     navigate(routes.login);
   };
 
+  //Handles registration event for registration form
   const handleRegister = (e: SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
       api
-        .httpPost(endpoints.users, registerRequest)
+        .httpPost(endpoints.users, registerRequest) //posts registration request
         .then((authResponse) => {
           toast({
             title: 'Account Created',
@@ -53,7 +58,7 @@ export const RegisterPage = () => {
           });
           redirectUser();
         })
-        .catch((err: ApiError) => {
+        .catch((err: ApiError) => { //if an error occurs in registration process
           if (err.statusCode === 401) {
             setAuthError(true);
           } else {
@@ -71,9 +76,9 @@ export const RegisterPage = () => {
         .finally(() => setLoading(false));
       return false;
     }, 1000);
-    setAuthError(false);
+    setAuthError(false);  //reset authError boolean on page reload
   };
-
+  //Handles update of registration form inputs, updating value(s)
   const handleLoginDetailsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -98,6 +103,7 @@ export const RegisterPage = () => {
             </Box>
             <Box>
               <Stack spacing='3'>
+                //Email input
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -105,6 +111,8 @@ export const RegisterPage = () => {
                     value={registerRequest.email}
                     onChange={handleLoginDetailsChange}
                   />
+
+                  //Firstname input
                 </FormControl>
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>First Name</FormLabel>
@@ -113,6 +121,7 @@ export const RegisterPage = () => {
                     value={registerRequest.firstName}
                     onChange={handleLoginDetailsChange}
                   />
+                  //LastName input
                 </FormControl>
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Last Name</FormLabel>
@@ -122,6 +131,7 @@ export const RegisterPage = () => {
                     onChange={handleLoginDetailsChange}
                   />
                 </FormControl>
+                //Password input
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Password</FormLabel>
                   <Input
@@ -130,15 +140,19 @@ export const RegisterPage = () => {
                     value={registerRequest.password}
                     onChange={handleLoginDetailsChange}
                   />
+
+                  //Error message popup
                   <FormErrorMessage>
                     The email and/or password provided are incorrect
                   </FormErrorMessage>
                 </FormControl>
               </Stack>
             </Box>
+            //Form submission button
             <Button type='submit' isLoading={loading} colorScheme='red'>
               Sign Up
             </Button>
+            //Button redirects user to sign-in page
             <Box textAlign='center'>
               Already have an account?{' '}
               <Link as={RouteLink} to={routes.login}>

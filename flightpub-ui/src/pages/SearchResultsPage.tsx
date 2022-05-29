@@ -25,12 +25,14 @@ import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { DataTable } from '../components/DataTable';
 
+//Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
   dateStyle: 'short',
   timeStyle: 'short',
   hour12: false,
 });
 
+//returns price-range as string of different flight class options
 const getPriceString = (prices: Price[]) => {
   if (!prices) return '';
   let pricesVals = prices.map(p => p.price);
@@ -39,6 +41,7 @@ const getPriceString = (prices: Price[]) => {
   return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
 };
 
+//Converts from flight minutes to hour:minute format
 function convertMinsToHM(minutes: number) {
   let hours = Math.floor(minutes / 60);
 
@@ -48,26 +51,30 @@ function convertMinsToHM(minutes: number) {
 }
 
 export function SearchResultsPage() {
-
+  //stores current web-browser location
   const { state } = useLocation();
-
+  //results: list of flights returned from query
   const [results, setResults] = useState<Flight[]>([]);
-
+  //Price range filter query resutls
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
+  //Airline filter for airline type
   const [airlineFilter, setAirlineFilter] = useState('');
+  //Duration range filter query results
   const [durationFilter, setDurationFilter] = useState(180000000);
   const [query, setQuery] = useState();
+
+  //Min-Max duration slider information
   const [maxDuration, setMaxDuration] = useState(180000000);
   const [minDuration, setMinDuration] = useState(0);
-
-
+  //List of airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
-
+//Min-Max price information
   const getMinPrice = (prices: Price[]) => Math.min(...prices.map(p => p.price));
   const getMaxPrice = (prices: Price[]) => Math.max(...prices.map(p => p.price));
 
+  //DataTable column definitions
   const columns: ColumnDefinition<any>[] = [
     {
       accessor: 'airlineCode',
@@ -109,12 +116,13 @@ export function SearchResultsPage() {
       transform: (value: any) => convertMinsToHM(value)
     },
   ];
-
+  //sets airline information on-load
   useEffect(() => {
     httpGet(endpoints.airlines)
       .then(setAirlines);
   }, []);
 
+  //sets results and query on-load
   useEffect(() => {
     const { results, query } = state as { query: any, results: Flight[] };
     setResults(results);
@@ -128,19 +136,21 @@ export function SearchResultsPage() {
 
   }, [state]);
 
+  // filtering by price
   const filterByPrice = (val: number[]) => {
     setMinPrice(val[0]);
     setMaxPrice(val[1]);
   };
-
+  //filtering by airline
   const filterByAirline = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAirlineFilter(event.target.value);
   };
-
+  //filtering by duration
   const filterByDuration = (val: number) => {
     setDurationFilter(val);
   };
 
+  //Filters resultdata based on stored filter criteria
   const filterResults = (result: Flight) => {
     if (
       result.prices.filter(p => p.price < minPrice).length > 0
@@ -168,6 +178,7 @@ export function SearchResultsPage() {
             divider={<StackDivider borderColor='gray.200' />}
             spacing={10}
             align='stretch'>
+            //Price filter slider
             <VStack
               spacing={4}
               align='stretch'>
@@ -188,6 +199,7 @@ export function SearchResultsPage() {
               </RangeSlider>
             </VStack>
 
+            //Flight duration slider
             <VStack
               spacing={4}
               align='stretch'>
@@ -208,6 +220,7 @@ export function SearchResultsPage() {
               </Slider>
             </VStack>
 
+            //Airline filter selectbox
             <VStack
               spacing={4}
               align='stretch'>
@@ -220,9 +233,11 @@ export function SearchResultsPage() {
             </VStack>
           </VStack>
         </Box>
+        //DataTable for flight results based on filtered data
         <Center flex='1'>
           <DataTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable>
             <Td>
+              //Add to cart button
               <Button type='button'
                       colorScheme='red'
                       onClick={() =>

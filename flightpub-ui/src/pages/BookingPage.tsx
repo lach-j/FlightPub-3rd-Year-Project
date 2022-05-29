@@ -33,12 +33,15 @@ import { routes } from '../constants/routes';
 
 
 export const BookingPage = () => {
-
+// SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const bookedFlights = flights.slice(2, 4);
 
   const renderPaymentDetails = () => {
+
+    //switch statement defines flow based on payment type
     switch (savedPaymentData?.type) {
+      //if users payment type is card
       case 'card':
         return (
           <VStack mt='1em' gap='1em' w='full'>
@@ -64,6 +67,7 @@ export const BookingPage = () => {
             </HStack>
           </VStack>
         );
+        // if users payment type is PayPal
       case 'paypal':
         return (
           <VStack mt='1em' gap='1em' w='full'>
@@ -74,6 +78,7 @@ export const BookingPage = () => {
             <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
           </VStack>
         );
+        // if users payment type is PayPal
       case 'directDebit':
         return (
           <HStack w='full' mt='1em' gap='1em'>
@@ -91,6 +96,7 @@ export const BookingPage = () => {
             </FormControl>
           </HStack>
         );
+        //If user payment type is 'saved'
       case 'saved':
         return (
           <Select>

@@ -8,13 +8,24 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { DataTable } from '../components/DataTable';
 
+
+
 export const HomePage = () => {
   const toast = useToast();
+  //recommended : contains data table of cheapest flights based on user location
   const [recommended, setRecommended] = useState<Flight[]>([]);
+
+  //userLocation: Uses geoLocation to store users current position
   const [userLocation, setUserLocation] = useState<any>();
+
+  //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
+
+  //airlines : list of all airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
+
+  //takes price and returns cheapest price value as a string
   const getMinPriceString = (prices: Price[]) => {
     if (!prices) return '---';
     let pricesVals = prices.map(p => p.price);
@@ -22,18 +33,21 @@ export const HomePage = () => {
     return `$${minPrice}`;
   };
 
+  //Gets users current position and retrieves list of airlines
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => setUserLocation(position.coords));
     httpGet(endpoints.airlines)
       .then(setAirlines);
   }, []);
 
+  //Takes user location and finds nearest airport on load
   useEffect(() => {
     if (!userLocation) return;
     let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
     setAirport(airport);
   }, [userLocation]);
 
+  // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
     {
       accessor: 'airlineCode',
@@ -49,6 +63,7 @@ export const HomePage = () => {
     { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
   ];
 
+  //Gets airport code for nearest airport on-load to run reccomended search query
   useEffect(() => {
     if (!airport) return;
     httpGet(endpoints.recommended + '/' + airport.code)
@@ -78,8 +93,10 @@ export const HomePage = () => {
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
+            //DataTable for recommended flights, takes columns and cheapest flights from users nearest airport as input
             <DataTable columns={columns} data={recommended} keyAccessor='id'>
               <Td>
+                //Add to Cart button for individual recommendations
                 <Button type='button'
                         colorScheme='red'
                         onClick={() =>

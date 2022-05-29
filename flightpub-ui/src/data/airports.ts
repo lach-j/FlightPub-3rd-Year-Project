@@ -1,5 +1,5 @@
 import { Airport } from '../utility/geolocation';
-
+//Airport infomration including geolocation for map page
 export const airports: Airport[] = [
   {
     'coordinates': [

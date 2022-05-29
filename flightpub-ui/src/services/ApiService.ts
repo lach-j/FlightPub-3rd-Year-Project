@@ -4,6 +4,7 @@ const baseOptions: RequestInit = {
   headers: { 'Content-Type': 'application/json' },
 };
 
+//Default httpGet, takes endpoint and paramaters as input
 export const httpGet = async (endpoint: string, params?: object): Promise<any> => {
   const res = await fetch(`${apiBaseUrl}${endpoint}${params ? toParams(params) : ''}`, {
     ...baseOptions,
@@ -12,6 +13,7 @@ export const httpGet = async (endpoint: string, params?: object): Promise<any> =
   return handleResponse(res);
 };
 
+//Default httpPost, takes endpoint and reqBody as input
 export const httpPost = async (endpoint: string, reqBody: object): Promise<any> => {
   const res = await fetch(`${apiBaseUrl}${endpoint}`, {
     ...baseOptions,
@@ -37,7 +39,7 @@ export const httpDelete = async (endpoint: string): Promise<any> => {
   });
   return handleResponse(res);
 };
-
+//Response handler, checks for 2xx http status codes
 const handleResponse = async (res: Response) => {
   if (res.status.toString().charAt(0) !== '2') {
     let err = await res.json();
@@ -60,12 +62,12 @@ export class ApiError extends Error {
     this.data = data;
   }
 }
-
+//Maps object params from array to correct json format
 export const toParams = (obj?: any) => {
   let flatObj = flattenObj(obj);
   return '?' + Object.keys(flatObj).map(key => key + '=' + flatObj[key]).join('&');
 };
-
+//Flattens object into digestable json format
 export const flattenObj = (obj: any, parent?: string, res: any = {}) => {
   for (let key in obj) {
     let propName = parent ? parent + '.' + key : key;

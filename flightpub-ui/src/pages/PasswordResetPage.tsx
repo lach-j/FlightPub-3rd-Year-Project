@@ -20,6 +20,7 @@ import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { endpoints } from '../constants/endpoints';
 
+
 function useQuery() {
   const { search } = useLocation();
 
@@ -32,39 +33,52 @@ export const PasswordResetPage = ({
   redirectPath?: string;
 }) => {
   const [loading, setLoading] = useState(false);
+  //authError : boolean flag determining if an error has occurred
   const [authError, setAuthError] = useState(false);
+
+  //resetRequest : contains password reset data to be sent to password reset API
   const [resetRequest, setResetRequest] = useState<{
     password: string;
     confirm: string;
     token: string | null;
   }>({ password: '', confirm: '', token: null });
+
+  //errMessage: Defines error message when authError is true for toast popups
   const [errMessage, setErrMessage] = useState('');
   const toast = useToast();
   const query = useQuery();
 
+  //Determines if input is empty for form fields
   const isEmpty = (fields: string[]): boolean => {
     return fields.some((f) => f === undefined || f === null || f === '');
   };
 
+  //sets resetRequest token on-load
   useEffect(() => {
     setResetRequest({ ...resetRequest, token: query.get('token') });
   }, [query]);
 
+  //enables react programmatic navigation
   const navigate = useNavigate();
+
+  //handler for page redirects
   const redirectUser = () => {
     navigate(redirectPath || '/');
   };
+
+  //Password reset handler
   const handleReset = (e: SyntheticEvent) => {
-    e.preventDefault();
+    e.preventDefault(); //prevents stand HTML form submission protocol
     setLoading(true);
 
+    //if form fields are empty
     if (isEmpty([resetRequest.password, resetRequest.confirm])) {
       setAuthError(true);
       setErrMessage('Both fields are mandatory');
       setLoading(false);
       return;
     }
-
+    //if password does not match re-entered confirmation password
     if (resetRequest.password !== resetRequest.confirm) {
       setAuthError(true);
       setErrMessage('Passwords do not match');
@@ -78,11 +92,11 @@ export const PasswordResetPage = ({
         .then((authResponse) => {
           redirectUser();
         })
-        .catch((err: ApiError) => {
-          if (err.statusCode === 400) {
+        .catch((err: ApiError) => { //if an error occurs
+          if (err.statusCode === 400) { //if not all fields filled
             setAuthError(true);
             setErrMessage('All fields are mandatory');
-          } else {
+          } else { //for all other errors
             toast({
               title: 'Error.',
               description:
@@ -97,9 +111,9 @@ export const PasswordResetPage = ({
         .finally(() => setLoading(false));
       return false;
     }, 1000);
-    setAuthError(false);
+    setAuthError(false); //reset authError boolean on page reload
   };
-
+  //Handles update of reset password input, updating value(s)
   const handleResetDetailsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -109,6 +123,7 @@ export const PasswordResetPage = ({
     });
   };
 
+  //If no reset token is available yet, present loading UI element
   if (!resetRequest.token) {
     return (
       <Grid w='100vw' h='100vh' p='5'>
@@ -136,6 +151,7 @@ export const PasswordResetPage = ({
               </Box>
               <Box>
                 <Stack spacing='3'>
+                  //new password input
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
                     <Input
@@ -145,6 +161,8 @@ export const PasswordResetPage = ({
                       onChange={handleResetDetailsChange}
                     />
                   </FormControl>
+
+                  //re-enter new password input
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
                     <Input
@@ -155,10 +173,13 @@ export const PasswordResetPage = ({
                     <FormErrorMessage>{errMessage}</FormErrorMessage>
                   </FormControl>
                 </Stack>
+
               </Box>
-              <Button type='submit' isLoading={loading} colorScheme='red'>
+              <Button type='submit' isLoading={loading} colorScheme='red'> //reset password submission button
                 Reset password
               </Button>
+
+              //Button redirects user to registration page
               <Box textAlign='center'>
                 Don't have an account?{' '}
                 <Link as={RouteLink} to={routes.register}>

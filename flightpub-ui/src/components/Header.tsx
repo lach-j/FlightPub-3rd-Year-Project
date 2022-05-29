@@ -10,11 +10,11 @@ export default function Header() {
       <Flex alignItems='center' justifyContent='space-between' h='full' paddingRight='2em'>
         <Image />
         <HStack spacing='5'>
-          <Button as={NavLink} to={routes.home}>Home</Button>
-          <Button as={NavLink} to={routes.search}>Search</Button>
-          <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} />
+          <Button as={NavLink} to={routes.home}>Home</Button> //Home redirect button
+          <Button as={NavLink} to={routes.search}>Search</Button> //Search redirect button
+          <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} /> //Map page redirect button
           <Menu>
-            <MenuButton as={IconButton} icon={<FaUser />}>
+            <MenuButton as={IconButton} icon={<FaUser />}> //User profile
               Profile
             </MenuButton>
             <MenuList>
@@ -31,7 +31,7 @@ export default function Header() {
                 Logout
               </MenuItem>
             </MenuList>
-          </Menu>
+          </Menu> //User shopping cart redirect
           <IconButton
             aria-label={'cart'}
             icon={<FaShoppingCart />}
