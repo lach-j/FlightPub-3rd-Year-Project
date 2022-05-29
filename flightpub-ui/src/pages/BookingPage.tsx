@@ -9,9 +9,9 @@ import {
   Heading, HStack, Input, Select, Stat, StatHelpText, StatLabel, StatNumber, Switch, Text, useToast, VStack,
 } from '@chakra-ui/react';
 import {BiLinkExternal, HiOutlineArrowNarrowRight} from 'react-icons/all';
-import React, {SyntheticEvent, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import * as api from '../services/ApiService';
-import { ApiError } from '../services/ApiService';
+import { ApiError, httpGet } from '../services/ApiService';
 import {flights} from "../data/flights";
 import {countries} from "../data/countries";
 import { SavedPayment } from '../models';
@@ -30,7 +30,7 @@ export const BookingPage = () => {
   const [authError, setAuthError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const bookedFlights = flights.slice(2, 4);
-  const [selectedFlights, setSelectedFlights] = useState<Flight[] | null>(null)
+  const [selectedFlights, setSelectedFlights] = useState<Flight[]>([])
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
     flightIds: []
@@ -38,6 +38,7 @@ export const BookingPage = () => {
   const toast = useToast();
 
   const handleBooking = (e: SyntheticEvent) => {
+    console.log("here");
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
@@ -74,34 +75,13 @@ export const BookingPage = () => {
     setAuthError(false);
   };
 
-  const renderFlights = (e: SyntheticEvent) => {
-    var ids = searchParams.getAll("Id");
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      api
-          .httpPost(endpoints.flightById, ids)
-          .catch((err: ApiError) => {
-            if (err.statusCode === 401) {
-              setAuthError(true);
-            } else {
-              toast( {
-                title: 'Error.',
-                description:
-                    'An internal error has occurred, please try again later.',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-                position: 'top',
-              });
-            }
-          })
-          .finally(() => setLoading(false));
-      return false;
-    }, 1000);
-    setAuthError(false);
-    
-  };
+  useEffect(() => {
+    var ids = searchParams.get("Id");
+    if (!ids) return;
+    setBookingRequest({...bookingRequest, flightIds: [parseInt(ids)]})
+    httpGet(endpoints.flightById + '/' + ids)
+      .then(setSelectedFlights);
+  }, []);
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
@@ -172,19 +152,19 @@ export const BookingPage = () => {
         <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
         <Text>Flights:</Text>
         <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {bookedFlights.map((flight) =>
+          {selectedFlights.map((flight) =>
             <AccordionItem>
               <h2>
                 <AccordionButton>
                   <Box flex='1' textAlign='left'>
                     <Flex width='full' justifyContent='space-between'>
                       <HStack>
-                        <Text fontWeight='bold'>{flight.DepartureCode}</Text>
+                        <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
                         <HiOutlineArrowNarrowRight />
-                        <Text fontWeight='bold'>{flight.ArrivalCode}</Text>
+                        <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
                       </HStack>
-                      <Text>{`$${flight.Price}`}</Text>
-                      <Text>{flight.AirlineName}</Text>
+                      <Text>{`$${flight.prices[0].price}`}</Text>
+                      <Text>{flight.airlineCode}</Text>
                     </Flex>
                   </Box>
                   <AccordionIcon />
@@ -193,43 +173,43 @@ export const BookingPage = () => {
               <AccordionPanel pb={4}>
                 <Flex w='full' justifyContent='space-between' alignItems='center'>
                   <Stat textAlign='left' flex='none'>
-                    <StatLabel>{new Date(flight?.DepartureTime).toLocaleString('en-AU', {
+                    <StatLabel>{new Date(flight?.departureTime).toLocaleString('en-AU', {
                       dateStyle: 'short',
                       timeStyle: 'short',
                       hour12: false,
                     })}</StatLabel>
-                    <StatNumber>{flight?.DepartureCode}</StatNumber>
+                    <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                     <StatHelpText>DEPARTURE</StatHelpText>
                   </Stat>
-                  {flight?.StopOverCode && <>
+                  {flight?.stopOverLocation.destinationCode && <>
                     <HiOutlineArrowNarrowRight />
                     <Stat textAlign='center' flex='none'>
-                      <StatLabel>{new Date(flight?.ArrivalTimeStopOver || '').toLocaleString('en-AU', {
+                      <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
                         dateStyle: 'short',
                         timeStyle: 'short',
                         hour12: false,
-                      }) + ' - ' + new Date(flight?.DepartureTimeStopOver || '').toLocaleString('en-AU', {
+                      }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
                         timeStyle: 'short',
                         hour12: false,
                       })}</StatLabel>
-                      <StatNumber>{flight?.StopOverCode}</StatNumber>
+                      <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
                       <StatHelpText>STOPOVER</StatHelpText>
                     </Stat></>}
                   <HiOutlineArrowNarrowRight />
                   <Stat textAlign='right' flex='none'>
-                    <StatLabel>{new Date(flight?.ArrivalTime).toLocaleString('en-AU', {
+                    <StatLabel>{new Date(flight?.arrivalTime).toLocaleString('en-AU', {
                       dateStyle: 'short',
                       timeStyle: 'short',
                       hour12: false,
                     })}</StatLabel>
-                    <StatNumber>{flight?.ArrivalCode}</StatNumber>
+                    <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
                     <StatHelpText>ARRIVAL</StatHelpText>
                   </Stat>
                 </Flex>
               </AccordionPanel>
             </AccordionItem>)}
         </Accordion>
-        <Text mb='4em'>{`Subtotal: $${bookedFlights.reduce((partialSum, a) => partialSum + a.Price, 0)}`}</Text>
+        <Text mb='4em'>{`Subtotal: $${selectedFlights.reduce((partialSum, a) => partialSum + a.prices[0].price, 0)}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
@@ -296,7 +276,7 @@ export const BookingPage = () => {
           {savedPaymentData?.type !== 'saved' &&
             <Switch mt='2em'>Save payment for future transactions?</Switch>}
           <HStack w='full' gap='1em' mt='2em'>
-            <Button
+            <Button onClick={handleBooking}
               colorScheme={'red'}
             >
               Book Now
