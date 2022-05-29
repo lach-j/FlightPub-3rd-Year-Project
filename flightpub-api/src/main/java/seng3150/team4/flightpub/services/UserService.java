@@ -10,10 +10,7 @@ import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-
-/**
- * Service used to provide logic for User management tasks.
- */
+/** Service used to provide logic for User management tasks. */
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -55,7 +52,6 @@ public class UserService implements IUserService {
     // Otherwise, save the updated user
     return userRepository.save(user);
   }
-
 
   @Override
   public void deleteUser(User user) {

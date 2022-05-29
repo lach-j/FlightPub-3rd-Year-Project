@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Resolves the API and UI URLs based on the configuration file
- * Used for generating JWTs and password reset links allowing easy deployment on both localhost and custom domains
+ * Resolves the API and UI URLs based on the configuration file Used for generating JWTs and
+ * password reset links allowing easy deployment on both localhost and custom domains
  */
 @Service
 public class UrlResolverService implements IUrlResolverService {

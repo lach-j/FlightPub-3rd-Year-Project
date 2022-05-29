@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 /**
- * Extends StatusResponse for returning ValidationResults of Validatable objects when object validation does not pass.
+ * Extends StatusResponse for returning ValidationResults of Validatable objects when object
+ * validation does not pass.
  */
 @Getter
 public class InvalidObjectResponse extends StatusResponse {

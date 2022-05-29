@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import seng3150.team4.flightpub.controllers.responses.InvalidObjectResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 
-/**
- * Handles InvalidObjectException being thrown and returns a "Bad Request" response to client.
- */
+/** Handles InvalidObjectException being thrown and returns a "Bad Request" response to client. */
 @ControllerAdvice
 public class InvalidObjectAdvice {
   @ResponseBody

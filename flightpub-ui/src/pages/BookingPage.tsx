@@ -4,42 +4,57 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box, Button,
-  Flex, FormControl, FormLabel,
-  Heading, HStack, Input, Select, Stat, StatHelpText, StatLabel, StatNumber, Switch, Text, useToast, VStack,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Modal,
+  ModalOverlay,
+  Select,
+  Spinner,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Switch,
+  Text,
+  useDisclosure,
+  useToast,
+  VStack,
 } from '@chakra-ui/react';
-import {BiLinkExternal, HiOutlineArrowNarrowRight} from 'react-icons/all';
-import React, {SyntheticEvent, useEffect, useState} from 'react';
+import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
+import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
 import * as api from '../services/ApiService';
-import { ApiError, httpGet } from '../services/ApiService';
-import {countries} from "../data/countries";
+import { ApiError } from '../services/ApiService';
+import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
-import {dummySavedPayments} from "../data/SavedPayments";
-import {NavLink, useParams, useSearchParams} from "react-router-dom";
-import {routes} from "../constants/routes";
-import { Booking } from "../models/Booking";
-import { Flight } from "../models/Flight";
+import { dummySavedPayments } from '../data/SavedPayments';
+import { NavLink } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { Booking } from '../models/Booking';
+import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
 
 
-export const BookingPage = () => {
+export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) => {
 
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedFlights, setSelectedFlights] = useState<Flight[]>([])
+  const {isOpen, onOpen, onClose} = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
     flightIds: []
   });
   const toast = useToast();
 
+  const [cart,] = cartState;
+
   const handleBooking = (e: SyntheticEvent) => {
-    console.log("here");
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
+    onOpen();
       api
           .httpPost(endpoints.book, bookingRequest)
           .then(() => {
@@ -54,7 +69,6 @@ export const BookingPage = () => {
           })
           .catch((err: ApiError) => {
             if (err.statusCode === 401) {
-              setAuthError(true);
             } else {
               toast( {
                 title: 'Error.',
@@ -67,23 +81,12 @@ export const BookingPage = () => {
               });
             }
           })
-          .finally(() => setLoading(false));
-      return false;
-    }, 1000);
-    setAuthError(false);
-  };
+          .finally(() => onClose());
+    };
 
   useEffect(() => {
-    var ids = searchParams.getAll("Id");
-    if (!ids) return;
-    let s = '';
-    for (let i = 0; i < ids.length; i++) {
-      s += ids[i] + '%%';
-    }
-    setBookingRequest({...bookingRequest, flightIds: [parseInt(s)]})
-    httpGet(endpoints.flightById + '/' + ids)
-      .then(setSelectedFlights);
-  }, []);
+    setBookingRequest({...bookingRequest, flightIds: cart.map(flight => flight.id)})
+  }, [cart]);
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
@@ -154,7 +157,7 @@ export const BookingPage = () => {
         <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
         <Text>Flights:</Text>
         <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {selectedFlights.map((flight) =>
+          {cart.map((flight) =>
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -211,7 +214,7 @@ export const BookingPage = () => {
               </AccordionPanel>
             </AccordionItem>)}
         </Accordion>
-        <Text mb='4em'>{`Subtotal: $${selectedFlights.reduce((partialSum, a) => partialSum + a.prices[0].price, 0)}`}</Text>
+        <Text mb='4em'>{`Subtotal: $${cart.reduce((partialSum, a) => partialSum + a.prices[0].price, 0)}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
@@ -293,6 +296,10 @@ export const BookingPage = () => {
           </HStack>
         </form>
       </Flex>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
+      </Modal>
     </Flex>
   );
 };

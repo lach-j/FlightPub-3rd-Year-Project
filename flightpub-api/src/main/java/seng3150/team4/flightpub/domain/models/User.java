@@ -6,9 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-/**
- * Models the user table of the database representing the user data of a registered user
- */
+/** Models the user table of the database representing the user data of a registered user */
 @Entity
 @NoArgsConstructor
 @Getter

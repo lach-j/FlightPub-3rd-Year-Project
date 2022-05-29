@@ -9,7 +9,6 @@ import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
-import static seng3150.team4.flightpub.core.validation.Validators.passwordValidator;
 
 @NoArgsConstructor
 @Getter

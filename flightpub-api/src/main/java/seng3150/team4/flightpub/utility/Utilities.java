@@ -1,8 +1,6 @@
 package seng3150.team4.flightpub.utility;
 
-/**
- * Utility class for misc utility methods
- */
+/** Utility class for misc utility methods */
 public class Utilities {
 
   // If the provided value is null, return a default value instead

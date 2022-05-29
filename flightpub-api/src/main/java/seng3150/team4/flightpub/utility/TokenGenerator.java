@@ -4,9 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.security.SecureRandom;
 
-/**
- * Utility class used to generate random Base64 encoded tokens
- */
+/** Utility class used to generate random Base64 encoded tokens */
 public class TokenGenerator {
   public static String generate(int length) {
     SecureRandom random = new SecureRandom();

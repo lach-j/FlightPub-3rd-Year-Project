@@ -32,7 +32,6 @@ public class ResetPasswordRequest extends Validatable {
     }
     results.addError(passwordErrors);
 
-
     // Ensure token was provided
     if (isNullOrEmpty(token))
       results.addError(new ValidationError("token").addError(ErrorConstants.REQUIRED));

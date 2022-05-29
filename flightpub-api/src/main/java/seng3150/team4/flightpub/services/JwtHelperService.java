@@ -11,9 +11,7 @@ import seng3150.team4.flightpub.domain.models.User;
 
 import static seng3150.team4.flightpub.utility.TimeFunctions.minutesFromNow;
 
-/**
- * Service to generate and verify JWTs for user Authentication/Authorization
- */
+/** Service to generate and verify JWTs for user Authentication/Authorization */
 @Service
 @RequiredArgsConstructor
 public class JwtHelperService implements IJwtHelperService {
@@ -31,7 +29,6 @@ public class JwtHelperService implements IJwtHelperService {
         .withClaim("id", user.getId())
         .sign(algorithm);
   }
-
 
   // Verifies the integrity of the token and returns the decoded information
   public DecodedJWT verifyToken(String token) throws JWTVerificationException {

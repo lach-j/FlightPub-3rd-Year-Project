@@ -1,26 +1,32 @@
-import React, { SetStateAction, Dispatch } from 'react';
-import { Box, Text, Button, Flex, HStack, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverArrow, PopoverCloseButton, Divider, } from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction } from 'react';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  HStack,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Text,
+} from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
-import { Flight } from '../models'
-import { Item } from 'framer-motion/types/components/Reorder/Item';
+import { Flight } from '../models';
 
 export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
   const [cart, setCart] = cartState;
-
-  function urlString() {
-    if (cart.length < 1) return;
-    
-    let s = '';
-
-    for (let i = 0; i < (cart.length - 1); i++) {
-      s += 'Id=' + cart[i].id + '&';
-    }
-    s += 'Id=' + cart[cart.length-1].id
-
-    return s;
-  }
   
   return (
     <Box minH='75' h='75' bg='black'>
@@ -61,7 +67,7 @@ export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetS
               <PopoverCloseButton />
               <PopoverHeader>Cart</PopoverHeader>
               <PopoverBody>
-                <Divider orientation='horizontal'/>
+                {cart.length === 0 && <Text>Your cart is empty, add a flight to checkout!</Text>}
                 {cart.map((item) => 
                 <Text>
                     To: {item.arrivalLocation.destinationCode} <br/>
@@ -74,8 +80,8 @@ export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetS
                     <Divider orientation='horizontal'/>
                 </Text>
                 )} <br/>
-                <NavLink to={'/booking/?' + urlString()}>
-                  <Button colorScheme='red'>Checkout</Button>
+                <NavLink to={routes.booking}>
+                  <Button colorScheme='red' disabled={cart.length === 0}>Checkout</Button>
                 </NavLink>
               </PopoverBody>
             </PopoverContent>

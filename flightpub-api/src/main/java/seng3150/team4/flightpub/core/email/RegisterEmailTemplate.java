@@ -4,9 +4,7 @@ import lombok.Setter;
 
 import java.util.Map;
 
-/**
- * EmailTemplate to be sent on user registration
- */
+/** EmailTemplate to be sent on user registration */
 public class RegisterEmailTemplate extends EmailTemplate {
 
   private static final String TEMPLATE_ID = "d-af64435362c24cf1a3b07ce57463e270";

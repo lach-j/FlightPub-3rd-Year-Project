@@ -20,10 +20,9 @@ public class AirlineController {
   private final IAirlineRepository airlineRepository;
 
   /**
-   *
    * Returns a list of all airlines in the system
    *
-   * {@return list of all {@code Airline}s}
+   * <p>{@return list of all {@code Airline}s}
    */
   @GetMapping
   public Response getAll() {

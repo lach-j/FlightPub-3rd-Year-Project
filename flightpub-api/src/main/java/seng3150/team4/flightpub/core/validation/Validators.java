@@ -8,6 +8,7 @@ public class Validators {
 
   /**
    * Validates an email address ensuring that it is a valid address
+   *
    * @param email the email address that is validated
    * @return A list of error messages
    */
@@ -28,7 +29,6 @@ public class Validators {
   }
 
   /**
-   *
    * @param obj The object to check if null or empty
    * @return a {@code boolean} representing if the object has passed validation
    */

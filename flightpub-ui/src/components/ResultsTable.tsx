@@ -1,8 +1,7 @@
-import { HStack, Table, Link, Button, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { Button, HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import * as _ from 'lodash';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
-import {NavLink} from "react-router-dom";
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 type ResultsTableProps = {

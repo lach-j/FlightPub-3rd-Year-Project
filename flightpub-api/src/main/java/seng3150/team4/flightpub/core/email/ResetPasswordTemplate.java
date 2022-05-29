@@ -7,9 +7,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-/**
- * EmailTemplate to be sent when requesting a password reset.
- */
+/** EmailTemplate to be sent when requesting a password reset. */
 public class ResetPasswordTemplate extends EmailTemplate {
 
   private static final String TEMPLATE_ID = "d-ab61283fd041483ab1b1b6cfe2f4cc9f";

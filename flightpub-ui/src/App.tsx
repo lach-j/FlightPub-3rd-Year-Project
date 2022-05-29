@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -15,7 +15,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
 import Header from './components/Header';
 import { Box, Flex } from '@chakra-ui/react';
-import { Flight } from './models'
+import { Flight } from './models';
 
 const noNavbar = [
   routes.login,
@@ -28,22 +28,18 @@ const App = () => {
 
   const location = useLocation();
 
-  const [cart, setCart] = useState<Flight[]>([]);
+  const cartState = useState<Flight[]>([]);
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
   };
 
-  useEffect(() => {
-    console.log(cart)
-  }, [cart])
-
   return (
     <Flex direction='column' height='100vh'>
-      {hasNavbar() && <Header cartState={[cart, setCart]}/>}
+      {hasNavbar() && <Header cartState={cartState}/>}
       <Box position='relative' height='100%'>
         <Routes>
-          <Route path={routes.home} element={<HomePage cartState={[cart, setCart]}/>} />
+          <Route path={routes.home} element={<HomePage cartState={cartState}/>} />
           <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
           <Route path={routes.register} element={<RegisterPage />} />
           <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />
@@ -51,8 +47,8 @@ const App = () => {
           <Route path={routes.search} element={<SearchPage />} />
           <Route path={routes.map} element={<MapPage />} />
           <Route path={routes.account} element={<AccountPage />} />
-          <Route path={routes.searchResults} element={<SearchResultsPage cartState={[cart, setCart]}/>} />
-          <Route path={routes.booking} element={<BookingPage />} />
+          <Route path={routes.searchResults} element={<SearchResultsPage cartState={cartState}/>} />
+          <Route path={routes.booking} element={<BookingPage cartState={cartState}/>} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>
       </Box>

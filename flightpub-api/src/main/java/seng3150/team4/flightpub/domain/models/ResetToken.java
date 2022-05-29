@@ -9,7 +9,8 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Models the ResetToken table in the database for holding password reset tokens used to reset forgotten passwords
+ * Models the ResetToken table in the database for holding password reset tokens used to reset
+ * forgotten passwords
  */
 @Entity
 @Getter

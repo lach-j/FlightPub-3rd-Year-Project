@@ -6,6 +6,7 @@ public abstract class Validatable {
 
   /**
    * Used on {@code Validatable} objects to resolve if validation has failed
+   *
    * @throws InvalidObjectException
    */
   public void validate() throws InvalidObjectException {

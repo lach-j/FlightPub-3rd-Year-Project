@@ -50,7 +50,7 @@ public class FlightService implements IFlightService {
   public List<Flight> getFlightByIds(String ids) {
     String[] idList = ids.split(",");
     Long[] longList = new Long[idList.length];
-    for(int i = 0; i < idList.length; i++ ) {
+    for (int i = 0; i < idList.length; i++) {
       longList[i] = Long.parseLong(idList[i]);
     }
     List<Long> temp = Arrays.asList(longList);

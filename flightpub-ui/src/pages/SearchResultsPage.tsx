@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   HStack,
   RangeSlider,
@@ -13,19 +12,18 @@ import {
   SliderThumb,
   SliderTrack,
   StackDivider,
-  Td,
   Text,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 
-import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
-import { DataTable } from '../components/DataTable';
+
 import { ResultsTable } from '../components/ResultsTable';
 
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
@@ -55,8 +53,6 @@ export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<S
   const { state } = useLocation();
   const [cart, setCart] = cartState;
   const [results, setResults] = useState<Flight[]>([]);
-
-  const [cart, setCart] = cartState;
 
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);

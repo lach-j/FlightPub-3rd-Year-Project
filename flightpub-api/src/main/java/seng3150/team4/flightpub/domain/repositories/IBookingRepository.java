@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IBookingRepository extends CrudRepository<Booking, Long> {
-    @Query("SELECT b FROM Booking b WHERE b.userId = ?1")
-    public Optional<List<Booking>> findByUserId(long userId);
+  @Query("SELECT b FROM Booking b WHERE b.userId = ?1")
+  Optional<List<Booking>> findByUserId(long userId);
 }

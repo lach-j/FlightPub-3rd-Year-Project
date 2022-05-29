@@ -23,7 +23,6 @@ public class FlexiDate {
     return date.minusDays(flex).atStartOfDay();
   }
 
-
   // Gets the maximum date to be flexible by
   public LocalDateTime getMaxDateTime() {
     return date.plusDays(flex).atTime(23, 59, 59);

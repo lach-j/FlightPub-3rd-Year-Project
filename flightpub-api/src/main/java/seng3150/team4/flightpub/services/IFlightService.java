@@ -5,11 +5,8 @@ import seng3150.team4.flightpub.core.search.DestinationCount;
 import seng3150.team4.flightpub.domain.models.Flight;
 
 import java.util.List;
-import java.util.Optional;
 
-/**
- * Interface to define FlightService methods
- */
+/** Interface to define FlightService methods */
 public interface IFlightService {
   List<Flight> searchFlights(FlightQueryRequest request);
 

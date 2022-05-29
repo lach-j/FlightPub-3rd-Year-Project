@@ -6,9 +6,7 @@ import seng3150.team4.flightpub.domain.models.User;
 
 import java.util.Optional;
 
-/**
- * Repository for making CRUD transactions on the User database table.
- */
+/** Repository for making CRUD transactions on the User database table. */
 public interface IUserRepository extends CrudRepository<User, Long> {
 
   // Find the user in the database with the provided email address

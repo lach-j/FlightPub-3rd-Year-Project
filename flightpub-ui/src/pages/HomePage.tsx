@@ -1,5 +1,5 @@
-import React, { useEffect, useState, SetStateAction, Dispatch } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, Td, useToast, VStack, Link } from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Box, Button, Center, Grid, Heading, StackDivider, VStack } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
@@ -9,9 +9,7 @@ import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 
 export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
-  
-  const [cart, setCart] = cartState;
-  const toast = useToast();
+
   const [recommended, setRecommended] = useState<Flight[]>([]);
   const [userLocation, setUserLocation] = useState<any>();
   const [airport, setAirport] = useState<Airport | undefined>();
@@ -80,7 +78,7 @@ export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAc
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
-            <ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={[cart, setCart]}>
+            <ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={cartState}>
             </ResultsTable>
           </Center>
         </VStack>
