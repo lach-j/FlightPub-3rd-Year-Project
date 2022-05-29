@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, Td, useToast, VStack } from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Box, Button, Center, Grid, Heading, StackDivider, VStack } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
-import { DataTable } from '../components/DataTable';
+import { ResultsTable } from '../components/ResultsTable';
 
+export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
 
-
-export const HomePage = () => {
-  const toast = useToast();
   //recommended : contains data table of cheapest flights based on user location
   const [recommended, setRecommended] = useState<Flight[]>([]);
 
@@ -93,27 +91,8 @@ export const HomePage = () => {
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
-            //DataTable for recommended flights, takes columns and cheapest flights from users nearest airport as input
-            <DataTable columns={columns} data={recommended} keyAccessor='id'>
-              <Td>
-                //Add to Cart button for individual recommendations
-                <Button type='button'
-                        colorScheme='red'
-                        onClick={() =>
-                          toast({
-                            title: 'Success!',
-                            description:
-                              'Flight added to cart successfully.',
-                            status: 'success',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top',
-                          })
-                        }>
-                  Add to Cart
-                </Button>
-              </Td>
-            </DataTable>
+            <ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={cartState}>
+            </ResultsTable>
           </Center>
         </VStack>
       </Center>

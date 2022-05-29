@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   HStack,
   RangeSlider,
@@ -13,17 +12,19 @@ import {
   SliderThumb,
   SliderTrack,
   StackDivider,
-  Td,
   Text,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
-import { DataTable } from '../components/DataTable';
+
+import { ResultsTable } from '../components/ResultsTable';
 
 //Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
@@ -50,9 +51,11 @@ function convertMinsToHM(minutes: number) {
   return (hours + ' hrs ' + minutes + ' mins');
 }
 
-export function SearchResultsPage() {
-  //stores current web-browser location
+export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
+
   const { state } = useLocation();
+  const [cart, setCart] = cartState;
+  
   //results: list of flights returned from query
   const [results, setResults] = useState<Flight[]>([]);
   //Price range filter query resutls
@@ -235,26 +238,8 @@ export function SearchResultsPage() {
         </Box>
         //DataTable for flight results based on filtered data
         <Center flex='1'>
-          <DataTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable>
-            <Td>
-              //Add to cart button
-              <Button type='button'
-                      colorScheme='red'
-                      onClick={() =>
-                        toast({
-                          title: 'Success!',
-                          description:
-                            'Flight added to cart successfully.',
-                          status: 'success',
-                          duration: 9000,
-                          isClosable: true,
-                          position: 'top',
-                        })
-                      }>
-                Add to Cart
-              </Button>
-            </Td>
-          </DataTable>
+        <ResultsTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable cartState={[cart, setCart]}>
+            </ResultsTable>
         </Center>
       </HStack>
     </Box>
