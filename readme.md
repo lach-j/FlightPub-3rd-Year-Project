@@ -34,7 +34,8 @@ To setup the API and database first ensure that a the following software is inst
     - Open the "Edit Configurations" window, and set the `MYSQL_USERNAME` and `MYSQL_PASSWORD` environment variables to match your MySQL instance setup.
       OR
     - Navigate to the `src/main/resources/application.properties` file and update the values that are currently `admin` and `password`.
-3.  Click on the "Run" button next to the FlightpubApplication configuration dropdown.
+3.  Open the maven panel and ensure all maven dependencies are installed.
+4.  Click on the "Run" button next to the FlightpubApplication configuration dropdown.
 
 > **NOTE:** Ensure that only the `flightpub-api` folder is opened in the IntelliJ workspace as this may cause issues when loading configurations.
 

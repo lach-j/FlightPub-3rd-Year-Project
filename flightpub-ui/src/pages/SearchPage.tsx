@@ -237,7 +237,7 @@ export const SearchPage = () => {
                         <FormLabel>Return Date</FormLabel>
                         <DatePicker
                           dateFormat='dd/MM/yyyy'
-                          minDate={ new Date(searchQuery.departureDate.date) || new Date()}
+                          minDate={new Date(searchQuery.departureDate.date) || new Date()}
                           selected={returnDate}
                           onChange={(date: Date) => setReturnDate(date)}
                         />
