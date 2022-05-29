@@ -8,18 +8,24 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * Response for returning HttpStatus codes/messages
+ */
 @Getter
 @Setter
 public class StatusResponse implements Response {
   private int status;
   private String statusText;
 
+  // Error message
   @JsonInclude(JsonInclude.Include.NON_NULL)
   protected String message;
 
+  // Any additional data
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Object data;
 
+  // Time of exception
   private final LocalDateTime timestamp;
 
   public StatusResponse(HttpStatus status) {

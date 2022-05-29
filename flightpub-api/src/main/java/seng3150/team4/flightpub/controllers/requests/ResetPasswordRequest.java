@@ -18,10 +18,12 @@ public class ResetPasswordRequest extends Validatable {
   private String password;
   private String token;
 
+  // Validate request and return any errors
   @Override
   protected ValidationResult getErrors() {
     var results = new ValidationResult();
 
+    // Ensure password was provided and is valid
     var passwordErrors = new ValidationError("password");
     if (isNullOrEmpty(password)) {
       passwordErrors.addError(ErrorConstants.REQUIRED);
@@ -30,6 +32,8 @@ public class ResetPasswordRequest extends Validatable {
     }
     results.addError(passwordErrors);
 
+
+    // Ensure token was provided
     if (isNullOrEmpty(token))
       results.addError(new ValidationError("token").addError(ErrorConstants.REQUIRED));
 

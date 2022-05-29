@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -26,10 +26,15 @@ const noNavbar = [
 const App = () => {
 
   const location = useLocation();
+  const [cart, setCart] = useState<number[]>([]);
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
   };
+
+  useEffect(() => {
+    console.log(cart)
+  }, [cart])
 
   return (
     <Flex direction='column' height='100vh'>
@@ -44,7 +49,7 @@ const App = () => {
           <Route path={routes.search} element={<SearchPage />} />
           <Route path={routes.map} element={<MapPage />} />
           <Route path={routes.account} element={<AccountPage />} />
-          <Route path={routes.searchResults} element={<SearchResultsPage />} />
+          <Route path={routes.searchResults} element={<SearchResultsPage cartState={[cart, setCart]} />} />
           <Route path={routes.booking} element={<BookingPage />} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>

@@ -7,6 +7,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+/**
+ * Utility class for hashing passwords using a PBKDF2WithHmacSHA1 algorithm.
+ */
 public class PasswordHash {
   public static String PBKDF2WithHmacSHA1Hash(String password, String salt)
       throws InvalidKeySpecException, NoSuchAlgorithmException {

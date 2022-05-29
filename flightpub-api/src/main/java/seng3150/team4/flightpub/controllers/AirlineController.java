@@ -19,10 +19,17 @@ public class AirlineController {
 
   private final IAirlineRepository airlineRepository;
 
+  /**
+   *
+   * Returns a list of all airlines in the system
+   *
+   * {@return list of all {@code Airline}s}
+   */
   @GetMapping
   public Response getAll() {
     var airlines = new ArrayList<Airline>() {};
 
+    // Convert Iterable to List
     airlineRepository.findAll().forEach(airlines::add);
 
     return new EntityCollectionResponse<List<Airline>>(airlines);

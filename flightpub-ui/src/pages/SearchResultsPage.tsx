@@ -19,7 +19,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
@@ -47,11 +47,13 @@ function convertMinsToHM(minutes: number) {
   return (hours + ' hrs ' + minutes + ' mins');
 }
 
-export function SearchResultsPage() {
+export function SearchResultsPage({cartState}: {cartState: [number[], Dispatch<SetStateAction<number[]>>]}) {
 
   const { state } = useLocation();
 
   const [results, setResults] = useState<Flight[]>([]);
+
+  const [cart, setCart] = cartState;
 
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
@@ -225,7 +227,8 @@ export function SearchResultsPage() {
             <Td>
               <Button type='button'
                       colorScheme='red'
-                      onClick={() =>
+                      onClick={() => {
+                        setCart([1,2,3]);
                         toast({
                           title: 'Success!',
                           description:
@@ -235,7 +238,7 @@ export function SearchResultsPage() {
                           isClosable: true,
                           position: 'top',
                         })
-                      }>
+                      }}>
                 Add to Cart
               </Button>
             </Td>

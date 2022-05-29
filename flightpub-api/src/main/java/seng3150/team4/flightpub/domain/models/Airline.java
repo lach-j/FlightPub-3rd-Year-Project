@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * models the Airlines table in the database
+ */
 @Entity
 @Table(name = "airlines")
 @NoArgsConstructor

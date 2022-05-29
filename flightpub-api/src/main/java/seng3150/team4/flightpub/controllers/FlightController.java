@@ -22,22 +22,34 @@ public class FlightController {
 
   @GetMapping("/search")
   public Response getFlights(FlightQueryRequest req) {
+    // Validate the request
     req.validate();
-    return new EntityCollectionResponse<>(flightService.searchFlights(req));
+
+    // Search flights and return results
+    var flightResults = flightService.searchFlights(req);
+    return new EntityCollectionResponse<>(flightResults);
   }
 
   @GetMapping("/search/map/{departureLocation}")
   public Response mapSearch(@PathVariable String departureLocation) {
-    return new EntityCollectionResponse<>(flightService.mapSearch(departureLocation));
+
+    var flightResults = flightService.mapSearch(departureLocation);
+    return new EntityCollectionResponse<>(flightResults);
   }
 
   @GetMapping("/search/count/departure")
   public Response mapSearchCount() {
-    return new EntityCollectionResponse<>(flightService.destinationsCount());
+
+    // Count all flights departing from all locations
+    var destinationsCount = flightService.destinationsCount();
+    return new EntityCollectionResponse<>(destinationsCount);
   }
 
   @GetMapping("/recommended/{destination}")
   public Response getCheapestFlights(@PathVariable String destination) {
-    return new EntityCollectionResponse<>(flightService.getCheapestFlights(destination));
+
+    // get top 3 cheapest flights departing from a destination
+    var cheapest = flightService.getCheapestFlights(destination);
+    return new EntityCollectionResponse<>(cheapest);
   }
 }

@@ -22,6 +22,7 @@ public class EmailSenderService implements IEmailSenderService {
   private final Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
   private final ObjectMapper mapper = new ObjectMapper();
 
+  // Pull these values from the configuration file
   @Value("${flightpub.email.SENDGRID_API_KEY}")
   private String SENDGRID_API_KEY;
 
@@ -46,6 +47,7 @@ public class EmailSenderService implements IEmailSenderService {
     // Build and send
     mail.addPersonalization(personalization);
     try {
+      // If email sending is disabled (i.e. development environment), log the email and don't send
       if (!EMAIL_ENABLED) {
         logger.info("EMAIL SENT {}", mapper.writeValueAsString(mail));
         return;
@@ -59,12 +61,13 @@ public class EmailSenderService implements IEmailSenderService {
           res.getHeaders());
     } catch (IOException ex) {
       ex.printStackTrace();
-      // FIXME: this is terrible there are better ways to error handle this
       throw new RuntimeException("The email failed to send");
     }
   }
 
   public Response sendEmail(Mail mail) throws IOException {
+
+    // Use the SendGrid API to send the email
     SendGrid sg = new SendGrid(SENDGRID_API_KEY);
     Request request = new Request();
     request.setMethod(Method.POST);

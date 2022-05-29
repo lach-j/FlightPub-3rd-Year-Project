@@ -23,26 +23,35 @@ public class AuthController {
   @PostMapping(path = "/login")
   public ResponseEntity<? extends Response> loginUser(@RequestBody LoginRequest loginRequest) {
 
+    // Validate the request
     loginRequest.validate();
 
+    // Attempt to login the user with the provided credentials
     var token =
         authenticationService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
+    // If the login was not successful then respond with an error
     if (token == null)
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(
               new StatusResponse(HttpStatus.UNAUTHORIZED)
                   .message("The email or password provided is incorrect."));
 
+    // Otherwise, return the JWT
     return ResponseEntity.ok(new TokenResponse(HttpStatus.OK, token));
   }
 
   @PostMapping(path = "/reset")
   public ResponseEntity<? extends Response> resetPasswordWithToken(
       @RequestBody ResetPasswordRequest loginRequest) {
+
+    // Validate the request
     loginRequest.validate();
+
+    // Attempt to reset the password using the provided token
     authenticationService.resetPassword(loginRequest.getToken(), loginRequest.getPassword());
 
+    // Send success response
     return ResponseEntity.ok(
         new StatusResponse(HttpStatus.OK).message("The password was reset successfully"));
   }
@@ -50,8 +59,14 @@ public class AuthController {
   @PostMapping(path = "/forgot")
   public ResponseEntity<? extends Response> sendResetEmail(
       @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+
+    // Validate the request
     forgotPasswordRequest.validate();
+
+    // Send a reset email to the provided email
     authenticationService.sendResetEmail(forgotPasswordRequest.getEmail());
+
+    // Return "Accepted" response
     return ResponseEntity.accepted().body(new StatusResponse(HttpStatus.ACCEPTED));
   }
 }
