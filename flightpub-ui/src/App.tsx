@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -30,9 +30,22 @@ const App = () => {
 
   const cartState = useState<Flight[]>([]);
 
+  const [cart, setCart] = cartState;
+
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
   };
+
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart)
+      setCart(JSON.parse(savedCart))
+  }, [])
+
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart])
 
   return (
     <Flex direction='column' height='100vh'>
