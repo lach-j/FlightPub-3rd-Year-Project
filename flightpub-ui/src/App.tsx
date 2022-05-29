@@ -26,7 +26,7 @@ const noNavbar = [
 const App = () => {
 
   const location = useLocation();
-  const [cart, setCart] = useState<String[]>([])
+  const [cart, setCart] = useState<String[]>([]);
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);

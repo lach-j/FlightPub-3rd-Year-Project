@@ -74,9 +74,13 @@ export const BookingPage = () => {
   };
 
   useEffect(() => {
-    var ids = searchParams.get("Id");
+    var ids = searchParams.getAll("Id");
     if (!ids) return;
-    setBookingRequest({...bookingRequest, flightIds: [parseInt(ids)]})
+    let s = '';
+    for (let i = 0; i < ids.length; i++) {
+      s += ids[i] + '%%';
+    }
+    setBookingRequest({...bookingRequest, flightIds: [parseInt(s)]})
     httpGet(endpoints.flightById + '/' + ids)
       .then(setSelectedFlights);
   }, []);

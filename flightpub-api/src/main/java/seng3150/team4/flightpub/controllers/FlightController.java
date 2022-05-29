@@ -43,6 +43,8 @@ public class FlightController {
 
   @GetMapping("/fetchById/{ids}")
   public Response getFlightById(@PathVariable String ids) {
+    ids = ids;
+
     return new EntityCollectionResponse<>(flightService.getFlightByIds(ids));
   }
 }

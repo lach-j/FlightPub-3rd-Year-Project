@@ -45,8 +45,12 @@ public class FlightService implements IFlightService {
 
   @Override
   public List<Flight> getFlightByIds(String ids) {
-    List<Long> temp = new ArrayList<>();
-    temp.add(Long.parseLong(ids));
+    String[] idList = ids.split(",");
+    Long[] longList = new Long[idList.length];
+    for(int i = 0; i < idList.length; i++ ) {
+      longList[i] = Long.parseLong(idList[i]);
+    }
+    List<Long> temp = Arrays.asList(longList);
     Set<Long> flightIds = new HashSet<>(temp);
     List<Flight> flightList = new ArrayList<Flight>();
     flightRepository.findAllById(flightIds).forEach(flightList::add);

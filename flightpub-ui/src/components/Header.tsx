@@ -6,6 +6,17 @@ import { routes } from '../constants/routes';
 
 export default function Header({cartState}: {cartState: [String[], Dispatch<SetStateAction<String[]>>]}) {
   const [cart, setCart] = cartState;
+
+  function urlString() {
+    let s = '';
+
+    for (let i = 0; i < (cart.length - 1); i++) {
+      s += 'Id=' + cart[i] + '&';
+    }
+    s += 'Id=' + cart[cart.length-1]
+
+    return s;
+  }
   
   return (
     <Box minH='75' h='75' bg='black'>
@@ -53,7 +64,7 @@ export default function Header({cartState}: {cartState: [String[], Dispatch<SetS
                 <Text>
                     {item}
                 </Text>)}
-                <NavLink to={'/booking/?Id=' + cart[0]}>
+                <NavLink to={'/booking/?' + urlString()}>
                   <Button colorScheme='red'>Checkout</Button>
                 </NavLink>
               </PopoverBody>
