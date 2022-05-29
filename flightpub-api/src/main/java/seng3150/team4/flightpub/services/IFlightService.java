@@ -5,6 +5,7 @@ import seng3150.team4.flightpub.domain.models.DestinationCount;
 import seng3150.team4.flightpub.domain.models.Flight;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IFlightService {
   List<Flight> searchFlights(FlightQueryRequest request);
@@ -14,4 +15,6 @@ public interface IFlightService {
   List<DestinationCount> destinationsCount();
 
   List<Flight> getCheapestFlights(String destination);
+
+  List<Flight> getFlightByIds(String ids);
 }

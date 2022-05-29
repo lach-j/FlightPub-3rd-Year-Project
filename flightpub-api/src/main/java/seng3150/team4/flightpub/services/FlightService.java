@@ -12,7 +12,7 @@ import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.*;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
@@ -41,6 +41,16 @@ public class FlightService implements IFlightService {
   @Override
   public List<DestinationCount> destinationsCount() {
     return flightRepository.getDepartureCounts();
+  }
+
+  @Override
+  public List<Flight> getFlightByIds(String ids) {
+    List<Long> temp = new ArrayList<>();
+    temp.add(Long.parseLong(ids));
+    Set<Long> flightIds = new HashSet<>(temp);
+    List<Flight> flightList = new ArrayList<Flight>();
+    flightRepository.findAllById(flightIds).forEach(flightList::add);
+    return flightList;
   }
 
   private static SearchStrategy resolveSearchStrategy(FlightQueryRequest query) {

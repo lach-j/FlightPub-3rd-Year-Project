@@ -74,10 +74,34 @@ export const BookingPage = () => {
     setAuthError(false);
   };
 
-  const renderFlights = () => {
-    var id = searchParams.get("Id");
+  const renderFlights = (e: SyntheticEvent) => {
+    var ids = searchParams.getAll("Id");
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      api
+          .httpPost(endpoints.flightById, ids)
+          .catch((err: ApiError) => {
+            if (err.statusCode === 401) {
+              setAuthError(true);
+            } else {
+              toast( {
+                title: 'Error.',
+                description:
+                    'An internal error has occurred, please try again later.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top',
+              });
+            }
+          })
+          .finally(() => setLoading(false));
+      return false;
+    }, 1000);
+    setAuthError(false);
     
-  }
+  };
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {

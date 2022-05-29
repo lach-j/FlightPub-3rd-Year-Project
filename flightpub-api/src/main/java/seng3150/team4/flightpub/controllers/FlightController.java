@@ -40,4 +40,9 @@ public class FlightController {
   public Response getCheapestFlights(@PathVariable String destination) {
     return new EntityCollectionResponse<>(flightService.getCheapestFlights(destination));
   }
+
+  @GetMapping("/fetchById/{ids}")
+  public Response getFlightById(@PathVariable String ids) {
+    return new EntityCollectionResponse<>(flightService.getFlightByIds(ids));
+  }
 }
