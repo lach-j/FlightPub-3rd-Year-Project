@@ -25,9 +25,9 @@ import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
 import { Flight } from '../models';
 
-export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
+export default function Header({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
   const [cart, setCart] = cartState;
-  
+
   return (
     <Box minH='75' h='75' bg='black'>
       <Flex alignItems='center' justifyContent='space-between' h='full' paddingRight='2em'>
@@ -58,9 +58,9 @@ export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetS
           <Popover>
             <PopoverTrigger>
               <IconButton
-              aria-label={'cart'}
-              icon={<FaShoppingCart />}
-             />
+                aria-label={'cart'}
+                icon={<FaShoppingCart />}
+              />
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />
@@ -68,18 +68,18 @@ export default function Header({cartState}: {cartState: [Flight[], Dispatch<SetS
               <PopoverHeader>Cart</PopoverHeader>
               <PopoverBody>
                 {cart.length === 0 && <Text>Your cart is empty, add a flight to checkout!</Text>}
-                {cart.map((item) => 
-                <Text>
-                    To: {item.arrivalLocation.destinationCode} <br/>
-                    From: {item.departureLocation.destinationCode} <br/>
-                    On: {item.departureTime} <br/>
-                    Cost: ${item.prices[0].price} <br/>
+                {cart.map((item) =>
+                  <Text>
+                    To: {item.arrivalLocation.destinationCode} <br />
+                    From: {item.departureLocation.destinationCode} <br />
+                    On: {item.departureTime} <br />
+                    Cost: ${item.prices[0].price} <br />
                     <Text as='u' colorScheme='gray' onClick={() => {
-                      setCart([...cart.filter(cartItem => cartItem.id !== item.id)])
+                      setCart([...cart.filter(cartItem => cartItem.id !== item.id)]);
                     }}> Remove</Text>
-                    <Divider orientation='horizontal'/>
-                </Text>
-                )} <br/>
+                    <Divider orientation='horizontal' />
+                  </Text>,
+                )} <br />
                 <NavLink to={routes.booking}>
                   <Button colorScheme='red' disabled={cart.length === 0}>Checkout</Button>
                 </NavLink>

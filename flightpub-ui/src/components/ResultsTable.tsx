@@ -12,7 +12,14 @@ type ResultsTableProps = {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }
 
-export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, children, sortable = false, keyAccessor, cartState }) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({
+                                                            columns,
+                                                            data,
+                                                            children,
+                                                            sortable = false,
+                                                            keyAccessor,
+                                                            cartState,
+                                                          }) => {
   const toast = useToast();
   const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
@@ -64,29 +71,31 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, child
       </Thead>
       <Tbody>
         {data.sort(sortFunc).map((result: any) => {
-          return <Tr key={_.get(result, keyAccessor)}>
-            {columns.map((column) =>
-              <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-            {children}
-            <Td>
+            return <Tr key={_.get(result, keyAccessor)}>
+              {columns.map((column) =>
+                <Td
+                  key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+              {children}
+              <Td>
                 <Button type='button'
-                          colorScheme='red'
-                          onClick={() => {
-                            setCart(cart => [...cart, result]);
-                            toast({
-                              title: 'Success!',
-                              description:
-                                'Flight added to cart successfully.',
-                              status: 'success',
-                              duration: 9000,
-                              isClosable: true,
-                              position: 'top',
-                            })
-                          }}>
-                              Add to Cart
-                    </Button>
-            </Td>
-          </Tr>}
+                        colorScheme='red'
+                        onClick={() => {
+                          setCart(cart => [...cart, result]);
+                          toast({
+                            title: 'Success!',
+                            description:
+                              'Flight added to cart successfully.',
+                            status: 'success',
+                            duration: 9000,
+                            isClosable: true,
+                            position: 'top',
+                          });
+                        }}>
+                  Add to Cart
+                </Button>
+              </Td>
+            </Tr>;
+          },
         )}
       </Tbody>
     </Table>

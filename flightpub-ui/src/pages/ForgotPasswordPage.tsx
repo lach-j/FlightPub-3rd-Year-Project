@@ -53,7 +53,7 @@ export const ForgotPasswordPage = ({
           });
           redirectUser();
         })
-          //for invalid email address
+        //for invalid email address
         .catch((err: ApiError) => {
           if (err.statusCode === 400) {
             setAuthError(true);
@@ -72,7 +72,7 @@ export const ForgotPasswordPage = ({
             });
           }
         })
-          //if email is valid
+        //if email is valid
         .finally(() => setLoading(false));
       return false;
     }, 1000);

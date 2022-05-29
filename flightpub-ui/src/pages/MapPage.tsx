@@ -81,16 +81,16 @@ export const MapPage = () => {
     <Box h='full' display='flex' position='absolute' top={0} left={0} right={0} bottom={0}>
       <Box w='max-content' p='1em' overflow='auto'>
         <Heading
-            //Displays users selected airport or prompts user to select airport
+          //Displays users selected airport or prompts user to select airport
           fontSize='1.5em'>{selectedAirport ? `Flights from ${selectedAirport?.name} (${selectedAirport?.code})` : 'Select an airport to view flights'}</Heading>
         <Box>
-          //DataTable for outgoing flights from a destination
+          {/* 'DataTable for outgoing flights from a destination' */}
           <DataTable columns={flightColumns} data={flights} keyAccessor='id' />
         </Box>
       </Box>
-      //Visual map element provided by package react-map-gl
+      {/* 'Visual map element provided by package react-map-gl' */}
       <Map
-          //Default settings for map
+        //Default settings for map
         onLoad={() => geolocateRef?.current?.trigger()}
         initialViewState={{
           longitude: 0,
@@ -110,36 +110,43 @@ export const MapPage = () => {
             let hasFlights = departureCount.find(f => f.destinationCode === airport.code);
             return (
               <>
-                //Popup UI element for outgoing flights on map based on airport co-ordinates
+                {/* Popup UI element for outgoing flights on map based on airport co-ordinates */}
                 {flight && <Popup maxWidth='unset' closeButton={false} closeOnClick={false}
                                   longitude={airport.coordinates[0]}
                                   latitude={airport.coordinates[1]}>
                   <Flex w='max-content' p='0.5em' gap='1em'>
                     <Stat>
-                      <StatLabel>{flight?.DepartureTime}</StatLabel> //Flight departure time
-                      <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber> //Flight price
+                      {/* Flight departure time */}
+                      <StatLabel>{flight?.DepartureTime}</StatLabel>
+                      {/* Flight price */}
+                      <StatNumber>{`$${Math.min(...flight.prices.map(p => p.price)).toFixed(2)}`}</StatNumber>
 
-                      <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'} //Flight type
-                        {flight.stopOverLocation && //stopOver location if exists
+                      {/* Flight type */}
+                      <StatHelpText>{flight.stopOverLocation ? '1 Stopover' : 'Direct'}
+                        {flight.stopOverLocation &&
                           <Text textDecoration='underline' textDecorationStyle={'dashed'}
-                                title={flight.stopOverLocation.airport || undefined}> //stopover airport
-                            {`(${flight.stopOverLocation.destinationCode})`} //stopover airport code
+                                title={flight.stopOverLocation.airport || undefined}>
+                            {`(${flight.stopOverLocation.destinationCode})`}
+                            {/* stopover airport code */}
                           </Text>
                         }</StatHelpText>
 
                     </Stat>
                     <Box ml='3'>
+                      {/* arrival airport information */}
                       <Text fontWeight='bold' fontSize='md'>
-                        {flight?.arrivalLocation.airport} //arrival airport information
+                        {flight?.arrivalLocation.airport}
                       </Text>
-                      <Text fontSize='sm'>{flight.airlineCode}</Text> //flight airline
+                      {/* flight airline */}
+                      <Text fontSize='sm'>{flight.airlineCode}</Text>
+                      {/* book flight button on Map UI element */}
                       <Button colorScheme='red' size='sm' as={NavLink} to={routes.booking}>Book
-                        now</Button> //book flight button on Map UI element
+                        now</Button>
                     </Box>
                   </Flex>
                 </Popup>}
 
-                //Populates map with airport locations
+                {/* Populates map with airport locations */}
                 <Marker longitude={airport.coordinates[0]} latitude={airport.coordinates[1]}
                         key={airport?.id}>
                   <Icon cursor={hasFlights ? 'pointer' : 'default'} as={MdLocalAirport}
@@ -154,7 +161,7 @@ export const MapPage = () => {
               ;
           })
         }
-        //Wrapper for geolocatecontrol that updates user location on map
+        {/* Wrapper for geolocatecontrol that updates user location on map */}
         <GeolocateControl ref={geolocateRef} onGeolocate={handleGeolocate} fitBoundsOptions={{ maxZoom: 4 }} />
       </Map>
     </Box>

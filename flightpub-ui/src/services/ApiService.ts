@@ -62,6 +62,7 @@ export class ApiError extends Error {
     this.data = data;
   }
 }
+
 //Maps object params from array to correct json format
 export const toParams = (obj?: any) => {
   let flatObj = flattenObj(obj);

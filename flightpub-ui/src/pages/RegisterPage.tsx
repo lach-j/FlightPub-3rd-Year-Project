@@ -103,7 +103,7 @@ export const RegisterPage = () => {
             </Box>
             <Box>
               <Stack spacing='3'>
-                //Email input
+                {/* Email input */}
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -112,7 +112,7 @@ export const RegisterPage = () => {
                     onChange={handleLoginDetailsChange}
                   />
 
-                  //Firstname input
+                  {/* Firstname input */}
                 </FormControl>
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>First Name</FormLabel>
@@ -121,7 +121,7 @@ export const RegisterPage = () => {
                     value={registerRequest.firstName}
                     onChange={handleLoginDetailsChange}
                   />
-                  //LastName input
+                  {/* LastName input */}
                 </FormControl>
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Last Name</FormLabel>
@@ -131,7 +131,7 @@ export const RegisterPage = () => {
                     onChange={handleLoginDetailsChange}
                   />
                 </FormControl>
-                //Password input
+                {/* Password input */}
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Password</FormLabel>
                   <Input
@@ -141,18 +141,18 @@ export const RegisterPage = () => {
                     onChange={handleLoginDetailsChange}
                   />
 
-                  //Error message popup
+                  {/* Error message popup */}
                   <FormErrorMessage>
                     The email and/or password provided are incorrect
                   </FormErrorMessage>
                 </FormControl>
               </Stack>
             </Box>
-            //Form submission button
+            {/* Form submission button */}
             <Button type='submit' isLoading={loading} colorScheme='red'>
               Sign Up
             </Button>
-            //Button redirects user to sign-in page
+            {/* Button redirects user to sign-in page */}
             <Box textAlign='center'>
               Already have an account?{' '}
               <Link as={RouteLink} to={routes.login}>

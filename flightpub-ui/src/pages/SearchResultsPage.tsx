@@ -51,11 +51,11 @@ function convertMinsToHM(minutes: number) {
   return (hours + ' hrs ' + minutes + ' mins');
 }
 
-export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
+export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
 
   const { state } = useLocation();
   const [cart, setCart] = cartState;
-  
+
   //results: list of flights returned from query
   const [results, setResults] = useState<Flight[]>([]);
   //Price range filter query resutls
@@ -86,26 +86,26 @@ export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<S
     },
     {
       accessor: 'departureLocation.airport',
-      Header: 'Departure Airport'
+      Header: 'Departure Airport',
     },
     {
       accessor: 'departureTime',
       Header: 'Departure Time',
-      transform: formatDateTime
+      transform: formatDateTime,
     },
     {
       accessor: 'arrivalTime',
       Header: 'Arrival Time',
-      transform: formatDateTime
+      transform: formatDateTime,
     },
     {
       accessor: 'arrivalLocation.airport',
-      Header: 'Destination Airport' 
+      Header: 'Destination Airport',
     },
     {
       accessor: 'stopOverLocation.airport',
       Header: 'Stop Over',
-      transform: (value: any) => value || '---'
+      transform: (value: any) => value || '---',
     },
     {
       accessor: 'prices',
@@ -116,7 +116,7 @@ export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<S
     {
       accessor: 'duration',
       Header: 'Duration',
-      transform: (value: any) => convertMinsToHM(value)
+      transform: (value: any) => convertMinsToHM(value),
     },
   ];
   //sets airline information on-load
@@ -238,8 +238,9 @@ export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<S
         </Box>
         //DataTable for flight results based on filtered data
         <Center flex='1'>
-        <ResultsTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable cartState={[cart, setCart]}>
-            </ResultsTable>
+          <ResultsTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable
+                        cartState={[cart, setCart]}>
+          </ResultsTable>
         </Center>
       </HStack>
     </Box>

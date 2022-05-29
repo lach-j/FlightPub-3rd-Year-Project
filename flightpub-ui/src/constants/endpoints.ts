@@ -10,5 +10,5 @@ export const endpoints = {
   departureCount: '/flights/search/count/departure',
   airlines: '/airlines',
   recommended: '/flights/recommended',
-  book: "/book",
+  book: '/book',
 };

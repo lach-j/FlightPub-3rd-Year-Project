@@ -1,4 +1,4 @@
 export interface Booking {
-    userId: any;
-    flightIds: number[];
+  userId: any;
+  flightIds: number[];
 }

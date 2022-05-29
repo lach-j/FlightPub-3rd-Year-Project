@@ -12,7 +12,7 @@ type DataTableProps = {
 }
 
 export let DataTable: React.FC<DataTableProps>;
-DataTable = ({columns, data, children, sortable = false, keyAccessor}) => {
+DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -43,7 +43,7 @@ DataTable = ({columns, data, children, sortable = false, keyAccessor}) => {
     }
   };
 
-  const sortIcon = () => descending ? <TriangleDownIcon/> : <TriangleUpIcon/>;
+  const sortIcon = () => descending ? <TriangleDownIcon /> : <TriangleUpIcon />;
 
   return (<Table width='100%'>
     <TableCaption>Prices subject to change. T&C's apply</TableCaption>
@@ -55,17 +55,17 @@ DataTable = ({columns, data, children, sortable = false, keyAccessor}) => {
             <Text>{column.Header}</Text>
             {column === sortingColumn && sortIcon()}
           </HStack>
-        </Th>,)}
+        </Th>)}
       </Tr>
     </Thead>
     <Tbody>
       {data.sort(sortFunc).map((result: any) => {
-        console.log(_.get(result, keyAccessor))
+        console.log(_.get(result, keyAccessor));
         return <Tr key={_.get(result, keyAccessor)}>
           {columns.map((column) => <Td
-              key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+            key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
           {children}
-        </Tr>
+        </Tr>;
       })}
     </Tbody>
   </Table>);

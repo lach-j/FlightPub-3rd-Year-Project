@@ -101,7 +101,7 @@ export const LoginPage = ({
             </Box>
             <Box>
               <Stack spacing='3'>
-                //email input
+                {/* email input */}
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -111,7 +111,7 @@ export const LoginPage = ({
                   />
                 </FormControl>
 
-                //password input
+                {/* password input */}
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Password</FormLabel>
                   <Input
@@ -119,11 +119,11 @@ export const LoginPage = ({
                     name='password'
                     onChange={handleLoginDetailsChange}
                   />
-                  //Handles error messages
+                  {/* Handles error messages */}
                   <FormErrorMessage>{errMessage}</FormErrorMessage>
                 </FormControl>
 
-                //Forgot password button
+                {/* Forgot password button */}
                 <Box textAlign='right'>
                   <Link as={RouteLink} to={routes.forgotPassword}>
                     Forgot Password?
@@ -131,11 +131,11 @@ export const LoginPage = ({
                 </Box>
               </Stack>
             </Box>
-            //Form submission button
+            {/* Form submission button */}
             <Button type='submit' isLoading={loading} colorScheme='red'>
               Log In
             </Button>
-            //Redirects to registration page
+            {/* Redirects to registration page */}
             <Box textAlign='center'>
               Don't have an account?{' '}
               <Link as={RouteLink} to={routes.register}>

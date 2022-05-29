@@ -66,6 +66,7 @@ interface FlexiDate {
   date: string;
   flex?: number;
 }
+
 //container for search query
 interface SearchQuery {
   departureDate: FlexiDate;
@@ -79,6 +80,7 @@ interface SearchQuery {
 export const SearchPage = () => {
   const navigate = useNavigate();   //enables react programmatic navigation
   const [flexEnabled, setFlexEnabled] = useState(false); //state for tracking whether user has selected flexdate option
+  const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
   const toast = useToast();
 
   //Formats from JavaScript Date type to string
@@ -119,6 +121,7 @@ export const SearchPage = () => {
         });
       }).finally(onClose);
   }
+
 //Handles update of ticket type form input
   const handleTicketUpdate = (value: number, classCode: string) => {
     handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value));
@@ -151,7 +154,7 @@ export const SearchPage = () => {
                   align='stretch'
                 >
                   <Box>
-                    //Ticket type input
+                    {/* Ticket type input */}
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
                       <Accordion allowToggle w='20em'>
@@ -176,7 +179,7 @@ export const SearchPage = () => {
                                 </Tr>
                               </Thead>
                               <Tbody>
-                                //Dropdown for ticket type
+                                {/* Dropdown for ticket type */}
                                 {ticketOptions.map((option) => (
                                   <Tr key={option.key}>
                                     <Td>{option.label}</Td>
@@ -207,7 +210,7 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
                   <Box>
-                    //Handles type of flight (return or one-way)
+                    {/* Handles type of flight (return or one-way) */}
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightType'>Type: </FormLabel>
                       <Select
@@ -227,6 +230,20 @@ export const SearchPage = () => {
                       </Select>
                     </FormControl>
                   </Box>
+                  {/* Return date input */}
+                  {searchQuery?.returnFlight === true &&
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Return Date</FormLabel>
+                        <DatePicker
+                          dateFormat='dd/MM/yyyy'
+                          minDate={ new Date(searchQuery.departureDate.date) || new Date()}
+                          selected={returnDate}
+                          onChange={(date: Date) => setReturnDate(date)}
+                        />
+                      </FormControl>
+                    </Box>
+                  }
                 </VStack>
                 <VStack
                   divider={<StackDivider borderColor='gray.200' />}
@@ -234,7 +251,7 @@ export const SearchPage = () => {
                   align='stretch'
                 >
                   <Box>
-                    //Departure location input
+                    {/* Departure location input */}
                     <FormControl isRequired>
                       <FormLabel>Departure Location</FormLabel>
                       <AutoComplete
@@ -258,7 +275,7 @@ export const SearchPage = () => {
                       </AutoComplete>
                     </FormControl>
                   </Box>
-                  //Arrival location input
+                  {/* Arrival location input */}
                   <Box>
                     <FormControl>
                       <FormLabel>Arrival Location:</FormLabel>
@@ -287,24 +304,7 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
 
-                  //Departure date input
-                  <Box>
-                    <FormControl>
-                      <FormLabel>Departure Date</FormLabel>
-                      <DatePicker
-                        dateFormat='dd/MM/yyyy'
-                        minDate={new Date()}
-                        selected={new Date(searchQuery.departureDate.date)}
-                        onChange={(date: Date) =>
-                          handleSearchQueryUpdate('departureDate', {
-                            ...searchQuery?.departureDate,
-                            date: formatDate(date),
-                          })
-                        }
-                      />
-                    </FormControl>
-                  </Box>
-                  //Departure date input
+                  {/* Departure date input */}
                   <Box>
                     <FormControl>
                       <FormLabel>Departure Date</FormLabel>
@@ -322,7 +322,7 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
 
-                  //Flex-date input
+                  {/* Flex-date input */}
                   <Box>
                     <Checkbox
                       name={'flexEnabled'}
@@ -362,6 +362,7 @@ export const SearchPage = () => {
                           })
                         }
                         defaultValue={1}
+                        max={7}
                       >
                         <NumberInputField />
                         <NumberInputStepper>
@@ -373,7 +374,7 @@ export const SearchPage = () => {
                   )}
                 </VStack>
               </HStack>
-              //Submission button
+              {/* Submission button */}
               <Box>
                 <Button type='submit' colorScheme='red'>
                   Search

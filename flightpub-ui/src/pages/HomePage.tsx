@@ -8,7 +8,7 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 
-export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
+export function HomePage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
 
   //recommended : contains data table of cheapest flights based on user location
   const [recommended, setRecommended] = useState<Flight[]>([]);
@@ -98,4 +98,4 @@ export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAc
       </Center>
     </Grid>
   );
-};
+}

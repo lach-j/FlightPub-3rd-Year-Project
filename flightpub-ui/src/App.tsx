@@ -37,22 +37,22 @@ const App = () => {
   };
 
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
+    const savedCart = localStorage.getItem('cart');
     if (savedCart)
-      setCart(JSON.parse(savedCart))
-  }, [])
+      setCart(JSON.parse(savedCart));
+  }, []);
 
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart])
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   return (
     <Flex direction='column' height='100vh'>
-      {hasNavbar() && <Header cartState={cartState}/>}
+      {hasNavbar() && <Header cartState={cartState} />}
       <Box position='relative' height='100%'>
         <Routes>
-          <Route path={routes.home} element={<HomePage cartState={cartState}/>} />
+          <Route path={routes.home} element={<HomePage cartState={cartState} />} />
           <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
           <Route path={routes.register} element={<RegisterPage />} />
           <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />
@@ -60,8 +60,8 @@ const App = () => {
           <Route path={routes.search} element={<SearchPage />} />
           <Route path={routes.map} element={<MapPage />} />
           <Route path={routes.account} element={<AccountPage />} />
-          <Route path={routes.searchResults} element={<SearchResultsPage cartState={cartState}/>} />
-          <Route path={routes.booking} element={<BookingPage cartState={cartState}/>} />
+          <Route path={routes.searchResults} element={<SearchResultsPage cartState={cartState} />} />
+          <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>
       </Box>

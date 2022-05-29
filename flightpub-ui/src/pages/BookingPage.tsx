@@ -40,52 +40,52 @@ import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
 
 
-export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) => {
+export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
 // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
-    flightIds: []
+    flightIds: [],
   });
   const toast = useToast();
 
-  const [cart,] = cartState;
+  const [cart] = cartState;
 
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     onOpen();
-      api
-          .httpPost(endpoints.book, bookingRequest)
-          .then(() => {
-            toast({
-              title: 'Booking Confirmed',
-              description: 'Your booking was made successfully',
-              status: 'success',
-              duration: 9000,
-              isClosable: true,
-              position: 'top',
-            });
-          })
-          .catch((err: ApiError) => {
-            if (err.statusCode === 401) {
-            } else {
-              toast( {
-                title: 'Error.',
-                description:
-                    'An internal error has occurred, please try again later.',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-                position: 'top',
-              });
-            }
-          })
-          .finally(() => onClose());
-    };
+    api
+      .httpPost(endpoints.book, bookingRequest)
+      .then(() => {
+        toast({
+          title: 'Booking Confirmed',
+          description: 'Your booking was made successfully',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top',
+        });
+      })
+      .catch((err: ApiError) => {
+        if (err.statusCode === 401) {
+        } else {
+          toast({
+            title: 'Error.',
+            description:
+              'An internal error has occurred, please try again later.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top',
+          });
+        }
+      })
+      .finally(() => onClose());
+  };
 
   useEffect(() => {
-    setBookingRequest({...bookingRequest, flightIds: cart.map(flight => flight.id)})
+    setBookingRequest({ ...bookingRequest, flightIds: cart.map(flight => flight.id) });
   }, [cart]);
 
   const renderPaymentDetails = () => {
@@ -118,7 +118,7 @@ export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStat
             </HStack>
           </VStack>
         );
-        // if users payment type is PayPal
+      // if users payment type is PayPal
       case 'paypal':
         return (
           <VStack mt='1em' gap='1em' w='full'>
@@ -129,7 +129,7 @@ export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStat
             <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
           </VStack>
         );
-        // if users payment type is PayPal
+      // if users payment type is PayPal
       case 'directDebit':
         return (
           <HStack w='full' mt='1em' gap='1em'>
@@ -147,7 +147,7 @@ export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStat
             </FormControl>
           </HStack>
         );
-        //If user payment type is 'saved'
+      //If user payment type is 'saved'
       case 'saved':
         return (
           <Select>
@@ -288,7 +288,7 @@ export const BookingPage = ({cartState}: {cartState: [Flight[], Dispatch<SetStat
             <Switch mt='2em'>Save payment for future transactions?</Switch>}
           <HStack w='full' gap='1em' mt='2em'>
             <Button onClick={handleBooking}
-              colorScheme={'red'}
+                    colorScheme={'red'}
             >
               Book Now
             </Button>
