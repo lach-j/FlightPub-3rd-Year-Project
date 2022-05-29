@@ -10,6 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
+/**
+ * Models the Destination table in the database.
+ */
 @Entity
 @Table(name = "destinations")
 @NoArgsConstructor

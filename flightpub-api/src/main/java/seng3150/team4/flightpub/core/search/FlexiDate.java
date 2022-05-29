@@ -15,12 +15,16 @@ public class FlexiDate {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
   private LocalDate date;
 
+  // number of days each side of the date to be flexible by
   private int flex;
 
+  // Gets the minimum date to be flexible by
   public LocalDateTime getMinDateTime() {
     return date.minusDays(flex).atStartOfDay();
   }
 
+
+  // Gets the maximum date to be flexible by
   public LocalDateTime getMaxDateTime() {
     return date.plusDays(flex).atTime(23, 59, 59);
   }

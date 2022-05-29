@@ -17,10 +17,12 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 public class ForgotPasswordRequest extends Validatable {
   private String email;
 
+  // Validate request and return any errors
   @Override
   public ValidationResult getErrors() {
     var validationResult = new ValidationResult();
 
+    // Ensure that email was provided and was a valid email
     var emailErrors = new ValidationError("email");
     if (isNullOrEmpty(email)) {
       emailErrors.addError(ErrorConstants.REQUIRED);

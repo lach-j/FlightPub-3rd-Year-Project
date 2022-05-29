@@ -19,7 +19,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
+
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
+
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
@@ -53,6 +55,8 @@ export function SearchResultsPage({cartState}: {cartState: [Flight[], Dispatch<S
   const { state } = useLocation();
   const [cart, setCart] = cartState;
   const [results, setResults] = useState<Flight[]>([]);
+
+  const [cart, setCart] = cartState;
 
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);

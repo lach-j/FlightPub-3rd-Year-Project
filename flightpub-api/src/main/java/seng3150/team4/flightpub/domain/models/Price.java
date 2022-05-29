@@ -1,11 +1,10 @@
-package seng3150.team4.flightpub;
+package seng3150.team4.flightpub.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
-import seng3150.team4.flightpub.domain.models.Flight;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -27,11 +27,16 @@ const noNavbar = [
 const App = () => {
 
   const location = useLocation();
+
   const [cart, setCart] = useState<Flight[]>([]);
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
   };
+
+  useEffect(() => {
+    console.log(cart)
+  }, [cart])
 
   return (
     <Flex direction='column' height='100vh'>

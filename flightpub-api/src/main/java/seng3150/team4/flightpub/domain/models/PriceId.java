@@ -1,5 +1,7 @@
-package seng3150.team4.flightpub;
+package seng3150.team4.flightpub.domain.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
@@ -7,6 +9,8 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Embeddable
 public class PriceId implements Serializable {
   private static final long serialVersionUID = -4559593586045662042L;
@@ -16,22 +20,6 @@ public class PriceId implements Serializable {
 
   @Column(name = "ClassCode", nullable = false, length = 3)
   private String classCode;
-
-  public Long getFlightId() {
-    return flightId;
-  }
-
-  public void setFlightId(Long flightId) {
-    this.flightId = flightId;
-  }
-
-  public String getClassCode() {
-    return classCode;
-  }
-
-  public void setClassCode(String classCode) {
-    this.classCode = classCode;
-  }
 
   @Override
   public boolean equals(Object o) {
