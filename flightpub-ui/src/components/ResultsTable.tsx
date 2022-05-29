@@ -69,7 +69,7 @@ const toast = useToast();
               <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
             {children}
             <Td>
-                <NavLink to={'/booking/?Id=' + result.id + '&Id=1436'}>
+                <NavLink to={'/booking/?Id=' + result.id}>
                 <Button type='button'
                           colorScheme='red'
                           onClick={() =>
