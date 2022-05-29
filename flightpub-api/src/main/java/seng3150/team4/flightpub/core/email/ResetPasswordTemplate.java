@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/** EmailTemplate to be sent when requesting a password reset. */
 public class ResetPasswordTemplate extends EmailTemplate {
 
   private static final String TEMPLATE_ID = "d-ab61283fd041483ab1b1b6cfe2f4cc9f";
@@ -22,6 +23,7 @@ public class ResetPasswordTemplate extends EmailTemplate {
     this.UI_URL = uiUrl;
   }
 
+  // Build the url that will be sent to the user to reset their password
   private String getResetTokenUrl() {
     return UriComponentsBuilder.fromHttpUrl(UI_URL)
         .path("reset")

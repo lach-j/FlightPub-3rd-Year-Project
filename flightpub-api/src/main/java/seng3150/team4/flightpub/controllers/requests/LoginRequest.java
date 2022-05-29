@@ -9,7 +9,6 @@ import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
-import static seng3150.team4.flightpub.core.validation.Validators.passwordValidator;
 
 @NoArgsConstructor
 @Getter
@@ -18,23 +17,20 @@ public class LoginRequest extends Validatable {
   private String email;
   private String password;
 
+  // Validate request and return any errors
   @Override
   public ValidationResult getErrors() {
     var validationResult = new ValidationResult();
 
-    var emailErrors = new ValidationError("email");
+    // Ensure that email was provided
     if (isNullOrEmpty(email)) {
-      emailErrors.addError(ErrorConstants.REQUIRED);
+      validationResult.addError(new ValidationError("email").addError(ErrorConstants.REQUIRED));
     }
-    validationResult.addError(emailErrors);
 
-    var passwordErrors = new ValidationError("password");
+    // Ensure password was provided
     if (isNullOrEmpty(password)) {
-      passwordErrors.addError(ErrorConstants.REQUIRED);
-    } else {
-      passwordErrors.addErrors(passwordValidator(password));
+      validationResult.addError(new ValidationError("password").addError(ErrorConstants.REQUIRED));
     }
-    validationResult.addError(passwordErrors);
 
     return validationResult;
   }

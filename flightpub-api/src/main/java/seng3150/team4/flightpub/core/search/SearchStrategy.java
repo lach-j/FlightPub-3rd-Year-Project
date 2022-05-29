@@ -14,8 +14,8 @@ import static seng3150.team4.flightpub.utility.Utilities.getValueOrDefault;
 
 public abstract class SearchStrategy {
 
+  // Using criteria query for complex queries
   private EntityManager em;
-
   protected CriteriaBuilder cb;
   protected CriteriaQuery<Flight> query;
   protected Root<Flight> flight;
@@ -28,6 +28,7 @@ public abstract class SearchStrategy {
 
   public abstract List<Flight> search();
 
+  // Pass through persistence context to query DB
   public SearchStrategy setEntityManager(EntityManager em) {
     this.em = em;
     cb = em.getCriteriaBuilder();
@@ -37,6 +38,7 @@ public abstract class SearchStrategy {
     return this;
   }
 
+  // Execute query and return results ordered by departure time
   protected List<Flight> getResults() {
     query.orderBy(cb.desc(flight.get("departureTime")));
     TypedQuery<Flight> results = em.createQuery(query);
@@ -44,6 +46,7 @@ public abstract class SearchStrategy {
     return results.getResultList();
   }
 
+  // Get 100 results per page
   private void paginate(TypedQuery<Flight> results) {
     int pageNum = getValueOrDefault(flightQuery.getPage(), 0);
     results.setFirstResult(pageNum);

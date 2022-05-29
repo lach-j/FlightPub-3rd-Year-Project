@@ -11,13 +11,17 @@ import seng3150.team4.flightpub.domain.models.User;
 
 import static seng3150.team4.flightpub.utility.TimeFunctions.minutesFromNow;
 
+/** Service to generate and verify JWTs for user Authentication/Authorization */
 @Service
 @RequiredArgsConstructor
 public class JwtHelperService implements IJwtHelperService {
 
   private final UrlResolverService urlResolverService;
 
+  // Generates a 24 hour token that holds the users id and is issued by the API.
   public String generateToken(User user) {
+
+    // TODO: provide this secret from the configuration file
     Algorithm algorithm = Algorithm.HMAC256("secret");
     return JWT.create()
         .withIssuer(urlResolverService.getApiUrl())
@@ -26,6 +30,7 @@ public class JwtHelperService implements IJwtHelperService {
         .sign(algorithm);
   }
 
+  // Verifies the integrity of the token and returns the decoded information
   public DecodedJWT verifyToken(String token) throws JWTVerificationException {
     Algorithm algorithm = Algorithm.HMAC256("secret");
     JWTVerifier verifier =

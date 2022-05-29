@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import seng3150.team4.flightpub.Price;
 
 import javax.persistence.*;
 import java.io.Serializable;

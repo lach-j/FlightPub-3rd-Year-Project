@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/** Models the user table of the database representing the user data of a registered user */
 @Entity
 @NoArgsConstructor
 @Getter
@@ -21,4 +22,6 @@ public class User implements IEntity {
   private String firstName;
   private String lastName;
   private String password;
+
+  // TODO: add saved payments and other user data to model
 }

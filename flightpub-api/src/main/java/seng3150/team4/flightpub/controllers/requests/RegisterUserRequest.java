@@ -19,10 +19,12 @@ public class RegisterUserRequest extends Validatable {
   private String firstName;
   private String lastName;
 
+  // Validate request and return any errors
   @Override
   protected ValidationResult getErrors() {
     var validationResult = new ValidationResult();
 
+    // Ensure email was provided and is a valid email
     var emailErrors = new ValidationError("email");
     if (isNullOrEmpty(email)) {
       emailErrors.addError(ErrorConstants.REQUIRED);
@@ -31,6 +33,7 @@ public class RegisterUserRequest extends Validatable {
     }
     validationResult.addError(emailErrors);
 
+    // Ensure password was provided and is valid
     var passwordErrors = new ValidationError("password");
     if (isNullOrEmpty(password)) {
       passwordErrors.addError(ErrorConstants.REQUIRED);
@@ -39,9 +42,12 @@ public class RegisterUserRequest extends Validatable {
     }
     validationResult.addError(passwordErrors);
 
+    // Ensure firstName was provided
     if (isNullOrEmpty(firstName)) {
       validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
     }
+
+    // Ensure firstName was provided
     if (isNullOrEmpty(lastName)) {
       validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
     }

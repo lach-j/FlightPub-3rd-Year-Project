@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/** Configuration class to provide configurable values to the application */
 @ConfigurationProperties(prefix = "flightpub")
 public class ApplicationProperties {
+
   public static class Url {
     @Getter
     @Setter
@@ -15,6 +17,8 @@ public class ApplicationProperties {
       private int port;
     }
 
+    @Getter
+    @Setter
     public static class Ui {
       private boolean ssl;
       private String host;
