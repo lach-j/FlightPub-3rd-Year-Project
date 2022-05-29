@@ -12,7 +12,6 @@ import {BiLinkExternal, HiOutlineArrowNarrowRight} from 'react-icons/all';
 import React, {SyntheticEvent, useEffect, useState} from 'react';
 import * as api from '../services/ApiService';
 import { ApiError, httpGet } from '../services/ApiService';
-import {flights} from "../data/flights";
 import {countries} from "../data/countries";
 import { SavedPayment } from '../models';
 import {dummySavedPayments} from "../data/SavedPayments";
@@ -29,7 +28,6 @@ export const BookingPage = () => {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const bookedFlights = flights.slice(2, 4);
   const [selectedFlights, setSelectedFlights] = useState<Flight[]>([])
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, SetStateAction, Dispatch } from 'react';
 import { Box, Button, Center, Grid, Heading, StackDivider, Td, useToast, VStack, Link } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import { httpGet } from '../services/ApiService';
@@ -8,7 +8,9 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 
-export const HomePage = () => {
+export function HomePage({cartState}: {cartState: [String[], Dispatch<SetStateAction<String[]>>]}) {
+  
+  const [cart, setCart] = cartState;
   const toast = useToast();
   const [recommended, setRecommended] = useState<Flight[]>([]);
   const [userLocation, setUserLocation] = useState<any>();
@@ -78,7 +80,7 @@ export const HomePage = () => {
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
-            <ResultsTable columns={columns} data={recommended} keyAccessor='id'>
+            <ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={[cart, setCart]}>
             </ResultsTable>
           </Center>
         </VStack>

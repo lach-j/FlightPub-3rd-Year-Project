@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -26,6 +26,7 @@ const noNavbar = [
 const App = () => {
 
   const location = useLocation();
+  const [cart, setCart] = useState<String[]>([])
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
@@ -33,10 +34,10 @@ const App = () => {
 
   return (
     <Flex direction='column' height='100vh'>
-      {hasNavbar() && <Header />}
+      {hasNavbar() && <Header cartState={[cart, setCart]}/>}
       <Box position='relative' height='100%'>
         <Routes>
-          <Route path={routes.home} element={<HomePage />} />
+          <Route path={routes.home} element={<HomePage cartState={[cart, setCart]}/>} />
           <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
           <Route path={routes.register} element={<RegisterPage />} />
           <Route path={routes.forgotPassword} element={<ForgotPasswordPage redirectPath={routes.login} />} />

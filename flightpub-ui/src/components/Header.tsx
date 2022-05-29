@@ -1,10 +1,12 @@
-import React from 'react';
-import { Box, Button, Flex, HStack, IconButton, Image, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import React, { SetStateAction, Dispatch } from 'react';
+import { Box, Text, Button, Flex, HStack, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverFooter, PopoverArrow, PopoverCloseButton, PopoverAnchor, } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
 
-export default function Header() {
+export default function Header({cartState}: {cartState: [String[], Dispatch<SetStateAction<String[]>>]}) {
+  const [cart, setCart] = cartState;
+  
   return (
     <Box minH='75' h='75' bg='black'>
       <Flex alignItems='center' justifyContent='space-between' h='full' paddingRight='2em'>
@@ -32,12 +34,31 @@ export default function Header() {
               </MenuItem>
             </MenuList>
           </Menu>
-          <IconButton
-            aria-label={'cart'}
-            icon={<FaShoppingCart />}
-            as={NavLink}
-            to={routes.booking}
-          />
+          <Popover>
+            <PopoverTrigger>
+              <IconButton
+              aria-label={'cart'}
+              icon={<FaShoppingCart />}
+              onClick={() => {
+                console.log(cart[0]);
+              }}
+             />
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverHeader>Cart</PopoverHeader>
+              <PopoverBody>
+                {cart.map((item) => 
+                <Text>
+                    {item}
+                </Text>)}
+                <NavLink to={'/booking/?Id=' + cart[0]}>
+                  <Button colorScheme='red'>Checkout</Button>
+                </NavLink>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
         </HStack>
       </Flex>
     </Box>

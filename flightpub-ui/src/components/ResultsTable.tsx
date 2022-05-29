@@ -1,6 +1,6 @@
 import { HStack, Table, Link, Button, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition } from '../models';
 import {NavLink} from "react-router-dom";
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
@@ -10,10 +10,12 @@ type ResultsTableProps = {
   data: any[],
   sortable?: boolean;
   keyAccessor: string;
+  cartState: [String[], Dispatch<SetStateAction<String[]>>];
 }
 
-export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, children, sortable = false, keyAccessor }) => {
-const toast = useToast();
+export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, children, sortable = false, keyAccessor, cartState }) => {
+  const toast = useToast();
+  const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -69,10 +71,10 @@ const toast = useToast();
               <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
             {children}
             <Td>
-                <NavLink to={'/booking/?Id=' + result.id}>
                 <Button type='button'
                           colorScheme='red'
-                          onClick={() =>
+                          onClick={() => {
+                            setCart(cart => [...cart, result.id]);
                             toast({
                               title: 'Success!',
                               description:
@@ -82,10 +84,9 @@ const toast = useToast();
                               isClosable: true,
                               position: 'top',
                             })
-                          }>
+                          }}>
                               Add to Cart
                     </Button>
-                </NavLink>
             </Td>
           </Tr>}
         )}
