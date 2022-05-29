@@ -1,7 +1,7 @@
 import { HStack, Table, Link, Button, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import * as _ from 'lodash';
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { ColumnDefinition } from '../models';
+import { ColumnDefinition, Flight } from '../models';
 import {NavLink} from "react-router-dom";
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
@@ -10,7 +10,7 @@ type ResultsTableProps = {
   data: any[],
   sortable?: boolean;
   keyAccessor: string;
-  cartState: [String[], Dispatch<SetStateAction<String[]>>];
+  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, children, sortable = false, keyAccessor, cartState }) => {
@@ -74,7 +74,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ columns, data, child
                 <Button type='button'
                           colorScheme='red'
                           onClick={() => {
-                            setCart(cart => [...cart, result.id]);
+                            setCart(cart => [...cart, result]);
                             toast({
                               title: 'Success!',
                               description:

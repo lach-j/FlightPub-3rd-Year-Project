@@ -8,7 +8,7 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 
-export function HomePage({cartState}: {cartState: [String[], Dispatch<SetStateAction<String[]>>]}) {
+export function HomePage({cartState}: {cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>]}) {
   
   const [cart, setCart] = cartState;
   const toast = useToast();

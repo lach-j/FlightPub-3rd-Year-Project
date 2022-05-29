@@ -15,6 +15,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
 import Header from './components/Header';
 import { Box, Flex } from '@chakra-ui/react';
+import { Flight } from './models'
 
 const noNavbar = [
   routes.login,
@@ -26,7 +27,7 @@ const noNavbar = [
 const App = () => {
 
   const location = useLocation();
-  const [cart, setCart] = useState<String[]>([]);
+  const [cart, setCart] = useState<Flight[]>([]);
 
   const hasNavbar = (): boolean => {
     return !noNavbar.some(r => r === location.pathname);
