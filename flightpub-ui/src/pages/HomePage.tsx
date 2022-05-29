@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, Td, useToast, VStack } from '@chakra-ui/react';
+import { Box, Button, Center, Grid, Heading, StackDivider, Td, useToast, VStack, Link } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import { httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
-import { DataTable } from '../components/DataTable';
+import { ResultsTable } from '../components/ResultsTable';
 
 export const HomePage = () => {
   const toast = useToast();
@@ -78,25 +78,8 @@ export const HomePage = () => {
           </Box>
           <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
           <Center>
-            <DataTable columns={columns} data={recommended} keyAccessor='id'>
-              <Td>
-                <Button type='button'
-                        colorScheme='red'
-                        onClick={() =>
-                          toast({
-                            title: 'Success!',
-                            description:
-                              'Flight added to cart successfully.',
-                            status: 'success',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top',
-                          })
-                        }>
-                  Add to Cart
-                </Button>
-              </Td>
-            </DataTable>
+            <ResultsTable columns={columns} data={recommended} keyAccessor='id'>
+            </ResultsTable>
           </Center>
         </VStack>
       </Center>

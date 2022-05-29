@@ -16,9 +16,10 @@ import {flights} from "../data/flights";
 import {countries} from "../data/countries";
 import { SavedPayment } from '../models';
 import {dummySavedPayments} from "../data/SavedPayments";
-import {NavLink} from "react-router-dom";
+import {NavLink, useParams, useSearchParams} from "react-router-dom";
 import {routes} from "../constants/routes";
 import { Booking } from "../models/Booking";
+import { Flight } from "../models/Flight";
 import { endpoints } from '../constants/endpoints';
 
 
@@ -27,10 +28,12 @@ export const BookingPage = () => {
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const bookedFlights = flights.slice(2, 4);
+  const [selectedFlights, setSelectedFlights] = useState<Flight[] | null>(null)
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
-    flightIds: [1, 2000, 500],
+    flightIds: []
   });
   const toast = useToast();
 
@@ -70,6 +73,11 @@ export const BookingPage = () => {
     }, 1000);
     setAuthError(false);
   };
+
+  const renderFlights = () => {
+    var id = searchParams.get("Id");
+    
+  }
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {

@@ -8,7 +8,7 @@ import seng3150.team4.flightpub.domain.models.Flight;
 
 import java.util.List;
 
-public interface IFlightRepository extends CrudRepository<Flight, FlightId> {
+public interface IFlightRepository extends CrudRepository<Flight, Long> {
 
   @Query(
       "SELECT f FROM Flight f WHERE f.departureLocation.destinationCode = ?1 AND f.departureTime > current_date AND f.prices.size > 0 ORDER BY f.departureTime")
