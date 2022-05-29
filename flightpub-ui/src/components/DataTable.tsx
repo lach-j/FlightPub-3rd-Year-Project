@@ -61,7 +61,6 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data, children, s
       </Thead>
       <Tbody>
         {data.sort(sortFunc).map((result: any) => {
-          console.log(_.get(result, keyAccessor))
           return <Tr key={_.get(result, keyAccessor)}>
             {columns.map((column) =>
               <Td key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
