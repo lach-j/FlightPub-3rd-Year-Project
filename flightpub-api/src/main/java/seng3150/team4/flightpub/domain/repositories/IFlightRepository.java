@@ -25,10 +25,10 @@ public interface IFlightRepository extends CrudRepository<Flight, Long> {
   @Query(
       nativeQuery = true,
       value =
-          "SELECT * from flights inner join price on price.flightId = flights.id "
-              + "WHERE flights.departureCode=?1 "
+          "SELECT * from Flights inner join Price on Price.FlightId = Flights.Id "
+              + "WHERE Flights.DepartureCode=?1 "
               + "GROUP BY DestinationCode "
-              + "ORDER BY price.price "
+              + "ORDER BY Price.Price "
               + "LIMIT 3")
   List<Flight> getCheapestFlightsFromDest(String destination);
 }

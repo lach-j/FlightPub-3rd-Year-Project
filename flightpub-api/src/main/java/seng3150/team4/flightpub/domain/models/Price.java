@@ -11,12 +11,14 @@ import java.math.BigDecimal;
 
 @Entity
 @IdClass(PriceId.class)
-@Table(name = "price")
+@Table(name = "Price")
 @Getter
 @Setter
 public class Price {
+  @Column(name = "FlightId")
   @JsonIgnore @Id private Long flightId;
 
+  @Column(name = "ClassCode")
   @Id private String classCode;
 
   @JsonBackReference

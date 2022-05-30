@@ -15,10 +15,8 @@ import java.util.Objects;
 public class PriceId implements Serializable {
   private static final long serialVersionUID = -4559593586045662042L;
 
-  @Column(name = "FlightId", nullable = false)
   private Long flightId;
 
-  @Column(name = "ClassCode", nullable = false, length = 3)
   private String classCode;
 
   @Override

@@ -12,13 +12,16 @@ import javax.persistence.Table;
 
 /** models the Airlines table in the database */
 @Entity
-@Table(name = "airlines")
+@Table(name = "Airlines")
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 public class Airline implements IEntity {
+  @Column(name = "AirlineCode")
   @Id private String airlineCode;
+
+  @Column(name = "AirlineName")
   private String airlineName;
 
   @Column(name = "CountryCode3")
