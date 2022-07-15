@@ -1,14 +1,17 @@
-const apiBaseUrl = 'http://localhost:5897';
+const apiBaseUrl =
+  !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5897'
+    : 'http://api.flightpub.net';
 
 const baseOptions: RequestInit = {
-  headers: { 'Content-Type': 'application/json' },
+  headers: { 'Content-Type': 'application/json' }
 };
 
 //Default httpGet, takes endpoint and paramaters as input
 export const httpGet = async (endpoint: string, params?: object): Promise<any> => {
   const res = await fetch(`${apiBaseUrl}${endpoint}${params ? toParams(params) : ''}`, {
     ...baseOptions,
-    method: 'get',
+    method: 'get'
   });
   return handleResponse(res);
 };
@@ -18,7 +21,7 @@ export const httpPost = async (endpoint: string, reqBody: object): Promise<any> 
   const res = await fetch(`${apiBaseUrl}${endpoint}`, {
     ...baseOptions,
     method: 'POST',
-    body: JSON.stringify(reqBody),
+    body: JSON.stringify(reqBody)
   });
   return handleResponse(res);
 };
@@ -27,7 +30,7 @@ export const httpPut = async (endpoint: string, reqBody: object): Promise<any> =
   const res = await fetch(`${apiBaseUrl}${endpoint}`, {
     ...baseOptions,
     method: 'PUT',
-    body: JSON.stringify(reqBody),
+    body: JSON.stringify(reqBody)
   });
   return handleResponse(res);
 };
@@ -35,7 +38,7 @@ export const httpPut = async (endpoint: string, reqBody: object): Promise<any> =
 export const httpDelete = async (endpoint: string): Promise<any> => {
   const res = await fetch(`${apiBaseUrl}${endpoint}`, {
     ...baseOptions,
-    method: 'DELETE',
+    method: 'DELETE'
   });
   return handleResponse(res);
 };
@@ -53,11 +56,7 @@ export class ApiError extends Error {
   public data: any;
 
   constructor(data: any, statusCode: number) {
-    super(
-      `The server returned a response of ${statusCode}, "${JSON.stringify(
-        data,
-      )}"`,
-    );
+    super(`The server returned a response of ${statusCode}, "${JSON.stringify(data)}"`);
     this.statusCode = statusCode;
     this.data = data;
   }
@@ -66,7 +65,12 @@ export class ApiError extends Error {
 //Maps object params from array to correct json format
 export const toParams = (obj?: any) => {
   let flatObj = flattenObj(obj);
-  return '?' + Object.keys(flatObj).map(key => key + '=' + flatObj[key]).join('&');
+  return (
+    '?' +
+    Object.keys(flatObj)
+      .map((key) => key + '=' + flatObj[key])
+      .join('&')
+  );
 };
 //Flattens object into digestable json format
 export const flattenObj = (obj: any, parent?: string, res: any = {}) => {
@@ -76,7 +80,9 @@ export const flattenObj = (obj: any, parent?: string, res: any = {}) => {
     if (Array.isArray(obj[key])) {
       res[propName] = obj[key].join(',');
     } else if (obj[key] instanceof Map) {
-      Array.from((obj[key] as Map<any, any>).entries()).map(([mapKey, value]) => res[`${key}%5B${mapKey}%5D`] = value);
+      Array.from((obj[key] as Map<any, any>).entries()).map(
+        ([mapKey, value]) => (res[`${key}%5B${mapKey}%5D`] = value)
+      );
     } else if (typeof obj[key] == 'object') {
       flattenObj(obj[key], propName, res);
     } else {
