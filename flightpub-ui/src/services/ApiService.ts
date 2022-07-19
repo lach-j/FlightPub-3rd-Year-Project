@@ -1,7 +1,7 @@
 const apiBaseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
     ? 'http://localhost:5897'
-    : 'http://api.flightpub.net';
+    : 'https://flightpub-team4.herokuapp.com';
 
 const baseOptions: RequestInit = {
   headers: { 'Content-Type': 'application/json' }
