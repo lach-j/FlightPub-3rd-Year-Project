@@ -30,24 +30,20 @@ public class UrlResolverService implements IUrlResolverService {
   private String UiPort;
 
   public String getApiUrl() {
-    var scheme = ApiSsl ? "https" : "http";
-
-    return UriComponentsBuilder.newInstance()
-        .scheme(scheme)
-        .host(ApiHost)
-        .port(ApiPort)
-        .build()
-        .toUriString();
+    return buildUriString(ApiSsl, ApiHost, ApiPort);
   }
 
   public String getUiUrl() {
-    var scheme = UiSsl ? "https" : "http";
+    return buildUriString(UiSsl, UiHost, UiPort);
+  }
 
-    return UriComponentsBuilder.newInstance()
-        .scheme(scheme)
-        .host(UiHost)
-        .port(UiPort)
-        .build()
-        .toUriString();
+  private static String buildUriString(boolean isSsl, String host, String port) {
+    var scheme = isSsl ? "https" : "http";
+
+    var uri = UriComponentsBuilder.newInstance().scheme(scheme).host(host);
+
+    if (!port.equals("80")) uri.port(port);
+
+    return uri.build().toUriString();
   }
 }
