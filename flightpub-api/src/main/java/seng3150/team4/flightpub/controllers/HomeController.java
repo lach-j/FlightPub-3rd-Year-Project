@@ -13,6 +13,6 @@ public class HomeController {
 
     @GetMapping
     public Response Get() {
-        return new StatusResponse(HttpStatus.OK, "Hello World! Testing Webhook Pt.2");
+        return new StatusResponse(HttpStatus.OK, "Hello World!");
     }
 }
