@@ -5,8 +5,12 @@ name: Deploy to Firebase Hosting on merge
 on:
   push:
     branches: [heroku]
+    paths:
+      - 'flightpub-ui/**'
   pull_request:
     branches: [heroku]
+    paths:
+      - 'flightpub-ui/**'
 jobs:
   build_and_deploy:
     env:
