@@ -20,7 +20,7 @@
     "chalk": "4.1.2",
     "framer-motion": "^6.3.3",
     "loadsh": "^0.0.4",
-    "mapbox-gl": "^2.8.2",
+    "mapbox-gl": "^1.13.0",
     "moment": "^2.29.3",
     "react": "^17.0.2",
     "react-datepicker": "^4.7.0",
