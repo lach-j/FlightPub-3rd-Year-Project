@@ -32,7 +32,7 @@ public class FlightService implements IFlightService {
 
   // Returns the cheapest 3 future flights from the provided departure code
   public List<Flight> getCheapestFlights(String departure) {
-    return flightRepo.getCheapestFlightsFromDest(departure);
+    return flightRepo.getCheapestFlightsFromDest(departure, PageRequest.of(0, 3));
   }
 
   // Returns the top 100 future flights from the provided departure code
