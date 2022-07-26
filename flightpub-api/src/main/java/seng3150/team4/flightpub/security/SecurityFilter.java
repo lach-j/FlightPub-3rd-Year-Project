@@ -6,68 +6,82 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
-import seng3150.team4.flightpub.domain.models.User;
 import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.services.JwtHelperService;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
-
 public class SecurityFilter implements HandlerInterceptor {
 
-    public final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);
+  public final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);
 
-    private final JwtHelperService jwtHelperService;
-    private final CurrentUserContext currentUserContext;
+  private final JwtHelperService jwtHelperService;
+  private final CurrentUserContext currentUserContext;
 
-    public SecurityFilter(JwtHelperService jwtHelperService, CurrentUserContext currentUserContext){
-        this.jwtHelperService = jwtHelperService;
-        this.currentUserContext = currentUserContext;
+  public SecurityFilter(JwtHelperService jwtHelperService, CurrentUserContext currentUserContext) {
+    this.jwtHelperService = jwtHelperService;
+    this.currentUserContext = currentUserContext;
+  }
+
+  @Override
+  public boolean preHandle(
+      HttpServletRequest request, HttpServletResponse response, Object handler) {
+    String path = request
+            .getRequestURI()
+            .substring(request.getContextPath().length())
+            .replaceAll("[/]+$", "");
+
+    var method = request.getMethod();
+
+    String token = resolveTokenFromCookies(ifNullDefault(request.getCookies(), new Cookie[] {}));
+    var authHeader = request.getHeader("Authorization");
+    token = ifNullDefault(token, resolveTokenFromHeaders(authHeader));
+
+    try {
+      var jwt = jwtHelperService.verifyToken(ifNullDefault(token, ""));
+      var userId = jwt.getClaim("id").asLong();
+      var userRole = UserRole.valueOf(jwt.getClaim("role").asInt());
+      currentUserContext.setCurrentUserId(userId);
+      currentUserContext.setCurrentUserRole(
+          userRole.orElse(
+              UserRole.STANDARD_USER)
+      ); // set the user role if present, otherwise make them a standard user
+
+      LOG.info("User with id {} approved to access restricted path \"/{}\" [{}]", userId, path, method);
+    } catch (JWTVerificationException exception) {
+      LOG.info(
+          "User with id {} attempted to access restricted route \"/{}\" [{}]",
+          request.getRemoteAddr() + ":" + request.getRemotePort(),
+          path,
+          method);
+      throw new ResponseStatusException(
+          HttpStatus.UNAUTHORIZED, "The provided token is invalid or has expired");
     }
+    return true;
+  }
 
+  private String resolveTokenFromCookies(Cookie[] requestCookies) {
+    var cookies = Arrays.stream(requestCookies);
+    var authCookie = cookies.filter(c -> c.getName().equals("bearer-token")).findFirst();
+    return authCookie.map(Cookie::getValue).orElse(null);
+  }
 
-    @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) {
-        String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
-        var method = request.getMethod();
+  private String resolveTokenFromHeaders(String authHeader) {
+      if (authHeader == null) return null;
 
-        String token = null;
+      if (authHeader.toLowerCase().startsWith("bearer ")) {
+          return authHeader.replaceAll("(?i)bearer ", "");
+      }
+      return null;
+  }
 
-        var cookies = Arrays.stream(ifNullDefault(request.getCookies(), new Cookie[]{}));
-        var authCookie = cookies.filter(c -> c.getName().equals("bearer-token")).findFirst();
-        if (authCookie.isPresent()) {
-            token = authCookie.get().getValue();
-        }
-
-        var authHeader = request.getHeader("Authorization");
-        if (!(authHeader == null) && authHeader.startsWith("Bearer ")) {
-            token = authHeader.replace("Bearer ", "");
-        }
-        if (token == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The provided token is invalid or has expired");
-        }
-        try {
-            var jwt = jwtHelperService.verifyToken(token);
-            var userId = jwt.getClaim("id").asLong();
-            var userRole = UserRole.valueOf(jwt.getClaim("role").asInt());
-            currentUserContext.setCurrentUserId(userId);
-            currentUserContext.setCurrentUserRole(userRole.orElse(UserRole.STANDARD_USER)); // set the user role if present, otherwise make them a standard user
-
-            LOG.info("User with id {} approved to access restricted path {} [{}]", userId, path, method);
-        } catch (JWTVerificationException exception) {
-            LOG.info("Client {} attempted to access restricted route \"{}\" [{}]", request.getRemoteAddr() + ":" + request.getRemotePort(), path, method);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The provided token is invalid or has expired");
-        }
-        return true;
+  private static <T> T ifNullDefault(T in, T def) {
+    if (in == null) {
+      return def;
     }
-
-    private static <T> T ifNullDefault(T in, T def) {
-        if (in == null) {
-            return def;
-        }
-        return in;
-    }
+    return in;
+  }
 }

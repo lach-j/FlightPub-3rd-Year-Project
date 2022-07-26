@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(getSecurityFilter())
-            .addPathPatterns("/users/**"); // TODO: add all necessary paths
+            .addPathPatterns("/"); // TODO: add all necessary paths
   }
 
   @Override
