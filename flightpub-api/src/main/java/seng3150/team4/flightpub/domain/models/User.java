@@ -34,14 +34,6 @@ public class User implements IEntity {
   @Column(name = "Password")
   private String password;
 
-  @JsonBackReference
-  @ManyToMany
-  @JoinTable(name="MessagingSession_FPUser",
-          joinColumns=@JoinColumn(name="UserId"),
-          inverseJoinColumns=@JoinColumn(name="SessionId")
-  )
-  private Set<MessagingSession> messagingSessions;
-
   private UserRole role;
 
   // TODO: add saved payments and other user data to model
