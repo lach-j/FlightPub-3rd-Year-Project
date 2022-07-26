@@ -25,7 +25,7 @@ public class JwtHelperService implements IJwtHelperService {
     Algorithm algorithm = Algorithm.HMAC256("secret");
     return JWT.create()
         .withIssuer(urlResolverService.getApiUrl())
-        .withExpiresAt(minutesFromNow(60 * 24))
+        .withExpiresAt(minutesFromNow(60 * 24)) // expires after 24 hours
         .withClaim("id", user.getId())
         .sign(algorithm);
   }
