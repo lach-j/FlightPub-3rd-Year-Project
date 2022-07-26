@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.security.SecurityFilter;
 import seng3150.team4.flightpub.services.JwtHelperService;
 
+@EnableSwagger2
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
