@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /** Models the user table of the database representing the user data of a registered user */
 @Table(name = "FPUser")
@@ -28,6 +29,13 @@ public class User implements IEntity {
   private String lastName;
   @Column(name = "Password")
   private String password;
+
+  @ManyToMany
+  @JoinTable(name="MessagingSession_FPUser",
+          joinColumns=@JoinColumn(name="UserId"),
+          inverseJoinColumns=@JoinColumn(name="SessionId")
+  )
+  private Set<MessagingSession> sessions;
 
   // TODO: add saved payments and other user data to model
 }
