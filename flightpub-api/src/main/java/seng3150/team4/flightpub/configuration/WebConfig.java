@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.security.SecurityFilter;
 import seng3150.team4.flightpub.services.JwtHelperService;
 
@@ -14,10 +15,11 @@ import seng3150.team4.flightpub.services.JwtHelperService;
 public class WebConfig implements WebMvcConfigurer {
 
   private final JwtHelperService jwtHelper;
+  private final CurrentUserContext currentUserContext;
 
   @Bean
   SecurityFilter getSecurityFilter() {
-    return new SecurityFilter(jwtHelper);
+    return new SecurityFilter(jwtHelper, currentUserContext);
   }
 
   @Override

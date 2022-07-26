@@ -27,6 +27,7 @@ public class JwtHelperService implements IJwtHelperService {
         .withIssuer(urlResolverService.getApiUrl())
         .withExpiresAt(minutesFromNow(60 * 24)) // expires after 24 hours
         .withClaim("id", user.getId())
+        .withClaim("role", user.getRole().getValue()) // Add users role to the JWT
         .sign(algorithm);
   }
 

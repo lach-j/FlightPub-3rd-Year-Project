@@ -2,10 +2,14 @@ package seng3150.team4.flightpub.services;
 
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.core.email.RegisterEmailTemplate;
 import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.domain.repositories.IUserRepository;
+import seng3150.team4.flightpub.security.CurrentUserContext;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -17,6 +21,8 @@ public class UserService implements IUserService {
 
   private final IUserRepository userRepository;
   private final IEmailSenderService emailSenderService;
+  private final CurrentUserContext currentUserContext;
+
 
   // Registers a new user
   @Override
@@ -27,6 +33,12 @@ public class UserService implements IUserService {
     if (duplicateUser.isPresent())
       throw new EntityExistsException(
           String.format("User with email %s already exists", user.getEmail()));
+
+    if (user.getRole() != UserRole.STANDARD_USER) {
+      if (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("Only users with the 'ADMINISTRATOR' role can create %s", user.getRole()));
+      }
+    }
 
     // Otherwise save the user
     User savedUser = userRepository.save(user);

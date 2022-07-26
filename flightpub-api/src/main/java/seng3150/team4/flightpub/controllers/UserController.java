@@ -49,6 +49,7 @@ public class UserController {
     user.setEmail(request.getEmail());
     user.setFirstName(request.getFirstName());
     user.setLastName(request.getLastName());
+    user.setRole(request.getRole());
 
     // return user
     return user;

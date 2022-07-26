@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
+import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.services.JwtHelperService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +20,11 @@ public class SecurityFilter implements HandlerInterceptor {
     public final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);
 
     private final JwtHelperService jwtHelperService;
+    private final CurrentUserContext currentUserContext;
 
-    public SecurityFilter(JwtHelperService jwtHelperService){
+    public SecurityFilter(JwtHelperService jwtHelperService, CurrentUserContext currentUserContext){
         this.jwtHelperService = jwtHelperService;
+        this.currentUserContext = currentUserContext;
     }
 
 
@@ -48,6 +52,9 @@ public class SecurityFilter implements HandlerInterceptor {
         try {
             var jwt = jwtHelperService.verifyToken(token);
             var userId = jwt.getClaim("id").asLong();
+            var userRole = UserRole.valueOf(jwt.getClaim("role").asInt());
+            currentUserContext.setCurrentUserId(userId);
+            currentUserContext.setCurrentUserRole(userRole.orElse(UserRole.STANDARD_USER)); // set the user role if present, otherwise make them a standard user
 
             LOG.info("User with id {} approved to access restricted path {} [{}]", userId, path, method);
         } catch (JWTVerificationException exception) {
