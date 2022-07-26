@@ -7,6 +7,8 @@ import seng3150.team4.flightpub.core.validation.ErrorConstants;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
+import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.UserRole;
 
 import static seng3150.team4.flightpub.core.validation.Validators.*;
 
@@ -18,6 +20,7 @@ public class RegisterUserRequest extends Validatable {
   private String password;
   private String firstName;
   private String lastName;
+  private UserRole role = UserRole.STANDARD_USER;
 
   // Validate request and return any errors
   @Override
