@@ -25,7 +25,7 @@ public class MessagingController {
     return new EntityResponse<>(session);
   }
 
-  @PostMapping("/{sessionId}")
+  @PatchMapping("/{sessionId}")
   public StatusResponse addMessage(
       @PathVariable long sessionId, @RequestBody MessageRequest message) {
     messagingService.addMessageToSession(sessionId, message.getContent());
@@ -34,10 +34,14 @@ public class MessagingController {
   }
 
   @PostMapping
-  public EntityResponse<MessagingSession> createSession(@RequestBody SessionRequest request) {
-    request.validate();
-
-    var session = messagingService.createSession(request.getUserIds());
+  public EntityResponse<MessagingSession> createSession() {
+    var session = messagingService.createSession();
     return new EntityResponse<>(session);
+  }
+
+  @PatchMapping("/{sessionId}/join")
+  public EntityResponse<MessagingSession> joinSession(@PathVariable long sessionId)
+  {
+    return new EntityResponse<>(messagingService.addCurrentUserToSession(sessionId));
   }
 }

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.domain.models.Message;
 import seng3150.team4.flightpub.domain.models.MessagingSession;
+import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.domain.repositories.IMessagingRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import javax.persistence.EntityNotFoundException;
@@ -28,42 +30,62 @@ public class MessagingService {
     this.userService = userService;
   }
 
+  private boolean userCanAccessSession(long userId, MessagingSession session) {
+    var userRole = currentUserContext.getCurrentUserRole();
+    var userInSession = session.getUsers().stream().noneMatch(u -> u.getId() == userId);
+    var userIsStaff = (userRole == UserRole.ADMINISTRATOR || userRole == UserRole.TRAVEL_AGENT);
+
+    return (userInSession || userIsStaff);
+  }
+
   public MessagingSession getSessionById(long sessionId) {
+    var userId = currentUserContext.getCurrentUserId();
     var session = messagingRepository.findById(sessionId);
 
     if (session.isEmpty())
       throw new EntityNotFoundException(
           String.format("Session with id %d does not exist.", sessionId));
 
-    return session.get();
+    var found = session.get();
+
+    if (!userCanAccessSession(userId, found))
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
+
+    return found;
   }
 
-  public MessagingSession createSession(Set<Long> userIds) {
+  public MessagingSession createSession() {
     var session = new MessagingSession();
 
-    var users = userService.getUsersById(userIds);
-    session.setUsers(new HashSet<>(users));
+    session.setUsers(Set.of(resolveCurrentUser()));
 
-    var saved = messagingRepository.save(session);
-    return saved;
+    return messagingRepository.save(session);
   }
 
   public void addMessageToSession(long sessionId, String message) {
     var session = getSessionById(sessionId);
-    var userId = currentUserContext.getCurrentUserId();
-    var user = userService.getUserById(userId);
-
-    if (session.getUsers().stream().noneMatch(u -> u.getId() == userId))
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
 
     var messageEntity = new Message();
     messageEntity.setContent(message);
     messageEntity.setSession(session);
     messageEntity.setDateSent(LocalDateTime.now());
-    messageEntity.setUser(user);
+    messageEntity.setUser(resolveCurrentUser());
 
     session.getMessages().add(messageEntity);
 
     messagingRepository.save(session);
+  }
+
+  public MessagingSession addCurrentUserToSession(long sessionId) {
+    var session = getSessionById(sessionId);
+
+    session.getUsers().add(resolveCurrentUser());
+
+    return messagingRepository.save(session);
+  }
+
+  private User resolveCurrentUser() {
+    var userId = currentUserContext.getCurrentUserId();
+    return userService.getUserById(userId);
   }
 }
