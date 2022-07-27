@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import seng3150.team4.flightpub.domain.models.UserRole;
@@ -13,6 +14,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SecurityFilter implements HandlerInterceptor {
 
@@ -29,6 +32,14 @@ public class SecurityFilter implements HandlerInterceptor {
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
+
+    HandlerMethod handlerMethod = (HandlerMethod) handler;
+
+    Authorized authAnnotation = handlerMethod.getMethod().getAnnotation(Authorized.class);
+    if (authAnnotation == null) {
+      return true;
+    }
+
     String path = request
             .getRequestURI()
             .substring(request.getContextPath().length())
@@ -43,12 +54,13 @@ public class SecurityFilter implements HandlerInterceptor {
     try {
       var jwt = jwtHelperService.verifyToken(ifNullDefault(token, ""));
       var userId = jwt.getClaim("id").asLong();
-      var userRole = UserRole.valueOf(jwt.getClaim("role").asInt());
+      var userRole = UserRole.valueOf(jwt.getClaim("role").asInt()).orElse(UserRole.STANDARD_USER);
       currentUserContext.setCurrentUserId(userId);
-      currentUserContext.setCurrentUserRole(
-          userRole.orElse(
-              UserRole.STANDARD_USER)
-      ); // set the user role if present, otherwise make them a standard user
+      currentUserContext.setCurrentUserRole(userRole); // set the user role if present, otherwise make them a standard user
+
+      if (Arrays.stream(authAnnotation.allowedRoles()).noneMatch(r -> r == userRole))
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, String.format("The user does have a valid role. Allowed roles are: %s", Arrays.stream(authAnnotation.allowedRoles()).map(Enum::name).collect(Collectors.joining(", "))));
 
       LOG.info("User with id {} approved to access restricted path \"/{}\" [{}]", userId, path, method);
     } catch (JWTVerificationException exception) {
