@@ -3,6 +3,12 @@ package seng3150.team4.flightpub.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seng3150.team4.flightpub.controllers.requests.MessageRequest;
+import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
+import seng3150.team4.flightpub.controllers.responses.EntityResponse;
+import seng3150.team4.flightpub.controllers.responses.StatusResponse;
+import seng3150.team4.flightpub.domain.models.MessagingSession;
+import seng3150.team4.flightpub.domain.models.UserRole;
+import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.controllers.requests.SessionRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
@@ -23,6 +29,11 @@ public class MessagingController {
   public EntityResponse<MessagingSession> getSession(@PathVariable long sessionId) {
     var session = messagingService.getSessionById(sessionId);
     return new EntityResponse<>(session);
+  }
+
+  @GetMapping
+  public EntityCollectionResponse<MessagingSession> getAllSessions() {
+    return new EntityCollectionResponse<>(messagingService.getAllSessions());
   }
 
   @PatchMapping("/{sessionId}")

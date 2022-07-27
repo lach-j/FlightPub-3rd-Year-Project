@@ -12,6 +12,7 @@ import seng3150.team4.flightpub.security.CurrentUserContext;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -52,6 +53,16 @@ public class MessagingService {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
 
     return found;
+  }
+
+  public List<MessagingSession> getAllSessions() {
+    var role = currentUserContext.getCurrentUserRole();
+    var user = resolveCurrentUser();
+
+    if (role == UserRole.STANDARD_USER)
+      return messagingRepository.getAllSessionsForUser(user);
+
+    return messagingRepository.getAllSessionsForAgent(user);
   }
 
   public MessagingSession createSession() {
