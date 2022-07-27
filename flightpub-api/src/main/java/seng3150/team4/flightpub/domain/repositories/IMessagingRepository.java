@@ -1,0 +1,12 @@
+package seng3150.team4.flightpub.domain.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import seng3150.team4.flightpub.domain.models.MessagingSession;
+import seng3150.team4.flightpub.domain.models.User;
+
+import java.util.Optional;
+
+/** Repository for making CRUD transactions on the User database table. */
+public interface IMessagingRepository extends JpaRepository<MessagingSession, Long> {
+}

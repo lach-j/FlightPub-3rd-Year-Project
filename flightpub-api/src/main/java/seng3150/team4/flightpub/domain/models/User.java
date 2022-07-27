@@ -1,5 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class User implements IEntity {
   @Column(name = "Password")
   private String password;
 
+  @JsonBackReference
   @ManyToMany
   @JoinTable(name="MessagingSession_FPUser",
           joinColumns=@JoinColumn(name="UserId"),

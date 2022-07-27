@@ -34,7 +34,7 @@ public class MessagingSession implements IEntity {
     private Set<User> users;
 
     @JsonManagedReference
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "SessionId", referencedColumnName = "Id")
     private Set<Message> messages;
 

@@ -13,6 +13,9 @@ import seng3150.team4.flightpub.security.CurrentUserContext;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /** Service used to provide logic for User management tasks. */
 @Service
@@ -96,5 +99,16 @@ public class UserService implements IUserService {
 
     // Otherwise, return the user
     return user.get();
+  }
+
+  @Override
+  public List<User> getUsersById(Collection<Long> userIds) {
+    // If the users does not exist that throw an exception
+    var users = userRepository.findAllById(userIds);
+    if (users.isEmpty())
+      throw new EntityNotFoundException("No users were found matching provided Ids");
+
+    // Otherwise, return the users
+    return users;
   }
 }
