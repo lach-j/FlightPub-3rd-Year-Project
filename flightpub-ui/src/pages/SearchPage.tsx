@@ -138,6 +138,22 @@ export const SearchPage = () => {
 		{ label: 'Asia', value: 'asia' },
 	];
 
+	function handleTagUpdate(value: any) {
+		if (searchTags.includes(value)) {
+			toast({
+				title: 'Tag Already Exists',
+				description: 'You have already added this tag to your search.',
+				status: 'info',
+				duration: 9000,
+				isClosable: true,
+				position: 'top',
+			});
+			return;
+		}
+		setSearchTags(searchTags => [...searchTags, value]);
+		handleSearchQueryUpdate('searchTags', searchTags);
+	}
+
 	return (
 		<Box p='2em'>
 			<Center>
@@ -321,7 +337,7 @@ export const SearchPage = () => {
 												>
 													<TagLabel>{item}</TagLabel>
 													<TagCloseButton
-														onClick={() => setSearchTags(searchTags.filter(value => value !== item)) }
+														onClick={() => setSearchTags(searchTags.filter(value => value !== item))}
 													/>
 												</Tag>
 											))}
@@ -336,9 +352,9 @@ export const SearchPage = () => {
 													defaultValue={''}
 													emptyState={true}
 													// TODO: Don't allow the addition of duplicates to the search tags
-													onChange={(value) =>
-														{setSearchTags(searchTags => [...searchTags, value]); handleSearchQueryUpdate('searchTags', searchTags)}
-													}
+													// onChange={(value) => { setSearchTags(searchTags => [...searchTags, value]); handleSearchQueryUpdate('searchTags', searchTags) }
+													// }
+													onChange={(value: string) => handleTagUpdate(value)}
 												>
 													<AutoCompleteInput variant='filled' />
 													<AutoCompleteList>
