@@ -441,7 +441,6 @@ export const SearchPage = () => {
 				<ModalOverlay />
 				<Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
 			</Modal>
-			<h1>{searchQuery?.searchTags}</h1>
 		</Box>
 	);
 };
