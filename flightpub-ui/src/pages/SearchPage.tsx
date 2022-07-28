@@ -5,6 +5,7 @@ import {
 	AccordionItem,
 	AccordionPanel,
 	Box,
+	BoxProps,
 	Button,
 	Center,
 	Checkbox,
@@ -36,7 +37,7 @@ import {
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import React, { FormEvent, useState } from 'react';
+import React, { ComponentProps, FormEvent, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete';
@@ -138,6 +139,7 @@ export const SearchPage = () => {
 		{ label: 'Asia', value: 'asia' },
 	];
 
+	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: any) {
 		if (searchTags.includes(value)) {
 			toast({
@@ -152,6 +154,23 @@ export const SearchPage = () => {
 		}
 		setSearchTags(searchTags => [...searchTags, value]);
 		handleSearchQueryUpdate('searchTags', searchTags);
+	}
+
+	//props for the tag message which displays when no tags are selected
+	interface TagMessageProps {
+		length: number;
+	}
+
+	//render a message when no tags are selected
+	function TagMessage(props: TagMessageProps) {
+		if (props.length === 0) {
+			return (
+				<>
+					<em>No search tags added</em>
+				</>
+			);
+		}
+		return null;
 	}
 
 	return (
@@ -327,6 +346,7 @@ export const SearchPage = () => {
 									<VStack align={'left'}>
 										<label>Selected Tags:</label>
 										<Box width={'15rem'}>
+											<TagMessage length={searchTags.length} />
 											{searchTags.map((item) => (
 												<Tag
 													size='md'
@@ -351,9 +371,6 @@ export const SearchPage = () => {
 													openOnFocus
 													defaultValue={''}
 													emptyState={true}
-													// TODO: Don't allow the addition of duplicates to the search tags
-													// onChange={(value) => { setSearchTags(searchTags => [...searchTags, value]); handleSearchQueryUpdate('searchTags', searchTags) }
-													// }
 													onChange={(value: string) => handleTagUpdate(value)}
 												>
 													<AutoCompleteInput variant='filled' />
