@@ -65,6 +65,7 @@ interface SearchQuery {
 	destinationCode?: string;
 	tickets?: Map<string, number>;
 	returnFlight?: boolean;
+	searchTags?: Array<string>;
 }
 
 
@@ -320,7 +321,7 @@ export const SearchPage = () => {
 												>
 													<TagLabel>{item}</TagLabel>
 													<TagCloseButton
-														onClick={() => setSearchTags(searchTags.filter(e => e !== item))}
+														onClick={() => setSearchTags(searchTags.filter(value => value !== item)) }
 													/>
 												</Tag>
 											))}
@@ -334,8 +335,9 @@ export const SearchPage = () => {
 													openOnFocus
 													defaultValue={''}
 													emptyState={true}
+													// TODO: Don't allow the addition of duplicates to the search tags
 													onChange={(value) =>
-														setSearchTags(searchTags => [...searchTags, value])
+														{setSearchTags(searchTags => [...searchTags, value]); handleSearchQueryUpdate('searchTags', searchTags)}
 													}
 												>
 													<AutoCompleteInput variant='filled' />
@@ -439,6 +441,7 @@ export const SearchPage = () => {
 				<ModalOverlay />
 				<Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
 			</Modal>
+			<h1>{searchQuery?.searchTags}</h1>
 		</Box>
 	);
 };
