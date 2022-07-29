@@ -20,13 +20,39 @@ const data = {
     description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore',
     tagline: 'Fun filled adventure in the most iconic part of Canada!',
     price: 600,
+    nights: 7,
+    location: 'Whistler',
+    tags: [['Winter','blue'],['Scenic', 'yellow'],['Holiday','green']],
 };
+interface HolidayCardProps {
+    isPopular: boolean;
+    imageUrl: string;
+    name: string;
+    description: string;
+    tagline: string;
+    price: number;
+    nights: number;
+    location: string;
+    tags: FeatureBadgeProps[];
+}
+interface FeatureBadgeProps {
+    tagName: string;
+    colour: string;
+}
 interface FeatureProps {
     text: string;
     iconBg: string;
     icon?: ReactElement;
 }
-
+const FeatureBadge = ({ tagName, colour }: FeatureBadgeProps) => {
+    return (
+        <HStack alignItems="baseline" spacing="1">
+            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme={colour} >
+                {tagName}
+            </Badge>
+        </HStack>
+    );
+};
 
 const Feature = ({ text, icon, iconBg }: FeatureProps) => {
     return (
@@ -79,16 +105,11 @@ function ProductAddToCart() {
                 <Box p="4">
                     <HStack alignItems="baseline" spacing="1">
                         {data.isPopular && (
-                            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
-                                Popular
-                            </Badge>
+                            <FeatureBadge tagName={"popular"} colour={"red"} />
                         )}
-                        <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="blue" >
-                            Winter
-                        </Badge>
-                        <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="yellow">
-                            Scenic
-                        </Badge>
+                        <FeatureBadge tagName={"winter"} colour={"blue"} />
+                        <FeatureBadge tagName={"scenic"} colour={"yellow"} />
+                        <FeatureBadge tagName={"holiday"} colour={"green"} />
                     </HStack>
                     <Flex mt="1" justifyContent="space-between" alignContent="center">
                         <Box
@@ -105,11 +126,11 @@ function ProductAddToCart() {
                     <HStack spacing='15px'>
 
                         <Box fontSize="xl" color={useColorModeValue('gray.500', 'white')}>
-                            7 nights
+                            {data.nights} nights
                         </Box>
 
                         <Box fontSize="xl" color={useColorModeValue('gray.500', 'white')}>
-                            Whistler
+                            {data.location}
                         </Box>
                         <Spacer />
                         <Box fontSize="2xl" color={useColorModeValue('gray.800', 'white')}>
