@@ -10,4 +10,5 @@ export const routes = {
   account: '/account',
   booking: '/booking',
   searchResults: '/searchResults',
+  travelAgents: '/travel-agents'
 };
