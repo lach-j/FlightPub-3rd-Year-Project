@@ -23,8 +23,6 @@ interface FeatureProps {
 interface HolidayCardPropsObj {
     data: HolidayCardProps;
 }
-export let HolidayCard: React.FC<HolidayCardPropsObj>;
-HolidayCard = ({data}) => {
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
     return (
         <HStack alignItems="baseline" spacing="1">
@@ -51,6 +49,9 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
         </Stack>
     );
 };
+
+export const HolidayCard: React.FC<HolidayCardPropsObj> = ({data}) => {
+
     return (
         <Flex p={5} w="full" alignItems="center" justifyContent="center" border='1px'>
             <HStack spacing={5}>
