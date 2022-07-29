@@ -14,8 +14,7 @@ import { HolidayCardProps } from "../models/HolidayCardProps";
 
 export function HolidayPackagesPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
 
-    const data: HolidayCardProps[] = [
-        {
+    const data: HolidayCardProps[] = [{
         isPopular: true,
         imageURL:
             'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/7d/68/1d/four-seasons-resort-whistler.jpg?w=600&h=400&s=1',
@@ -109,14 +108,11 @@ export function HolidayPackagesPage({ cartState }: { cartState: [Flight[], Dispa
                     </Box>
                     <Heading as='h1' size='lg'>Holiday Packages and Deals from {airport?.city}</Heading>
                     <VStack>
-                        {data ? (
-                            data.map((value, index) =>
-                                (
-                                    <HolidayCard data={value}></HolidayCard>
-                                ))
-                        ) : (
-                           <h1>You don't seem to have any holiday packages</h1>
-                        )};
+                        {(data.length!==0) ? (
+                            data.map((value) =>
+                                (<HolidayCard data={value}></HolidayCard>))) :
+                            (<h1>Nothing here, please check back later!</h1>)
+                        };
                     </VStack>
                 </VStack>
             </Center>
