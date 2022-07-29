@@ -6,7 +6,6 @@ import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { convertMinsToHM, formatDateTime } from '../utility/formatting';
-import { ResultsTable } from '../components/ResultsTable';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { HolidayCard } from "../components/HolidayCard";
