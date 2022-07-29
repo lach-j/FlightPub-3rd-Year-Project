@@ -9,9 +9,44 @@ import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import HolidayCard from "../components/HolidayCard";
+import { HolidayCard } from "../components/HolidayCard";
+import { HolidayCardProps } from "../models/HolidayCardProps";
 
 export function HolidayPackagesPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
+
+    const data: HolidayCardProps[] = [
+        {
+        isPopular: true,
+        imageURL:
+            'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/7d/68/1d/four-seasons-resort-whistler.jpg?w=600&h=400&s=1',
+        name: 'Iconic Canadian Winter in Whistler',
+        description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore',
+        tagline: 'Fun filled adventure in the most iconic part of Canada!',
+        price: 600,
+        nights: 7,
+        location: 'Whistler',
+        tags: [
+            {tagName: 'Winter', tagColor: 'blue'},
+            {tagName: 'Scenic', tagColor: 'yellow'},
+            {tagName: 'Holiday', tagColor: 'green'}
+        ],
+    },
+        {
+            isPopular: false,
+            imageURL:
+                'https://media-cdn.tripadvisor.com/media/photo-s/1b/f4/64/09/aerial-view.jpg',
+            name: 'Maldives Resort and Spa',
+            description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore',
+            tagline: 'Surround yourself by deep blue beautiful ocean in the beautiful Maldives',
+            price: 450,
+            nights: 4,
+            location: 'Maldives',
+            tags: [
+                {tagName: 'Warm', tagColor: 'orange'},
+                {tagName: 'Scenic', tagColor: 'yellow'},
+                {tagName: 'Holiday', tagColor: 'green'}
+            ],
+        }];
 
     //recommended : contains data table of cheapest flights based on user location
     const [recommended, setRecommended] = useState<Flight[]>([]);
@@ -74,8 +109,14 @@ export function HolidayPackagesPage({ cartState }: { cartState: [Flight[], Dispa
                     </Box>
                     <Heading as='h1' size='lg'>Holiday Packages and Deals from {airport?.city}</Heading>
                     <VStack>
-                        <HolidayCard></HolidayCard>
-                        <HolidayCard></HolidayCard>
+                        {data ? (
+                            data.map((value, index) =>
+                                (
+                                    <HolidayCard data={value}></HolidayCard>
+                                ))
+                        ) : (
+                           <h1>You don't seem to have any holiday packages</h1>
+                        )};
                     </VStack>
                 </VStack>
             </Center>
