@@ -1,31 +1,41 @@
 import moment from 'moment';
+import { useState } from 'react';
 import Message from '../models/Message';
-import * as api from './ApiService';
+import { useApi } from './ApiService';
 
 const BASE_ENDPOINT = '/messages';
 
-export const getSessionById = async (sessionId: number) => {
-  return await api.httpGet(`${BASE_ENDPOINT}/${sessionId}`);
-};
+export const useMessaging = (_sessionId: number) => {
+  const [sessionId, setSessionId] = useState(_sessionId);
+  const [prevDate, setDate] = useState(new Date());
 
-export const subscribeToMessages = (
-  sessionId: number,
-  callback: (data: Message[]) => void,
-  error?: (error: any) => void,
-  delay: number = 10000
-) => {
-  const getMessages = () => {
-    let since = moment().subtract(delay, 'milliseconds').toISOString();
+  const { httpGet, httpPatch } = useApi();
 
-    api
-      .httpGet(`${BASE_ENDPOINT}/${sessionId}/messages`, { since })
-      .then(callback)
-      .catch((e) => error && error(e));
+  const getSession = async () => {
+    return await httpGet(`${BASE_ENDPOINT}/${sessionId}`);
   };
 
-  return setInterval(getMessages, delay);
-};
+  const sendNewMessage = async (content: string) => {
+    return await httpPatch(`${BASE_ENDPOINT}/${sessionId}`, { content });
+  };
 
-export const sendNewMessage = async (sessionId: number, content: string) => {
-  return await api.httpPatch(`${BASE_ENDPOINT}/${sessionId}`, { content });
+  const subscribeToMessages = (
+    callback: (data: Message[]) => void,
+    error?: (error: any) => void,
+    delay: number = 10000
+  ) => {
+    const getMessages = () => {
+      let since = prevDate.toISOString();
+      httpGet(`${BASE_ENDPOINT}/${sessionId}/messages`, { since })
+        .then((data: Message[]) => {
+          setDate(new Date());
+          callback(data);
+        })
+        .catch((e) => error && error(e));
+    };
+
+    return setInterval(getMessages, delay);
+  };
+
+  return { getSession, sendNewMessage, subscribeToMessages };
 };

@@ -24,11 +24,11 @@ import {
   Text,
   useDisclosure,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
 import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
-import * as api from '../services/ApiService';
+import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
@@ -39,24 +39,27 @@ import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
 
-
-export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
-// SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
+export const BookingPage = ({
+  cartState
+}: {
+  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
+}) => {
+  // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
-    flightIds: [],
+    flightIds: []
   });
   const toast = useToast();
+  const { httpPost } = useApi(endpoints.book);
 
   const [cart] = cartState;
 
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     onOpen();
-    api
-      .httpPost(endpoints.book, bookingRequest)
+    httpPost('', bookingRequest)
       .then(() => {
         toast({
           title: 'Booking Confirmed',
@@ -64,7 +67,7 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
           status: 'success',
           duration: 9000,
           isClosable: true,
-          position: 'top',
+          position: 'top'
         });
       })
       .catch((err: ApiError) => {
@@ -72,12 +75,11 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
         } else {
           toast({
             title: 'Error.',
-            description:
-              'An internal error has occurred, please try again later.',
+            description: 'An internal error has occurred, please try again later.',
             status: 'error',
             duration: 9000,
             isClosable: true,
-            position: 'top',
+            position: 'top'
           });
         }
       })
@@ -85,11 +87,10 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
   };
 
   useEffect(() => {
-    setBookingRequest({ ...bookingRequest, flightIds: cart.map(flight => flight.id) });
+    setBookingRequest({ ...bookingRequest, flightIds: cart.map((flight) => flight.id) });
   }, [cart]);
 
   const renderPaymentDetails = () => {
-
     //switch statement defines flow based on payment type
     switch (savedPaymentData?.type) {
       //if users payment type is card
@@ -151,7 +152,9 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
       case 'saved':
         return (
           <Select>
-            {dummySavedPayments.map(s => <option value={s.nickname}>{s.nickname}</option>)}
+            {dummySavedPayments.map((s) => (
+              <option value={s.nickname}>{s.nickname}</option>
+            ))}
           </Select>
         );
     }
@@ -160,10 +163,12 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
   return (
     <Flex justifyContent='center' p='5em'>
       <Flex justifyContent='center' direction='column' w='50em'>
-        <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
+        <Heading fontSize='3xl' mb='1em'>
+          Finalise Booking
+        </Heading>
         <Text>Flights:</Text>
         <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {cart.map((flight) =>
+          {cart.map((flight) => (
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -184,43 +189,58 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
               <AccordionPanel pb={4}>
                 <Flex w='full' justifyContent='space-between' alignItems='center'>
                   <Stat textAlign='left' flex='none'>
-                    <StatLabel>{new Date(flight?.departureTime).toLocaleString('en-AU', {
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                      hour12: false,
-                    })}</StatLabel>
+                    <StatLabel>
+                      {new Date(flight?.departureTime).toLocaleString('en-AU', {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                        hour12: false
+                      })}
+                    </StatLabel>
                     <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                     <StatHelpText>DEPARTURE</StatHelpText>
                   </Stat>
-                  {flight?.stopOverLocation.destinationCode && <>
-                    <HiOutlineArrowNarrowRight />
-                    <Stat textAlign='center' flex='none'>
-                      <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false,
-                      }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                        timeStyle: 'short',
-                        hour12: false,
-                      })}</StatLabel>
-                      <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                      <StatHelpText>STOPOVER</StatHelpText>
-                    </Stat></>}
+                  {flight?.stopOverLocation.destinationCode && (
+                    <>
+                      <HiOutlineArrowNarrowRight />
+                      <Stat textAlign='center' flex='none'>
+                        <StatLabel>
+                          {new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
+                            dateStyle: 'short',
+                            timeStyle: 'short',
+                            hour12: false
+                          }) +
+                            ' - ' +
+                            new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                              timeStyle: 'short',
+                              hour12: false
+                            })}
+                        </StatLabel>
+                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
+                        <StatHelpText>STOPOVER</StatHelpText>
+                      </Stat>
+                    </>
+                  )}
                   <HiOutlineArrowNarrowRight />
                   <Stat textAlign='right' flex='none'>
-                    <StatLabel>{new Date(flight?.arrivalTime).toLocaleString('en-AU', {
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                      hour12: false,
-                    })}</StatLabel>
+                    <StatLabel>
+                      {new Date(flight?.arrivalTime).toLocaleString('en-AU', {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                        hour12: false
+                      })}
+                    </StatLabel>
                     <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
                     <StatHelpText>ARRIVAL</StatHelpText>
                   </Stat>
                 </Flex>
               </AccordionPanel>
-            </AccordionItem>)}
+            </AccordionItem>
+          ))}
         </Accordion>
-        <Text mb='4em'>{`Subtotal: $${cart.reduce((partialSum, a) => partialSum + a.prices[0].price, 0)}`}</Text>
+        <Text mb='4em'>{`Subtotal: $${cart.reduce(
+          (partialSum, a) => partialSum + a.prices[0].price,
+          0
+        )}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
@@ -260,7 +280,9 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
               <FormControl flex={2}>
                 <FormLabel>Country</FormLabel>
                 <Select>
-                  {countries.map((c) => <option value={c}>{c}</option>)}
+                  {countries.map((c) => (
+                    <option value={c}>{c}</option>
+                  ))}
                 </Select>
               </FormControl>
               <FormControl flex={1}>
@@ -269,12 +291,18 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
               </FormControl>
             </HStack>
           </VStack>
-          <Heading fontSize='xl' mt='2em'>Payment Details</Heading>
+          <Heading fontSize='xl' mt='2em'>
+            Payment Details
+          </Heading>
           <VStack>
             <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
-              <Select value={savedPaymentData?.type}
-                      onChange={(event) => setSavedPaymentData({ type: event.target.value } as SavedPayment)}>
+              <Select
+                value={savedPaymentData?.type}
+                onChange={(event) =>
+                  setSavedPaymentData({ type: event.target.value } as SavedPayment)
+                }
+              >
                 <option>Select an option</option>
                 <option value='card'>Card</option>
                 <option value='directDebit'>Direct Debit</option>
@@ -284,19 +312,14 @@ export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetS
             </FormControl>
             {renderPaymentDetails()}
           </VStack>
-          {savedPaymentData?.type !== 'saved' &&
-            <Switch mt='2em'>Save payment for future transactions?</Switch>}
+          {savedPaymentData?.type !== 'saved' && (
+            <Switch mt='2em'>Save payment for future transactions?</Switch>
+          )}
           <HStack w='full' gap='1em' mt='2em'>
-            <Button onClick={handleBooking}
-                    colorScheme={'red'}
-            >
+            <Button onClick={handleBooking} colorScheme={'red'}>
               Book Now
             </Button>
-            <Button
-              as={NavLink}
-              to={routes.search}
-              colorScheme={'gray'}
-            >
+            <Button as={NavLink} to={routes.search} colorScheme={'gray'}>
               Continue Searching
             </Button>
           </HStack>

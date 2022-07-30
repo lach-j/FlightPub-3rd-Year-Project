@@ -14,29 +14,30 @@ import {
   StackDivider,
   Text,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { httpGet } from '../services/ApiService';
+import { useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
 
 import { ResultsTable } from '../components/ResultsTable';
 
 //Takes date-time input and formats to user-friendly display type
-const formatDateTime = (value: string): string => new Date(value).toLocaleString('en-AU', {
-  dateStyle: 'short',
-  timeStyle: 'short',
-  hour12: false,
-});
+const formatDateTime = (value: string): string =>
+  new Date(value).toLocaleString('en-AU', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    hour12: false
+  });
 
 //returns price-range as string of different flight class options
 const getPriceString = (prices: Price[]) => {
   if (!prices) return '';
-  let pricesVals = prices.map(p => p.price);
+  let pricesVals = prices.map((p) => p.price);
   let minPrice = Math.min(...pricesVals);
   let maxPrice = Math.max(...pricesVals);
   return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
@@ -48,11 +49,14 @@ function convertMinsToHM(minutes: number) {
 
   minutes = minutes % 60;
 
-  return (hours + ' hrs ' + minutes + ' mins');
+  return hours + ' hrs ' + minutes + ' mins';
 }
 
-export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
-
+export function SearchResultsPage({
+  cartState
+}: {
+  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
+}) {
   const { state } = useLocation();
   const [cart, setCart] = cartState;
 
@@ -73,70 +77,71 @@ export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatc
   //List of airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
-//Min-Max price information
-  const getMinPrice = (prices: Price[]) => Math.min(...prices.map(p => p.price));
-  const getMaxPrice = (prices: Price[]) => Math.max(...prices.map(p => p.price));
+  const { httpGet } = useApi(endpoints.airlines);
+
+  //Min-Max price information
+  const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
+  const getMaxPrice = (prices: Price[]) => Math.max(...prices.map((p) => p.price));
 
   //DataTable column definitions
   const columns: ColumnDefinition<any>[] = [
     {
       accessor: 'airlineCode',
       Header: 'Airline',
-      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName,
+      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName
     },
     {
       accessor: 'departureLocation.airport',
-      Header: 'Departure Airport',
+      Header: 'Departure Airport'
     },
     {
       accessor: 'departureTime',
       Header: 'Departure Time',
-      transform: formatDateTime,
+      transform: formatDateTime
     },
     {
       accessor: 'arrivalTime',
       Header: 'Arrival Time',
-      transform: formatDateTime,
+      transform: formatDateTime
     },
     {
       accessor: 'arrivalLocation.airport',
-      Header: 'Destination Airport',
+      Header: 'Destination Airport'
     },
     {
       accessor: 'stopOverLocation.airport',
       Header: 'Stop Over',
-      transform: (value: any) => value || '---',
+      transform: (value: any) => value || '---'
     },
     {
       accessor: 'prices',
       Header: 'Price',
       transform: getPriceString,
-      sortValue: (prices: Price[], descending) => descending ? getMaxPrice(prices) : getMinPrice(prices),
+      sortValue: (prices: Price[], descending) =>
+        descending ? getMaxPrice(prices) : getMinPrice(prices)
     },
     {
       accessor: 'duration',
       Header: 'Duration',
-      transform: (value: any) => convertMinsToHM(value),
-    },
+      transform: (value: any) => convertMinsToHM(value)
+    }
   ];
   //sets airline information on-load
   useEffect(() => {
-    httpGet(endpoints.airlines)
-      .then(setAirlines);
+    httpGet('').then(setAirlines);
   }, []);
 
   //sets results and query on-load
   useEffect(() => {
-    const { results, query } = state as { query: any, results: Flight[] };
+    const { results, query } = state as { query: any; results: Flight[] };
     setResults(results);
     setQuery(query);
-    const flightTimes = results.map(r => r.duration);
+    const flightTimes = results.map((r) => r.duration);
     const maxDuration = Math.max(...flightTimes);
     const minDuration = Math.min(...flightTimes);
     setMaxDuration(maxDuration);
     setMinDuration(minDuration);
     setDurationFilter(maxDuration);
-
   }, [state]);
 
   // filtering by price
@@ -156,9 +161,10 @@ export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatc
   //Filters resultdata based on stored filter criteria
   const filterResults = (result: Flight) => {
     if (
-      result.prices.filter(p => p.price < minPrice).length > 0
-      || result.prices.filter(p => p.price > maxPrice).length > 0
-    ) return false;
+      result.prices.filter((p) => p.price < minPrice).length > 0 ||
+      result.prices.filter((p) => p.price > maxPrice).length > 0
+    )
+      return false;
 
     if (airlineFilter && airlineFilter !== result.airlineCode) return false;
 
@@ -177,15 +183,12 @@ export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatc
         alignItems={'flex-start'}
       >
         <Box w='300px' pt='30px' pl='30px'>
-          <VStack
-            divider={<StackDivider borderColor='gray.200' />}
-            spacing={10}
-            align='stretch'>
+          <VStack divider={<StackDivider borderColor='gray.200' />} spacing={10} align='stretch'>
             //Price filter slider
-            <VStack
-              spacing={4}
-              align='stretch'>
-              <Text>Price: ${minPrice} - ${maxPrice}</Text>
+            <VStack spacing={4} align='stretch'>
+              <Text>
+                Price: ${minPrice} - ${maxPrice}
+              </Text>
 
               <RangeSlider
                 aria-label={['min', 'max']}
@@ -201,11 +204,8 @@ export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatc
                 <RangeSliderThumb index={1} />
               </RangeSlider>
             </VStack>
-
             //Flight duration slider
-            <VStack
-              spacing={4}
-              align='stretch'>
+            <VStack spacing={4} align='stretch'>
               <Text>Max Duration: {Math.floor(durationFilter / 60)} hours</Text>
 
               <Slider
@@ -222,25 +222,30 @@ export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatc
                 <SliderThumb />
               </Slider>
             </VStack>
-
             //Airline filter selectbox
-            <VStack
-              spacing={4}
-              align='stretch'>
+            <VStack spacing={4} align='stretch'>
               <Text>Airline:</Text>
               <Select placeholder='No Filter' onChange={filterByAirline}>
-                {airlines.filter(airline => results.map(a => a.airlineCode).includes(airline.airlineCode)).map((airline) =>
-                  <option value={airline.airlineCode}>{airline.airlineName}</option>,
-                )}
+                {airlines
+                  .filter((airline) =>
+                    results.map((a) => a.airlineCode).includes(airline.airlineCode)
+                  )
+                  .map((airline) => (
+                    <option value={airline.airlineCode}>{airline.airlineName}</option>
+                  ))}
               </Select>
             </VStack>
           </VStack>
         </Box>
         //DataTable for flight results based on filtered data
         <Center flex='1'>
-          <ResultsTable columns={columns} data={results.filter(filterResults)} keyAccessor='id' sortable
-                        cartState={[cart, setCart]}>
-          </ResultsTable>
+          <ResultsTable
+            columns={columns}
+            data={results.filter(filterResults)}
+            keyAccessor='id'
+            sortable
+            cartState={[cart, setCart]}
+          ></ResultsTable>
         </Center>
       </HStack>
     </Box>

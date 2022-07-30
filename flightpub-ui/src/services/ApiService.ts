@@ -1,66 +1,90 @@
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+
 const apiBaseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
     ? 'http://localhost:5897'
     : 'https://flightpub-team4.herokuapp.com';
 
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU4OTciLCJpZCI6MSwiZXhwIjoxNjU5MjMwMDMxfQ.HJRfGWj6IiIfr4R5ytAD4Ca1nx_lKvtgyaoKRjewUgA'; // TODO store this somewhere.
+export const useApi = (_endpoint: string = '') => {
+  const [baseEndpoint, setBaseEndpoint] = useState(_endpoint);
 
-const baseOptions: RequestInit = {
-  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
-};
+  const navigate = useNavigate();
+  const location = useLocation();
 
-//Default httpGet, takes endpoint and paramaters as input
-export const httpGet = async (endpoint: string, params?: object): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}${params ? toParams(params) : ''}`, {
-    ...baseOptions,
-    method: 'get'
-  });
-  return handleResponse(res);
-};
+  const getOptions = () => {
+    const token = localStorage.getItem('bearer-token');
+    const options: RequestInit = {
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+    };
 
-//Default httpPost, takes endpoint and reqBody as input
-export const httpPost = async (endpoint: string, reqBody: object): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
-    ...baseOptions,
-    method: 'POST',
-    body: JSON.stringify(reqBody)
-  });
-  return handleResponse(res);
-};
+    return options;
+  };
 
-export const httpPut = async (endpoint: string, reqBody: object): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
-    ...baseOptions,
-    method: 'PUT',
-    body: JSON.stringify(reqBody)
-  });
-  return handleResponse(res);
-};
+  const resolveEndpoint = (endpoint: string) => {
+    return `${apiBaseUrl}${baseEndpoint}${endpoint}`;
+  };
 
-export const httpPatch = async (endpoint: string, reqBody: object): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
-    ...baseOptions,
-    method: 'PATCH',
-    body: JSON.stringify(reqBody)
-  });
-  return handleResponse(res);
-};
+  //Default httpGet, takes endpoint and paramaters as input
+  const httpGet = async (endpoint: string, params?: object): Promise<any> => {
+    const res = await fetch(`${resolveEndpoint(endpoint)}${params ? toParams(params) : ''}`, {
+      ...getOptions(),
+      method: 'get'
+    });
+    return handleResponse(res);
+  };
 
-export const httpDelete = async (endpoint: string): Promise<any> => {
-  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
-    ...baseOptions,
-    method: 'DELETE'
-  });
-  return handleResponse(res);
-};
-//Response handler, checks for 2xx http status codes
-const handleResponse = async (res: Response) => {
-  if (res.status.toString().charAt(0) !== '2') {
-    let err = await res.json();
-    throw new ApiError(err, res.status);
-  }
-  return res.json();
+  //Default httpPost, takes endpoint and reqBody as input
+  const httpPost = async (endpoint: string, reqBody: object): Promise<any> => {
+    const res = await fetch(`${resolveEndpoint(endpoint)}`, {
+      ...getOptions(),
+      method: 'POST',
+      body: JSON.stringify(reqBody)
+    });
+    return handleResponse(res);
+  };
+
+  const httpPut = async (endpoint: string, reqBody: object): Promise<any> => {
+    const res = await fetch(`${resolveEndpoint(endpoint)}`, {
+      ...getOptions(),
+      method: 'PUT',
+      body: JSON.stringify(reqBody)
+    });
+    return handleResponse(res);
+  };
+
+  const httpPatch = async (endpoint: string, reqBody: object): Promise<any> => {
+    const res = await fetch(`${resolveEndpoint(endpoint)}`, {
+      ...getOptions(),
+      method: 'PATCH',
+      body: JSON.stringify(reqBody)
+    });
+    return handleResponse(res);
+  };
+
+  const httpDelete = async (endpoint: string): Promise<any> => {
+    const res = await fetch(`${resolveEndpoint(endpoint)}`, {
+      ...getOptions(),
+      method: 'DELETE'
+    });
+    return handleResponse(res);
+  };
+  //Response handler, checks for 2xx http status codes
+  const handleResponse = async (res: Response) => {
+    if (res.status.toString().charAt(0) !== '2') {
+      let err = await res.json();
+
+      if (res.status === 401 && location.pathname !== routes.login) {
+        navigate(routes.login, { state: { redirectUrl: location.pathname } });
+      }
+
+      throw new ApiError(err, res.status);
+    }
+    return res.json();
+  };
+
+  return { httpGet, httpPost, httpPut, httpPatch, httpDelete };
 };
 
 export class ApiError extends Error {
@@ -74,16 +98,6 @@ export class ApiError extends Error {
   }
 }
 
-//Maps object params from array to correct json format
-export const toParams = (obj?: any) => {
-  let flatObj = flattenObj(obj);
-  return (
-    '?' +
-    Object.keys(flatObj)
-      .map((key) => key + '=' + flatObj[key])
-      .join('&')
-  );
-};
 //Flattens object into digestable json format
 export const flattenObj = (obj: any, parent?: string, res: any = {}) => {
   for (let key in obj) {
@@ -102,4 +116,15 @@ export const flattenObj = (obj: any, parent?: string, res: any = {}) => {
     }
   }
   return res;
+};
+
+//Maps object params from array to correct json format
+export const toParams = (obj?: any) => {
+  let flatObj = flattenObj(obj);
+  return (
+    '?' +
+    Object.keys(flatObj)
+      .map((key) => key + '=' + flatObj[key])
+      .join('&')
+  );
 };

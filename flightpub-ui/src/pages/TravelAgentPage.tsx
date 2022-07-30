@@ -1,19 +1,9 @@
-import {
-  Button,
-  Center,
-  Grid,
-  Heading,
-  VStack,
-  Box,
-  HStack,
-  Input,
-  IconButton
-} from '@chakra-ui/react';
+import { Button, Center, Grid, Heading, VStack, Box, HStack, Input } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane, FaPlane } from 'react-icons/fa';
 import Message from '../models/Message';
 import { MessagingSession } from '../models/MessagingSession';
-import * as messagingService from '../services/MessagingService';
+import { useMessaging } from '../services/MessagingService';
 import * as _ from 'lodash';
 
 export const TravelAgentPage = () => {
@@ -22,8 +12,10 @@ export const TravelAgentPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const messageSubscription = useRef<NodeJS.Timeout>();
 
+  const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(sessionId);
+
   useEffect(() => {
-    messagingService.getSessionById(sessionId).then(setSessionData);
+    getSession().then(setSessionData);
   }, [sessionId]);
 
   useEffect(() => {
@@ -33,8 +25,7 @@ export const TravelAgentPage = () => {
 
     if (messageSubscription.current) clearInterval(messageSubscription.current);
 
-    messageSubscription.current = messagingService.subscribeToMessages(
-      sessionId,
+    messageSubscription.current = subscribeToMessages(
       (data: Message[]) => {
         setMessages((m) => _.uniqBy([...m, ...data], 'id'));
       },
@@ -45,7 +36,7 @@ export const TravelAgentPage = () => {
   }, [sessionData]);
 
   const handleSendMessage = (content: string) => {
-    messagingService.sendNewMessage(sessionId, content);
+    sendNewMessage(content);
   };
 
   return (
