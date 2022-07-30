@@ -1,4 +1,5 @@
 import moment from 'moment';
+import Message from '../models/Message';
 import * as api from './ApiService';
 
 const BASE_ENDPOINT = '/messages';
@@ -9,7 +10,7 @@ export const getSessionById = async (sessionId: number) => {
 
 export const subscribeToMessages = (
   sessionId: number,
-  callback: (data: any) => void,
+  callback: (data: Message[]) => void,
   error?: (error: any) => void,
   delay: number = 10000
 ) => {
