@@ -10,6 +10,7 @@ import {
   RegisterPage,
   SearchPage,
   SearchResultsPage,
+  HolidayPackagesPage,
   TravelAgentPage
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -65,6 +66,7 @@ const App = () => {
             element={<SearchResultsPage cartState={cartState} />}
           />
           <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
+          <Route path={routes.holidayPackages} element={<HolidayPackagesPage cartState={cartState} />} />
           <Route path={routes.travelAgents} element={<TravelAgentPage />} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>

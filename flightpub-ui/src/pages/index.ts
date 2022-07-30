@@ -8,4 +8,5 @@ export * from './PasswordResetPage';
 export * from './RegisterPage';
 export * from './SearchPage';
 export * from './SearchResultsPage';
+export * from './HolidayPackagesPage';
 export * from './TravelAgentPage';
