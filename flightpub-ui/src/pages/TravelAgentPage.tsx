@@ -1,39 +1,31 @@
 import { Button, Center, Grid, Heading, VStack } from '@chakra-ui/react';
-import { CompatClient, IMessage, Stomp } from '@stomp/stompjs';
-import { useEffect, useRef } from 'react';
-import SockJS from 'sockjs-client';
-
-interface TestInterface {
-  from: string;
-  text: string;
-}
+import { useEffect, useRef, useState } from 'react';
+import * as messagingService from '../services/MessagingService';
 
 export const TravelAgentPage = () => {
-  let stompClient = useRef<CompatClient>();
+  const [sessionId, setSessionId] = useState(1);
+  const [sessionData, setSessionData] = useState();
+  const messageSubscription = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (stompClient.current && stompClient.current.active) return;
+    messagingService.getSessionById(sessionId).then(setSessionData);
+  }, [sessionId]);
 
-    const socket = new SockJS('http://localhost:5897/chat');
-    stompClient.current = Stomp.over(socket);
-    stompClient.current.connect({}, (frame: any) => {
-      console.log('connected to ', frame);
-      stompClient.current?.subscribe('/topic/messages', (message: IMessage) => {
-        console.log(JSON.parse(message.body) as TestInterface);
-      });
-    });
-  }, []);
+  useEffect(() => {
+    if (!sessionData) return;
+    if (messageSubscription.current) clearInterval(messageSubscription.current);
 
-  const sendMessage = (text: string) => {
-    stompClient.current?.send('/app/chat', {}, JSON.stringify({ from: 'joe', text }));
-  };
+    messageSubscription.current = messagingService.subscribeToMessages(sessionId, (data) =>
+      setSessionData(data)
+    );
+  }, [sessionData]);
 
   return (
     <Grid>
       <Center>
         <VStack>
           <Heading as='h2'>Test</Heading>
-          <Button onClick={() => sendMessage('Test123')}>Click Me</Button>
+          <Button>Click Me</Button>
         </VStack>
       </Center>
     </Grid>

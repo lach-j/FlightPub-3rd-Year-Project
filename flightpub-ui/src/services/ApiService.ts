@@ -3,8 +3,10 @@ const apiBaseUrl =
     ? 'http://localhost:5897'
     : 'https://flightpub-team4.herokuapp.com';
 
+const token = ''; // TODO store this somewhere.
+
 const baseOptions: RequestInit = {
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
 };
 
 //Default httpGet, takes endpoint and paramaters as input
