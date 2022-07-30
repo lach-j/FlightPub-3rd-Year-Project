@@ -37,7 +37,7 @@ import {
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import React, { ComponentProps, FormEvent, useState } from 'react';
+import React, { ComponentProps, FormEvent, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete';
@@ -47,6 +47,7 @@ import { routes } from '../constants/routes';
 import { ApiError, httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { airports } from '../data/airports';
+import { Airport, findNearestAirport } from '../utility/geolocation';
 
 export interface Item {
 	label: string;
@@ -85,6 +86,12 @@ export const SearchPage = () => {
 	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
 		departureDate: { date: formatDate(new Date()) },
 	});
+
+	//userLocation: Uses geoLocation to store users current position
+	const [userLocation, setUserLocation] = useState<any>();
+
+	//airport: User's nearest airport for reccomendations
+	const [airport, setAirport] = useState<Airport | undefined>();
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -173,6 +180,18 @@ export const SearchPage = () => {
 		return null;
 	}
 
+	//Gets users current position and retrieves list of airlines
+	useEffect(() => {
+		navigator.geolocation.getCurrentPosition(position => setUserLocation(position.coords));
+	}, []);
+
+	//Takes user location and finds nearest airport on load
+	useEffect(() => {
+		if (!userLocation) return;
+		let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
+		setAirport(airport);
+	}, [userLocation]);
+
 	return (
 		<Box p='2em'>
 			<Center>
@@ -192,8 +211,61 @@ export const SearchPage = () => {
 									spacing={2}
 									align='stretch'
 								>
+									{/* Departure location input */}
 									<Box>
-										{/* Ticket type input */}
+										<FormControl isRequired>
+											<FormLabel>Departure Location</FormLabel>
+											<AutoComplete
+												openOnFocus
+												defaultValue={airport?.code}
+												onChange={(value) =>
+													handleSearchQueryUpdate('departureCode', value)
+												}
+											>
+												<AutoCompleteInput variant='filled' />
+												<AutoCompleteList>
+													{airports.map(({ code, city }) => (
+														<AutoCompleteItem
+															key={code}
+															value={code}
+															align='center'
+														>
+															<Text ml='4'>{city}</Text>
+														</AutoCompleteItem>
+													))}
+												</AutoCompleteList>
+											</AutoComplete>
+										</FormControl>
+									</Box>
+									{/* Arrival location input */}
+									<Box>
+										<FormControl>
+											<FormLabel>Arrival Location:</FormLabel>
+											<AutoComplete
+												openOnFocus
+												emptyState={true}
+												onChange={(value) =>
+													handleSearchQueryUpdate('destinationCode', value)
+												}
+											>
+												<AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+													variant='filled' />
+												<AutoCompleteList>
+													{airports.map(({ code, city }) => (
+														<AutoCompleteItem
+															key={code}
+															value={code}
+															align='center'
+														>
+															<Text ml='4'>{city}</Text>
+														</AutoCompleteItem>
+													))}
+												</AutoCompleteList>
+											</AutoComplete>
+										</FormControl>
+									</Box>
+									{/* Ticket type input */}
+									<Box>
 										<FormControl isRequired>
 											<FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
 											<Accordion allowToggle w='20em'>
@@ -217,8 +289,8 @@ export const SearchPage = () => {
 																	<Th>Quantity</Th>
 																</Tr>
 															</Thead>
+															{/* Dropdown for ticket type */}
 															<Tbody>
-																{/* Dropdown for ticket type */}
 																{ticketOptions.map((option) => (
 																	<Tr key={option.key}>
 																		<Td>{option.label}</Td>
@@ -289,59 +361,6 @@ export const SearchPage = () => {
 									spacing={2}
 									align='stretch'
 								>
-									<Box>
-										{/* Departure location input */}
-										<FormControl isRequired>
-											<FormLabel>Departure Location</FormLabel>
-											<AutoComplete
-												openOnFocus
-												onChange={(value) =>
-													handleSearchQueryUpdate('departureCode', value)
-												}
-											>
-												<AutoCompleteInput variant='filled' />
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem
-															key={code}
-															value={code}
-															align='center'
-														>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
-									{/* Arrival location input */}
-									<Box>
-										<FormControl>
-											<FormLabel>Arrival Location:</FormLabel>
-											<AutoComplete
-												openOnFocus
-												defaultValue={''}
-												emptyState={true}
-												onChange={(value) =>
-													handleSearchQueryUpdate('destinationCode', value)
-												}
-											>
-												<AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
-													variant='filled' />
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem
-															key={code}
-															value={code}
-															align='center'
-														>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
 									{/* Location tag inputs */}
 									<VStack align={'left'}>
 										<label>Selected Tags:</label>
