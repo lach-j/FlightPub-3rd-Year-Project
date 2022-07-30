@@ -3,7 +3,8 @@ const apiBaseUrl =
     ? 'http://localhost:5897'
     : 'https://flightpub-team4.herokuapp.com';
 
-const token = ''; // TODO store this somewhere.
+const token =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU4OTciLCJpZCI6MSwiZXhwIjoxNjU5MjMwMDMxfQ.HJRfGWj6IiIfr4R5ytAD4Ca1nx_lKvtgyaoKRjewUgA'; // TODO store this somewhere.
 
 const baseOptions: RequestInit = {
   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
@@ -32,6 +33,15 @@ export const httpPut = async (endpoint: string, reqBody: object): Promise<any> =
   const res = await fetch(`${apiBaseUrl}${endpoint}`, {
     ...baseOptions,
     method: 'PUT',
+    body: JSON.stringify(reqBody)
+  });
+  return handleResponse(res);
+};
+
+export const httpPatch = async (endpoint: string, reqBody: object): Promise<any> => {
+  const res = await fetch(`${apiBaseUrl}${endpoint}`, {
+    ...baseOptions,
+    method: 'PATCH',
     body: JSON.stringify(reqBody)
   });
   return handleResponse(res);

@@ -36,7 +36,7 @@ export const TravelAgentPage = () => {
     messageSubscription.current = messagingService.subscribeToMessages(
       sessionId,
       (data: Message[]) => {
-        setMessages(_.uniqBy([...messages, ...data], 'id'));
+        setMessages((m) => _.uniqBy([...m, ...data], 'id'));
       },
       (error) => {
         messageSubscription.current && clearInterval(messageSubscription.current);
@@ -44,13 +44,17 @@ export const TravelAgentPage = () => {
     );
   }, [sessionData]);
 
+  const handleSendMessage = (content: string) => {
+    messagingService.sendNewMessage(sessionId, content);
+  };
+
   return (
     <Grid>
       <Center>
-        <VStack>
+        <VStack w={'50%'}>
           <Heading as='h2'>Test</Heading>
           {sessionData && <MessageContainer messages={messages} />}
-          <MessageSendBar onMessageSent={(e) => console.log(e)} />
+          <MessageSendBar onMessageSent={handleSendMessage} />
         </VStack>
       </Center>
     </Grid>
@@ -59,7 +63,7 @@ export const TravelAgentPage = () => {
 
 const MessageContainer = ({ messages }: { messages: Message[] }) => {
   return (
-    <VStack>
+    <VStack w={'full'}>
       {messages?.map((message) => (
         <MessageComoponent key={message.id} message={message} />
       ))}
@@ -68,7 +72,9 @@ const MessageContainer = ({ messages }: { messages: Message[] }) => {
 };
 
 const MessageComoponent = ({ message }: { message: Message }) => {
-  return <Box>{message.content}</Box>;
+  return (
+    <Box alignSelf={message.user?.id === 1 ? 'flex-start' : 'flex-end'}>{message.content}</Box>
+  );
 };
 
 const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) => void }) => {
@@ -84,7 +90,7 @@ const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) =
   };
 
   return (
-    <HStack>
+    <HStack w='full'>
       <Input
         value={messageContent}
         onChange={(e) => setMessageContent(e.target.value)}

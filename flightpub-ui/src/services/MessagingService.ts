@@ -25,3 +25,7 @@ export const subscribeToMessages = (
 
   return setInterval(getMessages, delay);
 };
+
+export const sendNewMessage = async (sessionId: number, content: string) => {
+  return await api.httpPatch(`${BASE_ENDPOINT}/${sessionId}`, { content });
+};
