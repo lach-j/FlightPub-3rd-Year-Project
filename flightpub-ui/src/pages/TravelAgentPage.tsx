@@ -15,8 +15,12 @@ export const TravelAgentPage = () => {
     if (!sessionData) return;
     if (messageSubscription.current) clearInterval(messageSubscription.current);
 
-    messageSubscription.current = messagingService.subscribeToMessages(sessionId, (data) =>
-      setSessionData(data)
+    messageSubscription.current = messagingService.subscribeToMessages(
+      sessionId,
+      (data) => setSessionData(data),
+      (error) => {
+        messageSubscription.current && clearInterval(messageSubscription.current);
+      }
     );
   }, [sessionData]);
 
