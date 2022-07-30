@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class MessagingSession implements IEntity {
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "SessionId", referencedColumnName = "Id")
-    private Set<Message> messages;
+    private List<Message> messages;
 
     public enum SessionStatus {
         TRIAGE,

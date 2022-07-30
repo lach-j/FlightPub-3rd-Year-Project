@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "Message")
-public class Message {
+public class Message implements IEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

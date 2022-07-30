@@ -11,9 +11,10 @@ import seng3150.team4.flightpub.domain.repositories.IMessagingRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MessagingService {
@@ -31,7 +32,8 @@ public class MessagingService {
     this.userService = userService;
   }
 
-  private boolean userCanAccessSession(long userId, MessagingSession session) {
+  private boolean currentUserCanAccessSession(MessagingSession session) {
+    var userId = currentUserContext.getCurrentUserId();
     var userRole = currentUserContext.getCurrentUserRole();
     var userInSession = session.getUsers().stream().noneMatch(u -> u.getId() == userId);
     var userIsStaff = (userRole == UserRole.ADMINISTRATOR || userRole == UserRole.TRAVEL_AGENT);
@@ -40,7 +42,6 @@ public class MessagingService {
   }
 
   public MessagingSession getSessionById(long sessionId) {
-    var userId = currentUserContext.getCurrentUserId();
     var session = messagingRepository.findById(sessionId);
 
     if (session.isEmpty())
@@ -49,10 +50,15 @@ public class MessagingService {
 
     var found = session.get();
 
-    if (!userCanAccessSession(userId, found))
+    if (!currentUserCanAccessSession(found))
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
 
     return found;
+  }
+
+  public List<Message> getLatestMessages(long sessionId, LocalDateTime messagesSince) {
+      var session = getSessionById(sessionId);
+      return session.getMessages().stream().filter(m -> m.getDateSent().isAfter(messagesSince)).collect(Collectors.toList());
   }
 
   public List<MessagingSession> getAllSessions() {
@@ -69,6 +75,7 @@ public class MessagingService {
     var session = new MessagingSession();
 
     session.setUsers(Set.of(resolveCurrentUser()));
+    session.setStatus(MessagingSession.SessionStatus.TRIAGE);
 
     return messagingRepository.save(session);
   }
@@ -79,7 +86,7 @@ public class MessagingService {
     var messageEntity = new Message();
     messageEntity.setContent(message);
     messageEntity.setSession(session);
-    messageEntity.setDateSent(LocalDateTime.now());
+    messageEntity.setDateSent(LocalDateTime.now(ZoneOffset.UTC));
     messageEntity.setUser(resolveCurrentUser());
 
     session.getMessages().add(messageEntity);

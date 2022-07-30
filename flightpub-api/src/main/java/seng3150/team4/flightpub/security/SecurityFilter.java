@@ -14,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SecurityFilter implements HandlerInterceptor {
@@ -33,7 +32,13 @@ public class SecurityFilter implements HandlerInterceptor {
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-    HandlerMethod handlerMethod = (HandlerMethod) handler;
+    HandlerMethod handlerMethod;
+
+    if (!(handler instanceof HandlerMethod)) {
+      return true;
+    }
+
+     handlerMethod = (HandlerMethod) handler;
 
     Authorized authAnnotation = handlerMethod.getMethod().getAnnotation(Authorized.class);
     if (authAnnotation == null) {
