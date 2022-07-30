@@ -35,7 +35,7 @@ public class MessagingService {
   private boolean currentUserCanAccessSession(MessagingSession session) {
     var userId = currentUserContext.getCurrentUserId();
     var userRole = currentUserContext.getCurrentUserRole();
-    var userInSession = session.getUsers().stream().noneMatch(u -> u.getId() == userId);
+    var userInSession = session.getUsers().stream().anyMatch(u -> u.getId() == userId);
     var userIsStaff = (userRole == UserRole.ADMINISTRATOR || userRole == UserRole.TRAVEL_AGENT);
 
     return (userInSession || userIsStaff);
