@@ -79,6 +79,10 @@ export const useApi = (_endpoint: string = '') => {
         navigate(routes.login, { state: { redirectUrl: location.pathname } });
       }
 
+      if (res.status === 403) {
+        navigate(routes.home);
+      }
+
       throw new ApiError(err, res.status);
     }
     return res.json();
