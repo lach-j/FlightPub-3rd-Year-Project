@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -16,8 +16,9 @@ import {
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
 import Header from './components/Header';
-import { Box, Flex } from '@chakra-ui/react';
-import { Flight } from './models';
+import { Box, Flex, useRadioGroupContext } from '@chakra-ui/react';
+import { Flight, User } from './models';
+import { UserProvider } from './services/UserContext';
 
 const noNavbar = [routes.login, routes.register, routes.forgotPassword, routes.resetPassword];
 
@@ -42,39 +43,41 @@ const App = () => {
   }, [cart]);
 
   return (
-    <Flex direction='column' height='100vh'>
-      {hasNavbar() && <Header cartState={cartState} />}
-      <Box position='relative' height='100%'>
-        <Routes>
-          <Route path={routes.default} element={<HomePage cartState={cartState} />} />
-          <Route path={routes.home} element={<HomePage cartState={cartState} />} />
-          <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
-          <Route path={routes.register} element={<RegisterPage />} />
-          <Route
-            path={routes.forgotPassword}
-            element={<ForgotPasswordPage redirectPath={routes.login} />}
-          />
-          <Route
-            path={routes.resetPassword}
-            element={<PasswordResetPage redirectPath={routes.login} />}
-          />
-          <Route path={routes.search} element={<SearchPage />} />
-          <Route path={routes.map} element={<MapPage />} />
-          <Route path={routes.account} element={<AccountPage />} />
-          <Route
-            path={routes.searchResults}
-            element={<SearchResultsPage cartState={cartState} />}
-          />
-          <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
-          <Route
-            path={routes.holidayPackages}
-            element={<HolidayPackagesPage cartState={cartState} />}
-          />
-          <Route path={routes.travelAgents} element={<TravelAgentPage />} />
-          <Route path='*' element={<h1>Page Not Found</h1>} />
-        </Routes>
-      </Box>
-    </Flex>
+    <UserProvider>
+      <Flex direction='column' height='100vh'>
+        {hasNavbar() && <Header cartState={cartState} />}
+        <Box position='relative' height='100%'>
+          <Routes>
+            <Route path={routes.default} element={<HomePage cartState={cartState} />} />
+            <Route path={routes.home} element={<HomePage cartState={cartState} />} />
+            <Route path={routes.login} element={<LoginPage redirectPath={routes.search} />} />
+            <Route path={routes.register} element={<RegisterPage />} />
+            <Route
+              path={routes.forgotPassword}
+              element={<ForgotPasswordPage redirectPath={routes.login} />}
+            />
+            <Route
+              path={routes.resetPassword}
+              element={<PasswordResetPage redirectPath={routes.login} />}
+            />
+            <Route path={routes.search} element={<SearchPage />} />
+            <Route path={routes.map} element={<MapPage />} />
+            <Route path={routes.account} element={<AccountPage />} />
+            <Route
+              path={routes.searchResults}
+              element={<SearchResultsPage cartState={cartState} />}
+            />
+            <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
+            <Route
+              path={routes.holidayPackages}
+              element={<HolidayPackagesPage cartState={cartState} />}
+            />
+            <Route path={routes.travelAgents} element={<TravelAgentPage />} />
+            <Route path='*' element={<h1>Page Not Found</h1>} />
+          </Routes>
+        </Box>
+      </Flex>
+    </UserProvider>
   );
 };
 

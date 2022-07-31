@@ -11,17 +11,21 @@ import {
   Stack,
   useToast
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useContext, useState } from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
 import { endpoints } from '../constants/endpoints';
 import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
+import { User } from '../models';
 
 export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a login error has occured
   const [authError, setAuthError] = useState(false);
+
+  const userState = useContext(UserContext);
 
   //authRequest : stores login request with email and password as parameters
   const [authRequest, setAuthRequest] = useState({ email: '', password: '' });
@@ -37,6 +41,13 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
     navigate((state as { redirectUrl?: string })?.redirectUrl || redirectPath || '/');
   };
 
+  const handlePostLogin = (user: User) => {
+    if (!userState) return;
+
+    const [_, setUserState] = userState;
+    setUserState(user);
+  };
+
   const { httpPost } = useApi(endpoints.login);
 
   //Handles login event for login form
@@ -47,7 +58,8 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
       httpPost('', authRequest) //send authrequest
         .then((authResponse) => {
           localStorage.setItem('bearer-token', authResponse.token); //stores login token locally
-          redirectUser(); //sends user to homepage
+          handlePostLogin(authResponse.user);
+          redirectUser();
         })
         .catch((err: ApiError) => {
           //if an error occurs
