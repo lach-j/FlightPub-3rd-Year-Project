@@ -25,6 +25,7 @@ import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
 import { Flight, User } from '../models';
 import { UserContext } from '../services/UserContext';
+import { UserRole } from '../models/User';
 
 export default function Header({
   cartState
@@ -41,6 +42,7 @@ export default function Header({
     if (!userState) return;
 
     setUser(userState[0]);
+    console.log(userState[0]);
   }, [userState]);
 
   const handleLogout = () => {
@@ -74,6 +76,12 @@ export default function Header({
                     My Account
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  {(user?.role === UserRole.TRAVEL_AGENT ||
+                    user?.role === UserRole.ADMINISTRATOR) && (
+                    <MenuItem as={NavLink} to={routes.travelAgents}>
+                      Travel Agent Portal
+                    </MenuItem>
+                  )}
                 </>
               ) : (
                 <>

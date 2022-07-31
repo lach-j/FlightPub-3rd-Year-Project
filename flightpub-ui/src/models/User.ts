@@ -7,8 +7,8 @@ export interface User {
   role?: UserRole;
 }
 
-enum UserRole {
-  STANDARD_USER = 0,
-  TRAVEL_AGENT = 1,
-  ADMINISTRATOR = 2
+export enum UserRole {
+  STANDARD_USER = 'STANDARD_USER',
+  TRAVEL_AGENT = 'TRAVEL_AGENT',
+  ADMINISTRATOR = 'ADMINISTRATOR'
 }
