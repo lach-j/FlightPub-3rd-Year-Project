@@ -20,9 +20,9 @@ import { User } from '../models/User';
 import { endpoints } from '../constants/endpoints';
 
 export const RegisterPage = () => {
-	useEffect(() => {
-		document.title = 'FlightPub - Register'
-	})
+  useEffect(() => {
+    document.title = 'FlightPub - Register';
+  });
 
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a registration error has occured

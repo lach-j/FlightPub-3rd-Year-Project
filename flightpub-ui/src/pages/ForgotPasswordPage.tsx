@@ -19,9 +19,9 @@ import { routes } from '../constants/routes';
 import { endpoints } from '../constants/endpoints';
 
 export const ForgotPasswordPage = ({ redirectPath }: { redirectPath?: string }) => {
-	useEffect(() => {
-		document.title = 'FlightPub - Forgot Password'
-	})
+  useEffect(() => {
+    document.title = 'FlightPub - Forgot Password';
+  });
 
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);

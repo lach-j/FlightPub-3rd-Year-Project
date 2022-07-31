@@ -108,9 +108,9 @@ const MessageContainer = ({ children }: { children: React.ReactNode }) => {
       h='full'
       overflow='auto'
       p='5'
-      border={'1px solid'}
+      border='1px solid'
       borderColor='gray.200'
-      rounded={'xl'}
+      rounded='xl'
       css={{
         '&::-webkit-scrollbar': {
           width: '10px'

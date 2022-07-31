@@ -16,10 +16,9 @@ export function HolidayPackagesPage({
 }: {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) {
-
-	useEffect(() => {
-		document.title = 'FlightPub - Holiday Packages'
-	})
+  useEffect(() => {
+    document.title = 'FlightPub - Holiday Packages';
+  });
 
   const data: HolidayCardProps[] = [
     {
