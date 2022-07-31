@@ -9,10 +9,10 @@ import {
   Input,
   Link,
   Stack,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useState, useEffect } from 'react';
-import * as api from '../services/ApiService';
+import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -20,9 +20,9 @@ import { User } from '../models/User';
 import { endpoints } from '../constants/endpoints';
 
 export const RegisterPage = () => {
-	useEffect(() => {
-		document.title = 'FlightPub - Register'
-	})
+  useEffect(() => {
+    document.title = 'FlightPub - Register';
+  });
 
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a registration error has occured
@@ -33,9 +33,10 @@ export const RegisterPage = () => {
     email: '',
     password: '',
     firstName: '',
-    lastName: '',
+    lastName: ''
   });
   const toast = useToast();
+  const { httpPost } = useApi(endpoints.users);
 
   //enables react programmatic navigation
   const navigate = useNavigate();
@@ -48,8 +49,7 @@ export const RegisterPage = () => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      api
-        .httpPost(endpoints.users, registerRequest) //posts registration request
+      httpPost('', registerRequest) //posts registration request
         .then((authResponse) => {
           toast({
             title: 'Account Created',
@@ -58,48 +58,40 @@ export const RegisterPage = () => {
             status: 'success',
             duration: 9000,
             isClosable: true,
-            position: 'top',
+            position: 'top'
           });
           redirectUser();
         })
-        .catch((err: ApiError) => { //if an error occurs in registration process
+        .catch((err: ApiError) => {
+          //if an error occurs in registration process
           if (err.statusCode === 401) {
             setAuthError(true);
           } else {
             toast({
               title: 'Error.',
-              description:
-                'An internal error has occurred, please try again later.',
+              description: 'An internal error has occurred, please try again later.',
               status: 'error',
               duration: 9000,
               isClosable: true,
-              position: 'top',
+              position: 'top'
             });
           }
         })
         .finally(() => setLoading(false));
       return false;
     }, 1000);
-    setAuthError(false);  //reset authError boolean on page reload
+    setAuthError(false); //reset authError boolean on page reload
   };
   //Handles update of registration form inputs, updating value(s)
-  const handleLoginDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleLoginDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRegisterRequest({
       ...registerRequest,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
   return (
     <Center w='full' h='full' p='5'>
-      <Box
-        border='2px'
-        borderColor='gray.200'
-        p='10'
-        borderRadius='2xl'
-        w='md'
-      >
+      <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
         <form onSubmit={handleRegister}>
           <Stack spacing='12'>
             <Box>

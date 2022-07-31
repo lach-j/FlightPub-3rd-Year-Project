@@ -9,23 +9,19 @@ import {
   Input,
   Link,
   Stack,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useState, useEffect } from 'react';
-import * as api from '../services/ApiService';
+import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { endpoints } from '../constants/endpoints';
 
-export const ForgotPasswordPage = ({
-                                     redirectPath,
-                                   }: {
-  redirectPath?: string;
-}) => {
-	useEffect(() => {
-		document.title = 'FlightPub - Forgot Password'
-	})
+export const ForgotPasswordPage = ({ redirectPath }: { redirectPath?: string }) => {
+  useEffect(() => {
+    document.title = 'FlightPub - Forgot Password';
+  });
 
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
@@ -34,6 +30,8 @@ export const ForgotPasswordPage = ({
   const toast = useToast();
 
   const navigate = useNavigate();
+  const { httpPost } = useApi(endpoints.forgot);
+
   const redirectUser = () => {
     navigate(redirectPath || '/');
   };
@@ -43,8 +41,7 @@ export const ForgotPasswordPage = ({
     setLoading(true);
     //for when user forgets password
     setTimeout(() => {
-      api
-        .httpPost(endpoints.forgot, authRequest)
+      httpPost('', authRequest)
         .then((authResponse) => {
           toast({
             title: 'Email Sent',
@@ -53,7 +50,7 @@ export const ForgotPasswordPage = ({
             status: 'success',
             duration: 9000,
             isClosable: true,
-            position: 'top',
+            position: 'top'
           });
           redirectUser();
         })
@@ -67,12 +64,11 @@ export const ForgotPasswordPage = ({
           } else {
             toast({
               title: 'Error.',
-              description:
-                'An internal error has occurred, please try again later.',
+              description: 'An internal error has occurred, please try again later.',
               status: 'error',
               duration: 9000,
               isClosable: true,
-              position: 'top',
+              position: 'top'
             });
           }
         })
@@ -84,20 +80,12 @@ export const ForgotPasswordPage = ({
   };
 
   //Handles update of email input, updating value
-  const handleLoginDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleLoginDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthRequest({ ...authRequest, [event.target.name]: event.target.value });
   };
   return (
     <Center w='full' h='full' p='5'>
-      <Box
-        border='2px'
-        borderColor='gray.200'
-        p='10'
-        borderRadius='2xl'
-        w='md'
-      >
+      <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
         <form onSubmit={handleLogin}>
           <Stack spacing='12'>
             <Box>

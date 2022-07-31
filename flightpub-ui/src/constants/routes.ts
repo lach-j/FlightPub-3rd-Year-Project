@@ -10,5 +10,6 @@ export const routes = {
   account: '/account',
   booking: '/booking',
   searchResults: '/searchResults',
-  holidayPackages: '/holidays',
+  travelAgents: '/travel-agents',
+  holidayPackages: '/holidays'
 };

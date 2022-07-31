@@ -9,7 +9,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react';
 import React from 'react';
 import { SavedPaymentsTab } from './SavedPaymentsTab';
@@ -17,12 +17,7 @@ import { MyDetailsTab } from './MyDetailsTab';
 import { ChangePasswordTab } from './ChangePasswordTab';
 
 export const AccountPage = () => {
-
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal,
-  } = useDisclosure();
+  const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();
 
   const handleLoading = (isLoading: boolean) => {
     isLoading ? onOpenModal() : onCloseModal();
@@ -59,6 +54,3 @@ export const AccountPage = () => {
     </Flex>
   );
 };
-
-
-

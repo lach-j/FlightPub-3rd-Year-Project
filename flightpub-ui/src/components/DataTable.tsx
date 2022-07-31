@@ -5,11 +5,11 @@ import { ColumnDefinition } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 type DataTableProps = {
-  columns: ColumnDefinition<any>[],
-  data: any[],
+  columns: ColumnDefinition<any>[];
+  data: any[];
   sortable?: boolean;
   keyAccessor: string;
-}
+};
 
 export let DataTable: React.FC<DataTableProps>;
 DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
@@ -43,30 +43,40 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
     }
   };
 
-  const sortIcon = () => descending ? <TriangleDownIcon /> : <TriangleUpIcon />;
+  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
 
-  return (<Table width='100%'>
-    <TableCaption>Prices subject to change. T&C's apply</TableCaption>
-    <Thead>
-      <Tr>
-        {columns.map((column) => <Th userSelect='none' onClick={() => handleColumnSort(column)}
-                                     key={column.accessor}>
-          <HStack spacing={3}>
-            <Text>{column.Header}</Text>
-            {column === sortingColumn && sortIcon()}
-          </HStack>
-        </Th>)}
-      </Tr>
-    </Thead>
-    <Tbody>
-      {data.sort(sortFunc).map((result: any) => {
-        console.log(_.get(result, keyAccessor));
-        return <Tr key={_.get(result, keyAccessor)}>
-          {columns.map((column) => <Td
-            key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
-          {children}
-        </Tr>;
-      })}
-    </Tbody>
-  </Table>);
+  return (
+    <Table width='100%'>
+      <TableCaption>Prices subject to change. T&C's apply</TableCaption>
+      <Thead>
+        <Tr>
+          {columns.map((column) => (
+            <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
+              <HStack spacing={3}>
+                <Text>{column.Header}</Text>
+                {column === sortingColumn && sortIcon()}
+              </HStack>
+            </Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.sort(sortFunc).map((result: any) => {
+          console.log(_.get(result, keyAccessor));
+          return (
+            <Tr key={_.get(result, keyAccessor)}>
+              {columns.map((column) => (
+                <Td key={column.accessor}>
+                  {column?.transform
+                    ? column.transform(_.get(result, column.accessor))
+                    : _.get(result, column.accessor)}
+                </Td>
+              ))}
+              {children}
+            </Tr>
+          );
+        })}
+      </Tbody>
+    </Table>
+  );
 };

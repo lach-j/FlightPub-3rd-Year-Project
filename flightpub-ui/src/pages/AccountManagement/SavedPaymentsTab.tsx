@@ -16,7 +16,7 @@ import {
   Select,
   useDisclosure,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
 import { dummySavedPayments } from '../../data/SavedPayments';
@@ -32,7 +32,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   const {
     isOpen: isOpenAddPayment,
     onOpen: onOpenAddPayment,
-    onClose: onCloseAddPayment,
+    onClose: onCloseAddPayment
   } = useDisclosure();
 
   const handleAddPayment = () => {
@@ -40,9 +40,10 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
     // Simulate api delay with timeout
     let updated = savedPayments;
     if (savedPaymentData) {
-      if (savedPaymentData.isDefault) updated = updated.map((p) => {
-        return { ...p, isDefault: false };
-      });
+      if (savedPaymentData.isDefault)
+        updated = updated.map((p) => {
+          return { ...p, isDefault: false };
+        });
       setSavedPayments([...updated, savedPaymentData]);
     }
 
@@ -53,7 +54,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
         status: 'success',
         duration: 3000,
         isClosable: true,
-        position: 'top',
+        position: 'top'
       });
       setIsLoading(false);
       onCloseAddPayment();
@@ -61,11 +62,11 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   };
 
   const handleDeletePayment = (payment: SavedPayment) => {
-    setSavedPayments([...savedPayments.filter(p => p !== payment)]);
+    setSavedPayments([...savedPayments.filter((p) => p !== payment)]);
   };
 
   useEffect(() => {
-    if (savedPayments.length > 0 && !savedPayments.some(p => p.isDefault === true)) {
+    if (savedPayments.length > 0 && !savedPayments.some((p) => p.isDefault === true)) {
       let updated = [...savedPayments];
       updated[0].isDefault = true;
       setSavedPayments(updated);
@@ -77,7 +78,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
     setSavedPaymentData(updatedValue);
   };
   const handleEditPayment = (payment: SavedPayment) => {
-    setIsEdititng(savedPayments.findIndex(p => p === payment));
+    setIsEdititng(savedPayments.findIndex((p) => p === payment));
     setSavedPaymentData(payment);
     onOpenAddPayment();
   };
@@ -88,9 +89,10 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
     let updated = [...savedPayments];
     setIsLoading(true);
     if (savedPaymentData) {
-      if (savedPaymentData.isDefault) updated = updated.map((p) => {
-        return { ...p, isDefault: false };
-      });
+      if (savedPaymentData.isDefault)
+        updated = updated.map((p) => {
+          return { ...p, isDefault: false };
+        });
       updated[isEdititng] = savedPaymentData;
       setSavedPayments(updated);
       onCloseAddPayment();
@@ -109,23 +111,32 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
           <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>Card Number</FormLabel>
-              <Input value={savedPaymentData.cardNumber}
-                     onChange={(event) => handleSavedPaymentUpdate('cardNumber', event.target.value)} />
+              <Input
+                value={savedPaymentData.cardNumber}
+                onChange={(event) => handleSavedPaymentUpdate('cardNumber', event.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Expiry Date</FormLabel>
-              <Input value={savedPaymentData.expiry}
-                     onChange={(event) => handleSavedPaymentUpdate('expiry', event.target.value)} />
+              <Input
+                value={savedPaymentData.expiry}
+                onChange={(event) => handleSavedPaymentUpdate('expiry', event.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Cardholder Name</FormLabel>
-              <Input value={savedPaymentData.cardholder}
-                     onChange={(event) => handleSavedPaymentUpdate('cardholder', event.target.value)} />
+              <Input
+                value={savedPaymentData.cardholder}
+                onChange={(event) => handleSavedPaymentUpdate('cardholder', event.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>CCV</FormLabel>
-              <Input type='number' value={savedPaymentData.ccv}
-                     onChange={(event) => handleSavedPaymentUpdate('ccv', event.target.value)} />
+              <Input
+                type='number'
+                value={savedPaymentData.ccv}
+                onChange={(event) => handleSavedPaymentUpdate('ccv', event.target.value)}
+              />
             </FormControl>
           </VStack>
         );
@@ -134,8 +145,10 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
           <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>PayPal Email</FormLabel>
-              <Input value={savedPaymentData.email}
-                     onChange={(event) => handleSavedPaymentUpdate('email', event.target.value)} />
+              <Input
+                value={savedPaymentData.email}
+                onChange={(event) => handleSavedPaymentUpdate('email', event.target.value)}
+              />
             </FormControl>
             <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
           </VStack>
@@ -145,19 +158,26 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
           <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>BSB</FormLabel>
-              <Input type={'number'}
-                     value={savedPaymentData.bsb}
-                     onChange={(event) => handleSavedPaymentUpdate('bsb', event.target.value)} />
+              <Input
+                type='number'
+                value={savedPaymentData.bsb}
+                onChange={(event) => handleSavedPaymentUpdate('bsb', event.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Account Number</FormLabel>
-              <Input type='number' value={savedPaymentData.accNumber}
-                     onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)} />
+              <Input
+                type='number'
+                value={savedPaymentData.accNumber}
+                onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Account Name</FormLabel>
-              <Input value={savedPaymentData.accName}
-                     onChange={(event) => handleSavedPaymentUpdate('accName', event.target.value)} />
+              <Input
+                value={savedPaymentData.accName}
+                onChange={(event) => handleSavedPaymentUpdate('accName', event.target.value)}
+              />
             </FormControl>
           </VStack>
         );
@@ -168,20 +188,26 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
     <>
       <HStack mb='1em' justifyContent='space-between' alignItems='center'>
         <Heading>Saved Payments</Heading>
-        <Button onClick={() => {
-          setSavedPaymentData(null);
-          onOpenAddPayment();
-        }} colorScheme='green' rightIcon={<BiPlus />}>Add New Payment</Button>
+        <Button
+          onClick={() => {
+            setSavedPaymentData(null);
+            onOpenAddPayment();
+          }}
+          colorScheme='green'
+          rightIcon={<BiPlus />}
+        >
+          Add New Payment
+        </Button>
       </HStack>
 
       <Flex gap='1em' alignItems='flex-start' flexWrap='wrap'>
-        {
-          savedPayments.map((payment) =>
-            <SavedPaymentComponent payment={payment}
-                                   onDelete={() => handleDeletePayment(payment)}
-                                   onEdit={() => handleEditPayment(payment)} />,
-          )
-        }
+        {savedPayments.map((payment) => (
+          <SavedPaymentComponent
+            payment={payment}
+            onDelete={() => handleDeletePayment(payment)}
+            onEdit={() => handleEditPayment(payment)}
+          />
+        ))}
       </Flex>
 
       <Modal isOpen={isOpenAddPayment} onClose={onCloseAddPayment}>
@@ -191,13 +217,17 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
           <ModalBody>
             <FormControl>
               <FormLabel>Payment Nickname</FormLabel>
-              <Input value={savedPaymentData?.nickname}
-                     onChange={(event) => handleSavedPaymentUpdate('nickname', event.target.value)} />
+              <Input
+                value={savedPaymentData?.nickname}
+                onChange={(event) => handleSavedPaymentUpdate('nickname', event.target.value)}
+              />
             </FormControl>
             <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
-              <Select value={savedPaymentData?.type}
-                      onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}>
+              <Select
+                value={savedPaymentData?.type}
+                onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}
+              >
                 <option>Select an option</option>
                 <option value='card'>Card</option>
                 <option value='directDebit'>Direct Debit</option>
@@ -207,29 +237,29 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             {renderPaymentDetails()}
           </ModalBody>
           <ModalFooter>
-
             <Flex justifyContent='space-between' w='full'>
               <HStack>
-                <Checkbox checked={savedPaymentData?.isDefault}
-                          onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.checked)}>Set as
-                  default?</Checkbox>
+                <Checkbox
+                  checked={savedPaymentData?.isDefault}
+                  onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.checked)}
+                >
+                  Set as default?
+                </Checkbox>
               </HStack>
               <HStack>
-                {typeof isEdititng === 'number' ?
-                  <Button onClick={handleUpdatePayment}
-                          colorScheme='green'>
+                {typeof isEdititng === 'number' ? (
+                  <Button onClick={handleUpdatePayment} colorScheme='green'>
                     Update
                   </Button>
-                  :
-                  <Button onClick={handleAddPayment}
-                          colorScheme={'green'}
-                          rightIcon={<BiPlus />}>
+                ) : (
+                  <Button onClick={handleAddPayment} colorScheme='green' rightIcon={<BiPlus />}>
                     Add
                   </Button>
-                }
+                )}
                 <Button onClick={onCloseAddPayment}>Cancel</Button>
               </HStack>
-            </Flex> </ModalFooter>
+            </Flex>{' '}
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
