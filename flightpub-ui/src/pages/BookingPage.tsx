@@ -41,6 +41,9 @@ import { endpoints } from '../constants/endpoints';
 
 
 export const BookingPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
+	useEffect(() => {
+		document.title = 'FlightPub - Bookings'
+	})
 // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();

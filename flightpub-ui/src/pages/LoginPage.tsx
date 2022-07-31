@@ -11,7 +11,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useState, useEffect } from 'react';
 import * as api from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
@@ -23,6 +23,10 @@ export const LoginPage = ({
                           }: {
   redirectPath?: string;
 }) => {
+	useEffect(() => {
+		document.title = 'FlightPub - Login'
+	})
+
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a login error has occured
   const [authError, setAuthError] = useState(false);

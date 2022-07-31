@@ -5,7 +5,6 @@ import {
 	AccordionItem,
 	AccordionPanel,
 	Box,
-	BoxProps,
 	Button,
 	Center,
 	Checkbox,
@@ -37,7 +36,7 @@ import {
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
-import React, { ComponentProps, FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete';
@@ -47,6 +46,7 @@ import { routes } from '../constants/routes';
 import { ApiError, httpGet } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { airports } from '../data/airports';
+import { Airport, findNearestAirport } from '../utility/geolocation';
 
 export interface Item {
 	label: string;
@@ -77,6 +77,10 @@ export const SearchPage = () => {
 	const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
 	const toast = useToast();
 
+	useEffect(() => {
+		document.title = 'FlightPub - Search'
+	})
+
 	//Formats from JavaScript Date type to string
 	const formatDate = (date: Date) => {
 		return new Date(date).toISOString().split('T')[0];
@@ -85,6 +89,20 @@ export const SearchPage = () => {
 	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
 		departureDate: { date: formatDate(new Date()) },
 	});
+
+	//stateful airport storage
+	const [airport, setAirport] = useState<Airport | undefined>();
+
+	//update the user's location as a side effect
+	useEffect(() => {
+		if (!navigator.geolocation) return;
+		navigator.geolocation.getCurrentPosition(getPosition);
+	})
+
+	//handle the getCurrentPosition callback
+	function getPosition(position: any) {
+		setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
+	}
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -179,7 +197,7 @@ export const SearchPage = () => {
 				<form onSubmit={handleSearch}>
 					<FormControl as='fieldset'>
 						<FormLabel as='legend' fontSize='2xl'>
-							Search flights
+							Search for a flight
 						</FormLabel>
 						<VStack gap='2em'>
 							<HStack
@@ -192,8 +210,65 @@ export const SearchPage = () => {
 									spacing={2}
 									align='stretch'
 								>
+
+									{/* Departure location input */}
 									<Box>
-										{/* Ticket type input */}
+										<FormControl isRequired>
+											<FormLabel>Departure Location</FormLabel>
+											<AutoComplete
+												openOnFocus
+												defaultValue={airport?.code}
+												key={airport?.code}
+												onChange={(value) =>
+													handleSearchQueryUpdate('departureCode', value)
+												}
+											>
+												<AutoCompleteInput variant='filled' />
+												<AutoCompleteList>
+													{airports.map(({ code, city }) => (
+														<AutoCompleteItem
+															key={code}
+															value={code}
+															align='center'
+														>
+															<Text ml='4'>{city}</Text>
+														</AutoCompleteItem>
+													))}
+												</AutoCompleteList>
+											</AutoComplete>
+										</FormControl>
+									</Box>
+
+									{/* Arrival location input */}
+									<Box>
+										<FormControl>
+											<FormLabel>Arrival Location:</FormLabel>
+											<AutoComplete
+												openOnFocus
+												emptyState={true}
+												onChange={(value) =>
+													handleSearchQueryUpdate('destinationCode', value)
+												}
+											>
+												<AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+													variant='filled' />
+												<AutoCompleteList>
+													{airports.map(({ code, city }) => (
+														<AutoCompleteItem
+															key={code}
+															value={code}
+															align='center'
+														>
+															<Text ml='4'>{city}</Text>
+														</AutoCompleteItem>
+													))}
+												</AutoCompleteList>
+											</AutoComplete>
+										</FormControl>
+									</Box>
+
+									{/* Ticket type input */}
+									<Box>
 										<FormControl isRequired>
 											<FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
 											<Accordion allowToggle w='20em'>
@@ -217,8 +292,9 @@ export const SearchPage = () => {
 																	<Th>Quantity</Th>
 																</Tr>
 															</Thead>
+
+															{/* Dropdown for ticket type */}
 															<Tbody>
-																{/* Dropdown for ticket type */}
 																{ticketOptions.map((option) => (
 																	<Tr key={option.key}>
 																		<Td>{option.label}</Td>
@@ -249,6 +325,7 @@ export const SearchPage = () => {
 										</FormControl>
 									</Box>
 									<Box>
+
 										{/* Handles type of flight (return or one-way) */}
 										<FormControl isRequired>
 											<FormLabel htmlFor='flightType'>Type: </FormLabel>
@@ -269,79 +346,15 @@ export const SearchPage = () => {
 											</Select>
 										</FormControl>
 									</Box>
-									{/* Return date input */}
-									{searchQuery?.returnFlight === true &&
-										<Box>
-											<FormControl>
-												<FormLabel>Return Date</FormLabel>
-												<DatePicker
-													dateFormat='dd/MM/yyyy'
-													minDate={new Date(searchQuery.departureDate.date) || new Date()}
-													selected={returnDate}
-													onChange={(date: Date) => setReturnDate(date)}
-												/>
-											</FormControl>
-										</Box>
-									}
+
+									{/* Divider for the two columns */}
 								</VStack>
 								<VStack
 									divider={<StackDivider borderColor='gray.200' />}
 									spacing={2}
 									align='stretch'
 								>
-									<Box>
-										{/* Departure location input */}
-										<FormControl isRequired>
-											<FormLabel>Departure Location</FormLabel>
-											<AutoComplete
-												openOnFocus
-												onChange={(value) =>
-													handleSearchQueryUpdate('departureCode', value)
-												}
-											>
-												<AutoCompleteInput variant='filled' />
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem
-															key={code}
-															value={code}
-															align='center'
-														>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
-									{/* Arrival location input */}
-									<Box>
-										<FormControl>
-											<FormLabel>Arrival Location:</FormLabel>
-											<AutoComplete
-												openOnFocus
-												defaultValue={''}
-												emptyState={true}
-												onChange={(value) =>
-													handleSearchQueryUpdate('destinationCode', value)
-												}
-											>
-												<AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
-													variant='filled' />
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem
-															key={code}
-															value={code}
-															align='center'
-														>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
+
 									{/* Location tag inputs */}
 									<VStack align={'left'}>
 										<label>Selected Tags:</label>
@@ -408,6 +421,21 @@ export const SearchPage = () => {
 										</FormControl>
 									</Box>
 
+									{/* Return date input */}
+									{searchQuery?.returnFlight === true &&
+										<Box>
+											<FormControl>
+												<FormLabel>Return Date</FormLabel>
+												<DatePicker
+													dateFormat='dd/MM/yyyy'
+													minDate={new Date(searchQuery.departureDate.date) || new Date()}
+													selected={returnDate}
+													onChange={(date: Date) => setReturnDate(date)}
+												/>
+											</FormControl>
+										</Box>
+									}
+
 									{/* Flex-date input */}
 									<Box>
 										<Checkbox
@@ -460,6 +488,7 @@ export const SearchPage = () => {
 									)}
 								</VStack>
 							</HStack>
+
 							{/* Submission button */}
 							<Box>
 								<Button type='submit' colorScheme='red'>
