@@ -11,7 +11,9 @@ import {
   SearchPage,
   SearchResultsPage,
   HolidayPackagesPage,
-  TravelAgentPage
+  TravelAgentMessagingPage,
+  TravelAgentPortalPage,
+  TestComponent
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
@@ -72,7 +74,11 @@ const App = () => {
               path={routes.holidayPackages}
               element={<HolidayPackagesPage cartState={cartState} />}
             />
-            <Route path={routes.travelAgents} element={<TravelAgentPage />} />
+            <Route path={routes.travelAgents} element={<TravelAgentPortalPage />} />
+            <Route
+              path={`${routes.travelAgents}/session/:sessionId`}
+              element={<TravelAgentMessagingPage />}
+            />
             <Route path='*' element={<h1>Page Not Found</h1>} />
           </Routes>
         </Box>

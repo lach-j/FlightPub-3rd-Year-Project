@@ -1,18 +1,21 @@
 import { Button, Center, Grid, Heading, VStack, Box, HStack, Input } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane, FaPlane } from 'react-icons/fa';
-import Message from '../models/Message';
-import { MessagingSession } from '../models/MessagingSession';
-import { useMessaging } from '../services/MessagingService';
+import Message from '../../models/Message';
+import { MessagingSession } from '../../models/MessagingSession';
+import { useMessaging } from '../../services/MessagingService';
 import * as _ from 'lodash';
+import { useParams } from 'react-router-dom';
 
-export const TravelAgentPage = () => {
-  const [sessionId, setSessionId] = useState(1);
+export const TravelAgentMessagingPage = () => {
+  const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();
   const [messages, setMessages] = useState<Message[]>([]);
   const messageSubscription = useRef<NodeJS.Timeout>();
 
-  const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(sessionId);
+  const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(
+    parseInt(sessionId || '-1')
+  );
 
   useEffect(() => {
     getSession().then(setSessionData);
