@@ -12,87 +12,91 @@ import { routes } from '../constants/routes';
 
 export function HomePage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
 
-  //recommended : contains data table of cheapest flights based on user location
-  const [recommended, setRecommended] = useState<Flight[]>([]);
+	useEffect(() => {
+		document.title = 'FlightPub - Home'
+	})
 
-  //userLocation: Uses geoLocation to store users current position
-  const [userLocation, setUserLocation] = useState<any>();
+	//recommended : contains data table of cheapest flights based on user location
+	const [recommended, setRecommended] = useState<Flight[]>([]);
 
-  //airport: User's nearest airport for reccomendations
-  const [airport, setAirport] = useState<Airport | undefined>();
+	//userLocation: Uses geoLocation to store users current position
+	const [userLocation, setUserLocation] = useState<any>();
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
+	//airport: User's nearest airport for reccomendations
+	const [airport, setAirport] = useState<Airport | undefined>();
 
-
-  //takes price and returns cheapest price value as a string
-  const getMinPriceString = (prices: Price[]) => {
-    if (!prices) return '---';
-    let pricesVals = prices.map(p => p.price);
-    let minPrice = Math.min(...pricesVals);
-    return `$${minPrice}`;
-  };
-
-  //Gets users current position and retrieves list of airlines
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(position => setUserLocation(position.coords));
-    httpGet(endpoints.airlines)
-      .then(setAirlines);
-  }, []);
-
-  //Takes user location and finds nearest airport on load
-  useEffect(() => {
-    if (!userLocation) return;
-    let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
-    setAirport(airport);
-  }, [userLocation]);
-
-  // Defines columns for DataTable in correct format
-  const columns: ColumnDefinition<any>[] = [
-    {
-      accessor: 'airlineCode',
-      Header: 'Airline',
-      transform: value => airlines.find(a => a.airlineCode === value)?.airlineName || value,
-    },
-    { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
-    { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
-    { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
-    { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
-    { accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
-    { accessor: 'prices', Header: 'Price', transform: getMinPriceString },
-    { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
-  ];
-
-  //Gets airport code for nearest airport on-load to run reccomended search query
-  useEffect(() => {
-    if (!airport) return;
-    httpGet(endpoints.recommended + '/' + airport.code)
-      .then(setRecommended);
-  }, [airport]);
+	//airlines : list of all airlines from models/Airline
+	const [airlines, setAirlines] = useState<Airline[]>([]);
 
 
-  return (
-    <Grid>
-      <Center>
-        <VStack
-          spacing={2}
-          align='center'
-          divider={<StackDivider borderColor='white' />}>
-          <Center backgroundColor='gray.600' maxW='1000px' mx='auto'>
-            <img src={logo} alt='Logo' width='1000px' />
-          </Center>
-          <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
-              Search For a Flight
-            </Button>
-          </Box>
-          <Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
-          <Center>
-            <ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={cartState}>
-            </ResultsTable>
-          </Center>
-        </VStack>
-      </Center>
-    </Grid>
-  );
+	//takes price and returns cheapest price value as a string
+	const getMinPriceString = (prices: Price[]) => {
+		if (!prices) return '---';
+		let pricesVals = prices.map(p => p.price);
+		let minPrice = Math.min(...pricesVals);
+		return `$${minPrice}`;
+	};
+
+	//Gets users current position and retrieves list of airlines
+	useEffect(() => {
+		navigator.geolocation.getCurrentPosition(position => setUserLocation(position.coords));
+		httpGet(endpoints.airlines)
+			.then(setAirlines);
+	}, []);
+
+	//Takes user location and finds nearest airport on load
+	useEffect(() => {
+		if (!userLocation) return;
+		let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
+		setAirport(airport);
+	}, [userLocation]);
+
+	// Defines columns for DataTable in correct format
+	const columns: ColumnDefinition<any>[] = [
+		{
+			accessor: 'airlineCode',
+			Header: 'Airline',
+			transform: value => airlines.find(a => a.airlineCode === value)?.airlineName || value,
+		},
+		{ accessor: 'departureLocation.airport', Header: 'Departure Airport' },
+		{ accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
+		{ accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
+		{ accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
+		{ accessor: 'stopOverLocation.airport', Header: 'Stop Over', transform: (value: any) => value || '---' },
+		{ accessor: 'prices', Header: 'Price', transform: getMinPriceString },
+		{ accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
+	];
+
+	//Gets airport code for nearest airport on-load to run reccomended search query
+	useEffect(() => {
+		if (!airport) return;
+		httpGet(endpoints.recommended + '/' + airport.code)
+			.then(setRecommended);
+	}, [airport]);
+
+
+	return (
+		<Grid>
+			<Center>
+				<VStack
+					spacing={2}
+					align='center'
+					divider={<StackDivider borderColor='white' />}>
+					<Center backgroundColor='gray.600' maxW='1000px' mx='auto'>
+						<img src={logo} alt='Logo' width='1000px' />
+					</Center>
+					<Box>
+						<Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
+							Search For a Flight
+						</Button>
+					</Box>
+					<Heading as='h1' size='lg'>Cheapest flights from {airport?.city}</Heading>
+					<Center>
+						<ResultsTable columns={columns} data={recommended} keyAccessor='id' cartState={cartState}>
+						</ResultsTable>
+					</Center>
+				</VStack>
+			</Center>
+		</Grid>
+	);
 }

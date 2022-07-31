@@ -78,6 +78,10 @@ export const SearchPage = () => {
 	const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
 	const toast = useToast();
 
+	useEffect(() => {
+		document.title = 'FlightPub - Search'
+	})
+
 	//Formats from JavaScript Date type to string
 	const formatDate = (date: Date) => {
 		return new Date(date).toISOString().split('T')[0];
@@ -86,12 +90,6 @@ export const SearchPage = () => {
 	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
 		departureDate: { date: formatDate(new Date()) },
 	});
-
-	//userLocation: Uses geoLocation to store users current position
-	const [userLocation, setUserLocation] = useState<any>();
-
-	//airport: User's nearest airport for reccomendations
-	const [airport, setAirport] = useState<Airport | undefined>();
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -180,18 +178,6 @@ export const SearchPage = () => {
 		return null;
 	}
 
-	//Gets users current position and retrieves list of airlines
-	useEffect(() => {
-		navigator.geolocation.getCurrentPosition(position => setUserLocation(position.coords));
-	}, []);
-
-	//Takes user location and finds nearest airport on load
-	useEffect(() => {
-		if (!userLocation) return;
-		let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
-		setAirport(airport);
-	}, [userLocation]);
-
 	return (
 		<Box p='2em'>
 			<Center>
@@ -217,7 +203,7 @@ export const SearchPage = () => {
 											<FormLabel>Departure Location</FormLabel>
 											<AutoComplete
 												openOnFocus
-												defaultValue={airport?.code}
+												defaultValue={''}
 												onChange={(value) =>
 													handleSearchQueryUpdate('departureCode', value)
 												}

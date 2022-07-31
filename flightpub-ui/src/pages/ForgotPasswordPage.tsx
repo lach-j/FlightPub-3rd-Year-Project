@@ -11,7 +11,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useState, useEffect } from 'react';
 import * as api from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
@@ -23,6 +23,10 @@ export const ForgotPasswordPage = ({
                                    }: {
   redirectPath?: string;
 }) => {
+	useEffect(() => {
+		document.title = 'FlightPub - Forgot Password'
+	})
+
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [authRequest, setAuthRequest] = useState({ email: '' });

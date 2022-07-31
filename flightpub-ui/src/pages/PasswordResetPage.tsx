@@ -32,6 +32,10 @@ export const PasswordResetPage = ({
                                   }: {
   redirectPath?: string;
 }) => {
+	useEffect(() => {
+		document.title = 'FlightPub - Reset Password'
+	})
+
   const [loading, setLoading] = useState(false);
   //authError : boolean flag determining if an error has occurred
   const [authError, setAuthError] = useState(false);

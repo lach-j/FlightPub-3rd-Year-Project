@@ -12,6 +12,9 @@ import { HolidayCard } from "../components/HolidayCard";
 import { HolidayCardProps } from "../models/HolidayCardProps";
 
 export function HolidayPackagesPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
+	useEffect(() => {
+		document.title = 'FlightPub - Holiday Packages'
+	})
 
     const data: HolidayCardProps[] = [{
         isPopular: true,

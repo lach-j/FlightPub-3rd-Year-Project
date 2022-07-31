@@ -52,6 +52,9 @@ function convertMinsToHM(minutes: number) {
 }
 
 export function SearchResultsPage({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) {
+	useEffect(() => {
+		document.title = 'FlightPub - Search Results'
+	})
 
   const { state } = useLocation();
   const [cart, setCart] = cartState;
