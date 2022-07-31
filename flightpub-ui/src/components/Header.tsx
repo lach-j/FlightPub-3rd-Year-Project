@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
   Text
 } from '@chakra-ui/react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
 import { Flight, User } from '../models';
@@ -37,6 +37,7 @@ export default function Header({
 
   const userState = useContext(UserContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!userState) return;
@@ -85,7 +86,11 @@ export default function Header({
                 </>
               ) : (
                 <>
-                  <MenuItem as={NavLink} to={routes.login}>
+                  <MenuItem
+                    as={NavLink}
+                    to={routes.login}
+                    state={{ redirectUrl: location.pathname }}
+                  >
                     Login
                   </MenuItem>
                   <MenuItem as={NavLink} to={routes.register}>
