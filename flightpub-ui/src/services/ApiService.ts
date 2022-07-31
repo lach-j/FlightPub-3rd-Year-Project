@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -12,6 +13,7 @@ export const useApi = (_endpoint: string = '') => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
 
   const getOptions = () => {
     const token = localStorage.getItem('bearer-token');
@@ -80,6 +82,11 @@ export const useApi = (_endpoint: string = '') => {
       }
 
       if (res.status === 403) {
+        toast({
+          status: 'error',
+          title: 'Forbidden',
+          description: 'You do not have access to this page'
+        });
         navigate(routes.home);
       }
 

@@ -50,8 +50,10 @@ export default function Header({
     if (userState) {
       const [_, setUser] = userState;
       setUser(undefined);
+      localStorage.removeItem('bearer-token');
+      localStorage.removeItem('user-id');
     }
-    navigate(routes.login);
+    navigate(routes.login, { state: { redirectUrl: routes.home } });
   };
 
   return (

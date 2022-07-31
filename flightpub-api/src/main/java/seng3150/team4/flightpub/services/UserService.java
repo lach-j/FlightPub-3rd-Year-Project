@@ -96,7 +96,8 @@ public class UserService implements IUserService {
     var user = userRepository.findById(userId);
     if (user.isEmpty())
       throw new EntityNotFoundException(String.format("User with id %s was not found", userId));
-
+    if (currentUserContext.getCurrentUserId() != userId && (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR || currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT))
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
     // Otherwise, return the user
     return user.get();
   }

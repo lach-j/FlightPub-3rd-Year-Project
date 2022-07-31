@@ -42,6 +42,7 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   };
 
   const handlePostLogin = (user: User) => {
+    localStorage.setItem('user-id', `${user.id}`);
     if (!userState) return;
 
     const [_, setUserState] = userState;
