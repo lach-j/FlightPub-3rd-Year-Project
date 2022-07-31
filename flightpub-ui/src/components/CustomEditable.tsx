@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import { FormControl, FormLabel, HStack, IconButton, Input, Text } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 
-export const CustomEditible = (
-  {
-    value,
-    label,
-    name,
-    onSave,
-    type,
-  }: {
-    value?: string;
-    label: string;
-    name: string;
-    onSave?: (value: string) => void;
-    type: string;
-  }) => {
+export const CustomEditible = ({
+  value,
+  label,
+  name,
+  onSave,
+  type
+}: {
+  value?: string;
+  label: string;
+  name: string;
+  onSave?: (value: string) => void;
+  type: string;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [internalState, setInternalState] = useState<string | undefined>(value);
   const handleSave = () => {

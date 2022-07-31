@@ -9,7 +9,7 @@ import {
   StatHelpText,
   StatLabel,
   Text,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import { AiFillBank, AiFillCreditCard, BiTrash, ImPaypal } from 'react-icons/all';
 import { EditIcon } from '@chakra-ui/icons';
@@ -17,11 +17,16 @@ import React from 'react';
 import { SavedPayment } from '../../models';
 
 export const SavedPaymentComponent = ({
-                                        payment,
-                                        onDelete,
-                                        onEdit,
-                                      }: { payment: SavedPayment, onDelete: () => void, onEdit: () => void }) => {
-  const formatBSB = (bsb: number): string => bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
+  payment,
+  onDelete,
+  onEdit
+}: {
+  payment: SavedPayment;
+  onDelete: () => void;
+  onEdit: () => void;
+}) => {
+  const formatBSB = (bsb: number): string =>
+    bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
   const renderPaymentDetails = () => {
     switch (payment.type) {
       case 'card':
@@ -33,7 +38,6 @@ export const SavedPaymentComponent = ({
               <StatHelpText>CARD NUMBER</StatHelpText>
             </Stat>
             <Stat flex='none'>
-
               <StatLabel>{payment.expiry}</StatLabel>
               <StatHelpText>EXPIRES</StatHelpText>
             </Stat>
@@ -58,7 +62,6 @@ export const SavedPaymentComponent = ({
               <StatHelpText>BSB</StatHelpText>
             </Stat>
             <Stat flex='none'>
-
               <StatLabel>{payment.accNumber}</StatLabel>
               <StatHelpText>ACC NUMBER</StatHelpText>
             </Stat>
@@ -76,10 +79,22 @@ export const SavedPaymentComponent = ({
             {payment?.isDefault && <Badge colorScheme='blue'>Default</Badge>}
           </HStack>
           <HStack>
-            <IconButton onClick={onDelete} aria-label='delete' icon={<BiTrash />} size='sm' variant='outline'
-                        colorScheme='red' />
-            <IconButton onClick={onEdit} aria-label='edit' icon={<EditIcon />} size='sm' variant='outline'
-                        colorScheme='black' />
+            <IconButton
+              onClick={onDelete}
+              aria-label='delete'
+              icon={<BiTrash />}
+              size='sm'
+              variant='outline'
+              colorScheme='red'
+            />
+            <IconButton
+              onClick={onEdit}
+              aria-label='edit'
+              icon={<EditIcon />}
+              size='sm'
+              variant='outline'
+              colorScheme='black'
+            />
           </HStack>
         </Flex>
         {renderPaymentDetails()}
