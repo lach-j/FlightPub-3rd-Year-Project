@@ -36,6 +36,10 @@ const flightColumns: ColumnDefinition<any>[] = [
 ];
 
 export const MapPage = () => {
+	useEffect(() => {
+		document.title = 'FlightPub - Map Search'
+	})
+
   // selectedAiport : airport selected by user on map
   const [selectedAirport, setSelectedAirport] = useState<Airport | undefined>();
 

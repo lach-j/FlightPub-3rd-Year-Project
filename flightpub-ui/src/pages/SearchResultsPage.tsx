@@ -57,9 +57,13 @@ export function SearchResultsPage({
 }: {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) {
+  useEffect(() => {
+    document.title = 'FlightPub - Search Results';
+  });
+
   const { state } = useLocation();
   const [cart, setCart] = cartState;
-
+  const { httpGet } = useApi(endpoints.airlines);
   //results: list of flights returned from query
   const [results, setResults] = useState<Flight[]>([]);
   //Price range filter query resutls
@@ -76,8 +80,6 @@ export function SearchResultsPage({
   const [minDuration, setMinDuration] = useState(0);
   //List of airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const { httpGet } = useApi(endpoints.airlines);
 
   //Min-Max price information
   const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
@@ -180,7 +182,7 @@ export function SearchResultsPage({
       <HStack
         divider={<StackDivider borderColor='gray.200' />}
         spacing={10}
-        alignItems='flex-start'
+        alignItems={'flex-start'}
       >
         <Box w='300px' pt='30px' pl='30px'>
           <VStack divider={<StackDivider borderColor='gray.200' />} spacing={10} align='stretch'>

@@ -15,11 +15,14 @@ export function HomePage({
 }: {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) {
-  //recommended : contains data table of cheapest flights based on user location
-  const [recommended, setRecommended] = useState<Flight[]>([]);
-
   //userLocation: Uses geoLocation to store users current position
   const [userLocation, setUserLocation] = useState<any>();
+  useEffect(() => {
+    document.title = 'FlightPub - Home';
+  });
+
+  //recommended : contains data table of cheapest flights based on user location
+  const [recommended, setRecommended] = useState<Flight[]>([]);
 
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();

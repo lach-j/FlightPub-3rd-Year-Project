@@ -44,7 +44,10 @@ export const BookingPage = ({
 }: {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) => {
-  // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
+	useEffect(() => {
+		document.title = 'FlightPub - Bookings'
+	})
+// SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
