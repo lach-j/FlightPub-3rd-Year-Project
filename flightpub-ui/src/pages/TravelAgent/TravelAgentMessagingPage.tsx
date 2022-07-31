@@ -1,17 +1,30 @@
-import { Button, Center, Grid, Heading, VStack, Box, HStack, Input } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
-import { FaPaperPlane, FaPlane } from 'react-icons/fa';
+import { Button, Heading, VStack, Box, HStack, Input } from '@chakra-ui/react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FaPaperPlane } from 'react-icons/fa';
 import Message from '../../models/Message';
 import { MessagingSession } from '../../models/MessagingSession';
 import { useMessaging } from '../../services/MessagingService';
 import * as _ from 'lodash';
 import { useParams } from 'react-router-dom';
+import { User } from '../../models';
+import { UserContext } from '../../services/UserContext';
 
 export const TravelAgentMessagingPage = () => {
   const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();
   const [messages, setMessages] = useState<Message[]>([]);
   const messageSubscription = useRef<NodeJS.Timeout>();
+  const [currentUser, setCurrentUser] = useState<User | undefined>();
+
+  const userState = useContext(UserContext);
+
+  useEffect(() => {
+    if (!userState) return;
+
+    const [userData, _] = userState;
+
+    setCurrentUser(userData);
+  }, [userState]);
 
   const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(
     parseInt(sessionId || '-1')
@@ -43,31 +56,54 @@ export const TravelAgentMessagingPage = () => {
   };
 
   return (
-    <Grid>
-      <Center>
-        <VStack w='50%'>
-          <Heading as='h2'>Test</Heading>
-          {sessionData && <MessageContainer messages={messages} />}
-          <MessageSendBar onMessageSent={handleSendMessage} />
-        </VStack>
-      </Center>
-    </Grid>
+    <Box
+      h='full'
+      display='flex'
+      w='full'
+      position='absolute'
+      flexDirection='column'
+      padding='10'
+      alignItems='center'
+      gap='5'
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+    >
+      <Heading as='h2'>Test</Heading>
+      {sessionData && (
+        <MessageContainer>
+          {messages?.map((message) => (
+            <MessageComponent key={message.id} message={message} currentUser={currentUser} />
+          ))}
+        </MessageContainer>
+      )}
+      <MessageSendBar onMessageSent={handleSendMessage} />
+    </Box>
   );
 };
 
-const MessageContainer = ({ messages }: { messages: Message[] }) => {
+const MessageContainer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <VStack w='full'>
-      {messages?.map((message) => (
-        <MessageComoponent key={message.id} message={message} />
-      ))}
-    </VStack>
+    <Box w='full' h='full' overflow='auto' p='5'>
+      <VStack w='full' overflow='auto'>
+        {children}
+      </VStack>
+    </Box>
   );
 };
 
-const MessageComoponent = ({ message }: { message: Message }) => {
+const MessageComponent = ({
+  message,
+  currentUser
+}: {
+  message: Message;
+  currentUser: User | undefined;
+}) => {
   return (
-    <Box alignSelf={message.user?.id === 1 ? 'flex-start' : 'flex-end'}>{message.content}</Box>
+    <Box alignSelf={message.user.id !== currentUser?.id ? 'flex-start' : 'flex-end'}>
+      {message.content}
+    </Box>
   );
 };
 
