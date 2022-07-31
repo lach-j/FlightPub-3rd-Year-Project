@@ -33,6 +33,9 @@ public class SecurityFilter implements HandlerInterceptor {
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
 
+    if (!(handler instanceof HandlerMethod))
+      return true;
+
     HandlerMethod handlerMethod = (HandlerMethod) handler;
 
     Authorized authAnnotation = handlerMethod.getMethod().getAnnotation(Authorized.class);
