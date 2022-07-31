@@ -11,4 +11,5 @@ export const routes = {
   booking: '/booking',
   searchResults: '/searchResults',
   holidayPackages: '/holidays',
+  passengerDetails: '/passengerDetails',
 };

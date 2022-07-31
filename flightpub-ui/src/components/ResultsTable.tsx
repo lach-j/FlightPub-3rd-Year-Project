@@ -3,10 +3,13 @@ import * as _ from 'lodash';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[],
-  data: any[],
+  data: Flight[],
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
@@ -24,6 +27,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
   const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const sortFunc = (a: any, b: any): number => {
     let o1 = _.get(a, sortingColumn?.accessor);
@@ -70,7 +74,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {data.sort(sortFunc).map((result: any) => {
+        {data.sort(sortFunc).map((result: Flight) => {
             return <Tr key={_.get(result, keyAccessor)}>
               {columns.map((column) =>
                 <Td
@@ -80,16 +84,22 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                 <Button type='button'
                         colorScheme='red'
                         onClick={() => {
-                          setCart(cart => [...cart, result]);
-                          toast({
-                            title: 'Success!',
-                            description:
-                              'Flight added to cart successfully.',
-                            status: 'success',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top',
-                          });
+                          // setCart(cart => [...cart, result]);
+                          // toast({
+                          //   title: 'Success!',
+                          //   description:
+                          //     'Flight added to cart successfully.',
+                          //   status: 'success',
+                          //   duration: 9000,
+                          //   isClosable: true,
+                          //   position: 'top',
+                          // });
+
+                          navigate(routes.passengerDetails, {
+                            state: {
+                              result,
+                            }
+                          }) 
                         }}>
                   Add to Cart
                 </Button>

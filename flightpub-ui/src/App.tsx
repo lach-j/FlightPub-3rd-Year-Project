@@ -11,6 +11,7 @@ import {
   SearchPage,
   SearchResultsPage,
   HolidayPackagesPage,
+  PassengerDetailsPage,
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
@@ -65,6 +66,7 @@ const App = () => {
           <Route path={routes.searchResults} element={<SearchResultsPage cartState={cartState} />} />
           <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
           <Route path={routes.holidayPackages} element={<HolidayPackagesPage cartState={cartState} />} />
+          <Route path={routes.passengerDetails} element={<PassengerDetailsPage cartState={cartState} />} />
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Routes>
       </Box>
