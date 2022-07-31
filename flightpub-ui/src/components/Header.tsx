@@ -89,7 +89,7 @@ export default function Header({
           </Menu>
           <Popover>
             <PopoverTrigger>
-              <IconButton aria-label={'cart'} icon={<FaShoppingCart />} />
+              <IconButton aria-label='cart' icon={<FaShoppingCart />} />
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />

@@ -180,7 +180,7 @@ export function SearchResultsPage({
       <HStack
         divider={<StackDivider borderColor='gray.200' />}
         spacing={10}
-        alignItems={'flex-start'}
+        alignItems='flex-start'
       >
         <Box w='300px' pt='30px' pl='30px'>
           <VStack divider={<StackDivider borderColor='gray.200' />} spacing={10} align='stretch'>

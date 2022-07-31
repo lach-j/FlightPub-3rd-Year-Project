@@ -42,7 +42,7 @@ export const TravelAgentPage = () => {
   return (
     <Grid>
       <Center>
-        <VStack w={'50%'}>
+        <VStack w='50%'>
           <Heading as='h2'>Test</Heading>
           {sessionData && <MessageContainer messages={messages} />}
           <MessageSendBar onMessageSent={handleSendMessage} />
@@ -54,7 +54,7 @@ export const TravelAgentPage = () => {
 
 const MessageContainer = ({ messages }: { messages: Message[] }) => {
   return (
-    <VStack w={'full'}>
+    <VStack w='full'>
       {messages?.map((message) => (
         <MessageComoponent key={message.id} message={message} />
       ))}

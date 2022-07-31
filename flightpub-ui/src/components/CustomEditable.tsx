@@ -42,14 +42,14 @@ export const CustomEditible = ({
               onChange={(event) => setInternalState(event.target.value)}
             />
             <IconButton
-              variant={'solid'}
-              aria-label={'save'}
+              variant='solid'
+              aria-label='save'
               icon={<CheckIcon />}
               onClick={handleSave}
             />
             <IconButton
-              variant={'solid'}
-              aria-label={'cancel'}
+              variant='solid'
+              aria-label='cancel'
               icon={<CloseIcon />}
               onClick={handleCancel}
             />
@@ -58,8 +58,8 @@ export const CustomEditible = ({
           <>
             <Text flex={1}>{value}</Text>
             <IconButton
-              variant={'ghost'}
-              aria-label={'edit'}
+              variant='ghost'
+              aria-label='edit'
               icon={<EditIcon />}
               onClick={handleEdit}
             />

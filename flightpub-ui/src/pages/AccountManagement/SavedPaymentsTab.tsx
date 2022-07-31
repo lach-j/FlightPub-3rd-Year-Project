@@ -159,7 +159,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <FormControl>
               <FormLabel>BSB</FormLabel>
               <Input
-                type={'number'}
+                type='number'
                 value={savedPaymentData.bsb}
                 onChange={(event) => handleSavedPaymentUpdate('bsb', event.target.value)}
               />
@@ -252,7 +252,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
                     Update
                   </Button>
                 ) : (
-                  <Button onClick={handleAddPayment} colorScheme={'green'} rightIcon={<BiPlus />}>
+                  <Button onClick={handleAddPayment} colorScheme='green' rightIcon={<BiPlus />}>
                     Add
                   </Button>
                 )}

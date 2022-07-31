@@ -199,9 +199,9 @@ export const SearchPage = () => {
             </FormLabel>
             <VStack gap='2em'>
               <HStack
-                alignItems={'flex-start'}
+                alignItems='flex-start'
                 divider={<StackDivider borderColor='gray.200' />}
-                gap={'3em'}
+                gap='3em'
               >
                 <VStack
                   divider={<StackDivider borderColor='gray.200' />}
@@ -238,7 +238,7 @@ export const SearchPage = () => {
                                     <Td>{option.label}</Td>
                                     <Td>
                                       <NumberInput
-                                        w={'5em'}
+                                        w='5em'
                                         onChange={(value) =>
                                           handleTicketUpdate(
                                             value ? parseInt(value) : 0,
@@ -328,7 +328,7 @@ export const SearchPage = () => {
                       <FormLabel>Arrival Location:</FormLabel>
                       <AutoComplete
                         openOnFocus
-                        defaultValue={''}
+                        defaultValue=''
                         emptyState={true}
                         onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
                       >
@@ -347,9 +347,9 @@ export const SearchPage = () => {
                     </FormControl>
                   </Box>
                   {/* Location tag inputs */}
-                  <VStack align={'left'}>
+                  <VStack align='left'>
                     <label>Selected Tags:</label>
-                    <Box width={'15rem'}>
+                    <Box width='15rem'>
                       <TagMessage length={searchTags.length} />
                       {searchTags.map((item) => (
                         <Tag
@@ -375,7 +375,7 @@ export const SearchPage = () => {
                       <HStack>
                         <AutoComplete
                           openOnFocus
-                          defaultValue={''}
+                          defaultValue=''
                           emptyState={true}
                           onChange={(value: string) => handleTagUpdate(value)}
                         >
@@ -413,7 +413,7 @@ export const SearchPage = () => {
                   {/* Flex-date input */}
                   <Box>
                     <Checkbox
-                      name={'flexEnabled'}
+                      name='flexEnabled'
                       colorScheme='green'
                       onChange={(e) => {
                         setFlexEnabled(e.target.checked);
@@ -438,7 +438,7 @@ export const SearchPage = () => {
                       <p>+/- days</p>
                       <NumberInput
                         allowMouseWheel={true}
-                        name={'flexibleRange'}
+                        name='flexibleRange'
                         size='sm'
                         min={1}
                         maxW={16}

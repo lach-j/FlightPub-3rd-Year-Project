@@ -103,10 +103,10 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
             />
           ))}
           <HStack w='full' gap='1em'>
-            <Button colorScheme={'blue'} disabled={!isDirty} onClick={handleSaveChanges}>
+            <Button colorScheme='blue' disabled={!isDirty} onClick={handleSaveChanges}>
               Save
             </Button>
-            <Button colorScheme={'gray'} disabled={!isDirty} onClick={handleDiscardChanges}>
+            <Button colorScheme='gray' disabled={!isDirty} onClick={handleDiscardChanges}>
               Discard Changes
             </Button>
           </HStack>

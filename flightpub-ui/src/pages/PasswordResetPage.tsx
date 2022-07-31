@@ -154,7 +154,7 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
                   //re-enter new password input
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
-                    <Input type='password' name={'confirm'} onChange={handleResetDetailsChange} />
+                    <Input type='password' name='confirm' onChange={handleResetDetailsChange} />
                     <FormErrorMessage>{errMessage}</FormErrorMessage>
                   </FormControl>
                 </Stack>

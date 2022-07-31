@@ -50,7 +50,7 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
           <FormControl isRequired={true}>
             <FormLabel>Current Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.current}
               onChange={(event) => handlePasswordInputUpdate('current', event.target.value)}
             />
@@ -58,7 +58,7 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
           <FormControl isRequired={true}>
             <FormLabel>New Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.password}
               onChange={(event) => handlePasswordInputUpdate('password', event.target.value)}
             />
@@ -66,14 +66,14 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
           <FormControl isRequired={true}>
             <FormLabel>Confirm New Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.confirm}
               onChange={(event) => handlePasswordInputUpdate('confirm', event.target.value)}
             />
           </FormControl>
           <HStack w='full' gap='1em'>
             <Button
-              colorScheme={'blue'}
+              colorScheme='blue'
               disabled={passwordResetIsValid()}
               onClick={handleChangePassword}
             >

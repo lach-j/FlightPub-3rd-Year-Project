@@ -161,7 +161,7 @@ export const MapPage = () => {
                           {flight.stopOverLocation && (
                             <Text
                               textDecoration='underline'
-                              textDecorationStyle={'dashed'}
+                              textDecorationStyle='dashed'
                               title={flight.stopOverLocation.airport || undefined}
                             >
                               {`(${flight.stopOverLocation.destinationCode})`}

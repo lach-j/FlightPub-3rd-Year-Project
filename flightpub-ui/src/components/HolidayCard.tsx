@@ -39,8 +39,8 @@ const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
 
 const Feature = ({ text, icon, iconBg }: FeatureProps) => {
   return (
-    <Stack direction={'row'} align={'center'}>
-      <Flex w={8} h={8} align={'center'} justify={'center'} rounded={'full'} bg={iconBg}>
+    <Stack direction='row' align='center'>
+      <Flex w={8} h={8} align='center' justify='center' rounded='full' bg={iconBg}>
         {icon}
       </Flex>
       <Text fontWeight={600}>{text}</Text>
@@ -57,7 +57,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
           maxW='md'
           borderWidth='1px'
           border='1px'
-          boxShadow={'2xl'}
+          boxShadow='2xl'
           borderColor='gray.200'
           rounded='lg'
           shadow='lg'
@@ -71,7 +71,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
 
           <Box p='4'>
             <HStack alignItems='baseline' spacing='1'>
-              {data.isPopular && <FeatureBadge tagName={'popular'} tagColor={'red'} />}
+              {data.isPopular && <FeatureBadge tagName='popular' tagColor='red' />}
               {Object.values(data.tags).map((value) => {
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
               })}
@@ -92,7 +92,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
               </Box>
               <Spacer />
               <Box fontSize='2xl' color={useColorModeValue('gray.800', 'white')}>
-                <Box as='span' color={'gray.600'} fontSize='lg'>
+                <Box as='span' color='gray.600' fontSize='lg'>
                   $
                 </Box>
                 {data.price.toFixed(2)}
@@ -119,26 +119,26 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
           >
             <Box pl={5}>
               <Stack spacing={4}>
-                <Heading fontSize={'3xl'} fontFamily={'heading'}>
+                <Heading fontSize='3xl' fontFamily='heading'>
                   {data.tagline}
                 </Heading>
-                <Text color={'gray.500'} fontSize={'2xl'}>
+                <Text color='gray.500' fontSize='2xl'>
                   {data.description}
                 </Text>
                 <Feature
-                  icon={<Icon as={GiNightSky} color={'yellow.500'} w={5} h={5} />}
+                  icon={<Icon as={GiNightSky} color='yellow.500' w={5} h={5} />}
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
                   text={`${data.nights} Nights`}
                 />
                 <Feature
-                  icon={<Icon as={ImAirplane} color={'yellow.500'} w={5} h={5} />}
+                  icon={<Icon as={ImAirplane} color='yellow.500' w={5} h={5} />}
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
-                  text={'Flights + Accommodation'}
+                  text='Flights + Accommodation'
                 />
                 <Feature
-                  icon={<Icon as={ImCheckmark2} color={'yellow.500'} w={5} h={5} />}
+                  icon={<Icon as={ImCheckmark2} color='yellow.500' w={5} h={5} />}
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
-                  text={'All Expenses Paid'}
+                  text='All Expenses Paid'
                 />
                 <Button colorScheme='red' size='md'>
                   View Package

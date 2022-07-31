@@ -316,10 +316,10 @@ export const BookingPage = ({
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
-            <Button onClick={handleBooking} colorScheme={'red'}>
+            <Button onClick={handleBooking} colorScheme='red'>
               Book Now
             </Button>
-            <Button as={NavLink} to={routes.search} colorScheme={'gray'}>
+            <Button as={NavLink} to={routes.search} colorScheme='gray'>
               Continue Searching
             </Button>
           </HStack>
