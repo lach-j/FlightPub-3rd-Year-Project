@@ -9,7 +9,7 @@ const apiBaseUrl =
     : 'https://flightpub-team4.herokuapp.com';
 
 export const useApi = (_endpoint: string = '') => {
-  const [baseEndpoint, setBaseEndpoint] = useState(_endpoint);
+  const [baseEndpoint] = useState(_endpoint);
 
   const navigate = useNavigate();
   const location = useLocation();

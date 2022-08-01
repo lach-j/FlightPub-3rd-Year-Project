@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { Outlet, Route, Routes, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export const TravelAgentPortalPage = () => {
   return (

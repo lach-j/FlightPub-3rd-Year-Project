@@ -22,7 +22,7 @@ export const TravelAgentMessagingPage = () => {
   useEffect(() => {
     if (!userState) return;
 
-    const [userData, _] = userState;
+    const [userData] = userState;
 
     setCurrentUser(userData);
   }, [userState]);
@@ -54,6 +54,7 @@ export const TravelAgentMessagingPage = () => {
   }, [sessionData]);
 
   const handleSendMessage = (content: string) => {
+    if (!content) return;
     sendNewMessage(content);
     setMessages((m) =>
       _.uniqBy([...m, { content, user: currentUser, dateSent: new Date() } as Message], 'id')
@@ -95,11 +96,11 @@ const MessageContainer = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const numChildren = Children.count(children);
 
-    if (boxRef.current && messageCount != numChildren)
+    if (boxRef.current && messageCount !== numChildren)
       boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: 'smooth' });
 
     setMessageCount(Children.count(children));
-  }, [boxRef.current, children]);
+  }, [boxRef.current, children, messageCount]);
 
   return (
     <Box

@@ -16,7 +16,6 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (!userId) return;
 
     httpGet('/' + userId).then((user: User) => {
-      console.log(user);
       userDetails[1](user);
     });
   }, []);

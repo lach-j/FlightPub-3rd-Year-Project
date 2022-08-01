@@ -43,7 +43,6 @@ export default function Header({
     if (!userState) return;
 
     setUser(userState[0]);
-    console.log(userState[0]);
   }, [userState]);
 
   const handleLogout = () => {

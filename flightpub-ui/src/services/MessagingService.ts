@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { useState } from 'react';
 import Message from '../models/Message';
 import { useApi } from './ApiService';
@@ -6,7 +5,7 @@ import { useApi } from './ApiService';
 const BASE_ENDPOINT = '/messages';
 
 export const useMessaging = (_sessionId: number) => {
-  const [sessionId, setSessionId] = useState(_sessionId);
+  const [sessionId] = useState(_sessionId);
   const [prevDate, setDate] = useState(new Date());
 
   const { httpGet, httpPatch } = useApi();
