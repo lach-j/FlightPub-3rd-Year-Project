@@ -2,7 +2,6 @@ package seng3150.team4.flightpub.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 import seng3150.team4.flightpub.controllers.requests.MessageRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
@@ -15,8 +14,6 @@ import seng3150.team4.flightpub.services.MessagingService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(path = "messages")
@@ -64,7 +61,7 @@ public class MessagingController {
     return new EntityResponse<>(messagingService.addCurrentUserToSession(sessionId));
   }
 
-  @Authorized
+  @Authorized(logResolution = false)
   @GetMapping("/{sessionId}/messages")
   public EntityCollectionResponse<Message> getMessagesSince(
       @PathVariable long sessionId, @RequestParam("since") String messagesSince) {

@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorized {
   UserRole[] allowedRoles() default {UserRole.STANDARD_USER, UserRole.TRAVEL_AGENT, UserRole.ADMINISTRATOR};
+  boolean logResolution() default true;
 }
