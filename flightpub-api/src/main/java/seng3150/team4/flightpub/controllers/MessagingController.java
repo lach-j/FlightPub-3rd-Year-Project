@@ -45,6 +45,7 @@ public class MessagingController {
   @PatchMapping("/{sessionId}")
   public StatusResponse addMessage(
       @PathVariable long sessionId, @RequestBody MessageRequest message) {
+    message.validate();
     messagingService.addMessageToSession(sessionId, message.getContent());
 
     return new StatusResponse(HttpStatus.ACCEPTED);
