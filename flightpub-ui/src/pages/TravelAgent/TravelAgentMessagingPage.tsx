@@ -49,7 +49,8 @@ export const TravelAgentMessagingPage = () => {
       },
       (error) => {
         messageSubscription.current && clearInterval(messageSubscription.current);
-      }
+      },
+      3000
     );
   }, [sessionData]);
 
