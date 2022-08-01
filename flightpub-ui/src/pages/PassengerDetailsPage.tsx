@@ -6,6 +6,8 @@ import {
     AccordionPanel,
     Box,
     Flex,
+    FormControl,
+    FormLabel,
     Heading,
     HStack,
     Stat,
@@ -14,20 +16,32 @@ import {
     StatNumber,
     Text,
     useToast,
+    VStack,
+    Input,
+    Select,
+    Button
   } from '@chakra-ui/react';
 
 import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
 import { Flight } from '../models/Flight';
 import { useLocation } from 'react-router-dom';
 import * as api from '../services/ApiService';
-import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
+import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
 import { relativeTimeRounding } from 'moment';
 
 export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
     const toast = useToast();
     const [cart] = cartState;
     const [flight, setFlight] = useState<Flight>();
+    const [passengerCount, setPassengerCount] = useState<number>(1);
     const { state } = useLocation();
+
+    const ticketOptions = [
+        { key: 'BUS', label: 'Business Class' },
+        { key: 'ECO', label: 'Economy' },
+        { key: 'FIR', label: 'First Class' },
+        { key: 'PME', label: 'Premium Economy' }
+      ];
 
 
     useEffect(() => {
@@ -105,11 +119,55 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             return (<Flex></Flex>);
         }
     }
+
+    const renderPassengerForms = () => {
+        var forms = [];
+        for (var i = 0; i < passengerCount; i++) {
+            forms.push(
+                <VStack>
+                    <Text>Passenger {i + 1}</Text>
+                    <HStack w='full'>
+                        <FormControl flex={1}>
+                            <FormLabel>First Name</FormLabel>
+                            <Input/>
+                        </FormControl>
+                        <FormControl flex={1}>
+                            <FormLabel>Last Name</FormLabel>
+                            <Input/>
+                        </FormControl>
+                    </HStack>
+                    <HStack w='full'>
+                        <FormControl flex={1}>
+                            <FormLabel>Email Address</FormLabel>
+                            <Input/>
+                        </FormControl>
+                        <FormControl flex={1}>
+                            <FormLabel>Confirm Email Address</FormLabel>
+                            <Input/>
+                        </FormControl>
+                    </HStack>
+                    <FormControl>
+                        <FormLabel>Class</FormLabel>
+                        <Select>
+                            {ticketOptions.map((o) => {
+                                <option value={o.key}>{o.label}</option>
+                            })}
+                        </Select>
+                    </FormControl>
+                </VStack>
+            );
+        }
+        return forms;
+    }
     
 
     return (
     <Flex justifyContent='center' p='5em'>
-      {renderFlightDetails()}
+        <Flex justifyContent='center' direction='column' w='50em'>
+            {renderFlightDetails()}
+            {renderPassengerForms()}
+            <Button leftIcon={<BsFillPlusCircleFill/>} onClick={() => setPassengerCount(passengerCount + 1)}>Add another passenger</Button>
+        </Flex>
     </Flex>
 )};
 

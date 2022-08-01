@@ -86,33 +86,39 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {data.sort(sortFunc).map((result: Flight) => {
-            return <Tr key={_.get(result, keyAccessor)}>
-              {columns.map((column) =>
-                <Td
-                  key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+        {data.sort(sortFunc).map((result: any) => {
+          return (
+            <Tr key={_.get(result, keyAccessor)}>
+              {columns.map((column) => (
+                <Td key={column.accessor}>
+                  {column?.transform
+                    ? column.transform(_.get(result, column.accessor))
+                    : _.get(result, column.accessor)}
+                </Td>
+              ))}
               {children}
               <Td>
-                <Button type='button'
-                        colorScheme='red'
-                        onClick={() => {
-                          // setCart(cart => [...cart, result]);
-                          // toast({
-                          //   title: 'Success!',
-                          //   description:
-                          //     'Flight added to cart successfully.',
-                          //   status: 'success',
-                          //   duration: 9000,
-                          //   isClosable: true,
-                          //   position: 'top',
-                          // });
+                <Button
+                  type='button'
+                  colorScheme='red'
+                  onClick={() => {
+                    // setCart((cart) => [...cart, result]);
+                    // toast({
+                    //   title: 'Success!',
+                    //   description: 'Flight added to cart successfully.',
+                    //   status: 'success',
+                    //   duration: 9000,
+                    //   isClosable: true,
+                    //   position: 'top'
+                    // });
 
-                          navigate(routes.passengerDetails, {
-                            state: {
-                              result,
-                            }
-                          }) 
-                        }}>
+                    navigate(routes.passengerDetails, {
+                      state: {
+                        result,
+                      }
+                    });
+                  }}
+                >
                   Add to Cart
                 </Button>
               </Td>
