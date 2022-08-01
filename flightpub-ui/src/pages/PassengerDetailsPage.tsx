@@ -24,14 +24,16 @@ import {
 
 import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
 import { Flight } from '../models/Flight';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import * as api from '../services/ApiService';
 import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
-import { relativeTimeRounding } from 'moment';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
 
 export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
     const toast = useToast();
-    const [cart] = cartState;
+    const navigate = useNavigate();
+    const [cart, setCart] = cartState;
     const [flight, setFlight] = useState<Flight>();
     const [passengerCount, setPassengerCount] = useState<number>(1);
     const { state } = useLocation();
@@ -167,6 +169,33 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             {renderFlightDetails()}
             {renderPassengerForms()}
             <Button leftIcon={<BsFillPlusCircleFill/>} onClick={() => setPassengerCount(passengerCount + 1)}>Add another passenger</Button>
+            <Button
+            type='button'
+            colorScheme='red'
+            onClick={() => {
+                if (typeof flight !== "undefined"){
+                    setCart((cart) => [...cart, flight]);
+                    toast({
+                        title: 'Success!',
+                        description: 'Flight added to cart successfully.',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
+                    });
+                    navigate(routes.home);
+                }
+                else {
+                    toast({
+                        title: 'Error',
+                        description: 'No flight present to add to cart',
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
+                    });
+                }
+                }} >Add to Cart</Button>
         </Flex>
     </Flex>
 )};
