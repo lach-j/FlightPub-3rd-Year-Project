@@ -14,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SecurityFilter implements HandlerInterceptor {

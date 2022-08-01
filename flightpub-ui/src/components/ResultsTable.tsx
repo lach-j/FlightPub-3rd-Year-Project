@@ -1,4 +1,16 @@
-import { Button, HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  HStack,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useToast
+} from '@chakra-ui/react';
 import * as _ from 'lodash';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
@@ -13,16 +25,16 @@ type ResultsTableProps = {
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
-}
+};
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({
-                                                            columns,
-                                                            data,
-                                                            children,
-                                                            sortable = false,
-                                                            keyAccessor,
-                                                            cartState,
-                                                          }) => {
+  columns,
+  data,
+  children,
+  sortable = false,
+  keyAccessor,
+  cartState
+}) => {
   const toast = useToast();
   const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
@@ -56,21 +68,21 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
     }
   };
 
-  const sortIcon = () => descending ? <TriangleDownIcon /> : <TriangleUpIcon />;
+  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
 
   return (
     <Table width='100%'>
       <TableCaption>Prices subject to change. T&C's apply</TableCaption>
       <Thead>
         <Tr>
-          {columns.map((column) =>
+          {columns.map((column) => (
             <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
                 {column === sortingColumn && sortIcon()}
               </HStack>
-            </Th>,
-          )}
+            </Th>
+          ))}
         </Tr>
       </Thead>
       <Tbody>
@@ -104,9 +116,9 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   Add to Cart
                 </Button>
               </Td>
-            </Tr>;
-          },
-        )}
+            </Tr>
+          );
+        })}
       </Tbody>
     </Table>
   );

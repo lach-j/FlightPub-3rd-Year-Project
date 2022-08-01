@@ -10,3 +10,4 @@ export * from './SearchPage';
 export * from './SearchResultsPage';
 export * from './HolidayPackagesPage';
 export * from './PassengerDetailsPage';
+export * from './TravelAgent';

@@ -12,4 +12,5 @@ export const routes = {
   searchResults: '/searchResults',
   holidayPackages: '/holidays',
   passengerDetails: '/passengerDetails',
+  travelAgents: '/travel-agents',
 };

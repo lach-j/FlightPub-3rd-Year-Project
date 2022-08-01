@@ -1,8 +1,4 @@
-type PaymentType =
-  | DirectDebitPayment
-  | CardPayment
-  | PaypalPayment
-  | Saved
+type PaymentType = DirectDebitPayment | CardPayment | PaypalPayment | Saved;
 
 interface DirectDebitPayment extends Payment {
   type: 'directDebit';
@@ -36,4 +32,4 @@ interface Payment {
 export type SavedPayment = PaymentType & {
   nickname: string;
   isDefault?: boolean;
-}
+};

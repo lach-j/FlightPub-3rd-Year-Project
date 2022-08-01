@@ -9,23 +9,23 @@ import {
   Input,
   Link,
   Stack,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useState } from 'react';
-import * as api from '../services/ApiService';
+import React, { SyntheticEvent, useContext, useState, useEffect } from 'react';
+import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
-import { Link as RouteLink, useNavigate } from 'react-router-dom';
+import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
 import { endpoints } from '../constants/endpoints';
 import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
+import { User } from '../models';
 
-export const LoginPage = ({
-                            redirectPath,
-                          }: {
-  redirectPath?: string;
-}) => {
+export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a login error has occured
   const [authError, setAuthError] = useState(false);
+
+  const userState = useContext(UserContext);
 
   //authRequest : stores login request with email and password as parameters
   const [authRequest, setAuthRequest] = useState({ email: '', password: '' });
@@ -36,23 +36,34 @@ export const LoginPage = ({
 
   //enables react programmatic navigation
   const navigate = useNavigate();
+  const { state } = useLocation();
   const redirectUser = () => {
-    navigate(redirectPath || '/');
+    navigate((state as { redirectUrl?: string })?.redirectUrl || redirectPath || '/');
   };
+
+  const handlePostLogin = (user: User) => {
+    localStorage.setItem('user-id', `${user.id}`);
+    if (!userState) return;
+
+    const [_, setUserState] = userState;
+    setUserState(user);
+  };
+
+  const { httpPost } = useApi(endpoints.login);
 
   //Handles login event for login form
   const handleLogin = (e: SyntheticEvent) => {
     e.preventDefault(); //prevents stand HTML form submission protocol
     setLoading(true);
     setTimeout(() => {
-      api
-        .httpPost(endpoints.login, authRequest) //send authrequest
+      httpPost('', authRequest) //send authrequest
         .then((authResponse) => {
           localStorage.setItem('bearer-token', authResponse.token); //stores login token locally
-          // TODO: dont store this in local storage
-          redirectUser(); //sends user to homepage
+          handlePostLogin(authResponse.user);
+          redirectUser();
         })
-        .catch((err: ApiError) => { //if an error occurs
+        .catch((err: ApiError) => {
+          //if an error occurs
           //ERROR: Invalid email/password
           if (err.statusCode === 401) {
             setAuthError(true);
@@ -65,12 +76,11 @@ export const LoginPage = ({
             //All other errors
             toast({
               title: 'Error.',
-              description:
-                'An internal error has occurred, please try again later.',
+              description: 'An internal error has occurred, please try again later.',
               status: 'error',
               duration: 9000,
               isClosable: true,
-              position: 'top',
+              position: 'top'
             });
           }
         })
@@ -80,20 +90,12 @@ export const LoginPage = ({
     setAuthError(false);
   };
   //Handles update of login input, updating value(s)
-  const handleLoginDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleLoginDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthRequest({ ...authRequest, [event.target.name]: event.target.value });
   };
   return (
     <Center w='full' h='full' p='5'>
-      <Box
-        border='2px'
-        borderColor='gray.200'
-        p='10'
-        borderRadius='2xl'
-        w='md'
-      >
+      <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
         <form onSubmit={handleLogin}>
           <Stack spacing='12'>
             <Box>
@@ -114,11 +116,7 @@ export const LoginPage = ({
                 {/* password input */}
                 <FormControl isDisabled={loading} isInvalid={authError}>
                   <FormLabel>Password</FormLabel>
-                  <Input
-                    type='password'
-                    name='password'
-                    onChange={handleLoginDetailsChange}
-                  />
+                  <Input type='password' name='password' onChange={handleLoginDetailsChange} />
                   {/* Handles error messages */}
                   <FormErrorMessage>{errMessage}</FormErrorMessage>
                 </FormControl>
