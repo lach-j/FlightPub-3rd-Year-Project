@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { User } from '../../models';
 import { UserContext } from '../../services/UserContext';
 import moment from 'moment';
-
+import * as uuid from 'uuid';
 export const TravelAgentMessagingPage = () => {
   const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();
@@ -57,6 +57,7 @@ export const TravelAgentMessagingPage = () => {
   const handleSendMessage = (content: string) => {
     if (!content) return;
     sendNewMessage(content);
+
     setMessages((m) =>
       _.uniqBy([...m, { content, user: currentUser, dateSent: new Date() } as Message], 'id')
     );
@@ -81,7 +82,11 @@ export const TravelAgentMessagingPage = () => {
       {sessionData && (
         <MessageContainer>
           {messages?.map((message) => (
-            <MessageComponent key={message.id} message={message} currentUser={currentUser} />
+            <MessageComponent
+              key={message?.id ?? uuid.v4()}
+              message={message}
+              currentUser={currentUser}
+            />
           ))}
         </MessageContainer>
       )}
