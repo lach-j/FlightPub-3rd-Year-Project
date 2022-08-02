@@ -17,7 +17,11 @@ import {
   ModalOverlay,
   Spinner,
   useDisclosure,
-  useToast
+  useToast,
+  Avatar,
+  AvatarBadge,
+  AvatarGroup,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
@@ -72,6 +76,8 @@ export const TravelAgentPortalPage = () => {
       .finally(onClose);
   };
 
+  const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
+
   return (
     <>
       <Table>
@@ -92,11 +98,20 @@ export const TravelAgentPortalPage = () => {
                 <Td>{session.id}</Td>
                 <Td>
                   <Flex gap='2' wrap='wrap'>
-                    {session.users.map((u) => (
-                      <Badge colorScheme={resolveRoleScheme(u.role)}>
-                        {u.firstName} {u.lastName}
-                      </Badge>
-                    ))}
+                    <AvatarGroup size='sm' max={maxAvatars}>
+                      {session.users.map((u) => (
+                        <Avatar
+                          name={`${u.firstName} ${u.lastName}`}
+                          title={`${u.firstName} ${u.lastName}`}
+                        >
+                          <AvatarBadge
+                            bg={resolveRoleScheme(u.role)}
+                            title={u.role}
+                            boxSize='1em'
+                          />
+                        </Avatar>
+                      ))}
+                    </AvatarGroup>
                   </Flex>
                 </Td>
                 <Td>
@@ -104,7 +119,7 @@ export const TravelAgentPortalPage = () => {
                 </Td>
                 <Td>
                   <Menu>
-                    <MenuButton as={IconButton} icon={<GoKebabVertical />}>
+                    <MenuButton as={IconButton} bg='transparent' icon={<GoKebabVertical />}>
                       Profile
                     </MenuButton>
                     <MenuList>
