@@ -1,4 +1,15 @@
-import { Button, Heading, VStack, Box, HStack, Input, Text, Flex } from '@chakra-ui/react';
+import {
+  Button,
+  Heading,
+  VStack,
+  Box,
+  HStack,
+  Input,
+  Text,
+  Flex,
+  Avatar,
+  useToast
+} from '@chakra-ui/react';
 import React, { Children, useContext, useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import Message from '../../models/Message';
@@ -145,16 +156,22 @@ const MessageComponent = ({
       flexDir='column'
       alignItems={fromCurrentUser ? 'flex-start' : 'flex-end'}
     >
-      <Box
-        py='1'
-        px='3'
-        bgColor={fromCurrentUser ? 'blue.500' : 'red.500'}
-        color='white'
-        rounded='full'
-        w='fit-content'
-      >
-        <Text>{message.content}</Text>
-      </Box>
+      {' '}
+      <HStack>
+        {fromCurrentUser && (
+          <Avatar size='sm' name={`${message.user.firstName} ${message.user.lastName}`} />
+        )}
+        <Box
+          py='1'
+          px='3'
+          bgColor={fromCurrentUser ? 'blue.500' : 'red.500'}
+          color='white'
+          rounded='full'
+          w='fit-content'
+        >
+          <Text>{message.content}</Text>
+        </Box>
+      </HStack>
       <Text
         textAlign={fromCurrentUser ? 'left' : 'right'}
         fontSize='sm'
