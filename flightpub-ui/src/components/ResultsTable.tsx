@@ -109,7 +109,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                     });
                   }}
                 >
-                  Add to Cart
+                  Book Now
                 </Button>
               </Td>
             </Tr>
