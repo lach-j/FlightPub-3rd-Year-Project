@@ -52,7 +52,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     }, [state]);
 
     const renderFlightDetails = () => {
-        if(typeof flight !== 'undefined') {
+        if(flight) {
             return (
                 <Flex justifyContent='center' direction='column' w='50em'>
                 <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
@@ -173,7 +173,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             type='button'
             colorScheme='red'
             onClick={() => {
-                if (typeof flight !== "undefined"){
+                if (flight){
                     setCart((cart) => [...cart, flight]);
                     toast({
                         title: 'Success!',

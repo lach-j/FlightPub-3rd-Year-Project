@@ -102,16 +102,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   type='button'
                   colorScheme='red'
                   onClick={() => {
-                    // setCart((cart) => [...cart, result]);
-                    // toast({
-                    //   title: 'Success!',
-                    //   description: 'Flight added to cart successfully.',
-                    //   status: 'success',
-                    //   duration: 9000,
-                    //   isClosable: true,
-                    //   position: 'top'
-                    // });
-
                     navigate(routes.passengerDetails, {
                       state: {
                         result,
