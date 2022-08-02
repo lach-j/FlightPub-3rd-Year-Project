@@ -64,7 +64,7 @@ const App = () => {
               element={<PasswordResetPage redirectPath={routes.login} />}
             />
             <Route path={routes.search} element={<SearchPage />} />
-            <Route path={routes.map} element={<MapPage />} />
+            <Route path={routes.map} element={<MapPage cartState={cartState} />} />
             <Route path={routes.account} element={<AccountPage />} />
             <Route
               path={routes.searchResults}

@@ -102,11 +102,22 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   type='button'
                   colorScheme='red'
                   onClick={() => {
-                    navigate(routes.passengerDetails, {
-                      state: {
-                        result,
-                      }
-                    });
+                    if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
+                      toast({
+                          title: 'Error!',
+                          description: 'Flight already in cart!.',
+                          status: 'error',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top'
+                      });
+                    } else {
+                      navigate(routes.passengerDetails, {
+                        state: {
+                          result,
+                        }
+                      });
+                    }
                   }}
                 >
                   Book Now

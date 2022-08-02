@@ -174,16 +174,28 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             colorScheme='red'
             onClick={() => {
                 if (flight){
-                    setCart((cart) => [...cart, flight]);
-                    toast({
-                        title: 'Success!',
-                        description: 'Flight added to cart successfully.',
-                        status: 'success',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                    });
-                    navigate(routes.home);
+                    //checks here if flight in cart again just in case they somehow make their way to this page with a duplicate flight
+                    if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
+                        toast({
+                            title: 'Error!',
+                            description: 'Flight already in cart!.',
+                            status: 'error',
+                            duration: 9000,
+                            isClosable: true,
+                            position: 'top'
+                        });
+                    } else {
+                        setCart((cart) => [...cart, flight]);
+                        toast({
+                            title: 'Success!',
+                            description: 'Flight added to cart successfully.',
+                            status: 'success',
+                            duration: 9000,
+                            isClosable: true,
+                            position: 'top'
+                        });
+                        navigate(routes.home);
+                    }
                 }
                 else {
                     toast({
