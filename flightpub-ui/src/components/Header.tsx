@@ -35,6 +35,7 @@ export default function Header({ cartState }: { cartState: [Flight[], Dispatch<S
         <HStack spacing='5'>
           <Button as={NavLink} to={routes.home}>Home</Button> //Home redirect button
           <Button as={NavLink} to={routes.search}>Search</Button> //Search redirect button
+          <Button as={NavLink} to={routes.admin}>Admin</Button> //Admin redirect button
           <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} /> //Map page redirect button
           <Menu>
             <MenuButton as={IconButton} icon={<FaUser />}> //User profile
