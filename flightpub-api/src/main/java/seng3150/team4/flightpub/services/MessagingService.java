@@ -104,6 +104,6 @@ public class MessagingService {
 
   private User resolveCurrentUser() {
     var userId = currentUserContext.getCurrentUserId();
-    return userService.getUserById(userId);
+    return userService.getUserByIdSecure(userId);
   }
 }
