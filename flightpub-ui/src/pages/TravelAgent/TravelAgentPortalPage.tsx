@@ -10,13 +10,16 @@ import {
   Td,
   Th,
   Thead,
-  Tr
+  Tr,
+  Text,
+  Flex
 } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../../constants/routes';
 import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
+import { UserRole } from '../../models/User';
 import { useMessaging } from '../../services/MessagingService';
 import { UserContext } from '../../services/UserContext';
 
@@ -37,12 +40,19 @@ export const TravelAgentPortalPage = () => {
     return 'gray';
   };
 
+  const resolveRoleScheme = (role?: UserRole) => {
+    if (role === UserRole.STANDARD_USER) return 'blue';
+    if (role === UserRole.TRAVEL_AGENT) return 'purple';
+    if (role === UserRole.ADMINISTRATOR) return 'red';
+    return 'gray';
+  };
+
   return (
     <Table>
       <Thead>
         <Tr>
           <Th>Session Id</Th>
-          <Th>User</Th>
+          <Th>Users</Th>
           <Th>Status</Th>
           <Th></Th>
         </Tr>
@@ -54,7 +64,15 @@ export const TravelAgentPortalPage = () => {
           return (
             <Tr>
               <Td>{session.id}</Td>
-              <Td>{JSON.stringify(session.users)}</Td>
+              <Td>
+                <Flex gap='2' wrap='wrap'>
+                  {session.users.map((u) => (
+                    <Badge colorScheme={resolveRoleScheme(u.role)}>
+                      {u.firstName} {u.lastName}
+                    </Badge>
+                  ))}
+                </Flex>
+              </Td>
               <Td>
                 <Badge colorScheme={resolveStatusScheme(session.status)}>{session.status}</Badge>
               </Td>
