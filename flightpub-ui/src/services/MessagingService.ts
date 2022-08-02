@@ -28,6 +28,10 @@ export const useMessaging = (_sessionId?: number) => {
     return await httpPatch(`${BASE_ENDPOINT}/${sessionId}`, { content });
   };
 
+  const joinSession = async (sessionId: number) => {
+    return await httpPatch(`${BASE_ENDPOINT}/${sessionId}/join`);
+  };
+
   const subscribeToMessages = (
     callback: (data: Message[]) => void,
     error?: (error: any) => void,
@@ -47,5 +51,5 @@ export const useMessaging = (_sessionId?: number) => {
     return setInterval(getMessages, delay);
   };
 
-  return { getSession, sendNewMessage, subscribeToMessages, getAllUserSessions };
+  return { getSession, sendNewMessage, subscribeToMessages, getAllUserSessions, joinSession };
 };

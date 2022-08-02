@@ -56,11 +56,11 @@ export const useApi = (_endpoint: string = '') => {
     return handleResponse(res);
   };
 
-  const httpPatch = async (endpoint: string, reqBody: object): Promise<any> => {
+  const httpPatch = async (endpoint: string, reqBody?: object): Promise<any> => {
     const res = await fetch(`${resolveEndpoint(endpoint)}`, {
       ...getOptions(),
       method: 'PATCH',
-      body: JSON.stringify(reqBody)
+      body: reqBody && JSON.stringify(reqBody)
     });
     return handleResponse(res);
   };
