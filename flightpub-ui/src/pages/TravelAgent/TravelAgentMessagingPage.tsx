@@ -16,11 +16,13 @@ import Message from '../../models/Message';
 import { MessagingSession } from '../../models/MessagingSession';
 import { useMessaging } from '../../services/MessagingService';
 import * as _ from 'lodash';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { User } from '../../models';
 import { UserContext } from '../../services/UserContext';
 import moment from 'moment';
 import * as uuid from 'uuid';
+import { ApiError } from '../../services/ApiService';
+import { routes } from '../../constants/routes';
 export const TravelAgentMessagingPage = () => {
   const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();
@@ -28,13 +30,26 @@ export const TravelAgentMessagingPage = () => {
   const messageSubscription = useRef<NodeJS.Timeout>();
 
   const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(
     parseInt(sessionId || '-1')
   );
 
   useEffect(() => {
-    getSession().then(setSessionData);
+    getSession()
+      .then(setSessionData)
+      .catch((err: ApiError) => {
+        if (err.statusCode === 400) {
+          toast({
+            title: err.name,
+            description: 'The requested session was not found',
+            status: 'error'
+          });
+          navigate(routes.travelAgents);
+        }
+      });
   }, [sessionId]);
 
   useEffect(() => {
