@@ -65,10 +65,16 @@ public class MessagingService {
     var role = currentUserContext.getCurrentUserRole();
     var user = resolveCurrentUser();
 
-    if (role == UserRole.STANDARD_USER)
-      return messagingRepository.getAllSessionsForUser(user);
-
-    return messagingRepository.getAllSessionsForAgent(user);
+    switch (role) {
+      case STANDARD_USER:
+        return messagingRepository.getAllSessionsForUser(user);
+      case TRAVEL_AGENT:
+        return messagingRepository.getAllSessionsForAgent(user);
+      case ADMINISTRATOR:
+        return messagingRepository.getAllSessionsForAdmin();
+      default:
+        throw new UnsupportedOperationException("This user role is not supported");
+    }
   }
 
   public MessagingSession createSession() {
