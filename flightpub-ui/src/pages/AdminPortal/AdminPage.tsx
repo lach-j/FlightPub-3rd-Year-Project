@@ -1,6 +1,6 @@
 import {
     Box,
-    Flex,
+    Flex, Heading,
     Modal,
     ModalOverlay,
     Spinner,
@@ -11,10 +11,12 @@ import {
     Tabs,
     useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {CancelFlightTab} from "../AdminPortal/CancelFlightTab";
 import {SponsorAirlineTab} from "../AdminPortal/SponsorAirlineTab";
 import {CovidHotspotTab} from "../AdminPortal/CovidHotspotTab";
+import {ManageUserTab} from "../AdminPortal/ManageUserTab";
+import {Flight} from "../../models";
 
 export const AdminPage = () => {
 
@@ -35,17 +37,21 @@ export const AdminPage = () => {
                     <Tab>Cancel Flight</Tab>
                     <Tab>Sponsor Airline</Tab>
                     <Tab>Covid Hotspot</Tab>
+                    <Tab>Manage Users</Tab>
                 </TabList>
 
                 <TabPanels mt='1em'>
                     <TabPanel>
-                        <CancelFlightTab setIsLoading={handleLoading} />
+                        <CancelFlightTab setIsLoading={handleLoading}/>
                     </TabPanel>
                     <TabPanel>
                         <SponsorAirlineTab setIsLoading={handleLoading} />
                     </TabPanel>
                     <TabPanel>
                         <CovidHotspotTab setIsLoading={handleLoading} />
+                    </TabPanel>
+                    <TabPanel>
+                        <ManageUserTab setIsLoading={handleLoading} />
                     </TabPanel>
                 </TabPanels>
             </Tabs>
