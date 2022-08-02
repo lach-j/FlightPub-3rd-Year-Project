@@ -2,24 +2,24 @@ package seng3150.team4.flightpub.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.utility.PasswordHash;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
   // Inject dependencies
   private final IUserService userService;
 
-  @PostMapping(path = "/users")
+  @PostMapping
   public ResponseEntity<? extends Response> registerUser(
       @RequestBody RegisterUserRequest registerUserRequest) {
     registerUserRequest.validate();
@@ -32,6 +32,13 @@ public class UserController {
 
     // return saved used
     return ResponseEntity.ok().body(new EntityResponse<>(savedUser));
+  }
+
+  @Authorized
+  @GetMapping("/{userId}")
+  public EntityResponse<User> getUserById(@PathVariable Long userId) {
+    var user = userService.getUserById(userId);
+    return new EntityResponse<>(user);
   }
 
   private static User userFromRequest(RegisterUserRequest request) {
@@ -49,6 +56,7 @@ public class UserController {
     user.setEmail(request.getEmail());
     user.setFirstName(request.getFirstName());
     user.setLastName(request.getLastName());
+    user.setRole(request.getRole());
 
     // return user
     return user;

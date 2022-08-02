@@ -22,6 +22,9 @@ import {
   Spinner,
   StackDivider,
   Table,
+  Tag,
+  TagCloseButton,
+  TagLabel,
   Tbody,
   Td,
   Text,
@@ -31,35 +34,29 @@ import {
   Tr,
   useDisclosure,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
-import { ApiError, httpGet } from '../services/ApiService';
+import { ApiError, useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { airports } from '../data/airports';
+import { Airport, findNearestAirport } from '../utility/geolocation';
 
 export interface Item {
   label: string;
   value: string;
 }
-
-
-//tags information for search, currently not implemented
-const tags2 = [
-  { label: 'Beach', value: 'beach' },
-  { label: 'Snow', value: 'snow' },
-  { label: 'Holiday', value: 'holiday' },
-  { label: 'Family-Friendly', value: 'family-friendly' },
-  { label: 'Sports', value: 'sports' },
-  { label: 'Romantic', value: 'romantic' },
-  { label: 'Asia', value: 'asia' },
-];
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -74,14 +71,21 @@ interface SearchQuery {
   destinationCode?: string;
   tickets?: Map<string, number>;
   returnFlight?: boolean;
+  searchTags?: Array<string>;
 }
 
-
 export const SearchPage = () => {
-  const navigate = useNavigate();   //enables react programmatic navigation
+  const navigate = useNavigate(); //enables react programmatic navigation
   const [flexEnabled, setFlexEnabled] = useState(false); //state for tracking whether user has selected flexdate option
   const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
+  const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
   const toast = useToast();
+
+  useEffect(() => {
+    document.title = 'FlightPub - Search';
+  });
+
+  const { httpGet } = useApi(endpoints.flightSearch);
 
   //Formats from JavaScript Date type to string
   const formatDate = (date: Date) => {
@@ -89,8 +93,26 @@ export const SearchPage = () => {
   };
   //authRequest : stores search query request
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    departureDate: { date: formatDate(new Date()) },
+    departureDate: { date: formatDate(new Date()) }
   });
+
+  //stateful airport storage
+  const [airport, setAirport] = useState<Airport | undefined>();
+
+  //update the user's location as a side effect
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(getPosition);
+  });
+
+  //handle the getCurrentPosition callback
+  function getPosition(position: any) {
+    setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
+  }
+
+  useEffect(() => {
+    handleSearchQueryUpdate('destinationCode', airport?.code);
+  }, [airport]);
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -101,38 +123,93 @@ export const SearchPage = () => {
 
   //Handles search event for search form
   function handleSearch(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();  //prevents stand HTML form submission protocol
+    e.preventDefault(); //prevents stand HTML form submission protocol
     onOpen();
     //gets flight in formation from search query
-    httpGet(endpoints.flightSearch, searchQuery).then(results => navigate(routes.searchResults, {
-      state: {
-        query: searchQuery,
-        results,
-      },
-    }))
-      .catch((err: ApiError) => { //error handling
+    httpGet('', searchQuery)
+      .then((results) =>
+        navigate(routes.searchResults, {
+          state: {
+            query: searchQuery,
+            results
+          }
+        })
+      )
+      .catch((err: ApiError) => {
+        //error handling
         toast({
           title: 'An Error Has Occurred',
           description: 'An error has occurred, please try again later.',
           status: 'error',
           duration: 9000,
           isClosable: true,
-          position: 'top',
+          position: 'top'
         });
-      }).finally(onClose);
+      })
+      .finally(onClose);
   }
 
-//Handles update of ticket type form input
+  //Handles update of ticket type form input
   const handleTicketUpdate = (value: number, classCode: string) => {
-    handleSearchQueryUpdate('tickets', searchQuery.tickets ? searchQuery.tickets.set(classCode, value) : new Map<string, number>().set(classCode, value));
+    handleSearchQueryUpdate(
+      'tickets',
+      searchQuery.tickets
+        ? searchQuery.tickets.set(classCode, value)
+        : new Map<string, number>().set(classCode, value)
+    );
   };
 
   const ticketOptions = [
     { key: 'BUS', label: 'Business Class' },
     { key: 'ECO', label: 'Economy' },
     { key: 'FIR', label: 'First Class' },
-    { key: 'PME', label: 'Premium Economy' },
+    { key: 'PME', label: 'Premium Economy' }
   ];
+
+  //tags information for search
+  const tags = [
+    { label: 'Beach', value: 'beach' },
+    { label: 'Snow', value: 'snow' },
+    { label: 'Holiday', value: 'holiday' },
+    { label: 'Family-Friendly', value: 'family-friendly' },
+    { label: 'Sports', value: 'sports' },
+    { label: 'Romantic', value: 'romantic' },
+    { label: 'Asia', value: 'asia' }
+  ];
+
+  //update the search tags, and prevent duplicate tags
+  function handleTagUpdate(value: any) {
+    if (searchTags.includes(value)) {
+      toast({
+        title: 'Tag Already Exists',
+        description: 'You have already added this tag to your search.',
+        status: 'info',
+        duration: 9000,
+        isClosable: true,
+        position: 'top'
+      });
+      return;
+    }
+    setSearchTags((searchTags) => [...searchTags, value]);
+    handleSearchQueryUpdate('searchTags', searchTags);
+  }
+
+  //props for the tag message which displays when no tags are selected
+  interface TagMessageProps {
+    length: number;
+  }
+
+  //render a message when no tags are selected
+  function TagMessage(props: TagMessageProps) {
+    if (props.length === 0) {
+      return (
+        <>
+          <em>No search tags added</em>
+        </>
+      );
+    }
+    return null;
+  }
 
   return (
     <Box p='2em'>
@@ -140,32 +217,78 @@ export const SearchPage = () => {
         <form onSubmit={handleSearch}>
           <FormControl as='fieldset'>
             <FormLabel as='legend' fontSize='2xl'>
-              Search flights
+              Search for a flight
             </FormLabel>
             <VStack gap='2em'>
               <HStack
-                alignItems={'flex-start'}
+                alignItems='flex-start'
                 divider={<StackDivider borderColor='gray.200' />}
-                gap={'3em'}
+                gap='3em'
               >
                 <VStack
                   divider={<StackDivider borderColor='gray.200' />}
                   spacing={2}
                   align='stretch'
                 >
+                  {/* Departure location input */}
                   <Box>
-                    {/* Ticket type input */}
+                    <FormControl isRequired>
+                      <FormLabel>Departure Location</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        suggestWhenEmpty
+                        defaultValue={airport?.code}
+                        key={airport?.code}
+                        onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
+                      >
+                        <AutoCompleteInput variant='filled' />
+                        <AutoCompleteList>
+                          {airports.map(({ code, city }) => (
+                            <AutoCompleteItem key={code} value={code} align='center'>
+                              <Text ml='4'>{city}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
+
+                  {/* Arrival location input */}
+                  <Box>
+                    <FormControl>
+                      <FormLabel>Arrival Location:</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        suggestWhenEmpty
+                        emptyState={true}
+                        onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
+                      >
+                        <AutoCompleteInput
+                          onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                          variant='filled'
+                        />
+                        <AutoCompleteList>
+                          {airports.map(({ code, city }) => (
+                            <AutoCompleteItem key={code} value={code} align='center'>
+                              <Text ml='4'>{city}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
+
+                  {/* Ticket type input */}
+                  <Box>
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
                       <Accordion allowToggle w='20em'>
                         <AccordionItem>
                           <AccordionButton>
                             <Box flex='1' textAlign='left'>
-                              {`Total: ${Object.values(
-                                searchQuery?.tickets || {},
-                              ).reduce(
+                              {`Total: ${Object.values(searchQuery?.tickets || {}).reduce(
                                 (prev, current) => prev + (current || 0),
-                                0,
+                                0
                               )}`}
                             </Box>
                             <AccordionIcon />
@@ -178,16 +301,20 @@ export const SearchPage = () => {
                                   <Th>Quantity</Th>
                                 </Tr>
                               </Thead>
+
+                              {/* Dropdown for ticket type */}
                               <Tbody>
-                                {/* Dropdown for ticket type */}
                                 {ticketOptions.map((option) => (
                                   <Tr key={option.key}>
                                     <Td>{option.label}</Td>
                                     <Td>
                                       <NumberInput
-                                        w={'5em'}
+                                        w='5em'
                                         onChange={(value) =>
-                                          handleTicketUpdate(value ? parseInt(value) : 0, option.key)
+                                          handleTicketUpdate(
+                                            value ? parseInt(value) : 0,
+                                            option.key
+                                          )
                                         }
                                         defaultValue={0}
                                         min={0}
@@ -215,10 +342,7 @@ export const SearchPage = () => {
                       <FormLabel htmlFor='flightType'>Type: </FormLabel>
                       <Select
                         onChange={(e) =>
-                          handleSearchQueryUpdate(
-                            'returnFlight',
-                            e.target.value === 'return',
-                          )
+                          handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
                         }
                         name='flightType'
                         id='flightType'
@@ -230,77 +354,58 @@ export const SearchPage = () => {
                       </Select>
                     </FormControl>
                   </Box>
-                  {/* Return date input */}
-                  {searchQuery?.returnFlight === true &&
-                    <Box>
-                      <FormControl>
-                        <FormLabel>Return Date</FormLabel>
-                        <DatePicker
-                          dateFormat='dd/MM/yyyy'
-                          minDate={new Date(searchQuery.departureDate.date) || new Date()}
-                          selected={returnDate}
-                          onChange={(date: Date) => setReturnDate(date)}
-                        />
-                      </FormControl>
-                    </Box>
-                  }
+
+                  {/* Divider for the two columns */}
                 </VStack>
                 <VStack
                   divider={<StackDivider borderColor='gray.200' />}
                   spacing={2}
                   align='stretch'
                 >
-                  <Box>
-                    {/* Departure location input */}
-                    <FormControl isRequired>
-                      <FormLabel>Departure Location</FormLabel>
-                      <AutoComplete
-                        openOnFocus
-                        onChange={(value) =>
-                          handleSearchQueryUpdate('departureCode', value)
-                        }
-                      >
-                        <AutoCompleteInput variant='filled' />
-                        <AutoCompleteList>
-                          {airports.map(({ code, city }) => (
-                            <AutoCompleteItem
-                              key={code}
-                              value={code}
-                              align='center'
-                            >
-                              <Text ml='4'>{city}</Text>
-                            </AutoCompleteItem>
-                          ))}
-                        </AutoCompleteList>
-                      </AutoComplete>
-                    </FormControl>
-                  </Box>
-                  {/* Arrival location input */}
+                  {/* Location tag inputs */}
+                  <VStack align='left'>
+                    <label>Selected Tags:</label>
+                    <Box width='15rem'>
+                      <TagMessage length={searchTags.length} />
+                      {searchTags.map((item) => (
+                        <Tag
+                          size='md'
+                          key={item}
+                          borderRadius='full'
+                          variant='outline'
+                          colorScheme='red'
+                        >
+                          <TagLabel>{item}</TagLabel>
+                          <TagCloseButton
+                            onClick={() =>
+                              setSearchTags(searchTags.filter((value) => value !== item))
+                            }
+                          />
+                        </Tag>
+                      ))}
+                    </Box>
+                  </VStack>
                   <Box>
                     <FormControl>
-                      <FormLabel>Arrival Location:</FormLabel>
-                      <AutoComplete
-                        openOnFocus
-                        defaultValue={''}
-                        emptyState={true}
-                        onChange={(value) =>
-                          handleSearchQueryUpdate('destinationCode', value)
-                        }
-                      >
-                        <AutoCompleteInput onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
-                                           variant='filled' />
-                        <AutoCompleteList>
-                          {airports.map(({ code, city }) => (
-                            <AutoCompleteItem
-                              key={code}
-                              value={code}
-                              align='center'
-                            >
-                              <Text ml='4'>{city}</Text>
-                            </AutoCompleteItem>
-                          ))}
-                        </AutoCompleteList>
-                      </AutoComplete>
+                      <FormLabel>Location Tags:</FormLabel>
+                      <HStack>
+                        <AutoComplete
+                          openOnFocus
+                          suggestWhenEmpty
+                          defaultValue=''
+                          emptyState={true}
+                          onChange={(value: string) => handleTagUpdate(value)}
+                        >
+                          <AutoCompleteInput variant='filled' />
+                          <AutoCompleteList>
+                            {tags.map(({ label }) => (
+                              <AutoCompleteItem key={label} value={label} align='center'>
+                                <Text ml='4'>{label}</Text>
+                              </AutoCompleteItem>
+                            ))}
+                          </AutoCompleteList>
+                        </AutoComplete>
+                      </HStack>
                     </FormControl>
                   </Box>
 
@@ -315,23 +420,38 @@ export const SearchPage = () => {
                         onChange={(date: Date) =>
                           handleSearchQueryUpdate('departureDate', {
                             ...searchQuery?.departureDate,
-                            date: formatDate(date),
+                            date: formatDate(date)
                           })
                         }
                       />
                     </FormControl>
                   </Box>
 
+                  {/* Return date input */}
+                  {searchQuery?.returnFlight === true && (
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Return Date</FormLabel>
+                        <DatePicker
+                          dateFormat='dd/MM/yyyy'
+                          minDate={new Date(searchQuery.departureDate.date) || new Date()}
+                          selected={returnDate}
+                          onChange={(date: Date) => setReturnDate(date)}
+                        />
+                      </FormControl>
+                    </Box>
+                  )}
+
                   {/* Flex-date input */}
                   <Box>
                     <Checkbox
-                      name={'flexEnabled'}
+                      name='flexEnabled'
                       colorScheme='green'
                       onChange={(e) => {
                         setFlexEnabled(e.target.checked);
                         handleSearchQueryUpdate('departureDate', {
                           ...searchQuery?.departureDate,
-                          flex: e.target.checked ? 1 : 0,
+                          flex: e.target.checked ? 1 : 0
                         });
                       }}
                     >
@@ -350,7 +470,7 @@ export const SearchPage = () => {
                       <p>+/- days</p>
                       <NumberInput
                         allowMouseWheel={true}
-                        name={'flexibleRange'}
+                        name='flexibleRange'
                         size='sm'
                         min={1}
                         maxW={16}
@@ -358,7 +478,7 @@ export const SearchPage = () => {
                         onChange={(e) =>
                           handleSearchQueryUpdate('departureDate', {
                             ...searchQuery?.departureDate,
-                            flex: parseInt(e || '0'),
+                            flex: parseInt(e || '0')
                           })
                         }
                         defaultValue={1}
@@ -374,6 +494,7 @@ export const SearchPage = () => {
                   )}
                 </VStack>
               </HStack>
+
               {/* Submission button */}
               <Box>
                 <Button type='submit' colorScheme='red'>

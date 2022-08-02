@@ -5,11 +5,11 @@ import seng3150.team4.flightpub.domain.models.IEntity;
 
 import java.util.Collection;
 /** Response for returning a Collection of IEntity objects */
-public class EntityCollectionResponse<T extends Collection<? extends IEntity>> implements Response {
+public class EntityCollectionResponse<T extends IEntity> implements Response {
 
-  @JsonValue T entity; // @JsonValue to stop JSON from being nested
+  @JsonValue Collection<T> entity; // @JsonValue to stop JSON from being nested
 
-  public EntityCollectionResponse(T entity) {
+  public EntityCollectionResponse(Collection<T> entity) {
     this.entity = entity;
   }
 }

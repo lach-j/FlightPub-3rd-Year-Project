@@ -1,4 +1,13 @@
-import { Button, FormControl, FormLabel, Heading, HStack, Input, useToast, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  useToast,
+  VStack
+} from '@chakra-ui/react';
 import React, { useState } from 'react';
 
 export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
@@ -6,7 +15,7 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const [passwordData, setPasswordData] = useState<any>({
     current: '',
     password: '',
-    confirm: '',
+    confirm: ''
   });
 
   const handlePasswordInputUpdate = (field: string, value: string) => {
@@ -23,14 +32,14 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
         status: 'success',
         duration: 3000,
         isClosable: true,
-        position: 'top',
+        position: 'top'
       });
       setIsLoading(false);
     }, 2000);
   };
 
   const passwordResetIsValid = (): boolean => {
-    return Object.values(passwordData).some(input => !input || input === '');
+    return Object.values(passwordData).some((input) => !input || input === '');
   };
 
   return (
@@ -41,27 +50,30 @@ export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: bool
           <FormControl isRequired={true}>
             <FormLabel>Current Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.current}
-              onChange={event => handlePasswordInputUpdate('current', event.target.value)} />
+              onChange={(event) => handlePasswordInputUpdate('current', event.target.value)}
+            />
           </FormControl>
           <FormControl isRequired={true}>
             <FormLabel>New Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.password}
-              onChange={event => handlePasswordInputUpdate('password', event.target.value)} />
+              onChange={(event) => handlePasswordInputUpdate('password', event.target.value)}
+            />
           </FormControl>
           <FormControl isRequired={true}>
             <FormLabel>Confirm New Password</FormLabel>
             <Input
-              type={'password'}
+              type='password'
               value={passwordData.confirm}
-              onChange={event => handlePasswordInputUpdate('confirm', event.target.value)} />
+              onChange={(event) => handlePasswordInputUpdate('confirm', event.target.value)}
+            />
           </FormControl>
           <HStack w='full' gap='1em'>
             <Button
-              colorScheme={'blue'}
+              colorScheme='blue'
               disabled={passwordResetIsValid()}
               onClick={handleChangePassword}
             >

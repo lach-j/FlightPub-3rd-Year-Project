@@ -11,7 +11,7 @@ import {
   HStack,
   useDisclosure,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
@@ -25,12 +25,11 @@ const editProfileForm: {
     { label: 'Email', name: 'email' },
     { label: 'First Name', name: 'fname' },
     { label: 'Last name', name: 'lname' },
-    { label: 'Phone Number', name: 'ph', type: 'tel' },
-  ],
+    { label: 'Phone Number', name: 'ph', type: 'tel' }
+  ]
 };
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,7 +39,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
     email: 'user@example.com',
     fname: 'Lachlan',
     lname: 'Johnson',
-    ph: '+6112345678',
+    ph: '+6112345678'
   });
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
@@ -56,12 +55,11 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
     setTimeout(() => {
       toast({
         title: 'Account Deleted',
-        description:
-          'Your account was deleted successfully, you have been logged out permanently.',
+        description: 'Your account was deleted successfully, you have been logged out permanently.',
         status: 'success',
         duration: 9000,
         isClosable: true,
-        position: 'top',
+        position: 'top'
       });
       setIsLoading(false);
       navigate(routes.default);
@@ -78,7 +76,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
         status: 'success',
         duration: 3000,
         isClosable: true,
-        position: 'top',
+        position: 'top'
       });
       setIsLoading(false);
       setIsDirty(false);
@@ -105,18 +103,10 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
             />
           ))}
           <HStack w='full' gap='1em'>
-            <Button
-              colorScheme={'blue'}
-              disabled={!isDirty}
-              onClick={handleSaveChanges}
-            >
+            <Button colorScheme='blue' disabled={!isDirty} onClick={handleSaveChanges}>
               Save
             </Button>
-            <Button
-              colorScheme={'gray'}
-              disabled={!isDirty}
-              onClick={handleDiscardChanges}
-            >
+            <Button colorScheme='gray' disabled={!isDirty} onClick={handleDiscardChanges}>
               Discard Changes
             </Button>
           </HStack>
@@ -127,11 +117,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
         Delete Account
       </Button>
 
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
@@ -139,8 +125,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete your account? This action cannot
-              be undone.
+              Are you sure you want to delete your account? This action cannot be undone.
             </AlertDialogBody>
 
             <AlertDialogFooter>

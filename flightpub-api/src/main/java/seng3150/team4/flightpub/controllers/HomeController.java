@@ -11,8 +11,8 @@ import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 @RequestMapping("/")
 public class HomeController {
 
-    @GetMapping
-    public Response Get() {
-        return new StatusResponse(HttpStatus.OK, "Hello World!");
-    }
+  @GetMapping
+  public Response Get() {
+    return new StatusResponse(HttpStatus.OK, "Hello World!");
+  }
 }

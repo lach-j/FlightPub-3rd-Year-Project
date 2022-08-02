@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import { FormControl, FormLabel, HStack, IconButton, Input, Text } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 
-export const CustomEditible = (
-  {
-    value,
-    label,
-    name,
-    onSave,
-    type,
-  }: {
-    value?: string;
-    label: string;
-    name: string;
-    onSave?: (value: string) => void;
-    type: string;
-  }) => {
+export const CustomEditible = ({
+  value,
+  label,
+  name,
+  onSave,
+  type
+}: {
+  value?: string;
+  label: string;
+  name: string;
+  onSave?: (value: string) => void;
+  type: string;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [internalState, setInternalState] = useState<string | undefined>(value);
   const handleSave = () => {
@@ -43,14 +42,14 @@ export const CustomEditible = (
               onChange={(event) => setInternalState(event.target.value)}
             />
             <IconButton
-              variant={'solid'}
-              aria-label={'save'}
+              variant='solid'
+              aria-label='save'
               icon={<CheckIcon />}
               onClick={handleSave}
             />
             <IconButton
-              variant={'solid'}
-              aria-label={'cancel'}
+              variant='solid'
+              aria-label='cancel'
               icon={<CloseIcon />}
               onClick={handleCancel}
             />
@@ -59,8 +58,8 @@ export const CustomEditible = (
           <>
             <Text flex={1}>{value}</Text>
             <IconButton
-              variant={'ghost'}
-              aria-label={'edit'}
+              variant='ghost'
+              aria-label='edit'
               icon={<EditIcon />}
               onClick={handleEdit}
             />
