@@ -27,6 +27,12 @@ export const TravelAgentMessagingPage = () => {
   }, [sessionId]);
 
   useEffect(() => {
+    return () => {
+      if (messageSubscription?.current) clearInterval(messageSubscription.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!sessionData) return;
 
     setMessages(sessionData.messages);
