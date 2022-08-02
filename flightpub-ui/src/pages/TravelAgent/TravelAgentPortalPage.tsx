@@ -11,7 +11,6 @@ import {
   Th,
   Thead,
   Tr,
-  Text,
   Flex,
   Modal,
   ModalOverlay,
@@ -21,7 +20,10 @@ import {
   Avatar,
   AvatarBadge,
   AvatarGroup,
-  useBreakpointValue
+  useBreakpointValue,
+  Input,
+  Checkbox,
+  HStack
 } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
@@ -34,6 +36,7 @@ import { UserContext } from '../../services/UserContext';
 
 export const TravelAgentPortalPage = () => {
   const [sessions, setSessions] = useState<MessagingSession[]>([]);
+  const [showResolved, setShowResolved] = useState(false);
   const { user, setUser } = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -80,6 +83,11 @@ export const TravelAgentPortalPage = () => {
 
   return (
     <>
+      <HStack w='full' justifyContent='flex-end'>
+        <Checkbox checked={showResolved} onChange={(e) => setShowResolved(e.target.checked)}>
+          Show resolved sessions?
+        </Checkbox>
+      </HStack>
       <Table>
         <Thead>
           <Tr>
@@ -93,14 +101,17 @@ export const TravelAgentPortalPage = () => {
           {sessions.map((session) => {
             const userInSession = session.users.filter((u) => u.id === user?.id).length > 0;
 
+            if (session.status === SessionStatus.RESOLVED && !showResolved) return;
+
             return (
-              <Tr>
+              <Tr key={session.id}>
                 <Td>{session.id}</Td>
                 <Td>
                   <Flex gap='2' wrap='wrap'>
                     <AvatarGroup size='sm' max={maxAvatars}>
                       {session.users.map((u) => (
                         <Avatar
+                          key={u.id}
                           name={`${u.firstName} ${u.lastName}`}
                           title={`${u.firstName} ${u.lastName}`}
                         >
