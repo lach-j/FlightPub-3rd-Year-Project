@@ -15,17 +15,8 @@ export const TravelAgentMessagingPage = () => {
   const [sessionData, setSessionData] = useState<MessagingSession>();
   const [messages, setMessages] = useState<Message[]>([]);
   const messageSubscription = useRef<NodeJS.Timeout>();
-  const [currentUser, setCurrentUser] = useState<User | undefined>();
 
-  const userState = useContext(UserContext);
-
-  useEffect(() => {
-    if (!userState) return;
-
-    const [userData] = userState;
-
-    setCurrentUser(userData);
-  }, [userState]);
+  const { user, setUser } = useContext(UserContext);
 
   const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(
     parseInt(sessionId || '-1')
@@ -58,9 +49,7 @@ export const TravelAgentMessagingPage = () => {
     if (!content) return;
     sendNewMessage(content);
 
-    setMessages((m) =>
-      _.uniqBy([...m, { content, user: currentUser, dateSent: new Date() } as Message], 'id')
-    );
+    setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
   };
 
   return (
@@ -82,11 +71,7 @@ export const TravelAgentMessagingPage = () => {
       {sessionData && (
         <MessageContainer>
           {messages?.map((message) => (
-            <MessageComponent
-              key={message?.id ?? uuid.v4()}
-              message={message}
-              currentUser={currentUser}
-            />
+            <MessageComponent key={message?.id ?? uuid.v4()} message={message} currentUser={user} />
           ))}
         </MessageContainer>
       )}
@@ -143,7 +128,7 @@ const MessageComponent = ({
   currentUser
 }: {
   message: Message;
-  currentUser: User | undefined;
+  currentUser: User | null;
 }) => {
   const fromCurrentUser = message.user?.id !== currentUser?.id;
   const dateSent =

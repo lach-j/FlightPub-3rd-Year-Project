@@ -11,5 +11,6 @@ export const routes = {
   booking: '/booking',
   searchResults: '/searchResults',
   travelAgents: '/travel-agents',
+  messagingSessionBase: '/travel-agents/session',
   holidayPackages: '/holidays'
 };

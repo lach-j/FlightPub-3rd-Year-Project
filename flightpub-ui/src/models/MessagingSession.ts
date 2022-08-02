@@ -9,8 +9,8 @@ export interface MessagingSession {
   wishlistId: number;
 }
 
-enum SessionStatus {
-  TRIAGE = 0,
-  IN_PROGRESS = 1,
-  RESOLVED = 2
+export enum SessionStatus {
+  TRIAGE = 'TRIAGE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  RESOLVED = 'RESOLVED'
 }

@@ -12,8 +12,7 @@ import {
   SearchResultsPage,
   HolidayPackagesPage,
   TravelAgentMessagingPage,
-  TravelAgentPortalPage,
-  TestComponent
+  TravelAgentPortalPage
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';

@@ -33,25 +33,15 @@ export default function Header({
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) {
   const [cart, setCart] = cartState;
-  const [user, setUser] = useState<User | undefined>();
 
-  const userState = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (!userState) return;
-
-    setUser(userState[0]);
-  }, [userState]);
-
   const handleLogout = () => {
-    if (userState) {
-      const [_, setUser] = userState;
-      setUser(undefined);
-      localStorage.removeItem('bearer-token');
-      localStorage.removeItem('user-id');
-    }
+    setUser(null);
+    localStorage.removeItem('bearer-token');
+    localStorage.removeItem('user-id');
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   };
 

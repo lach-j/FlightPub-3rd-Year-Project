@@ -28,7 +28,7 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   //authError: boolean state, set to true when a login error has occured
   const [authError, setAuthError] = useState(false);
 
-  const userState = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   //authRequest : stores login request with email and password as parameters
   const [authRequest, setAuthRequest] = useState({ email: '', password: '' });
@@ -46,10 +46,7 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
 
   const handlePostLogin = (user: User) => {
     localStorage.setItem('user-id', `${user.id}`);
-    if (!userState) return;
-
-    const [_, setUserState] = userState;
-    setUserState(user);
+    setUser(user);
   };
 
   const { httpPost } = useApi(endpoints.login);

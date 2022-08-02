@@ -32,7 +32,7 @@ public class MessagingController {
     return new EntityResponse<>(session);
   }
 
-  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
+  @Authorized
   @GetMapping
   public EntityCollectionResponse<MessagingSession> getAllSessions() {
     return new EntityCollectionResponse<>(messagingService.getAllSessions());
