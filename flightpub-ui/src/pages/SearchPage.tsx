@@ -110,6 +110,10 @@ export const SearchPage = () => {
     setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
   }
 
+  useEffect(() => {
+    handleSearchQueryUpdate('destinationCode', airport?.code);
+  }, [airport]);
+
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   //Handles update of search query input, updating value(s)
