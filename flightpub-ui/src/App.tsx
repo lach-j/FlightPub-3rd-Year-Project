@@ -11,6 +11,7 @@ import {
   SearchPage,
   SearchResultsPage,
   HolidayPackagesPage,
+  PassengerDetailsPage,
   TravelAgentMessagingPage,
   TravelAgentPortalPage,
   TestComponent
@@ -79,6 +80,7 @@ const App = () => {
               path={`${routes.travelAgents}/session/:sessionId`}
               element={<TravelAgentMessagingPage />}
             />
+            <Route path={routes.passengerDetails} element={<PassengerDetailsPage cartState={cartState} />} />
             <Route path='*' element={<h1>Page Not Found</h1>} />
           </Routes>
         </Box>

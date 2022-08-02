@@ -8,11 +8,12 @@ import {
   StatHelpText,
   StatLabel,
   StatNumber,
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MdLocalAirport } from 'react-icons/all';
+import { FaLightbulb, MdLocalAirport } from 'react-icons/all';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -39,6 +40,8 @@ export const MapPage = () => {
   useEffect(() => {
     document.title = 'FlightPub - Map Search';
   });
+
+  const toast = useToast();
 
   // selectedAiport : airport selected by user on map
   const [selectedAirport, setSelectedAirport] = useState<Airport | undefined>();
@@ -101,6 +104,15 @@ export const MapPage = () => {
     };
   };
 
+  const getResult = (departureCode: string, arrivalCode: string) => {
+    let flight = flights.find(
+      (f) =>
+        f.departureLocation.destinationCode === departureCode &&
+        f.arrivalLocation.destinationCode === arrivalCode
+    );
+    return flight;
+  };
+
   return (
     <Box h='full' display='flex' position='absolute' top={0} left={0} right={0} bottom={0}>
       <Box w='max-content' p='1em' overflow='auto'>
@@ -137,6 +149,7 @@ export const MapPage = () => {
           airports.map((airport) => {
             //finds departure and arrival airport information
             let flight = selectedAirport && getFlight(selectedAirport?.code, airport?.code);
+            let result = selectedAirport && getResult(selectedAirport?.code, airport?.code);
             //List of outgoing flights
             let hasFlights = departureCount.find((f) => f.destinationCode === airport.code);
             return (
@@ -182,7 +195,17 @@ export const MapPage = () => {
                         {/* flight airline */}
                         <Text fontSize='sm'>{flight.airlineCode}</Text>
                         {/* book flight button on Map UI element */}
-                        <Button colorScheme='red' size='sm' as={NavLink} to={routes.booking}>
+                        <Button colorScheme='red' 
+                        size='sm' 
+                        onClick={() => {
+                          if (result){
+                            navigate(routes.passengerDetails, {
+                              state: {
+                                result,
+                              }
+                            });
+                          }
+                        }}>
                           Book now
                         </Button>
                       </Box>
