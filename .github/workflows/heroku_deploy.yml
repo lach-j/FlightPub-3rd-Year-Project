@@ -6,8 +6,6 @@ name: Deploy To Heroku
 on:
   push:
     branches: [ heroku ]
-  pull_request:
-    branches: [ heroku ]
 
 jobs:
   build:
