@@ -23,7 +23,8 @@ import {
   useBreakpointValue,
   Input,
   Checkbox,
-  HStack
+  HStack,
+  Box
 } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
@@ -82,7 +83,7 @@ export const TravelAgentPortalPage = () => {
   const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
 
   return (
-    <>
+    <Box px='10' py='7'>
       <HStack w='full' justifyContent='flex-end'>
         <Checkbox checked={showResolved} onChange={(e) => setShowResolved(e.target.checked)}>
           Show resolved sessions?
@@ -94,7 +95,7 @@ export const TravelAgentPortalPage = () => {
             <Th>Session Id</Th>
             <Th>Users</Th>
             <Th>Status</Th>
-            <Th></Th>
+            <Th w='0'></Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -126,7 +127,9 @@ export const TravelAgentPortalPage = () => {
                   </Flex>
                 </Td>
                 <Td>
-                  <Badge colorScheme={resolveStatusScheme(session.status)}>{session.status}</Badge>
+                  <Badge colorScheme={resolveStatusScheme(session.status)}>
+                    {session.status.replaceAll('_', ' ')}
+                  </Badge>
                 </Td>
                 <Td>
                   <Menu>
@@ -155,6 +158,6 @@ export const TravelAgentPortalPage = () => {
         <ModalOverlay />
         <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
       </Modal>
-    </>
+    </Box>
   );
 };
