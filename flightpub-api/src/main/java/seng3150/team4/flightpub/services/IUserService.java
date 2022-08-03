@@ -4,7 +4,6 @@ import seng3150.team4.flightpub.domain.models.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /** Interface to define UserService methods */
 public interface IUserService {
@@ -17,5 +16,7 @@ public interface IUserService {
   User getUserByEmail(String email);
 
   User getUserById(long userId);
+
+  User getUserByIdSecure(long userId);
   List<User> getUsersById(Collection<Long> userId);
 }
