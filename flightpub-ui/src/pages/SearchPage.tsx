@@ -110,6 +110,10 @@ export const SearchPage = () => {
     setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
   }
 
+  useEffect(() => {
+    handleSearchQueryUpdate('destinationCode', airport?.code);
+  }, [airport]);
+
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   //Handles update of search query input, updating value(s)
@@ -232,6 +236,7 @@ export const SearchPage = () => {
                       <FormLabel>Departure Location</FormLabel>
                       <AutoComplete
                         openOnFocus
+                        suggestWhenEmpty
                         defaultValue={airport?.code}
                         key={airport?.code}
                         onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
@@ -254,6 +259,7 @@ export const SearchPage = () => {
                       <FormLabel>Arrival Location:</FormLabel>
                       <AutoComplete
                         openOnFocus
+                        suggestWhenEmpty
                         emptyState={true}
                         onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
                       >
@@ -385,6 +391,7 @@ export const SearchPage = () => {
                       <HStack>
                         <AutoComplete
                           openOnFocus
+                          suggestWhenEmpty
                           defaultValue=''
                           emptyState={true}
                           onChange={(value: string) => handleTagUpdate(value)}
