@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import seng3150.team4.flightpub.core.email.PasswordResetNotificationEmailTemplate;
 import seng3150.team4.flightpub.core.email.ResetPasswordTemplate;
 import seng3150.team4.flightpub.domain.models.ResetToken;
 import seng3150.team4.flightpub.domain.models.User;
@@ -111,6 +112,11 @@ public class AuthenticationService implements IAuthenticationService {
 
     // Find the user matching the token and change the password to the new password
     var user = userService.getUserById(foundToken.getUserId());
+
+    var template = new PasswordResetNotificationEmailTemplate(urlResolverService.getUiUrl());
+    template.setFirstName(user.getFirstName());
+    emailSenderService.sendTemplateEmail(new Email(user.getEmail()), template);
+
     try {
       user.setPassword(PasswordHash.PBKDF2WithHmacSHA1Hash(password, user.getEmail()));
     } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {

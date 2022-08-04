@@ -145,7 +145,7 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
               </Box>
               <Box>
                 <Stack spacing='3'>
-                  //new password input
+                  {/* //new password input */}
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
                     <Input
@@ -155,7 +155,7 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
                       onChange={handleResetDetailsChange}
                     />
                   </FormControl>
-                  //re-enter new password input
+                  {/* //re-enter new password input */}
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
                     <Input type='password' name='confirm' onChange={handleResetDetailsChange} />
@@ -164,10 +164,10 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
                 </Stack>
               </Box>
               <Button type='submit' isLoading={loading} colorScheme='red'>
-                {' '}
-                //reset password submission button Reset password
+                Reset Password
+                {/* //reset password submission button */}
               </Button>
-              //Button redirects user to registration page
+              {/* //Button redirects user to registration page */}
               <Box textAlign='center'>
                 Don't have an account?{' '}
                 <Link as={RouteLink} to={routes.register}>
