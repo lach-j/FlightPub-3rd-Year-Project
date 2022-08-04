@@ -22,7 +22,7 @@ public class WishlistItem {
 
     @JoinColumn(name = "DestinationCode")
     @ManyToOne
-    private Destination destinationCode;
+    private Destination destination;
 
     @JsonBackReference
     @ManyToOne
