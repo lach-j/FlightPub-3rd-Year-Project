@@ -23,7 +23,7 @@ import {
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
-import { Flight, User } from '../models';
+import { Flight } from '../models';
 import { UserContext } from '../services/UserContext';
 import { UserRole } from '../models/User';
 
@@ -68,10 +68,13 @@ export default function Header({
                     My Account
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  {(user?.role === UserRole.TRAVEL_AGENT ||
-                    user?.role === UserRole.ADMINISTRATOR) && (
-                    <MenuItem as={NavLink} to={routes.travelAgents}>
+                  {user?.role === UserRole.TRAVEL_AGENT || user?.role === UserRole.ADMINISTRATOR ? (
+                    <MenuItem as={NavLink} to={routes.travelAgents.base}>
                       Travel Agent Portal
+                    </MenuItem>
+                  ) : (
+                    <MenuItem as={NavLink} to={routes.wishlist.base}>
+                      My Wishlist
                     </MenuItem>
                   )}
                 </>
