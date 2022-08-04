@@ -13,7 +13,8 @@ import {
   HolidayPackagesPage,
   PassengerDetailsPage,
   TravelAgentMessagingPage,
-  TravelAgentPortalPage
+  TravelAgentPortalPage,
+  UserFacingWishlistPage
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
@@ -65,6 +66,7 @@ const App = () => {
             <Route path={routes.search} element={<SearchPage />} />
             <Route path={routes.map} element={<MapPage />} />
             <Route path={routes.account} element={<AccountPage />} />
+            <Route path={routes.wishlist} element={<UserFacingWishlistPage />} />
             <Route
               path={routes.searchResults}
               element={<SearchResultsPage cartState={cartState} />}
@@ -79,7 +81,10 @@ const App = () => {
               path={`${routes.travelAgents}/session/:sessionId`}
               element={<TravelAgentMessagingPage />}
             />
-            <Route path={routes.passengerDetails} element={<PassengerDetailsPage cartState={cartState} />} />
+            <Route
+              path={routes.passengerDetails}
+              element={<PassengerDetailsPage cartState={cartState} />}
+            />
             <Route path='*' element={<h1>Page Not Found</h1>} />
           </Routes>
         </Box>
