@@ -1,15 +1,12 @@
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-  ResponderProvided
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useState } from 'react';
-import { useEffect } from 'react';
-import { Box, HStack, Input, useToast } from '@chakra-ui/react';
-import { Airport } from '../utility/geolocation';
-import { airports } from '../data/airports';
+import { Box, Button, HStack, Input, useToast } from '@chakra-ui/react';
+import { Airport } from '../../utility/geolocation';
+import { airports } from '../../data/airports';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
 
 // fake data generator
 const getItems = (count: number, offset: number = 0) =>
@@ -64,13 +61,47 @@ const getListStyle = (isDraggingOver: boolean) => ({
   width: 250
 });
 
-export const UserFacingWishlistPage = (props: any) => {
+export const WishlistCreatorPage = (props: any) => {
   const [items, setItems] = useState<Airport[]>(airports);
   const [selected, setSelected] = useState<Airport[]>([]);
   const [filter, setFilter] = useState('');
 
+  const navigate = useNavigate();
+  const { httpPost } = useApi(endpoints.wishlist);
+
   const getOrderedWishlistItems = () => {
     return selected.map((a) => a.code);
+  };
+
+  const handleSubmitWishlist = () => {
+    const items = getOrderedWishlistItems();
+
+    if (items.length <= 0) {
+      toast({
+        status: 'error',
+        title: 'Invalid Wishlist',
+        description: 'You must have at least one item in the wishlist before submitting'
+      });
+      return;
+    }
+
+    httpPost('', { destinations: items })
+      .then((res) => {
+        toast({
+          title: 'Wishlist Created',
+          description:
+            'Your wishlist has been created, a travel agent will be in contact with you shortly.',
+          status: 'success'
+        });
+        navigate(routes.wishlist.base);
+      })
+      .catch((err) => {
+        toast({
+          title: 'An Error Occured',
+          description: 'An unexpected error occured, please try again soon',
+          status: 'error'
+        });
+      });
   };
 
   const toast = useToast();
@@ -119,34 +150,65 @@ export const UserFacingWishlistPage = (props: any) => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <HStack position='absolute' top='0' bottom='0' alignItems={'flex-start'}>
-        <Box>
-          <Input
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            type='text'
-            placeholder='Filter Destinations...'
-          />
-          <Box maxH='50rem' overflowY='auto' overflowX='hidden'>
-            <Droppable droppableId='droppable'>
+    <>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <HStack alignItems={'flex-start'}>
+          <Box>
+            <Input
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              type='text'
+              placeholder='Filter Destinations...'
+            />
+            <Box maxH='50rem' overflowY='auto' overflowX='hidden'>
+              <Droppable droppableId='droppable'>
+                {(provided, snapshot) => (
+                  <Box
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                  >
+                    {items.filter(filterAirports).map((item, index) => (
+                      <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                        {(provided, snapshot) => (
+                          <Box
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                          >
+                            {`${item.city}, ${item.country}`}
+                          </Box>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </Box>
+                )}
+              </Droppable>
+            </Box>
+          </Box>
+          <Box>
+            <Droppable droppableId='droppable2'>
               {(provided, snapshot) => (
                 <Box
-                  {...provided.droppableProps}
+                  rounded='lg'
                   ref={provided.innerRef}
                   style={getListStyle(snapshot.isDraggingOver)}
+                  minH='80'
                 >
-                  {items.filter(filterAirports).map((item, index) => (
+                  {selected.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                       {(provided, snapshot) => (
-                        <Box
+                        <HStack
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                         >
-                          {`${item.city}, ${item.country}`}
-                        </Box>
+                          <Box>{index + 1}</Box>
+                          <Box>{`${item.city}, ${item.country}`}</Box>
+                        </HStack>
                       )}
                     </Draggable>
                   ))}
@@ -155,37 +217,9 @@ export const UserFacingWishlistPage = (props: any) => {
               )}
             </Droppable>
           </Box>
-        </Box>
-        <Box>
-          <Droppable droppableId='droppable2'>
-            {(provided, snapshot) => (
-              <Box
-                rounded='lg'
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-                minH='80'
-              >
-                {selected.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                    {(provided, snapshot) => (
-                      <HStack
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                      >
-                        <Box>{index + 1}</Box>
-                        <Box>{`${item.city}, ${item.country}`}</Box>
-                      </HStack>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </Box>
-            )}
-          </Droppable>
-        </Box>
-      </HStack>
-    </DragDropContext>
+        </HStack>
+      </DragDropContext>
+      <Button onClick={handleSubmitWishlist}>Submit Wishlist</Button>
+    </>
   );
 };

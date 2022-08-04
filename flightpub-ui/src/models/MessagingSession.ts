@@ -1,12 +1,13 @@
 import Message from './Message';
 import { User } from './User';
+import { Wishlist } from './Wishlist';
 
 export interface MessagingSession {
   id: number;
   status: SessionStatus;
   users: User[];
   messages: Message[];
-  wishlistId: number;
+  wishlist: Wishlist;
 }
 
 export enum SessionStatus {

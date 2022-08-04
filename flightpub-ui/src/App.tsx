@@ -14,7 +14,8 @@ import {
   PassengerDetailsPage,
   TravelAgentMessagingPage,
   TravelAgentPortalPage,
-  UserFacingWishlistPage
+  WishlistCreatorPage,
+  WishlistMainScreen
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
@@ -66,7 +67,8 @@ const App = () => {
             <Route path={routes.search} element={<SearchPage />} />
             <Route path={routes.map} element={<MapPage />} />
             <Route path={routes.account} element={<AccountPage />} />
-            <Route path={routes.wishlist} element={<UserFacingWishlistPage />} />
+            <Route path={routes.wishlist.base} element={<WishlistMainScreen />} />
+            <Route path={routes.wishlist.new} element={<WishlistCreatorPage />} />
             <Route
               path={routes.searchResults}
               element={<SearchResultsPage cartState={cartState} />}
@@ -76,11 +78,8 @@ const App = () => {
               path={routes.holidayPackages}
               element={<HolidayPackagesPage cartState={cartState} />}
             />
-            <Route path={routes.travelAgents} element={<TravelAgentPortalPage />} />
-            <Route
-              path={`${routes.travelAgents}/session/:sessionId`}
-              element={<TravelAgentMessagingPage />}
-            />
+            <Route path={routes.travelAgents.base} element={<TravelAgentPortalPage />} />
+            <Route path={routes.travelAgents.session.id} element={<TravelAgentMessagingPage />} />
             <Route
               path={routes.passengerDetails}
               element={<PassengerDetailsPage cartState={cartState} />}

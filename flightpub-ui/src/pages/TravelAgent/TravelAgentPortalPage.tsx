@@ -32,6 +32,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../../constants/routes';
 import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
 import { UserRole } from '../../models/User';
+import { Wishlist } from '../../models/Wishlist';
 import { useMessaging } from '../../services/MessagingService';
 import { UserContext } from '../../services/UserContext';
 
@@ -64,11 +65,13 @@ export const TravelAgentPortalPage = () => {
     return 'gray';
   };
 
+  const handleViewWishlist = (wishlist: Wishlist) => {};
+
   const handleJoinSession = (sessionId: number) => {
     onOpen();
     joinSession(sessionId)
       .then(() => {
-        navigate(`${routes.messagingSessionBase}/${sessionId}`);
+        navigate(`${routes.travelAgents.session.base}/${sessionId}`);
       })
       .catch(() => {
         toast({
@@ -138,7 +141,10 @@ export const TravelAgentPortalPage = () => {
                     </MenuButton>
                     <MenuList>
                       {userInSession ? (
-                        <MenuItem as={NavLink} to={`${routes.messagingSessionBase}/${session.id}`}>
+                        <MenuItem
+                          as={NavLink}
+                          to={`${routes.travelAgents.session.base}/${session.id}`}
+                        >
                           Open Chat
                         </MenuItem>
                       ) : (
@@ -146,6 +152,9 @@ export const TravelAgentPortalPage = () => {
                           Join Session
                         </MenuItem>
                       )}
+                      <MenuItem onClick={() => handleViewWishlist(session.wishlist)}>
+                        View Wishlist
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>

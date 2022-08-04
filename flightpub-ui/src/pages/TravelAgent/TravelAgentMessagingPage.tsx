@@ -47,7 +47,7 @@ export const TravelAgentMessagingPage = () => {
             description: 'The requested session was not found',
             status: 'error'
           });
-          navigate(routes.travelAgents);
+          navigate(routes.travelAgents.base);
         }
       });
   }, [sessionId]);
