@@ -1,12 +1,10 @@
 package seng3150.team4.flightpub.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import seng3150.team4.flightpub.domain.models.Message;
-import seng3150.team4.flightpub.domain.models.MessagingSession;
-import seng3150.team4.flightpub.domain.models.User;
-import seng3150.team4.flightpub.domain.models.UserRole;
+import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.domain.repositories.IMessagingRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import javax.persistence.EntityNotFoundException;
@@ -17,20 +15,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MessagingService {
 
   private final IMessagingRepository messagingRepository;
   private final CurrentUserContext currentUserContext;
   private final UserService userService;
-
-  public MessagingService(
-      IMessagingRepository messagingRepository,
-      CurrentUserContext currentUserContext,
-      UserService userService) {
-    this.messagingRepository = messagingRepository;
-    this.currentUserContext = currentUserContext;
-    this.userService = userService;
-  }
 
   private boolean currentUserCanAccessSession(MessagingSession session) {
     var userId = currentUserContext.getCurrentUserId();
@@ -77,12 +67,22 @@ public class MessagingService {
     }
   }
 
-  public MessagingSession createSession() {
+  private MessagingSession createSessionObj() {
     var session = new MessagingSession();
 
     session.setUsers(Set.of(resolveCurrentUser()));
     session.setStatus(MessagingSession.SessionStatus.TRIAGE);
+    return session;
+  }
 
+  public MessagingSession createSession() {
+    var session = createSessionObj();
+    return messagingRepository.save(session);
+  }
+
+  public MessagingSession createSession(Wishlist wishlist) {
+    var session = createSessionObj();
+    session.setWishlist(wishlist);
     return messagingRepository.save(session);
   }
 

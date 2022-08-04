@@ -26,6 +26,7 @@ public class WishlistService implements IWishlistService {
     private final IUserService userService;
     private final CurrentUserContext currentUserContext;
     private final IDestinationRepository destinationRepository;
+    private final MessagingService messagingService;
 
     @Override
     public Set<Wishlist> getWishlistForUser(long userId) {
@@ -71,6 +72,7 @@ public class WishlistService implements IWishlistService {
         wishlistItemRepository.saveAll(wishlistItems);
         wishlist.setWishlistItems(wishlistItems);
 
+        messagingService.createSession(wishlistSaved);
 
         return wishlistRepository.save(wishlist);
     }
