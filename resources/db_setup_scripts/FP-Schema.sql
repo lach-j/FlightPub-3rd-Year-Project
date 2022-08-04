@@ -125,14 +125,14 @@ CREATE TABLE `Wishlist` (
   CONSTRAINT `UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `Wishlist_Destination` (
+CREATE TABLE `WishlistItem` (
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
   `WishlistId` BIGINT NOT NULL,
-  `DestinationCode` char(3) NOT NULL,
-  PRIMARY KEY (`WishlistId`,`DestinationCode`),
+  `DestinationCode` CHAR(3) NOT NULL,
+  `ItemRank` INT,
+  PRIMARY KEY (`Id`),
   KEY `WishlistId_FK` (`WishlistId`),
   KEY `DestinationCode_FK` (`DestinationCode`),
   CONSTRAINT `WishlistId_FK` FOREIGN KEY (`WishlistId`) REFERENCES `Wishlist` (`Id`),
   CONSTRAINT `DestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
