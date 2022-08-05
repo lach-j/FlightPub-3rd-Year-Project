@@ -58,7 +58,7 @@ export const SessionListComponent = () => {
   const { isOpen: isModelOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | undefined>();
 
-  const { getAllUserSessions, joinSession } = useMessaging();
+  const { getAllUserSessions, joinSession, resolveSession } = useMessaging();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -117,7 +117,7 @@ export const SessionListComponent = () => {
   };
 
   const handleResolveSession = (sessionId: number) => {
-    loadSessions();
+    resolveSession(sessionId).then(loadSessions);
   };
 
   const resolveMenuButtons = (session: MessagingSession) => {

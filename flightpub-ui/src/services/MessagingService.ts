@@ -23,6 +23,10 @@ export const useMessaging = (_sessionId?: number) => {
     return await httpGet(`${BASE_ENDPOINT}`);
   };
 
+  const resolveSession = async (sessionId: number) => {
+    return await httpPatch(`${BASE_ENDPOINT}/${sessionId}/resolve`);
+  };
+
   const sendNewMessage = async (content: string) => {
     hasSessionId();
     return await httpPatch(`${BASE_ENDPOINT}/${sessionId}`, { content });
@@ -51,5 +55,12 @@ export const useMessaging = (_sessionId?: number) => {
     return setInterval(getMessages, delay);
   };
 
-  return { getSession, sendNewMessage, subscribeToMessages, getAllUserSessions, joinSession };
+  return {
+    getSession,
+    sendNewMessage,
+    subscribeToMessages,
+    getAllUserSessions,
+    joinSession,
+    resolveSession
+  };
 };

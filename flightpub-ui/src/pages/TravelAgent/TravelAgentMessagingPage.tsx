@@ -84,8 +84,6 @@ export const TravelAgentMessagingPage = () => {
     setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
   };
 
-  console.log(sessionData?.status);
-
   return (
     <Box
       h='full'
