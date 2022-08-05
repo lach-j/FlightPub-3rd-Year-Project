@@ -115,83 +115,85 @@ export const TravelAgentPortalPage = () => {
   const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
 
   return (
-    <Box px='10' py='7'>
-      <HStack w='full' justifyContent='flex-end'>
+    <Box px='10' py='7' width='full'>
+      <HStack w='full' justifyContent='flex-end' mb='4'>
         <Checkbox checked={showResolved} onChange={(e) => setShowResolved(e.target.checked)}>
           Show resolved sessions?
         </Checkbox>
       </HStack>
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>Session Id</Th>
-            <Th>Users</Th>
-            <Th>Status</Th>
-            <Th w='0'></Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sessions.map((session) => {
-            const userInSession = session.users.filter((u) => u.id === user?.id).length > 0;
+      <Box maxH='600' overflow='auto' rounded='md' border='1px solid lightgray'>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Session Id</Th>
+              <Th>Users</Th>
+              <Th>Status</Th>
+              <Th w='0'></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {sessions.map((session) => {
+              const userInSession = session.users.filter((u) => u.id === user?.id).length > 0;
 
-            if (session.status === SessionStatus.RESOLVED && !showResolved) return;
+              if (session.status === SessionStatus.RESOLVED && !showResolved) return;
 
-            return (
-              <Tr key={session.id}>
-                <Td>{session.id}</Td>
-                <Td>
-                  <Flex gap='2' wrap='wrap'>
-                    <AvatarGroup size='sm' max={maxAvatars}>
-                      {session.users.map((u) => (
-                        <Avatar
-                          key={u.id}
-                          name={`${u.firstName} ${u.lastName}`}
-                          title={`${u.firstName} ${u.lastName}`}
-                        >
-                          <AvatarBadge
-                            bg={resolveRoleScheme(u.role)}
-                            title={u.role}
-                            boxSize='1em'
-                          />
-                        </Avatar>
-                      ))}
-                    </AvatarGroup>
-                  </Flex>
-                </Td>
-                <Td>
-                  <Badge colorScheme={resolveStatusScheme(session.status)}>
-                    {session.status.replaceAll('_', ' ')}
-                  </Badge>
-                </Td>
-                <Td>
-                  <Menu>
-                    <MenuButton as={IconButton} bg='transparent' icon={<GoKebabVertical />}>
-                      Profile
-                    </MenuButton>
-                    <MenuList>
-                      {userInSession ? (
-                        <MenuItem
-                          as={NavLink}
-                          to={`${routes.travelAgents.session.base}/${session.id}`}
-                        >
-                          Open Chat
+              return (
+                <Tr key={session.id}>
+                  <Td>{session.id}</Td>
+                  <Td>
+                    <Flex gap='2' wrap='wrap'>
+                      <AvatarGroup size='sm' max={maxAvatars}>
+                        {session.users.map((u) => (
+                          <Avatar
+                            key={u.id}
+                            name={`${u.firstName} ${u.lastName}`}
+                            title={`${u.firstName} ${u.lastName}`}
+                          >
+                            <AvatarBadge
+                              bg={resolveRoleScheme(u.role)}
+                              title={u.role}
+                              boxSize='1em'
+                            />
+                          </Avatar>
+                        ))}
+                      </AvatarGroup>
+                    </Flex>
+                  </Td>
+                  <Td>
+                    <Badge colorScheme={resolveStatusScheme(session.status)}>
+                      {session.status.replaceAll('_', ' ')}
+                    </Badge>
+                  </Td>
+                  <Td>
+                    <Menu>
+                      <MenuButton as={IconButton} bg='transparent' icon={<GoKebabVertical />}>
+                        Profile
+                      </MenuButton>
+                      <MenuList>
+                        {userInSession ? (
+                          <MenuItem
+                            as={NavLink}
+                            to={`${routes.travelAgents.session.base}/${session.id}`}
+                          >
+                            Open Chat
+                          </MenuItem>
+                        ) : (
+                          <MenuItem onClick={() => handleJoinSession(session.id)}>
+                            Join Session
+                          </MenuItem>
+                        )}
+                        <MenuItem onClick={() => handleViewWishlist(session.wishlist)}>
+                          View Wishlist
                         </MenuItem>
-                      ) : (
-                        <MenuItem onClick={() => handleJoinSession(session.id)}>
-                          Join Session
-                        </MenuItem>
-                      )}
-                      <MenuItem onClick={() => handleViewWishlist(session.wishlist)}>
-                        View Wishlist
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
-                </Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+                      </MenuList>
+                    </Menu>
+                  </Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
