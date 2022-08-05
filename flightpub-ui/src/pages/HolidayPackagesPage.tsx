@@ -6,21 +6,34 @@ import {
   Grid,
   Heading, Input,
   Stack,
-  StackDivider,
+  StackDivider, Text,
   useToast,
   VStack
 } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import {ApiError, useApi} from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
-import {Airline, Flight, Price } from '../models';
+import {Airline, Flight} from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 
-import { NavLink} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { HolidayCard } from '../components/HolidayCard';
 import { HolidayCardProps, HolidayPackage } from '../models/HolidayCardProps';
+import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from "@choc-ui/chakra-autocomplete";
+import {airports} from "../data/airports";
 
+interface CreateHolidayPackageQuery {
+  isPopular: boolean;
+  imageURL: string;
+  packageName: string;
+  packageDescription: string;
+  packageTagline: string;
+  packageNights: number;
+  location: string;
+  price: number;
+  arrivalLocation: string;
+}
 export function HolidayPackagesPage({
   cartState
 }: {
@@ -46,7 +59,8 @@ export function HolidayPackagesPage({
         { tagName: 'Winter', tagColor: 'blue' },
         { tagName: 'Scenic', tagColor: 'yellow' },
         { tagName: 'Holiday', tagColor: 'green' }
-      ]
+      ],
+      arrivalLocation: 'SYD',
     },
     {
       isPopular: false,
@@ -62,11 +76,13 @@ export function HolidayPackagesPage({
         { tagName: 'Warm', tagColor: 'orange' },
         { tagName: 'Scenic', tagColor: 'yellow' },
         { tagName: 'Holiday', tagColor: 'green' }
-      ]
+      ],
+      arrivalLocation: 'SYD',
     }
   ];
+  const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([])
 
-  const [holidayPackage, setHolidayPackage] = useState<HolidayPackage>({
+  const [holidayPackage, setHolidayPackage] = useState<CreateHolidayPackageQuery>({
     isPopular: true,
     imageURL:
         'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/7d/68/1d/four-seasons-resort-whistler.jpg?w=600&h=400&s=1',
@@ -77,6 +93,7 @@ export function HolidayPackagesPage({
     price: 600,
     packageNights: 7,
     location: 'Whistler',
+    arrivalLocation: 'SYD'
   });
   const handleHolidayPackageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHolidayPackage({
@@ -84,6 +101,16 @@ export function HolidayPackagesPage({
       [event.target.name]: event.target.value
     });
   };
+  const handleIsPopularChange= (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHolidayPackage({
+      ...holidayPackage,
+      [event.target.name]: event.target.checked
+    });
+  };
+  const handleCreateQueryUpdate = (field: keyof CreateHolidayPackageQuery, value: any) => {
+    setHolidayPackage({ ...holidayPackage, [field]: value });
+  };
+
   const handlePackageCreation = (e: SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -143,22 +170,6 @@ export function HolidayPackagesPage({
   const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
   const { httpPost: httpPostHolidayPackage } = useApi(endpoints.createHolidayPackage);
 
-
-  //takes price and returns cheapest price value as a string
-  const getMinPriceString = (prices: Price[]) => {
-    if (!prices) return '---';
-    let pricesVals = prices.map((p) => p.price);
-    let minPrice = Math.min(...pricesVals);
-    return `$${minPrice}`;
-  };
-
-  //Gets users current position and retrieves list of airlines
-  //TODO: Retrieve list of holiday packages
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
-  }, []);
-
   //Takes user location and finds nearest airport on load
   useEffect(() => {
     if (!userLocation) return;
@@ -171,8 +182,11 @@ export function HolidayPackagesPage({
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
   }, [airport]);
-
-
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
+    httpGetAirlines('').then(setAirlines);
+    httpGetHolidayPackages('').then(setHolidayPackageList)
+  }, []);
 
   return (
     <Grid>
@@ -185,24 +199,21 @@ export function HolidayPackagesPage({
               </Box>
               <Box>
                 <Stack spacing='3'>
-                  {/* Email input */}
                   <FormControl isDisabled={loading}>
                     <FormLabel>isPopular</FormLabel>
                     <Checkbox
+                        name='isPopular'
                         checked={holidayPackage.isPopular}
-                        onChange={handleHolidayPackageChange}
+                        onChange={handleIsPopularChange}
                     />
-
-                    {/* Firstname input */}
                   </FormControl>
                   <FormControl isDisabled={loading}>
-                    <FormLabel>imageUrl</FormLabel>
+                    <FormLabel>imageURL</FormLabel>
                     <Input
-                        name='imageUrl'
+                        name='imageURL'
                         value={holidayPackage.imageURL}
                         onChange={handleHolidayPackageChange}
                     />
-                    {/* LastName input */}
                   </FormControl>
                   <FormControl isDisabled={loading} >
                     <FormLabel>Package Name</FormLabel>
@@ -221,7 +232,7 @@ export function HolidayPackagesPage({
                     />
                   </FormControl>
                   <FormControl isDisabled={loading} >
-                    <FormLabel>packageTagline</FormLabel>
+                    <FormLabel>Package Tagline</FormLabel>
                     <Input
                         name='packageTagline'
                         value={holidayPackage.packageTagline}
@@ -229,9 +240,10 @@ export function HolidayPackagesPage({
                     />
                   </FormControl>
                   <FormControl isDisabled={loading} >
-                    <FormLabel>packageNights</FormLabel>
+                    <FormLabel>No. of nights</FormLabel>
                     <Input
                         name='packageNights'
+                        type='number'
                         value={holidayPackage.packageNights}
                         onChange={handleHolidayPackageChange}
                     />
@@ -245,13 +257,36 @@ export function HolidayPackagesPage({
                     />
                   </FormControl>
                   <FormControl isDisabled={loading}>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Price</FormLabel>
                     <Input
                         type='number'
                         name='price'
                         value={holidayPackage.price}
                         onChange={handleHolidayPackageChange}
                     />
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Arrival Location:</FormLabel>
+                        <AutoComplete
+                            openOnFocus
+                            suggestWhenEmpty
+                            onChange={(value) =>
+                                handleCreateQueryUpdate('arrivalLocation',value)}
+                        >
+                          <AutoCompleteInput
+                              placeholder="Search..."
+                              variant='filled'
+                          />
+                          <AutoCompleteList>
+                            {airports.map(({ code, city }) => (
+                                <AutoCompleteItem key={code} value={code} align='center'>
+                                  <Text ml='4'>{city}</Text>
+                                </AutoCompleteItem>
+                            ))}
+                          </AutoCompleteList>
+                        </AutoComplete>
+                      </FormControl>
+                    </Box>
 
                     {/* Error message popup */}
                     <FormErrorMessage>
@@ -280,8 +315,8 @@ export function HolidayPackagesPage({
             Holiday Packages and Deals from {airport?.city}
           </Heading>
           <VStack>
-            {data.length !== 0 ? (
-              data.map((value) => <HolidayCard data={value}></HolidayCard>)
+            {holidayPackageList.length !== 0 ? (
+                holidayPackageList.map((value) => <HolidayCard data={value}></HolidayCard>)
             ) : (
               <h1>Nothing here, please check back later!</h1>
             )}
@@ -289,9 +324,6 @@ export function HolidayPackagesPage({
           </VStack>
         </VStack>
       </Center>
-      <Button onClick={handlePackageCreation} colorScheme='red'>
-        Create Package
-      </Button>
     </Grid>
   );
 }

@@ -1,3 +1,4 @@
+
 export interface HolidayCardProps {
   isPopular: boolean;
   imageURL: string;
@@ -8,8 +9,10 @@ export interface HolidayCardProps {
   nights: number;
   location: string;
   tags: Array<FeatureBadgeProps>;
+  arrivalLocation: string;
 }
 export interface HolidayPackage {
+  id: number;
   isPopular: boolean;
   imageURL: string;
   packageName: string;
@@ -18,6 +21,8 @@ export interface HolidayPackage {
   packageNights: number;
   location: string;
   price: number;
+  arrivalLocation: string;
+
 }
 
 export interface FeatureBadgeProps {
