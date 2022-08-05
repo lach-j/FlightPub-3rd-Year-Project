@@ -79,6 +79,8 @@ export const useApi = (_endpoint: string = '') => {
 
       if (res.status === 401 && location.pathname !== routes.login) {
         navigate(routes.login, { state: { redirectUrl: location.pathname } });
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('bearer-token');
       }
 
       if (res.status === 403) {
