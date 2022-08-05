@@ -26,12 +26,17 @@ public class MessagingService {
     var userId = currentUserContext.getCurrentUserId();
     var userRole = currentUserContext.getCurrentUserRole();
     var userInSession = session.getUsers().stream().anyMatch(u -> u.getId() == userId);
-    var userIsStaff = (userRole == UserRole.ADMINISTRATOR || userRole == UserRole.TRAVEL_AGENT);
+    var userIsAdmin = userRole == UserRole.ADMINISTRATOR;
 
-    return (userInSession || userIsStaff);
+    return (userInSession || userIsAdmin);
   }
 
-  public MessagingSession getSessionById(long sessionId) {
+  private boolean currentUserCanJoinSession() {
+    var userRole = currentUserContext.getCurrentUserRole();
+    return userRole == UserRole.ADMINISTRATOR || userRole == UserRole.TRAVEL_AGENT;
+  }
+
+  public MessagingSession getSessionByIdSecure(long sessionId) {
     var session = messagingRepository.findById(sessionId);
 
     if (session.isEmpty())
@@ -46,8 +51,23 @@ public class MessagingService {
     return found;
   }
 
+  public MessagingSession getSessionById(long sessionId) {
+    var session = messagingRepository.findById(sessionId);
+
+    if (session.isEmpty())
+      throw new EntityNotFoundException(
+              String.format("Session with id %d does not exist.", sessionId));
+
+    var found = session.get();
+
+    if (!currentUserCanJoinSession())
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
+
+    return found;
+  }
+
   public List<Message> getLatestMessages(long sessionId, LocalDateTime messagesSince) {
-      var session = getSessionById(sessionId);
+      var session = getSessionByIdSecure(sessionId);
       return session.getMessages().stream().filter(m -> m.getDateSent().isAfter(messagesSince)).collect(Collectors.toList());
   }
 
@@ -68,7 +88,7 @@ public class MessagingService {
   }
 
   public void resolveSession(long sessionId) {
-    var session = getSessionById(sessionId);
+    var session = getSessionByIdSecure(sessionId);
     session.setStatus(MessagingSession.SessionStatus.RESOLVED);
     messagingRepository.save(session);
   }
@@ -93,7 +113,7 @@ public class MessagingService {
   }
 
   public void addMessageToSession(long sessionId, String message) {
-    var session = getSessionById(sessionId);
+    var session = getSessionByIdSecure(sessionId);
 
     var messageEntity = new Message();
     messageEntity.setContent(message);

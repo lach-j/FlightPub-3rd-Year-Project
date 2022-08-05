@@ -28,7 +28,7 @@ public class MessagingController {
   @Authorized
   @GetMapping("/{sessionId}")
   public EntityResponse<MessagingSession> getSession(@PathVariable long sessionId) {
-    var session = messagingService.getSessionById(sessionId);
+    var session = messagingService.getSessionByIdSecure(sessionId);
     return new EntityResponse<>(session);
   }
 
