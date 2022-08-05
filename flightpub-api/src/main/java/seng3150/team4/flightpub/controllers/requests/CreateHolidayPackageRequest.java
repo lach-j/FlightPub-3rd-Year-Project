@@ -15,13 +15,14 @@ import javax.persistence.*;
 public class CreateHolidayPackageRequest extends Validatable {
 
     private Boolean isPopular;
-    private String imageURL;
-    private String packageName;
-    private String packageDescription;
-    private String packageTagline;
+    private String  imageURL;
+    private String  packageName;
+    private String  packageDescription;
+    private String  packageTagline;
     private Integer packageNights;
-    private String location;
+    private String  location;
     private Integer price;
+    private String  arrivalLocation;
 
 
     @Override

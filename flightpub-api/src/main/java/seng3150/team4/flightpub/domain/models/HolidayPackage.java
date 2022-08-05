@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Table(name = "HolidayPackage")
 public class HolidayPackage implements IEntity {
 
@@ -36,4 +35,6 @@ public class HolidayPackage implements IEntity {
     private String location;
     @Column(name = "price")
     private Integer price;
+    @Column(name = "arrivalLocation")
+    private String arrivalLocation;
 }
