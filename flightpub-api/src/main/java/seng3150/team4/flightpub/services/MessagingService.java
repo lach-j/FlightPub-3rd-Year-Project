@@ -104,6 +104,7 @@ public class MessagingService {
     var session = getSessionById(sessionId);
 
     session.getUsers().add(resolveCurrentUser());
+    session.setStatus(MessagingSession.SessionStatus.IN_PROGRESS);
 
     return messagingRepository.save(session);
   }
