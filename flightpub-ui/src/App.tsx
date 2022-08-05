@@ -13,7 +13,7 @@ import {
   HolidayPackagesPage,
   PassengerDetailsPage,
   TravelAgentMessagingPage,
-  TravelAgentPortalPage,
+  SessionListComponent,
   WishlistCreatorPage,
   WishlistMainScreen
 } from './pages';
@@ -78,7 +78,7 @@ const App = () => {
               path={routes.holidayPackages}
               element={<HolidayPackagesPage cartState={cartState} />}
             />
-            <Route path={routes.travelAgents.base} element={<TravelAgentPortalPage />} />
+            <Route path={routes.travelAgents.base} element={<SessionListComponent />} />
             <Route path={routes.travelAgents.session.id} element={<TravelAgentMessagingPage />} />
             <Route
               path={routes.passengerDetails}

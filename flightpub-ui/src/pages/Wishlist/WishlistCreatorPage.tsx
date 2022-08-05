@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useState } from 'react';
-import { Box, Button, HStack, Input, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, HStack, Input, useToast, VStack } from '@chakra-ui/react';
 import { Airport } from '../../utility/geolocation';
 import { airports } from '../../data/airports';
 import { useApi } from '../../services/ApiService';
@@ -49,14 +49,15 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   userSelect: 'none',
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
+  borderRadius: '0.5rem',
 
-  background: isDragging ? 'white' : 'lightgrey',
+  background: isDragging ? 'white' : 'white',
 
   ...draggableStyle
 });
 
 const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  background: isDraggingOver ? 'lightblue' : '#7072c9',
   padding: grid,
   width: 250
 });
@@ -150,35 +151,73 @@ export const WishlistCreatorPage = (props: any) => {
   };
 
   return (
-    <>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <HStack alignItems={'flex-start'}>
-          <Box>
-            <Input
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              type='text'
-              placeholder='Filter Destinations...'
-            />
-            <Box maxH='50rem' overflowY='auto' overflowX='hidden'>
-              <Droppable droppableId='droppable'>
+    <Box p='5'>
+      <VStack gap='3'>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <HStack alignItems={'flex-start'} gap='10'>
+            <VStack>
+              <Heading as='h2'>Destinations</Heading>
+              <Input
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                type='text'
+                placeholder='Filter Destinations...'
+              />
+              <Box maxH='38rem' overflowY='auto' overflowX='hidden'>
+                <Droppable droppableId='droppable'>
+                  {(provided, snapshot) => (
+                    <Box
+                      rounded='lg'
+                      minH='80'
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                      {items.filter(filterAirports).map((item, index) => (
+                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                          {(provided, snapshot) => (
+                            <Box
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
+                            >
+                              {`${item.city}, ${item.country}`}
+                            </Box>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </Box>
+                  )}
+                </Droppable>
+              </Box>
+            </VStack>
+            <VStack>
+              <Heading as='h2'>Wishlist</Heading>
+              <Droppable droppableId='droppable2'>
                 {(provided, snapshot) => (
                   <Box
-                    {...provided.droppableProps}
+                    rounded='lg'
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver)}
+                    minH='41rem'
                   >
-                    {items.filter(filterAirports).map((item, index) => (
+                    {selected.map((item, index) => (
                       <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                         {(provided, snapshot) => (
-                          <Box
+                          <HStack
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                           >
-                            {`${item.city}, ${item.country}`}
-                          </Box>
+                            <Box>{index + 1}</Box>
+                            <Box>{`${item.city}, ${item.country}`}</Box>
+                          </HStack>
                         )}
                       </Draggable>
                     ))}
@@ -186,40 +225,13 @@ export const WishlistCreatorPage = (props: any) => {
                   </Box>
                 )}
               </Droppable>
-            </Box>
-          </Box>
-          <Box>
-            <Droppable droppableId='droppable2'>
-              {(provided, snapshot) => (
-                <Box
-                  rounded='lg'
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                  minH='80'
-                >
-                  {selected.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                      {(provided, snapshot) => (
-                        <HStack
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                        >
-                          <Box>{index + 1}</Box>
-                          <Box>{`${item.city}, ${item.country}`}</Box>
-                        </HStack>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </Box>
-              )}
-            </Droppable>
-          </Box>
-        </HStack>
-      </DragDropContext>
-      <Button onClick={handleSubmitWishlist}>Submit Wishlist</Button>
-    </>
+            </VStack>
+          </HStack>
+        </DragDropContext>
+        <Button colorScheme='green' onClick={handleSubmitWishlist}>
+          Submit Wishlist
+        </Button>
+      </VStack>
+    </Box>
   );
 };

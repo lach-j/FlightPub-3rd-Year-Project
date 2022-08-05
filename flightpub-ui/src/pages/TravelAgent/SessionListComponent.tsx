@@ -49,7 +49,7 @@ import { Wishlist } from '../../models/Wishlist';
 import { useMessaging } from '../../services/MessagingService';
 import { UserContext } from '../../services/UserContext';
 
-export const TravelAgentPortalPage = () => {
+export const SessionListComponent = () => {
   const [sessions, setSessions] = useState<MessagingSession[]>([]);
   const [showResolved, setShowResolved] = useState(false);
   const { user, setUser } = useContext(UserContext);
