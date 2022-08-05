@@ -13,7 +13,7 @@ import {
 import React, { Children, useContext, useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import Message from '../../models/Message';
-import { MessagingSession } from '../../models/MessagingSession';
+import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
 import { useMessaging } from '../../services/MessagingService';
 import * as _ from 'lodash';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -84,6 +84,8 @@ export const TravelAgentMessagingPage = () => {
     setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
   };
 
+  console.log(sessionData?.status);
+
   return (
     <Box
       h='full'
@@ -107,7 +109,10 @@ export const TravelAgentMessagingPage = () => {
           ))}
         </MessageContainer>
       )}
-      <MessageSendBar onMessageSent={handleSendMessage} />
+      <MessageSendBar
+        onMessageSent={handleSendMessage}
+        disabled={sessionData?.status === SessionStatus.RESOLVED}
+      />
     </Box>
   );
 };
@@ -198,7 +203,13 @@ const MessageComponent = ({
   );
 };
 
-const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) => void }) => {
+const MessageSendBar = ({
+  onMessageSent,
+  disabled = false
+}: {
+  onMessageSent?: (content: string) => void;
+  disabled?: boolean;
+}) => {
   const [messageContent, setMessageContent] = useState('');
 
   const handleSendMessage = () => {
@@ -216,12 +227,15 @@ const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) =
         value={messageContent}
         onChange={(e) => setMessageContent(e.target.value)}
         onKeyDown={handleKeyEvent}
+        disabled={disabled}
+        placeholder={disabled ? 'You can no longer reply to this session' : ''}
       />
       <Button
         aria-label='send-button'
         rightIcon={<FaPaperPlane />}
         colorScheme='blue'
         onClick={handleSendMessage}
+        disabled={disabled}
       >
         Send
       </Button>
