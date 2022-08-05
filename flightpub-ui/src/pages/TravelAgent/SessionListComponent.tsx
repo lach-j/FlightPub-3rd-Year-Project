@@ -63,8 +63,12 @@ export const SessionListComponent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAllUserSessions().then(setSessions);
+    loadSessions();
   }, []);
+
+  const loadSessions = () => {
+    getAllUserSessions().then(setSessions);
+  };
 
   const resolveStatusScheme = (status: SessionStatus) => {
     if (status === SessionStatus.TRIAGE) return 'gray';
@@ -112,6 +116,48 @@ export const SessionListComponent = () => {
       .finally(onClose);
   };
 
+  const handleResolveSession = (sessionId: number) => {
+    loadSessions();
+  };
+
+  const resolveMenuButtons = (session: MessagingSession) => {
+    const menuItems = {
+      openChat: (
+        <MenuItem as={NavLink} to={`${routes.travelAgents.session.base}/${session.id}`}>
+          Open Chat
+        </MenuItem>
+      ),
+      joinSession: <MenuItem onClick={() => handleJoinSession(session.id)}>Join Session</MenuItem>,
+      viewWishlist: (
+        <MenuItem onClick={() => handleViewWishlist(session.wishlist)}>View Wishlist</MenuItem>
+      ),
+      resolveSession: (
+        <MenuItem bgColor='#caffe4' onClick={() => handleResolveSession(session.id)}>
+          Resolve Session
+        </MenuItem>
+      )
+    };
+
+    const menuItemList = [];
+
+    menuItemList.push(menuItems.viewWishlist);
+
+    const userInSession = session.users.filter((u) => u.id === user?.id).length > 0;
+    const userHasPrivileges =
+      user?.role === UserRole.ADMINISTRATOR || user?.role === UserRole.TRAVEL_AGENT;
+
+    if (userInSession) {
+      menuItemList.push(menuItems.openChat);
+    } else {
+      if (userHasPrivileges) menuItemList.push(menuItems.joinSession);
+    }
+
+    if (userHasPrivileges && session.status === SessionStatus.IN_PROGRESS)
+      menuItemList.push(menuItems.resolveSession);
+
+    return menuItemList;
+  };
+
   const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
 
   return (
@@ -133,8 +179,6 @@ export const SessionListComponent = () => {
           </Thead>
           <Tbody>
             {sessions.map((session) => {
-              const userInSession = session.users.filter((u) => u.id === user?.id).length > 0;
-
               if (session.status === SessionStatus.RESOLVED && !showResolved) return;
 
               return (
@@ -166,26 +210,8 @@ export const SessionListComponent = () => {
                   </Td>
                   <Td>
                     <Menu>
-                      <MenuButton as={IconButton} bg='transparent' icon={<GoKebabVertical />}>
-                        Profile
-                      </MenuButton>
-                      <MenuList>
-                        {userInSession ? (
-                          <MenuItem
-                            as={NavLink}
-                            to={`${routes.travelAgents.session.base}/${session.id}`}
-                          >
-                            Open Chat
-                          </MenuItem>
-                        ) : (
-                          <MenuItem onClick={() => handleJoinSession(session.id)}>
-                            Join Session
-                          </MenuItem>
-                        )}
-                        <MenuItem onClick={() => handleViewWishlist(session.wishlist)}>
-                          View Wishlist
-                        </MenuItem>
-                      </MenuList>
+                      <MenuButton as={IconButton} bg='transparent' icon={<GoKebabVertical />} />
+                      <MenuList>{resolveMenuButtons(session)}</MenuList>
                     </Menu>
                   </Td>
                 </Tr>
