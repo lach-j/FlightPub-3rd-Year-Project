@@ -67,6 +67,12 @@ public class MessagingService {
     }
   }
 
+  public void resolveSession(long sessionId) {
+    var session = getSessionById(sessionId);
+    session.setStatus(MessagingSession.SessionStatus.RESOLVED);
+    messagingRepository.save(session);
+  }
+
   private MessagingSession createSessionObj() {
     var session = new MessagingSession();
 

@@ -61,6 +61,13 @@ public class MessagingController {
     return new EntityResponse<>(messagingService.addCurrentUserToSession(sessionId));
   }
 
+  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR, UserRole.TRAVEL_AGENT})
+  @PatchMapping("/{sessionId}/resolve")
+  public StatusResponse resolveSession(@PathVariable long sessionId) {
+    messagingService.resolveSession(sessionId);
+    return new StatusResponse(HttpStatus.OK);
+  }
+
   @Authorized(logResolution = false)
   @GetMapping("/{sessionId}/messages")
   public EntityCollectionResponse<Message> getMessagesSince(
