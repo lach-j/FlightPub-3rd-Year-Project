@@ -84,6 +84,13 @@ export const TravelAgentMessagingPage = () => {
     setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
   };
 
+  const getSessionHeader = () => {
+    return sessionData?.users
+      .filter((u) => user?.id !== u.id)
+      .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
+      .join(', ');
+  };
+
   return (
     <Box
       h='full'
@@ -99,7 +106,7 @@ export const TravelAgentMessagingPage = () => {
       right={0}
       bottom={0}
     >
-      <Heading as='h2'>Test</Heading>
+      <Heading as='h2'>{getSessionHeader()}</Heading>
       {sessionData && (
         <MessageContainer>
           {messages?.map((message) => (
