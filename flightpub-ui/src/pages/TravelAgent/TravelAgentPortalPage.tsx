@@ -24,12 +24,25 @@ import {
   Input,
   Checkbox,
   HStack,
-  Box
+  Box,
+  useModal,
+  ModalContent,
+  Button,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
+  ModalHeader,
+  List,
+  ListItem,
+  OrderedList,
+  Text
 } from '@chakra-ui/react';
+import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../../constants/routes';
+import { airports } from '../../data/airports';
 import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
 import { UserRole } from '../../models/User';
 import { Wishlist } from '../../models/Wishlist';
@@ -42,6 +55,8 @@ export const TravelAgentPortalPage = () => {
   const { user, setUser } = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isModelOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
+  const [currentWishlist, setCurrentWishlist] = useState<Wishlist | undefined>();
 
   const { getAllUserSessions, joinSession } = useMessaging();
   const toast = useToast();
@@ -65,7 +80,21 @@ export const TravelAgentPortalPage = () => {
     return 'gray';
   };
 
-  const handleViewWishlist = (wishlist: Wishlist) => {};
+  const handleViewWishlist = (wishlist: Wishlist) => {
+    setCurrentWishlist(wishlist);
+    onModalOpen();
+  };
+
+  const getCurrentWishlistDate = () => {
+    if (!currentWishlist) return '';
+
+    const date =
+      currentWishlist?.dateCreated instanceof Date
+        ? currentWishlist?.dateCreated
+        : new Date(`${currentWishlist?.dateCreated}Z`);
+
+    return moment(date).format('DD/MM/yyy');
+  };
 
   const handleJoinSession = (sessionId: number) => {
     onOpen();
@@ -166,6 +195,35 @@ export const TravelAgentPortalPage = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
+      </Modal>
+      <Modal isOpen={isModelOpen} onClose={onModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Submitted {getCurrentWishlistDate()}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <OrderedList>
+              {currentWishlist?.wishlistItems
+                .sort((a, b) => a.destinationRank - b.destinationRank)
+                .map((item) => {
+                  const airport = airports.find(
+                    (airport) => airport.code === item.destination.destinationCode
+                  );
+                  return (
+                    <ListItem>
+                      {airport?.city}, {airport?.country}
+                    </ListItem>
+                  );
+                })}
+            </OrderedList>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onModalClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
     </Box>
   );
