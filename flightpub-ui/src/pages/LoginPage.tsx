@@ -6,6 +6,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  HStack,
   Input,
   Link,
   Stack,
@@ -14,18 +15,20 @@ import {
 import React, { SyntheticEvent, useContext, useState, useEffect } from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
-import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouteLink, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { endpoints } from '../constants/endpoints';
 import { routes } from '../constants/routes';
 import { UserContext } from '../services/UserContext';
 import { User } from '../models';
+import { GiFastArrow } from 'react-icons/gi';
+import { FaArrowRight } from 'react-icons/fa';
 
 export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   const [loading, setLoading] = useState(false);
   //authError: boolean state, set to true when a login error has occured
   const [authError, setAuthError] = useState(false);
 
-  const userState = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   //authRequest : stores login request with email and password as parameters
   const [authRequest, setAuthRequest] = useState({ email: '', password: '' });
@@ -43,10 +46,7 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
 
   const handlePostLogin = (user: User) => {
     localStorage.setItem('user-id', `${user.id}`);
-    if (!userState) return;
-
-    const [_, setUserState] = userState;
-    setUserState(user);
+    setUser(user);
   };
 
   const { httpPost } = useApi(endpoints.login);
@@ -98,9 +98,12 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
       <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
         <form onSubmit={handleLogin}>
           <Stack spacing='12'>
-            <Box>
+            <HStack justify='space-between'>
               <Heading>Sign In</Heading>
-            </Box>
+              <Button as={NavLink} to={routes.home} variant='ghost' rightIcon={<FaArrowRight />}>
+                Continue as guest
+              </Button>
+            </HStack>
             <Box>
               <Stack spacing='3'>
                 {/* email input */}
