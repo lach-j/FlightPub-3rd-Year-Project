@@ -7,6 +7,7 @@ import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
 import seng3150.team4.flightpub.core.search.DestinationCount;
 import seng3150.team4.flightpub.core.search.KnownSearchStrategy;
 import seng3150.team4.flightpub.core.search.SearchStrategy;
+import seng3150.team4.flightpub.core.search.UnknownSearchStrategy;
 import seng3150.team4.flightpub.domain.models.Flight;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
@@ -55,9 +56,7 @@ public class FlightService implements IFlightService {
     }
     List<Long> temp = Arrays.asList(longList);
     Set<Long> flightIds = new HashSet<>(temp);
-    List<Flight> flightList = new ArrayList<Flight>();
-    flightRepository.findAllById(flightIds).forEach(flightList::add);
-    return flightList;
+    return new ArrayList<>(flightRepository.findAllById(flightIds));
   }
 
   private static SearchStrategy resolveSearchStrategy(FlightQueryRequest query) {
@@ -70,7 +69,7 @@ public class FlightService implements IFlightService {
       return new KnownSearchStrategy(query);
     } else {
       // TODO: Implement unknown search strategies
-      throw new UnsupportedOperationException("This method of search is not implemented");
+      return new UnknownSearchStrategy(query);
     }
   }
 }
