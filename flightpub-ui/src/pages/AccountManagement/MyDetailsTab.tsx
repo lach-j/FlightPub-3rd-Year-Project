@@ -13,41 +13,36 @@ import {
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../services/UserContext';
+import { User } from '../../models';
+import _ from 'lodash';
 
 const editProfileForm: {
-  inputs: Array<{ label: string; name: string; type?: string }>;
+  inputs: Array<{ label: string; name: keyof User; type?: string }>;
 } = {
   inputs: [
     { label: 'Email', name: 'email' },
-    { label: 'First Name', name: 'fname' },
-    { label: 'Last name', name: 'lname' },
-    { label: 'Phone Number', name: 'ph', type: 'tel' }
+    { label: 'First Name', name: 'firstName' },
+    { label: 'Last name', name: 'lastName' }
+    // { label: 'Phone Number', name: 'ph', type: 'tel' }
   ]
 };
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
+  const { user, setUser } = useContext(UserContext);
+
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
 
-  const [userData, setUserData] = useState<any>({
-    email: 'user@example.com',
-    fname: 'Lachlan',
-    lname: 'Johnson',
-    ph: '+6112345678'
-  });
-  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [userData, setUserData] = useState<User | null>(user);
+  const isDirty = !_.isEqual(user, userData);
 
-  const handleDetailsUpdate = (field: string, value: string) => {
-    if (value === userData[field]) return;
-    setUserData({ ...userData, [field]: value });
-    setIsDirty(true);
-  };
 
   const handleDelete = () => {
     setIsLoading(true);
@@ -79,7 +74,6 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
         position: 'top'
       });
       setIsLoading(false);
-      setIsDirty(false);
     }, 2000);
   };
 
@@ -96,10 +90,10 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
           {editProfileForm.inputs.map((input) => (
             <CustomEditible
               name={input.name}
-              value={userData?.[input.name]}
+              value={userData?.[input.name]?.toString()}
               label={input.label}
               type={input?.type || 'text'}
-              onSave={(value) => handleDetailsUpdate(input.name, value)}
+              onSave={(value) => setUserData((data) => ({ ...data, [input.name]: value } as User))}
             />
           ))}
           <HStack w='full' gap='1em'>
