@@ -21,6 +21,8 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../services/UserContext';
 import { User } from '../../models';
 import _ from 'lodash';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
 
 const editProfileForm: {
   inputs: Array<{ label: string; name: keyof User; type?: string }>;
@@ -35,6 +37,8 @@ const editProfileForm: {
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { user, setUser } = useContext(UserContext);
+
+  const { httpPatch } = useApi(endpoints.users);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -67,23 +71,40 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
 
   const handleSaveChanges = () => {
     setIsLoading(true);
-    // Simulate api delay with timeout
-    setTimeout(() => {
-      toast({
-        title: 'Details updated',
-        description: 'Your account details have been updated successfully.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top'
+
+    if (!userData) return;
+
+    const { firstName, lastName, email } = userData;
+    httpPatch(`/${user?.id}`, { firstName, lastName, email })
+      .then((res) => {
+        setUser(res);
+        toast({
+          title: 'Details updated',
+          description: 'Your account details have been updated successfully.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+        setIsLoading(false);
+      })
+      .catch(() => {
+        toast({
+          title: 'Error',
+          description: 'An error occurred, please try again later.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-    }, 2000);
   };
 
   const handleDiscardChanges = () => {
-    // TODO : replace this with real refresh logic
-    window.location.reload();
+    setUserData(user);
   };
 
   return (

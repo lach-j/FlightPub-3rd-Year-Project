@@ -49,12 +49,13 @@ public class UserController {
     return new EntityResponse<>(user);
   }
 
-  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR, UserRole.STANDARD_USER})
+  @Authorized
   @PatchMapping("/{userId}")
   public EntityResponse<User> updateUserDetails(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
     request.validate();
 
     var user = userService.getUserByIdSecure(userId);
+
 
     if (!isNullOrEmpty(request.getEmail()))
       user.setEmail(request.getEmail());
