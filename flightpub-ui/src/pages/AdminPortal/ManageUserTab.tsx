@@ -12,6 +12,7 @@ import {
     useDisclosure,
     useToast,
     VStack,
+    Input,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
@@ -91,6 +92,7 @@ export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean)
     return (
         <>
             <Heading mb='1em'>Manage Users</Heading>
+            <Input placeholder='medium size' size='md' />
             <Heading mb='1em'>My Details</Heading>
             <form>
                 <VStack gap='1em'>

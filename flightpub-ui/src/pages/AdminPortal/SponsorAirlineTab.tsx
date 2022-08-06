@@ -77,7 +77,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
             <form>
                 <VStack gap='2em'>
                     <Box >
-                        {/* Departure location input */}
+                        {/* Sponsored Airline input */}
                         <FormControl isRequired>
                             <FormLabel>Choose Airline</FormLabel>
                             <AutoComplete
@@ -88,7 +88,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                             >
                                 <AutoCompleteInput variant='filled' />
                                 <AutoCompleteList>
-                                    {airlines.map(({ airlineName }) => (
+                                    {airlines.map(({ airlineName, airlineCode }) => (
                                         <AutoCompleteItem
                                             key={airlineName}
                                             value={airlineName}

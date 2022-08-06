@@ -12,6 +12,7 @@ import {
     useDisclosure,
     useToast,
     VStack,
+    Input,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
@@ -39,6 +40,8 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
     //airlines : list of all airlines from models/Airline
     const [airlines, setAirlines] = useState<Airline[]>([]);
 
+    const [idFilter, setIdFilter] = useState<number>();
+
 
     //takes price and returns cheapest price value as a string
     const getMinPriceString = (prices: Price[]) => {
@@ -62,6 +65,22 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
         setAirport(airport);
     }, [userLocation]);
 
+
+
+    //Filters resultdata based on stored filter criteria
+    const filterResults = (result: Flight) => {
+
+        if (idFilter && result.id !== idFilter) return false;
+
+        return true;
+    };
+
+
+    //filtering by duration
+    const filterByID = (val: number) => {
+        setIdFilter(val);
+    };
+
 // Defines columns for DataTable in correct format
     const columns: ColumnDefinition<any>[] = [
         {
@@ -82,6 +101,7 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
         { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
     ];
 
+
     //Gets airport code for nearest airport on-load to run reccomended search query
     useEffect(() => {
         if (!airport) return;
@@ -93,8 +113,9 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
     return (
         <>
             <Heading mb='1em'>Cancel Flight</Heading>
+            <Input placeholder='Flight id' size='md' onChange = { (val) => filterByID } />
             <Center>
-                <ResultsTable columns={columns} data={recommended} keyAccessor='id'>
+                <ResultsTable columns={columns} data={recommended.filter(filterResults)} keyAccessor='id'>
                 </ResultsTable>
             </Center>
         </>
