@@ -10,10 +10,11 @@ import {
   Heading,
   HStack,
   useDisclosure,
+  useEditable,
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
@@ -43,6 +44,9 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
   const [userData, setUserData] = useState<User | null>(user);
   const isDirty = !_.isEqual(user, userData);
 
+  useEffect(() => {
+    setUserData(user);
+  }, [user]);
 
   const handleDelete = () => {
     setIsLoading(true);
