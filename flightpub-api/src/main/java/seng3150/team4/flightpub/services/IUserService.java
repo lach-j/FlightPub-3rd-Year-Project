@@ -18,5 +18,6 @@ public interface IUserService {
   User getUserById(long userId);
 
   User getUserByIdSecure(long userId);
+
   List<User> getUsersById(Collection<Long> userId);
 }

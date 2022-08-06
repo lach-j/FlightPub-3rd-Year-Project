@@ -1,15 +1,22 @@
 package seng3150.team4.flightpub.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
+import seng3150.team4.flightpub.controllers.requests.UpdateUserRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.security.Authorized;
+import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.utility.PasswordHash;
+
+import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ public class UserController {
 
   // Inject dependencies
   private final IUserService userService;
+  private final CurrentUserContext currentUserContext;
 
   @PostMapping
   public ResponseEntity<? extends Response> registerUser(
@@ -39,6 +47,26 @@ public class UserController {
   public EntityResponse<User> getUserById(@PathVariable Long userId) {
     var user = userService.getUserByIdSecure(userId);
     return new EntityResponse<>(user);
+  }
+
+  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR, UserRole.STANDARD_USER})
+  @PatchMapping("/{userId}")
+  public EntityResponse<User> updateUserDetails(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+    request.validate();
+
+    var user = userService.getUserByIdSecure(userId);
+
+    if (!isNullOrEmpty(request.getEmail()))
+      user.setEmail(request.getEmail());
+
+    if (!isNullOrEmpty(request.getFirstName()))
+      user.setFirstName(request.getFirstName());
+
+    if (!isNullOrEmpty(request.getLastName()))
+      user.setLastName(request.getLastName());
+
+    return new EntityResponse<>(userService.updateUser(user));
+
   }
 
   private static User userFromRequest(RegisterUserRequest request) {

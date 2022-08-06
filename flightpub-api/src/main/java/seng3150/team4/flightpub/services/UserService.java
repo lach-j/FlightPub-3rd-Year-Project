@@ -62,8 +62,15 @@ public class UserService implements IUserService {
 
     // If the user does not exist that throw an exception
     var userExists = userRepository.existsById(user.getId());
+    var duplicate = userRepository.findByEmail(user.getEmail());
+
+    if (duplicate.isPresent() && duplicate.get().getId() != user.getId())
+      throw new EntityExistsException(
+          String.format("User with email %s already exists", user.getEmail()));
+
     if (!userExists)
-      throw new EntityExistsException(String.format("User with id %s was not found", user.getId()));
+      throw new EntityNotFoundException(
+          String.format("User with id %s was not found", user.getId()));
 
     // Otherwise, save the updated user
     return userRepository.save(user);
@@ -74,7 +81,8 @@ public class UserService implements IUserService {
     // If the user does not exist that throw an exception
     var userExists = userRepository.existsById(user.getId());
     if (!userExists)
-      throw new EntityExistsException(String.format("User with id %s was not found", user.getId()));
+      throw new EntityNotFoundException(
+          String.format("User with id %s was not found", user.getId()));
 
     // Otherwise, delete the user
     userRepository.delete(user);
@@ -103,9 +111,10 @@ public class UserService implements IUserService {
 
   @Override
   public User getUserByIdSecure(long userId) {
+
     if (currentUserContext.getCurrentUserId() != userId
-        && (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
-            || currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT))
+        && currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
+        && currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT)
       throw new ResponseStatusException(
           HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
 
