@@ -17,6 +17,8 @@ CREATE TABLE `Airlines` (
   `AirlineCode` char(2) NOT NULL,
   `AirlineName` varchar(30) NOT NULL,
   `CountryCode3` char(3) NOT NULL,
+  `Sponsored` BIGINT NOT NULL Default(0),
+  `SponsoredDuration` datetime Default(NULL),
   PRIMARY KEY (`AirlineCode`),
   KEY `AirlinesCountryCode3_FK` (`CountryCode3`),
   CONSTRAINT `AirlinesCountryCode3_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
@@ -36,6 +38,8 @@ CREATE TABLE `Destinations` (
   `DestinationCode` char(3) NOT NULL,
   `Airport` varchar(30) NOT NULL,
   `CountryCode3` char(3) NOT NULL,
+  `Covid` BIGINT NOT NULL Default(0),
+  `CovidDuration` datetime Default(NULL),
   PRIMARY KEY (`DestinationCode`),
   KEY `DestinationCountryCode_FK` (`CountryCode3`),
   CONSTRAINT `DestinationCountryCode_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
@@ -93,6 +97,7 @@ CREATE TABLE `Flights` (
   `PlaneCode` varchar(20) NOT NULL,
   `Duration` int(11) NOT NULL,
   `DurationSecondLeg` int(11) DEFAULT NULL,
+  `Canceled` BIGINT NOT NULL Default(0),
   PRIMARY KEY (`Id`),
   KEY `FlightsDepartureCode_FK` (`DepartureCode`),
   KEY `FlightsStopOverCode_FK` (`StopOverCode`),
@@ -104,6 +109,5 @@ CREATE TABLE `Flights` (
   CONSTRAINT `FlightsDestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`),
   CONSTRAINT `FlightsStopOverCode_FK` FOREIGN KEY (`StopOverCode`) REFERENCES `Destinations` (`DestinationCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 
