@@ -240,7 +240,7 @@ export const SearchPage = () => {
 											>
 												<AutoCompleteInput
 													variant='filled'
-													placeholder={airport?.city + " / " + airport?.code}
+													placeholder={airport ? (airport?.city + " / " + airport?.code) : ("City / CODE")}
 												/>
 												<AutoCompleteList>
 													{airports.map(({ code, city }) => (
