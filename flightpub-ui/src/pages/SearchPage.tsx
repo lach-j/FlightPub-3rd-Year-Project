@@ -89,32 +89,22 @@ export const SearchPage = () => {
 
 	const { httpGet } = useApi(endpoints.flightSearch);
 
-	//Formats from JavaScript Date type to string
-	const formatDate = (date: Date) => {
-		return new Date(date).toISOString().split('T')[0];
-	};
-	//authRequest : stores search query request
-	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-		departureDate: { date: formatDate(new Date()) }
-	});
-
 	//stateful airport storage
 	const [airport, setAirport] = useState<Airport | undefined>();
-
-	//update the user's location as a side effect
-	useEffect(() => {
-		if (!navigator.geolocation) return;
-		navigator.geolocation.getCurrentPosition(getPosition);
-	});
 
 	//handle the getCurrentPosition callback
 	function getPosition(position: any) {
 		setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
 	}
 
-	useEffect(() => {
-		handleSearchQueryUpdate('destinationCode', airport?.code);
-	}, [airport]);
+	//Formats from JavaScript Date type to string
+	const formatDate = (date: Date) => {
+		return new Date(date).toISOString().split('T')[0];
+	};
+	//authRequest : stores search query request
+	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+		departureDate: { date: formatDate(new Date()) },
+	});
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -122,6 +112,13 @@ export const SearchPage = () => {
 	const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
 		setSearchQuery({ ...searchQuery, [field]: value });
 	};
+
+	//update the user's location and set the search query
+	useEffect(() => {
+		if (!navigator.geolocation) return;
+		navigator.geolocation.getCurrentPosition(getPosition);
+		handleSearchQueryUpdate('destinationCode', airport?.code);
+	}, [airport]);
 
 	//Handles search event for search form
 	function handleSearch(e: FormEvent<HTMLFormElement>) {
@@ -239,11 +236,12 @@ export const SearchPage = () => {
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
-												defaultValue={airport?.code}
-												key={airport?.code}
 												onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
 											>
-												<AutoCompleteInput variant='filled' />
+												<AutoCompleteInput
+													variant='filled'
+													placeholder={airport?.city + " / " + airport?.code}
+												/>
 												<AutoCompleteList>
 													{airports.map(({ code, city }) => (
 														<AutoCompleteItem key={code} value={code} align='center'>
@@ -258,7 +256,7 @@ export const SearchPage = () => {
 									{/* Arrival location input */}
 									<Box>
 										<FormControl>
-											<FormLabel>Arrival Location:</FormLabel>
+											<FormLabel>Arrival Location</FormLabel>
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
@@ -304,7 +302,7 @@ export const SearchPage = () => {
 									{/* Ticket type input */}
 									<Box>
 										<FormControl isRequired>
-											<FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
+											<FormLabel htmlFor='flightClass'>Tickets </FormLabel>
 											<Accordion allowToggle w='20em'>
 												<AccordionItem>
 													<AccordionButton>
@@ -362,7 +360,7 @@ export const SearchPage = () => {
 									<Box>
 										{/* Handles type of flight (return or one-way) */}
 										<FormControl isRequired>
-											<FormLabel htmlFor='flightType'>Type: </FormLabel>
+											<FormLabel htmlFor='flightType'>Type </FormLabel>
 											<Select
 												onChange={(e) =>
 													handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
@@ -387,7 +385,7 @@ export const SearchPage = () => {
 								>
 									{/* Location tag inputs */}
 									<VStack align='left'>
-										<label>Selected Tags:</label>
+										<label>Selected Tags</label>
 										<Box width='15rem'>
 											<TagMessage length={searchTags.length} />
 											{searchTags.map((item) => (
@@ -410,7 +408,7 @@ export const SearchPage = () => {
 									</VStack>
 									<Box>
 										<FormControl>
-											<FormLabel>Location Tags:</FormLabel>
+											<FormLabel>Location Tags</FormLabel>
 											<HStack>
 												<AutoComplete
 													openOnFocus
