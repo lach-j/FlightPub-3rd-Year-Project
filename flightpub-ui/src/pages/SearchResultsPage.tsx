@@ -126,6 +126,10 @@ export function SearchResultsPage({
       accessor: 'duration',
       Header: 'Duration',
       transform: (value: any) => convertMinsToHM(value)
+    },
+		{
+      accessor: 'query.searchTags',
+      Header: 'Tags'
     }
   ];
   //sets airline information on-load
