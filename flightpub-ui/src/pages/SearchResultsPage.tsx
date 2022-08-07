@@ -128,7 +128,7 @@ export function SearchResultsPage({
       transform: (value: any) => convertMinsToHM(value)
     },
 		{
-      accessor: 'query.searchTags',
+      accessor: 'arrivalLocation.airport.tags',
       Header: 'Tags'
     }
   ];
