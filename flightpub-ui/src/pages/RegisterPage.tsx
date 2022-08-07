@@ -6,6 +6,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  HStack,
   Input,
   Link,
   Stack,
@@ -14,10 +15,11 @@ import {
 import React, { SyntheticEvent, useState, useEffect } from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
-import { Link as RouteLink, useNavigate } from 'react-router-dom';
+import { Link as RouteLink, NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { User } from '../models/User';
 import { endpoints } from '../constants/endpoints';
+import { FaArrowRight } from 'react-icons/fa';
 
 export const RegisterPage = () => {
   useEffect(() => {
@@ -94,9 +96,12 @@ export const RegisterPage = () => {
       <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
         <form onSubmit={handleRegister}>
           <Stack spacing='12'>
-            <Box>
+            <HStack justify='space-between'>
               <Heading>Sign Up</Heading>
-            </Box>
+              <Button as={NavLink} to={routes.home} variant='ghost' rightIcon={<FaArrowRight />}>
+                Continue as guest
+              </Button>
+            </HStack>
             <Box>
               <Stack spacing='3'>
                 {/* Email input */}

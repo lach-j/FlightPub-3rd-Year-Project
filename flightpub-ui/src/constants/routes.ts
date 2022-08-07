@@ -12,5 +12,15 @@ export const routes = {
   searchResults: '/searchResults',
   holidayPackages: '/holidays',
   passengerDetails: '/passengerDetails',
-  travelAgents: '/travel-agents',
+  travelAgents: {
+    base: '/travel-agents',
+    session: {
+      base: '/travel-agents/session',
+      id: '/travel-agents/session/:sessionId'
+    }
+  },
+  wishlist: {
+    base: '/wishlist',
+    new: '/wishlist/new'
+  }
 };

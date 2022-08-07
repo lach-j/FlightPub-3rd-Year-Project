@@ -2,7 +2,6 @@ package seng3150.team4.flightpub.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 import seng3150.team4.flightpub.controllers.requests.MessageRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
@@ -15,8 +14,6 @@ import seng3150.team4.flightpub.services.MessagingService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(path = "messages")
@@ -31,11 +28,11 @@ public class MessagingController {
   @Authorized
   @GetMapping("/{sessionId}")
   public EntityResponse<MessagingSession> getSession(@PathVariable long sessionId) {
-    var session = messagingService.getSessionById(sessionId);
+    var session = messagingService.getSessionByIdSecure(sessionId);
     return new EntityResponse<>(session);
   }
 
-  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
+  @Authorized
   @GetMapping
   public EntityCollectionResponse<MessagingSession> getAllSessions() {
     return new EntityCollectionResponse<>(messagingService.getAllSessions());
@@ -45,6 +42,7 @@ public class MessagingController {
   @PatchMapping("/{sessionId}")
   public StatusResponse addMessage(
       @PathVariable long sessionId, @RequestBody MessageRequest message) {
+    message.validate();
     messagingService.addMessageToSession(sessionId, message.getContent());
 
     return new StatusResponse(HttpStatus.ACCEPTED);
@@ -63,7 +61,14 @@ public class MessagingController {
     return new EntityResponse<>(messagingService.addCurrentUserToSession(sessionId));
   }
 
-  @Authorized
+  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR, UserRole.TRAVEL_AGENT})
+  @PatchMapping("/{sessionId}/resolve")
+  public StatusResponse resolveSession(@PathVariable long sessionId) {
+    messagingService.resolveSession(sessionId);
+    return new StatusResponse(HttpStatus.OK);
+  }
+
+  @Authorized(logResolution = false)
   @GetMapping("/{sessionId}/messages")
   public EntityCollectionResponse<Message> getMessagesSince(
       @PathVariable long sessionId, @RequestParam("since") String messagesSince) {

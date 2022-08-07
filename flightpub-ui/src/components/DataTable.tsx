@@ -62,7 +62,6 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
       </Thead>
       <Tbody>
         {data.sort(sortFunc).map((result: any) => {
-          console.log(_.get(result, keyAccessor));
           return (
             <Tr key={_.get(result, keyAccessor)}>
               {columns.map((column) => (

@@ -186,7 +186,7 @@ export function SearchResultsPage({
       >
         <Box w='300px' pt='30px' pl='30px'>
           <VStack divider={<StackDivider borderColor='gray.200' />} spacing={10} align='stretch'>
-            //Price filter slider
+            {/* //Price filter slider */}
             <VStack spacing={4} align='stretch'>
               <Text>
                 Price: ${minPrice} - ${maxPrice}
@@ -206,7 +206,7 @@ export function SearchResultsPage({
                 <RangeSliderThumb index={1} />
               </RangeSlider>
             </VStack>
-            //Flight duration slider
+            {/* //Flight duration slider */}
             <VStack spacing={4} align='stretch'>
               <Text>Max Duration: {Math.floor(durationFilter / 60)} hours</Text>
 
@@ -224,7 +224,7 @@ export function SearchResultsPage({
                 <SliderThumb />
               </Slider>
             </VStack>
-            //Airline filter selectbox
+            {/* //Airline filter selectbox */}
             <VStack spacing={4} align='stretch'>
               <Text>Airline:</Text>
               <Select placeholder='No Filter' onChange={filterByAirline}>
@@ -239,7 +239,7 @@ export function SearchResultsPage({
             </VStack>
           </VStack>
         </Box>
-        //DataTable for flight results based on filtered data
+        {/* //DataTable for flight results based on filtered data */}
         <Center flex='1'>
           <ResultsTable
             columns={columns}
