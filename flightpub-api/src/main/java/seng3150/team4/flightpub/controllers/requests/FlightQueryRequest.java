@@ -8,7 +8,6 @@ import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Map;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
@@ -22,8 +21,6 @@ public class FlightQueryRequest extends Validatable {
   private String destinationCode;
   private Map<String, Integer> tickets;
   private Boolean returnFlight;
-  private ArrayList<String> searchTags;
-  private Boolean multiLeg;
 
   private int page;
 
