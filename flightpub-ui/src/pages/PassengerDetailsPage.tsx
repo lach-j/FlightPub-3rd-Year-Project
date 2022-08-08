@@ -25,7 +25,7 @@ import {
 import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext} from 'react';
 import { Flight } from '../models/Flight';
 import { Navigate, useLocation } from 'react-router-dom';
-import * as api from '../services/ApiService';
+import * as yup from 'yup';
 import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -53,11 +53,58 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
 
     const { user, setUser } = useContext(UserContext);
 
+    const passengerSchema = 
+      yup.object().shape({
+        firstName: yup.string().matches(/[a-zA-Z]/).required(),
+        lastName: yup.string().matches(/[a-zA-Z]/).required(),
+        email: yup.string().email('must be a valid email').required(),
+        confEmail: yup.string().email('must be a valid email').required(),
+      });
 
     useEffect(() => {
         const {result} = state as {result: Flight};
         setFlight(result);
     }, [state]);
+
+    const submitEvent = async () => {
+        let success = true;
+        var fails = []
+        for (var i = 0; i < passengerCount; i++) {
+            let pass = {
+                firstName: firstNames[i],
+                lastName: lastNames[i],
+                email: emails[i],
+                confEmail: confEmails[i],
+            };
+            if(!(await validatePassenger(pass)) || emails[i] !== confEmails[i]) {
+                fails.push(i);
+                success = false;
+            }
+        }
+        if (!success) {
+            var message = "Incorrectly filled for passenger(s) ";
+            for (var i = 0; i < fails.length; i++) {
+                if ((fails.length - i) !== 1){
+                    message = message + (fails[i] + 1) + ", ";
+                } else {
+                    message = message + (fails[i] + 1) + ".";
+                }
+            }
+            toast({
+                title: 'Error!',
+                description: message,
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top'
+            });
+        }
+        return success;
+    }
+
+    const validatePassenger = async (passenger: any) => {
+        return await passengerSchema.isValid(passenger);
+    }
 
     const handleCurrentUser = () => {
         if (user) {
@@ -214,9 +261,9 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <FormControl>
                             <FormLabel>Class</FormLabel>
                             <Select>
-                                {ticketOptions.map((o) => {
+                                {ticketOptions.map((o) => 
                                     <option value={o.key}>{o.label}</option>
-                                })}
+                                )}
                             </Select>
                         </FormControl>
                         <Text
@@ -258,9 +305,9 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <FormControl>
                             <FormLabel>Class</FormLabel>
                             <Select>
-                                {ticketOptions.map((o) => {
+                                {ticketOptions.map((o) => 
                                     <option value={o.key}>{o.label}</option>
-                                })}
+                                )}
                             </Select>
                         </FormControl>
                     </VStack>
@@ -280,7 +327,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             <Button
             type='button'
             colorScheme='red'
-            onClick={() => {
+            onClick={async () => {
                 if (flight){
                     //checks here if flight in cart again just in case they somehow make their way to this page with a duplicate flight
                     if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
@@ -293,16 +340,18 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                             position: 'top'
                         });
                     } else {
-                        setCart((cart) => [...cart, flight]);
-                        toast({
-                            title: 'Success!',
-                            description: 'Flight added to cart successfully.',
-                            status: 'success',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top'
-                        });
-                        navigate(routes.home);
+                        if((await submitEvent())){
+                            setCart((cart) => [...cart, flight]);
+                            toast({
+                                title: 'Success!',
+                                description: 'Flight added to cart successfully.',
+                                status: 'success',
+                                duration: 9000,
+                                isClosable: true,
+                                position: 'top'
+                            });
+                            navigate(routes.home);
+                        }
                     }
                 }
                 else {
