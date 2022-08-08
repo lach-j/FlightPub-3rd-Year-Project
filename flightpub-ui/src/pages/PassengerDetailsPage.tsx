@@ -25,7 +25,7 @@ import {
 import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext} from 'react';
 import { Flight } from '../models/Flight';
 import { Navigate, useLocation } from 'react-router-dom';
-import * as api from '../services/ApiService';
+import * as yup from 'yup';
 import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
@@ -52,6 +52,14 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
       ];
 
     const { user, setUser } = useContext(UserContext);
+
+    const fieldSchema = 
+      yup.object().shape({
+        firstName: yup.string().matches(/[a-zA-Z]/).required(),
+        lastName: yup.string().matches(/[a-zA-Z]/).required(),
+        email: yup.string().email().required(),
+        confEmail: yup.string().email().required(),
+      });
 
 
     useEffect(() => {
