@@ -22,13 +22,14 @@ import {
     Button
   } from '@chakra-ui/react';
 
-import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext} from 'react';
 import { Flight } from '../models/Flight';
 import { Navigate, useLocation } from 'react-router-dom';
 import * as api from '../services/ApiService';
 import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
 
 export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
     const toast = useToast();
@@ -50,12 +51,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         { key: 'PME', label: 'Premium Economy' }
       ];
 
-    const [userData, setUserData] = useState<any>({
-        email: 'user@example.com',
-        fname: 'Joe',
-        lname: 'Blogs',
-        ph: '+6112345678'
-    });
+    const { user, setUser } = useContext(UserContext);
 
 
     useEffect(() => {
@@ -64,21 +60,32 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     }, [state]);
 
     const handleCurrentUser = () => {
-        let tempFNames = [...firstNames];
-        tempFNames[0] = userData.fname;
-        setFirstNames(tempFNames);
+        if (user) {
+            let tempFNames = [...firstNames];
+            tempFNames[0] = user.firstName;
+            setFirstNames(tempFNames);
 
-        let tempLNames = [...lastNames];
-        tempLNames[0] = userData.lname;
-        setLastNames(tempLNames);
+            let tempLNames = [...lastNames];
+            tempLNames[0] = user.lastName;
+            setLastNames(tempLNames);
 
-        let tempEmails = [...emails];
-        tempEmails[0] = userData.email;
-        setEmails(tempEmails);
+            let tempEmails = [...emails];
+            tempEmails[0] = user.email;
+            setEmails(tempEmails);
 
-        let tempConfEmails = [...confEmails];
-        tempConfEmails[0] = userData.email;
-        setConfEmails(tempConfEmails);
+            let tempConfEmails = [...confEmails];
+            tempConfEmails[0] = user.email;
+            setConfEmails(tempConfEmails);
+        } else {
+            toast({
+                title: 'Error!',
+                description: 'Not logged in!',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top'
+            });
+        }
     }
 
     const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,7 +286,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                     if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
                         toast({
                             title: 'Error!',
-                            description: 'Flight already in cart!.',
+                            description: 'Flight already in cart!',
                             status: 'error',
                             duration: 9000,
                             isClosable: true,
