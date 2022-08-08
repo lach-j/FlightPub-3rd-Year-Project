@@ -23,8 +23,9 @@ public class MessagingSession implements IEntity {
     @Column(name = "Status")
     private SessionStatus status;
 
-    @Column(name = "WishlistId")
-    private long wishlistId;
+    @OneToOne
+    @JoinColumn(name = "WishlistId")
+    private Wishlist wishlist;
 
     @JsonManagedReference
     @ManyToMany

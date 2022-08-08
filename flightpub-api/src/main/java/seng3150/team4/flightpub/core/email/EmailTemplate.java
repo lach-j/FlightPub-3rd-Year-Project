@@ -15,9 +15,11 @@ public abstract class EmailTemplate {
 
   // Convert class fields to map for SendGrid value replacement
   public abstract Map<String, Object> getMappedValues();
+  public abstract String getTemplateId();
+  public abstract String getFromName();
 
-  EmailTemplate(String templateId, String fromName) {
-    this.templateId = templateId;
-    this.fromName = fromName;
+  EmailTemplate() {
+    this.templateId = getTemplateId();
+    this.fromName = getFromName();
   }
 }

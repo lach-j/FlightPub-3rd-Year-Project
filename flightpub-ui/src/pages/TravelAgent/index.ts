@@ -1,2 +1,2 @@
 export * from './TravelAgentMessagingPage';
-export * from './TravelAgentPortalPage';
+export * from './SessionListComponent';

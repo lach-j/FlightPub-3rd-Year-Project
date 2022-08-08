@@ -14,7 +14,7 @@ import {
 import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { FaLightbulb, MdLocalAirport } from 'react-icons/all';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, SetStateAction, Dispatch } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { ColumnDefinition, DestinationCount, Flight, Price } from '../models';
@@ -36,12 +36,14 @@ const flightColumns: ColumnDefinition<any>[] = [
   }
 ];
 
-export const MapPage = () => {
+export const MapPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
   useEffect(() => {
     document.title = 'FlightPub - Map Search';
   });
 
   const toast = useToast();
+
+  const [cart, setCart] = cartState;
 
   // selectedAiport : airport selected by user on map
   const [selectedAirport, setSelectedAirport] = useState<Airport | undefined>();
@@ -199,11 +201,22 @@ export const MapPage = () => {
                         size='sm' 
                         onClick={() => {
                           if (result){
-                            navigate(routes.passengerDetails, {
-                              state: {
-                                result,
-                              }
-                            });
+                            if ([...cart.filter((cartItem) => cartItem.id === result?.id)].length > 0) {
+                              toast({
+                                  title: 'Error!',
+                                  description: 'Flight already in cart!.',
+                                  status: 'error',
+                                  duration: 9000,
+                                  isClosable: true,
+                                  position: 'top'
+                              });
+                            } else {
+                              navigate(routes.passengerDetails, {
+                                state: {
+                                  result,
+                                }
+                              });
+                            }
                           }
                         }}>
                           Book now

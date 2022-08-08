@@ -13,4 +13,5 @@ export const endpoints = {
   book: '/book',
   createHolidayPackage: '/holidayPackages/createHolidayPackage',
   holidayPackages: '/holidayPackages/getAll',
+  wishlist: '/wishlist'
 };

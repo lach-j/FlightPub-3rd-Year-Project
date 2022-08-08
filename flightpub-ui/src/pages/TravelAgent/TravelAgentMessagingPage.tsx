@@ -1,39 +1,62 @@
-import { Button, Heading, VStack, Box, HStack, Input, Text, Flex } from '@chakra-ui/react';
+import {
+  Button,
+  Heading,
+  VStack,
+  Box,
+  HStack,
+  Input,
+  Text,
+  Flex,
+  Avatar,
+  useToast
+} from '@chakra-ui/react';
 import React, { Children, useContext, useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import Message from '../../models/Message';
-import { MessagingSession } from '../../models/MessagingSession';
+import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
 import { useMessaging } from '../../services/MessagingService';
 import * as _ from 'lodash';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { User } from '../../models';
 import { UserContext } from '../../services/UserContext';
 import moment from 'moment';
-
+import * as uuid from 'uuid';
+import { ApiError } from '../../services/ApiService';
+import { routes } from '../../constants/routes';
 export const TravelAgentMessagingPage = () => {
   const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();
   const [messages, setMessages] = useState<Message[]>([]);
   const messageSubscription = useRef<NodeJS.Timeout>();
-  const [currentUser, setCurrentUser] = useState<User | undefined>();
 
-  const userState = useContext(UserContext);
-
-  useEffect(() => {
-    if (!userState) return;
-
-    const [userData, _] = userState;
-
-    setCurrentUser(userData);
-  }, [userState]);
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const { getSession, subscribeToMessages, sendNewMessage } = useMessaging(
     parseInt(sessionId || '-1')
   );
 
   useEffect(() => {
-    getSession().then(setSessionData);
+    getSession()
+      .then(setSessionData)
+      .catch((err: ApiError) => {
+        if (err.statusCode === 400) {
+          toast({
+            title: err.name,
+            description: 'The requested session was not found',
+            status: 'error'
+          });
+          navigate(routes.travelAgents.base);
+        }
+      });
   }, [sessionId]);
+
+  useEffect(() => {
+    return () => {
+      if (messageSubscription?.current) clearInterval(messageSubscription.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!sessionData) return;
@@ -49,15 +72,23 @@ export const TravelAgentMessagingPage = () => {
       },
       (error) => {
         messageSubscription.current && clearInterval(messageSubscription.current);
-      }
+      },
+      3000
     );
   }, [sessionData]);
 
   const handleSendMessage = (content: string) => {
+    if (!content) return;
     sendNewMessage(content);
-    setMessages((m) =>
-      _.uniqBy([...m, { content, user: currentUser, dateSent: new Date() } as Message], 'id')
-    );
+
+    setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
+  };
+
+  const getSessionHeader = () => {
+    return sessionData?.users
+      .filter((u) => user?.id !== u.id)
+      .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
+      .join(', ');
   };
 
   return (
@@ -75,15 +106,18 @@ export const TravelAgentMessagingPage = () => {
       right={0}
       bottom={0}
     >
-      <Heading as='h2'>Test</Heading>
+      <Heading as='h2'>{getSessionHeader()}</Heading>
       {sessionData && (
         <MessageContainer>
           {messages?.map((message) => (
-            <MessageComponent key={message.id} message={message} currentUser={currentUser} />
+            <MessageComponent key={message?.id ?? uuid.v4()} message={message} currentUser={user} />
           ))}
         </MessageContainer>
       )}
-      <MessageSendBar onMessageSent={handleSendMessage} />
+      <MessageSendBar
+        onMessageSent={handleSendMessage}
+        disabled={sessionData?.status === SessionStatus.RESOLVED}
+      />
     </Box>
   );
 };
@@ -95,11 +129,11 @@ const MessageContainer = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const numChildren = Children.count(children);
 
-    if (boxRef.current && messageCount != numChildren)
+    if (boxRef.current && messageCount !== numChildren)
       boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: 'smooth' });
 
     setMessageCount(Children.count(children));
-  }, [boxRef.current, children]);
+  }, [boxRef.current, children, messageCount]);
 
   return (
     <Box
@@ -136,7 +170,7 @@ const MessageComponent = ({
   currentUser
 }: {
   message: Message;
-  currentUser: User | undefined;
+  currentUser: User | null;
 }) => {
   const fromCurrentUser = message.user?.id !== currentUser?.id;
   const dateSent =
@@ -147,16 +181,22 @@ const MessageComponent = ({
       flexDir='column'
       alignItems={fromCurrentUser ? 'flex-start' : 'flex-end'}
     >
-      <Box
-        py='1'
-        px='3'
-        bgColor={fromCurrentUser ? 'blue.500' : 'red.500'}
-        color='white'
-        rounded='full'
-        w='fit-content'
-      >
-        <Text>{message.content}</Text>
-      </Box>
+      {' '}
+      <HStack>
+        {fromCurrentUser && (
+          <Avatar size='sm' name={`${message.user.firstName} ${message.user.lastName}`} />
+        )}
+        <Box
+          py='1'
+          px='3'
+          bgColor={fromCurrentUser ? 'blue.500' : 'red.500'}
+          color='white'
+          rounded='full'
+          w='fit-content'
+        >
+          <Text>{message.content}</Text>
+        </Box>
+      </HStack>
       <Text
         textAlign={fromCurrentUser ? 'left' : 'right'}
         fontSize='sm'
@@ -168,7 +208,13 @@ const MessageComponent = ({
   );
 };
 
-const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) => void }) => {
+const MessageSendBar = ({
+  onMessageSent,
+  disabled = false
+}: {
+  onMessageSent?: (content: string) => void;
+  disabled?: boolean;
+}) => {
   const [messageContent, setMessageContent] = useState('');
 
   const handleSendMessage = () => {
@@ -186,12 +232,15 @@ const MessageSendBar = ({ onMessageSent }: { onMessageSent?: (content: string) =
         value={messageContent}
         onChange={(e) => setMessageContent(e.target.value)}
         onKeyDown={handleKeyEvent}
+        disabled={disabled}
+        placeholder={disabled ? 'You can no longer reply to this session' : ''}
       />
       <Button
         aria-label='send-button'
         rightIcon={<FaPaperPlane />}
         colorScheme='blue'
         onClick={handleSendMessage}
+        disabled={disabled}
       >
         Send
       </Button>
