@@ -23,7 +23,7 @@ import {
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
 import { routes } from '../constants/routes';
-import { Flight, User } from '../models';
+import { Flight } from '../models';
 import { UserContext } from '../services/UserContext';
 import { UserRole } from '../models/User';
 
@@ -33,26 +33,15 @@ export default function Header({
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) {
   const [cart, setCart] = cartState;
-  const [user, setUser] = useState<User | undefined>();
 
-  const userState = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (!userState) return;
-
-    setUser(userState[0]);
-    console.log(userState[0]);
-  }, [userState]);
-
   const handleLogout = () => {
-    if (userState) {
-      const [_, setUser] = userState;
-      setUser(undefined);
-      localStorage.removeItem('bearer-token');
-      localStorage.removeItem('user-id');
-    }
+    setUser(null);
+    localStorage.removeItem('bearer-token');
+    localStorage.removeItem('user-id');
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   };
 
@@ -79,10 +68,13 @@ export default function Header({
                     My Account
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  {(user?.role === UserRole.TRAVEL_AGENT ||
-                    user?.role === UserRole.ADMINISTRATOR) && (
-                    <MenuItem as={NavLink} to={routes.travelAgents}>
+                  {user?.role === UserRole.TRAVEL_AGENT || user?.role === UserRole.ADMINISTRATOR ? (
+                    <MenuItem as={NavLink} to={routes.travelAgents.base}>
                       Travel Agent Portal
+                    </MenuItem>
+                  ) : (
+                    <MenuItem as={NavLink} to={routes.wishlist.base}>
+                      My Wishlist
                     </MenuItem>
                   )}
                 </>

@@ -15,7 +15,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /** Service used to provide logic for User management tasks. */
 @Service
@@ -25,7 +24,6 @@ public class UserService implements IUserService {
   private final IUserRepository userRepository;
   private final IEmailSenderService emailSenderService;
   private final CurrentUserContext currentUserContext;
-
 
   // Registers a new user
   @Override
@@ -39,7 +37,10 @@ public class UserService implements IUserService {
 
     if (user.getRole() != UserRole.STANDARD_USER) {
       if (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR) {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("Only users with the 'ADMINISTRATOR' role can create %s", user.getRole()));
+        throw new ResponseStatusException(
+            HttpStatus.FORBIDDEN,
+            String.format(
+                "Only users with the 'ADMINISTRATOR' role can create %s", user.getRole()));
       }
     }
 
@@ -96,10 +97,19 @@ public class UserService implements IUserService {
     var user = userRepository.findById(userId);
     if (user.isEmpty())
       throw new EntityNotFoundException(String.format("User with id %s was not found", userId));
-    if (currentUserContext.getCurrentUserId() != userId && (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR || currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT))
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
     // Otherwise, return the user
     return user.get();
+  }
+
+  @Override
+  public User getUserByIdSecure(long userId) {
+    if (currentUserContext.getCurrentUserId() != userId
+        && (currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
+            || currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT))
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
+
+    return getUserById(userId);
   }
 
   @Override

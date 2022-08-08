@@ -1,16 +1,17 @@
 import Message from './Message';
 import { User } from './User';
+import { Wishlist } from './Wishlist';
 
 export interface MessagingSession {
   id: number;
   status: SessionStatus;
   users: User[];
   messages: Message[];
-  wishlistId: number;
+  wishlist: Wishlist;
 }
 
-enum SessionStatus {
-  TRIAGE = 0,
-  IN_PROGRESS = 1,
-  RESOLVED = 2
+export enum SessionStatus {
+  TRIAGE = 'TRIAGE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  RESOLVED = 'RESOLVED'
 }
