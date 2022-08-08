@@ -38,15 +38,10 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const [passengerCount, setPassengerCount] = useState<number>(1);
     const { state } = useLocation();
 
-    const [defFirstName, setDefFirstName] =  useState<string>('');
-    const [defLastName, setDefLastName] =  useState<string>('');
-    const [defEmail, setDefEmail] =  useState<string>('');
-    const [defConfEmail, setDefConfEmail] =  useState<string>('');
-
-    const handleFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefFirstName(event.target.value);
-    const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefLastName(event.target.value);
-    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefEmail(event.target.value);
-    const handleConfEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefConfEmail(event.target.value);
+    const [firstNames, setFirstNames] =  useState<string[]>(['']);
+    const [lastNames, setLastNames] =  useState<string[]>(['']);
+    const [emails, setEmails] =  useState<string[]>(['']);
+    const [confEmails, setConfEmails] =  useState<string[]>(['']);
 
     const ticketOptions = [
         { key: 'BUS', label: 'Business Class' },
@@ -69,10 +64,46 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     }, [state]);
 
     const handleCurrentUser = () => {
-        setDefFirstName(userData.fname);
-        setDefLastName(userData.lname);
-        setDefEmail(userData.email);
-        setDefConfEmail(userData.email);
+        let tempFNames = [...firstNames];
+        tempFNames[0] = userData.fname;
+        setFirstNames(tempFNames);
+
+        let tempLNames = [...lastNames];
+        tempLNames[0] = userData.lname;
+        setLastNames(tempLNames);
+
+        let tempEmails = [...emails];
+        tempEmails[0] = userData.email;
+        setEmails(tempEmails);
+
+        let tempConfEmails = [...confEmails];
+        tempConfEmails[0] = userData.email;
+        setConfEmails(tempConfEmails);
+    }
+
+    const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        switch(event.target.name) {
+            case "fname":
+                let tempFNames = [...firstNames];
+                tempFNames[index] = event.target.value;
+                setFirstNames(tempFNames);
+                break;
+            case "lname":
+                let tempLNames = [...lastNames];
+                tempLNames[index] = event.target.value;
+                setLastNames(tempLNames);
+                break;
+            case "email":
+                let tempEmails = [...emails];
+                tempEmails[index] = event.target.value;
+                setEmails(tempEmails);
+                break;
+            case "confemail":
+                let tempConfEmails = [...confEmails];
+                tempConfEmails[index] = event.target.value;
+                setConfEmails(tempConfEmails);
+                break;
+        }
     }
 
     const renderFlightDetails = () => {
@@ -156,21 +187,21 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <HStack w='full'>
                             <FormControl flex={1}>
                                 <FormLabel>First Name</FormLabel>
-                                <Input value={defFirstName} name='defFirstName'/>
+                                <Input value={firstNames[0]} name='fname' onChange={handleChange(0)}/>
                             </FormControl>
                             <FormControl flex={1}>
                                 <FormLabel>Last Name</FormLabel>
-                                <Input value={defLastName} name='defLastName'/>
+                                <Input value={lastNames[0]} name='lname' onChange={handleChange(0)}/>
                             </FormControl>
                         </HStack>
                         <HStack w='full'>
                             <FormControl flex={1}>
                                 <FormLabel>Email Address</FormLabel>
-                                <Input value={defEmail} name='defEmail'/>
+                                <Input value={emails[0]} name='email' onChange={handleChange(0)}/>
                             </FormControl>
                             <FormControl flex={1}>
                                 <FormLabel>Confirm Email Address</FormLabel>
-                                <Input value={defConfEmail} name='defConfEmail'/>
+                                <Input value={confEmails[0]} name='confemail' onChange={handleChange(0)}/>
                             </FormControl>
                         </HStack>
                         <FormControl>
@@ -200,21 +231,21 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <HStack w='full'>
                             <FormControl flex={1}>
                                 <FormLabel>First Name</FormLabel>
-                                <Input/>
+                                <Input value={firstNames[i]} name={'fname'} onChange={handleChange(i)}/>
                             </FormControl>
                             <FormControl flex={1}>
                                 <FormLabel>Last Name</FormLabel>
-                                <Input/>
+                                <Input value={lastNames[i]} name={'lname'} onChange={handleChange(i)}/>
                             </FormControl>
                         </HStack>
                         <HStack w='full'>
                             <FormControl flex={1}>
                                 <FormLabel>Email Address</FormLabel>
-                                <Input/>
+                                <Input value={emails[i]} name={'email'} onChange={handleChange(i)}/>
                             </FormControl>
                             <FormControl flex={1}>
                                 <FormLabel>Confirm Email Address</FormLabel>
-                                <Input/>
+                                <Input value={confEmails[i]} name={'confemail'} onChange={handleChange(i)}/>
                             </FormControl>
                         </HStack>
                         <FormControl>
