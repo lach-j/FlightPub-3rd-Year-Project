@@ -76,7 +76,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                 email: emails[i],
                 confEmail: confEmails[i],
             };
-            if(!(await validatePassenger(pass))) {
+            if(!(await validatePassenger(pass)) || emails[i] !== confEmails[i]) {
                 fails.push(i);
                 success = false;
             }
