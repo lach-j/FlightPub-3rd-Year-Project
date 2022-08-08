@@ -32,8 +32,7 @@ public class SecurityFilter implements HandlerInterceptor {
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-    if (!(handler instanceof HandlerMethod))
-      return true;
+    if (!(handler instanceof HandlerMethod)) return true;
 
     HandlerMethod handlerMethod = (HandlerMethod) handler;
 
@@ -42,7 +41,10 @@ public class SecurityFilter implements HandlerInterceptor {
       return true;
     }
 
-    String path = request
+    var logResult = authAnnotation.logResolution();
+
+    String path =
+        request
             .getRequestURI()
             .substring(request.getContextPath().length())
             .replaceAll("[/]+$", "");
@@ -58,19 +60,30 @@ public class SecurityFilter implements HandlerInterceptor {
       var userId = jwt.getClaim("id").asLong();
       var userRole = UserRole.valueOf(jwt.getClaim("role").asInt()).orElse(UserRole.STANDARD_USER);
       currentUserContext.setCurrentUserId(userId);
-      currentUserContext.setCurrentUserRole(userRole); // set the user role if present, otherwise make them a standard user
+      currentUserContext.setCurrentUserRole(
+          userRole); // set the user role if present, otherwise make them a standard user
 
       if (Arrays.stream(authAnnotation.allowedRoles()).noneMatch(r -> r == userRole))
         throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN, String.format("The user does have a valid role. Allowed roles are: %s", Arrays.stream(authAnnotation.allowedRoles()).map(Enum::name).collect(Collectors.joining(", "))));
-
-      LOG.info("User with id {} approved to access restricted path \"/{}\" [{}]", userId, path, method);
+            HttpStatus.FORBIDDEN,
+            String.format(
+                "The user does have a valid role. Allowed roles are: %s",
+                Arrays.stream(authAnnotation.allowedRoles())
+                    .map(Enum::name)
+                    .collect(Collectors.joining(", "))));
+      if (logResult)
+        LOG.info(
+            "User with id {} approved to access restricted path \"/{}\" [{}]",
+            userId,
+            path,
+            method);
     } catch (JWTVerificationException exception) {
-      LOG.info(
-          "User with id {} attempted to access restricted route \"/{}\" [{}]",
-          request.getRemoteAddr() + ":" + request.getRemotePort(),
-          path,
-          method);
+      if (logResult)
+        LOG.info(
+            "User with id {} denied access restricted route \"/{}\" [{}]",
+            request.getRemoteAddr() + ":" + request.getRemotePort(),
+            path,
+            method);
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "The provided token is invalid or has expired");
     }
@@ -84,12 +97,12 @@ public class SecurityFilter implements HandlerInterceptor {
   }
 
   private String resolveTokenFromHeaders(String authHeader) {
-      if (authHeader == null) return null;
+    if (authHeader == null) return null;
 
-      if (authHeader.toLowerCase().startsWith("bearer ")) {
-          return authHeader.replaceAll("(?i)bearer ", "");
-      }
-      return null;
+    if (authHeader.toLowerCase().startsWith("bearer ")) {
+      return authHeader.replaceAll("(?i)bearer ", "");
+    }
+    return null;
   }
 
   private static <T> T ifNullDefault(T in, T def) {

@@ -3,12 +3,20 @@ import { endpoints } from '../constants/endpoints';
 import { User } from '../models';
 import { useApi } from './ApiService';
 
-const UserContext = createContext<
-  [User | undefined, React.Dispatch<React.SetStateAction<User | undefined>>] | undefined
->(undefined);
+type UserContextType = {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+};
+
+const iUserContextState = {
+  user: null,
+  setUser: () => {}
+};
+
+const UserContext = createContext<UserContextType>(iUserContextState);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const userDetails = useState<User | undefined>();
+  const [userDetails, setUserDetails] = useState<User | null>(null);
   const { httpGet } = useApi(endpoints.users);
 
   useEffect(() => {
@@ -16,12 +24,15 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (!userId) return;
 
     httpGet('/' + userId).then((user: User) => {
-      console.log(user);
-      userDetails[1](user);
+      setUserDetails(user);
     });
   }, []);
 
-  return <UserContext.Provider value={userDetails}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user: userDetails, setUser: setUserDetails }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export { UserProvider, UserContext };

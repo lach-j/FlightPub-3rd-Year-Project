@@ -37,7 +37,7 @@ public class UserController {
   @Authorized
   @GetMapping("/{userId}")
   public EntityResponse<User> getUserById(@PathVariable Long userId) {
-    var user = userService.getUserById(userId);
+    var user = userService.getUserByIdSecure(userId);
     return new EntityResponse<>(user);
   }
 

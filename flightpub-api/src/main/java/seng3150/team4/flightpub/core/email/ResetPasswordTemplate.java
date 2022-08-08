@@ -19,7 +19,6 @@ public class ResetPasswordTemplate extends EmailTemplate {
   private final String UI_URL;
 
   public ResetPasswordTemplate(String uiUrl) {
-    super(TEMPLATE_ID, FROM_NAME);
     this.UI_URL = uiUrl;
   }
 
@@ -35,5 +34,15 @@ public class ResetPasswordTemplate extends EmailTemplate {
   @Override
   public Map<String, Object> getMappedValues() {
     return Map.of("firstName", firstName, "resetUrl", getResetTokenUrl());
+  }
+
+  @Override
+  public String getTemplateId() {
+    return TEMPLATE_ID;
+  }
+
+  @Override
+  public String getFromName() {
+    return FROM_NAME;
   }
 }

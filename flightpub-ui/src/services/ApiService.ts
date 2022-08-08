@@ -9,7 +9,7 @@ const apiBaseUrl =
     : 'https://flightpub-team4.herokuapp.com';
 
 export const useApi = (_endpoint: string = '') => {
-  const [baseEndpoint, setBaseEndpoint] = useState(_endpoint);
+  const [baseEndpoint] = useState(_endpoint);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,11 +56,11 @@ export const useApi = (_endpoint: string = '') => {
     return handleResponse(res);
   };
 
-  const httpPatch = async (endpoint: string, reqBody: object): Promise<any> => {
+  const httpPatch = async (endpoint: string, reqBody?: object): Promise<any> => {
     const res = await fetch(`${resolveEndpoint(endpoint)}`, {
       ...getOptions(),
       method: 'PATCH',
-      body: JSON.stringify(reqBody)
+      body: reqBody && JSON.stringify(reqBody)
     });
     return handleResponse(res);
   };
@@ -79,6 +79,8 @@ export const useApi = (_endpoint: string = '') => {
 
       if (res.status === 401 && location.pathname !== routes.login) {
         navigate(routes.login, { state: { redirectUrl: location.pathname } });
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('bearer-token');
       }
 
       if (res.status === 403) {

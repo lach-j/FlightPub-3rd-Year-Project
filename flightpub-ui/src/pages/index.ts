@@ -9,4 +9,7 @@ export * from './RegisterPage';
 export * from './SearchPage';
 export * from './SearchResultsPage';
 export * from './HolidayPackagesPage';
+export * from './PassengerDetailsPage';
 export * from './TravelAgent';
+export * from './Wishlist/WishlistCreatorPage';
+export * from './Wishlist/WishlistMainScreen';
