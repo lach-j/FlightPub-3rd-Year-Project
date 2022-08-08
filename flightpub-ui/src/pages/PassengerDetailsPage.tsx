@@ -38,6 +38,16 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const [passengerCount, setPassengerCount] = useState<number>(1);
     const { state } = useLocation();
 
+    const [defFirstName, setDefFirstName] =  useState<string>('');
+    const [defLastName, setDefLastName] =  useState<string>('');
+    const [defEmail, setDefEmail] =  useState<string>('');
+    const [defConfEmail, setDefConfEmail] =  useState<string>('');
+
+    const handleFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefFirstName(event.target.value);
+    const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefLastName(event.target.value);
+    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefEmail(event.target.value);
+    const handleConfEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setDefConfEmail(event.target.value);
+
     const ticketOptions = [
         { key: 'BUS', label: 'Business Class' },
         { key: 'ECO', label: 'Economy' },
@@ -45,11 +55,25 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         { key: 'PME', label: 'Premium Economy' }
       ];
 
+    const [userData, setUserData] = useState<any>({
+        email: 'user@example.com',
+        fname: 'Joe',
+        lname: 'Blogs',
+        ph: '+6112345678'
+    });
+
 
     useEffect(() => {
         const {result} = state as {result: Flight};
         setFlight(result);
     }, [state]);
+
+    const handleCurrentUser = () => {
+        setDefFirstName(userData.fname);
+        setDefLastName(userData.lname);
+        setDefEmail(userData.email);
+        setDefConfEmail(userData.email);
+    }
 
     const renderFlightDetails = () => {
         if(flight) {
@@ -125,39 +149,85 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const renderPassengerForms = () => {
         var forms = [];
         for (var i = 0; i < passengerCount; i++) {
-            forms.push(
-                <VStack>
-                    <Text>Passenger {i + 1}</Text>
-                    <HStack w='full'>
-                        <FormControl flex={1}>
-                            <FormLabel>First Name</FormLabel>
-                            <Input/>
+            if (i === 0) {
+                forms.push(
+                    <VStack>
+                        <Text>Passenger {i + 1}</Text>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>First Name</FormLabel>
+                                <Input value={defFirstName} name='defFirstName'/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Last Name</FormLabel>
+                                <Input value={defLastName} name='defLastName'/>
+                            </FormControl>
+                        </HStack>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>Email Address</FormLabel>
+                                <Input value={defEmail} name='defEmail'/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Confirm Email Address</FormLabel>
+                                <Input value={defConfEmail} name='defConfEmail'/>
+                            </FormControl>
+                        </HStack>
+                        <FormControl>
+                            <FormLabel>Class</FormLabel>
+                            <Select>
+                                {ticketOptions.map((o) => {
+                                    <option value={o.key}>{o.label}</option>
+                                })}
+                            </Select>
                         </FormControl>
-                        <FormControl flex={1}>
-                            <FormLabel>Last Name</FormLabel>
-                            <Input/>
+                        <Text
+                            as='u'
+                            colorScheme='gray'
+                            onClick={() => {
+                                handleCurrentUser();
+                            }}
+                            >
+                            {' '}
+                            Set as Me
+                        </Text>
+                    </VStack>
+                );
+            } else {
+                forms.push(
+                    <VStack>
+                        <Text>Passenger {i + 1}</Text>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>First Name</FormLabel>
+                                <Input/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Last Name</FormLabel>
+                                <Input/>
+                            </FormControl>
+                        </HStack>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>Email Address</FormLabel>
+                                <Input/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Confirm Email Address</FormLabel>
+                                <Input/>
+                            </FormControl>
+                        </HStack>
+                        <FormControl>
+                            <FormLabel>Class</FormLabel>
+                            <Select>
+                                {ticketOptions.map((o) => {
+                                    <option value={o.key}>{o.label}</option>
+                                })}
+                            </Select>
                         </FormControl>
-                    </HStack>
-                    <HStack w='full'>
-                        <FormControl flex={1}>
-                            <FormLabel>Email Address</FormLabel>
-                            <Input/>
-                        </FormControl>
-                        <FormControl flex={1}>
-                            <FormLabel>Confirm Email Address</FormLabel>
-                            <Input/>
-                        </FormControl>
-                    </HStack>
-                    <FormControl>
-                        <FormLabel>Class</FormLabel>
-                        <Select>
-                            {ticketOptions.map((o) => {
-                                <option value={o.key}>{o.label}</option>
-                            })}
-                        </Select>
-                    </FormControl>
-                </VStack>
-            );
+                    </VStack>
+                );
+            }
         }
         return forms;
     }
