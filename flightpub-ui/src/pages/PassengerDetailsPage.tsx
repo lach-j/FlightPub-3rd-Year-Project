@@ -261,9 +261,9 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <FormControl>
                             <FormLabel>Class</FormLabel>
                             <Select>
-                                {ticketOptions.map((o) => {
+                                {ticketOptions.map((o) => 
                                     <option value={o.key}>{o.label}</option>
-                                })}
+                                )}
                             </Select>
                         </FormControl>
                         <Text
@@ -305,9 +305,9 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <FormControl>
                             <FormLabel>Class</FormLabel>
                             <Select>
-                                {ticketOptions.map((o) => {
+                                {ticketOptions.map((o) => 
                                     <option value={o.key}>{o.label}</option>
-                                })}
+                                )}
                             </Select>
                         </FormControl>
                     </VStack>
