@@ -22,13 +22,14 @@ import {
     Button
   } from '@chakra-ui/react';
 
-import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext} from 'react';
 import { Flight } from '../models/Flight';
 import { Navigate, useLocation } from 'react-router-dom';
 import * as api from '../services/ApiService';
 import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
 
 export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
     const toast = useToast();
@@ -38,6 +39,11 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const [passengerCount, setPassengerCount] = useState<number>(1);
     const { state } = useLocation();
 
+    const [firstNames, setFirstNames] =  useState<string[]>(['']);
+    const [lastNames, setLastNames] =  useState<string[]>(['']);
+    const [emails, setEmails] =  useState<string[]>(['']);
+    const [confEmails, setConfEmails] =  useState<string[]>(['']);
+
     const ticketOptions = [
         { key: 'BUS', label: 'Business Class' },
         { key: 'ECO', label: 'Economy' },
@@ -45,11 +51,67 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         { key: 'PME', label: 'Premium Economy' }
       ];
 
+    const { user, setUser } = useContext(UserContext);
+
 
     useEffect(() => {
         const {result} = state as {result: Flight};
         setFlight(result);
     }, [state]);
+
+    const handleCurrentUser = () => {
+        if (user) {
+            let tempFNames = [...firstNames];
+            tempFNames[0] = user.firstName;
+            setFirstNames(tempFNames);
+
+            let tempLNames = [...lastNames];
+            tempLNames[0] = user.lastName;
+            setLastNames(tempLNames);
+
+            let tempEmails = [...emails];
+            tempEmails[0] = user.email;
+            setEmails(tempEmails);
+
+            let tempConfEmails = [...confEmails];
+            tempConfEmails[0] = user.email;
+            setConfEmails(tempConfEmails);
+        } else {
+            toast({
+                title: 'Error!',
+                description: 'Not logged in!',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top'
+            });
+        }
+    }
+
+    const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        switch(event.target.name) {
+            case "fname":
+                let tempFNames = [...firstNames];
+                tempFNames[index] = event.target.value;
+                setFirstNames(tempFNames);
+                break;
+            case "lname":
+                let tempLNames = [...lastNames];
+                tempLNames[index] = event.target.value;
+                setLastNames(tempLNames);
+                break;
+            case "email":
+                let tempEmails = [...emails];
+                tempEmails[index] = event.target.value;
+                setEmails(tempEmails);
+                break;
+            case "confemail":
+                let tempConfEmails = [...confEmails];
+                tempConfEmails[index] = event.target.value;
+                setConfEmails(tempConfEmails);
+                break;
+        }
+    }
 
     const renderFlightDetails = () => {
         if(flight) {
@@ -125,39 +187,85 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const renderPassengerForms = () => {
         var forms = [];
         for (var i = 0; i < passengerCount; i++) {
-            forms.push(
-                <VStack>
-                    <Text>Passenger {i + 1}</Text>
-                    <HStack w='full'>
-                        <FormControl flex={1}>
-                            <FormLabel>First Name</FormLabel>
-                            <Input/>
+            if (i === 0) {
+                forms.push(
+                    <VStack>
+                        <Text>Passenger {i + 1}</Text>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>First Name</FormLabel>
+                                <Input value={firstNames[0]} name='fname' onChange={handleChange(0)}/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Last Name</FormLabel>
+                                <Input value={lastNames[0]} name='lname' onChange={handleChange(0)}/>
+                            </FormControl>
+                        </HStack>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>Email Address</FormLabel>
+                                <Input value={emails[0]} name='email' onChange={handleChange(0)}/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Confirm Email Address</FormLabel>
+                                <Input value={confEmails[0]} name='confemail' onChange={handleChange(0)}/>
+                            </FormControl>
+                        </HStack>
+                        <FormControl>
+                            <FormLabel>Class</FormLabel>
+                            <Select>
+                                {ticketOptions.map((o) => {
+                                    <option value={o.key}>{o.label}</option>
+                                })}
+                            </Select>
                         </FormControl>
-                        <FormControl flex={1}>
-                            <FormLabel>Last Name</FormLabel>
-                            <Input/>
+                        <Text
+                            as='u'
+                            colorScheme='gray'
+                            onClick={() => {
+                                handleCurrentUser();
+                            }}
+                            >
+                            {' '}
+                            Set as Me
+                        </Text>
+                    </VStack>
+                );
+            } else {
+                forms.push(
+                    <VStack>
+                        <Text>Passenger {i + 1}</Text>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>First Name</FormLabel>
+                                <Input value={firstNames[i]} name={'fname'} onChange={handleChange(i)}/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Last Name</FormLabel>
+                                <Input value={lastNames[i]} name={'lname'} onChange={handleChange(i)}/>
+                            </FormControl>
+                        </HStack>
+                        <HStack w='full'>
+                            <FormControl flex={1}>
+                                <FormLabel>Email Address</FormLabel>
+                                <Input value={emails[i]} name={'email'} onChange={handleChange(i)}/>
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Confirm Email Address</FormLabel>
+                                <Input value={confEmails[i]} name={'confemail'} onChange={handleChange(i)}/>
+                            </FormControl>
+                        </HStack>
+                        <FormControl>
+                            <FormLabel>Class</FormLabel>
+                            <Select>
+                                {ticketOptions.map((o) => {
+                                    <option value={o.key}>{o.label}</option>
+                                })}
+                            </Select>
                         </FormControl>
-                    </HStack>
-                    <HStack w='full'>
-                        <FormControl flex={1}>
-                            <FormLabel>Email Address</FormLabel>
-                            <Input/>
-                        </FormControl>
-                        <FormControl flex={1}>
-                            <FormLabel>Confirm Email Address</FormLabel>
-                            <Input/>
-                        </FormControl>
-                    </HStack>
-                    <FormControl>
-                        <FormLabel>Class</FormLabel>
-                        <Select>
-                            {ticketOptions.map((o) => {
-                                <option value={o.key}>{o.label}</option>
-                            })}
-                        </Select>
-                    </FormControl>
-                </VStack>
-            );
+                    </VStack>
+                );
+            }
         }
         return forms;
     }
@@ -178,7 +286,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                     if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
                         toast({
                             title: 'Error!',
-                            description: 'Flight already in cart!.',
+                            description: 'Flight already in cart!',
                             status: 'error',
                             duration: 9000,
                             isClosable: true,
