@@ -11,6 +11,8 @@ export const endpoints = {
   airlines: '/airlines',
   recommended: '/flights/recommended',
   book: '/book',
-  admin: '/admin',
+  covidUpdate: '/covidUpdate',
+  airlineUpdate: '/airlineUpdate',
+  flightUpdate: '/flightUpdate'
 
 };

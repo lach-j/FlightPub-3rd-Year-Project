@@ -5,11 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /** models the Airlines table in the database */
 @Entity
@@ -19,18 +17,16 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class SponsoredAirlines {
-    @Column(name = "AirlineCode")
-    @Id private String airlineCode;
+    @Column(name = "SponsoredCode")
+    @Id private String SponsoredCode;
 
-    @Column(name = "AirlineName")
-    private String airlineName;
-
-    @Column(name = "CountryCode3")
-    private String countryCode;
-
-    @Column(name = "CovidStartDate")
+    @Column(name = "SponsoredStartDate")
     private LocalDateTime CovidStartDate;
 
-    @Column(name = "CovidEndDate")
+    @Column(name = "SponsoredEndDate")
     private String CovidEndDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AirlineCode", referencedColumnName = "SponsoredCode")
+    private Set<Airline> airlines;
 }

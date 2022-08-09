@@ -101,15 +101,6 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
         { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) },
     ];
 
-
-    //Gets airport code for nearest airport on-load to run reccomended search query
-    useEffect(() => {
-        if (!airport) return;
-        httpGet(endpoints.recommended + '/' + airport.code)
-            .then(setRecommended);
-    }, [airport]);
-
-
     return (
         <>
             <Heading mb='1em'>Cancel Flight</Heading>
