@@ -30,7 +30,7 @@ public class SavedPayment implements IEntity {
   @Column(name = "Type")
   private PaymentType type;
 
-  private enum PaymentType {
+  public enum PaymentType {
     DIRECT_DEBIT,
     CARD,
     PAYPAL

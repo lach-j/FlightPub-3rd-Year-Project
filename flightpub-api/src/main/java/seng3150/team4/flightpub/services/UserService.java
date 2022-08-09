@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.core.email.RegisterEmailTemplate;
+import seng3150.team4.flightpub.domain.models.SavedPayment;
 import seng3150.team4.flightpub.domain.models.User;
 import seng3150.team4.flightpub.domain.models.UserRole;
+import seng3150.team4.flightpub.domain.repositories.IPaymentRepository;
 import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 
@@ -24,6 +26,7 @@ public class UserService implements IUserService {
   private final IUserRepository userRepository;
   private final IEmailSenderService emailSenderService;
   private final CurrentUserContext currentUserContext;
+  private final IPaymentRepository paymentRepository;
 
   // Registers a new user
   @Override
@@ -130,5 +133,14 @@ public class UserService implements IUserService {
 
     // Otherwise, return the users
     return users;
+  }
+
+  @Override
+  public SavedPayment addNewPayment(long userId, SavedPayment payment) {
+    var user = getUserByIdSecure(userId);
+
+    payment.setUser(user);
+
+    return paymentRepository.save(payment);
   }
 }

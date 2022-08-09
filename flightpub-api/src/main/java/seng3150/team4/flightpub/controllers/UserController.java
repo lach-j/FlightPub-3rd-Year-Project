@@ -5,21 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import seng3150.team4.flightpub.controllers.requests.PaymentRequest;
 import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
 import seng3150.team4.flightpub.controllers.requests.UpdateUserRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
-import seng3150.team4.flightpub.domain.models.SavedPayment;
-import seng3150.team4.flightpub.domain.models.SavedPaymentCard;
-import seng3150.team4.flightpub.domain.models.User;
+import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.utility.PasswordHash;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,16 +91,62 @@ public class UserController {
 
   @Authorized
   @GetMapping("/{userId}/payments/{paymentId}")
-  public EntityResponse<SavedPayment> getPaymentById(@PathVariable long userId, @PathVariable long paymentId) {
+  public EntityResponse<SavedPayment> getPaymentById(
+      @PathVariable long userId, @PathVariable long paymentId) {
     var user = userService.getUserByIdSecure(userId);
 
     var obfuscatedPaymentData = obfuscatePaymentInformation(user.getPayments());
     var payment = obfuscatedPaymentData.stream().filter(p -> p.getId() == paymentId).findFirst();
 
     if (payment.isEmpty())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A payment with this Id was not found");
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "A payment with this Id was not found");
 
     return new EntityResponse<>(payment.get());
+  }
+
+  @Authorized
+  @PostMapping("/{userId}/payments")
+  public EntityResponse<SavedPayment> updatePaymentDetails(
+      @PathVariable long userId, @RequestBody PaymentRequest request) {
+    request.validate();
+    var payment = resolvePaymentFromRequest(request);
+
+    var savedPayment = userService.addNewPayment(userId, payment);
+    return new EntityResponse<>(savedPayment);
+  }
+
+  private static SavedPayment resolvePaymentFromRequest(PaymentRequest request) {
+    if (request.getType() == SavedPayment.PaymentType.PAYPAL) {
+      var payment = new SavedPaymentPaypal();
+      payment.setEmail(request.getEmail());
+      payment.setType(request.getType());
+      payment.setNickname(request.getNickname());
+      return payment;
+    }
+
+    if (request.getType() == SavedPayment.PaymentType.DIRECT_DEBIT) {
+      var payment = new SavedPaymentDirectDebit();
+      payment.setAccountName(request.getAccountName());
+      payment.setAccountNumber(request.getAccountNumber());
+      payment.setBsb(request.getBsb());
+      payment.setType(request.getType());
+      payment.setNickname(request.getNickname());
+      return payment;
+    }
+
+    if (request.getType() == SavedPayment.PaymentType.CARD) {
+      var payment = new SavedPaymentCard();
+      payment.setCardNumber(request.getCardNumber());
+      payment.setCardholder(request.getCardholder());
+      payment.setCcv(request.getCcv());
+      payment.setType(request.getType());
+      payment.setExpiryDate(request.getExpiryDate());
+      payment.setNickname(request.getNickname());
+      return payment;
+    }
+
+    return new SavedPayment();
   }
 
   private static Set<SavedPayment> obfuscatePaymentInformation(Set<SavedPayment> savedPaymentSet) {
