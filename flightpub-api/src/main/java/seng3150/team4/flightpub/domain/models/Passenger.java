@@ -26,9 +26,6 @@ public class Passenger implements IEntity {
     @Column(name = "Email")
     private String email;
 
-    @Column(name = "Class")
-    private String sclass;
-
     @JoinColumn(foreignKey = @ForeignKey(name = "BookingId"))
     private long bookingId;
 }
