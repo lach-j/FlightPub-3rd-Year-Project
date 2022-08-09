@@ -81,9 +81,10 @@ public class UserController {
   }
 
   @Authorized
-  @GetMapping
-  public EntityCollectionResponse<SavedPayment> getAllSavedPayments() {
-    return null;
+  @GetMapping("/{userId}/payments")
+  public EntityCollectionResponse<SavedPayment> getAllSavedPayments(@PathVariable long userId) {
+    var user = userService.getUserByIdSecure(userId);
+    return new EntityCollectionResponse<>(user.getPayments());
   }
 
   private static User userFromRequest(RegisterUserRequest request) {
