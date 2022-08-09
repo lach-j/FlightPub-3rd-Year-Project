@@ -215,7 +215,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                     </Flex>
                 </AccordionPanel>
                 </AccordionItem>
-                ))};
+                ))}
             </Accordion>
             </Flex>
         );
@@ -355,7 +355,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                 //     });
                 // }
                 // }} 
-                >Add to Cart</Button>
+                >Checkout</Button>
         </Flex>
     </Flex>
 )};
