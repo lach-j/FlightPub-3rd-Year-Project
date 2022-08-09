@@ -33,7 +33,7 @@ import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
 import { dummySavedPayments } from '../data/SavedPayments';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
@@ -58,7 +58,8 @@ export const BookingPage = ({
   });
   const toast = useToast();
   const { httpPost } = useApi(endpoints.book);
-  const [cart] = cartState;
+  const [cart, setCart] = cartState;
+  const navigate = useNavigate();
 
   const { state } = useLocation();
 
@@ -75,6 +76,8 @@ export const BookingPage = ({
           isClosable: true,
           position: 'top'
         });
+        setCart([]);
+        navigate(routes.home);
       })
       .catch((err: ApiError) => {
         if (err.statusCode === 401) {
