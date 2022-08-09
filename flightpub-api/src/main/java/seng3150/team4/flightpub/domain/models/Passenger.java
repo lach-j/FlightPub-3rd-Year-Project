@@ -8,9 +8,15 @@ import javax.persistence.*;
 
 @Table(name = "Passenger")
 @NoArgsConstructor
+@Entity
 @Getter
 @Setter
 public class Passenger implements IEntity {
+    @Column(name = "Id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     @Column(name = "FirstName")
     private String fname;
 

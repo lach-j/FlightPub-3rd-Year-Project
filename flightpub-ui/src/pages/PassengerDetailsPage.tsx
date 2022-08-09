@@ -35,9 +35,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     const toast = useToast();
     const navigate = useNavigate();
     const [cart, setCart] = cartState;
-    const [flight, setFlight] = useState<Flight>();
     const [passengerCount, setPassengerCount] = useState<number>(1);
-    const { state } = useLocation();
 
     const [firstNames, setFirstNames] =  useState<string[]>(['']);
     const [lastNames, setLastNames] =  useState<string[]>(['']);
@@ -60,11 +58,6 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         email: yup.string().email('must be a valid email').required(),
         confEmail: yup.string().email('must be a valid email').required(),
       });
-
-    useEffect(() => {
-        const {result} = state as {result: Flight};
-        setFlight(result);
-    }, [state]);
 
     const submitEvent = async () => {
         let success = true;
@@ -161,74 +154,71 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
     }
 
     const renderFlightDetails = () => {
-        if(flight) {
-            return (
-                <Flex justifyContent='center' direction='column' w='50em'>
-                <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
-                <Text>Flights:</Text>
-                <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-                    <AccordionItem>
-                    <h2>
-                        <AccordionButton>
-                        <Box flex='1' textAlign='left'>
-                            <Flex width='full' justifyContent='space-between'>
-                            <HStack>
-                                <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
-                                <HiOutlineArrowNarrowRight />
-                                <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
-                            </HStack>
-                            <Text>{`$${flight.prices[0].price}`}</Text>
-                            <Text>{flight.airlineCode}</Text>
-                            </Flex>
-                        </Box>
-                        <AccordionIcon />
-                        </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                        <Flex w='full' justifyContent='space-between' alignItems='center'>
-                        <Stat textAlign='left' flex='none'>
-                            <StatLabel>{new Date(flight?.departureTime).toLocaleString('en-AU', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hour12: false,
-                            })}</StatLabel>
-                            <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
-                            <StatHelpText>DEPARTURE</StatHelpText>
-                        </Stat>
-                        {flight?.stopOverLocation.destinationCode && <>
+        return (
+            <Flex justifyContent='center' direction='column' w='50em'>
+            <Heading fontSize='3xl' mb='1em'>Finalise Booking</Heading>
+            <Text>Flights:</Text>
+            <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
+                {cart.map((flight) => (
+                <AccordionItem>
+                <h2>
+                    <AccordionButton>
+                    <Box flex='1' textAlign='left'>
+                        <Flex width='full' justifyContent='space-between'>
+                        <HStack>
+                            <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
                             <HiOutlineArrowNarrowRight />
-                            <Stat textAlign='center' flex='none'>
-                            <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                                dateStyle: 'short',
-                                timeStyle: 'short',
-                                hour12: false,
-                            }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                                timeStyle: 'short',
-                                hour12: false,
-                            })}</StatLabel>
-                            <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                            <StatHelpText>STOPOVER</StatHelpText>
-                            </Stat></>}
+                            <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
+                        </HStack>
+                        <Text>{`$${flight.prices[0].price}`}</Text>
+                        <Text>{flight.airlineCode}</Text>
+                        </Flex>
+                    </Box>
+                    <AccordionIcon />
+                    </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                    <Flex w='full' justifyContent='space-between' alignItems='center'>
+                    <Stat textAlign='left' flex='none'>
+                        <StatLabel>{new Date(flight?.departureTime).toLocaleString('en-AU', {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                        hour12: false,
+                        })}</StatLabel>
+                        <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
+                        <StatHelpText>DEPARTURE</StatHelpText>
+                    </Stat>
+                    {flight?.stopOverLocation.destinationCode && <>
                         <HiOutlineArrowNarrowRight />
-                        <Stat textAlign='right' flex='none'>
-                            <StatLabel>{new Date(flight?.arrivalTime).toLocaleString('en-AU', {
+                        <Stat textAlign='center' flex='none'>
+                        <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
                             dateStyle: 'short',
                             timeStyle: 'short',
                             hour12: false,
-                            })}</StatLabel>
-                            <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
-                            <StatHelpText>ARRIVAL</StatHelpText>
-                        </Stat>
-                        </Flex>
-                    </AccordionPanel>
-                    </AccordionItem>
-                </Accordion>
-                </Flex>
-            );
-        }
-        else {
-            return (<Flex></Flex>);
-        }
+                        }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                            timeStyle: 'short',
+                            hour12: false,
+                        })}</StatLabel>
+                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
+                        <StatHelpText>STOPOVER</StatHelpText>
+                        </Stat></>}
+                    <HiOutlineArrowNarrowRight />
+                    <Stat textAlign='right' flex='none'>
+                        <StatLabel>{new Date(flight?.arrivalTime).toLocaleString('en-AU', {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                        hour12: false,
+                        })}</StatLabel>
+                        <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
+                        <StatHelpText>ARRIVAL</StatHelpText>
+                    </Stat>
+                    </Flex>
+                </AccordionPanel>
+                </AccordionItem>
+                ))};
+            </Accordion>
+            </Flex>
+        );
     }
 
     const renderPassengerForms = () => {
@@ -327,44 +317,45 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             <Button
             type='button'
             colorScheme='red'
-            onClick={async () => {
-                if (flight){
-                    //checks here if flight in cart again just in case they somehow make their way to this page with a duplicate flight
-                    if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
-                        toast({
-                            title: 'Error!',
-                            description: 'Flight already in cart!',
-                            status: 'error',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top'
-                        });
-                    } else {
-                        if((await submitEvent())){
-                            setCart((cart) => [...cart, flight]);
-                            toast({
-                                title: 'Success!',
-                                description: 'Flight added to cart successfully.',
-                                status: 'success',
-                                duration: 9000,
-                                isClosable: true,
-                                position: 'top'
-                            });
-                            navigate(routes.home);
-                        }
-                    }
-                }
-                else {
-                    toast({
-                        title: 'Error',
-                        description: 'No flight present to add to cart',
-                        status: 'error',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                    });
-                }
-                }} >Add to Cart</Button>
+            // onClick={async () => {
+                // if (flight){
+                //     //checks here if flight in cart again just in case they somehow make their way to this page with a duplicate flight
+                //     if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
+                //         toast({
+                //             title: 'Error!',
+                //             description: 'Flight already in cart!',
+                //             status: 'error',
+                //             duration: 9000,
+                //             isClosable: true,
+                //             position: 'top'
+                //         });
+                //     } else {
+                //         if((await submitEvent())){
+                //             setCart((cart) => [...cart, flight]);
+                //             toast({
+                //                 title: 'Success!',
+                //                 description: 'Flight added to cart successfully.',
+                //                 status: 'success',
+                //                 duration: 9000,
+                //                 isClosable: true,
+                //                 position: 'top'
+                //             });
+                //             navigate(routes.home);
+                //         }
+                //     }
+                // }
+                // else {
+                //     toast({
+                //         title: 'Error',
+                //         description: 'No flight present to add to cart',
+                //         status: 'error',
+                //         duration: 9000,
+                //         isClosable: true,
+                //         position: 'top'
+                //     });
+                // }
+                // }} 
+                >Add to Cart</Button>
         </Flex>
     </Flex>
 )};
