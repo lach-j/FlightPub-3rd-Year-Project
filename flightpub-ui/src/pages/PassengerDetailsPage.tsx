@@ -30,6 +30,7 @@ import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { UserContext } from '../services/UserContext';
+import { Passenger } from '../models/Passenger';
 
 export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
     const toast = useToast();
@@ -317,44 +318,25 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
             <Button
             type='button'
             colorScheme='red'
-            // onClick={async () => {
-                // if (flight){
-                //     //checks here if flight in cart again just in case they somehow make their way to this page with a duplicate flight
-                //     if ([...cart.filter((cartItem) => cartItem.id === flight.id)].length > 0) {
-                //         toast({
-                //             title: 'Error!',
-                //             description: 'Flight already in cart!',
-                //             status: 'error',
-                //             duration: 9000,
-                //             isClosable: true,
-                //             position: 'top'
-                //         });
-                //     } else {
-                //         if((await submitEvent())){
-                //             setCart((cart) => [...cart, flight]);
-                //             toast({
-                //                 title: 'Success!',
-                //                 description: 'Flight added to cart successfully.',
-                //                 status: 'success',
-                //                 duration: 9000,
-                //                 isClosable: true,
-                //                 position: 'top'
-                //             });
-                //             navigate(routes.home);
-                //         }
-                //     }
-                // }
-                // else {
-                //     toast({
-                //         title: 'Error',
-                //         description: 'No flight present to add to cart',
-                //         status: 'error',
-                //         duration: 9000,
-                //         isClosable: true,
-                //         position: 'top'
-                //     });
-                // }
-                // }} 
+            onClick={async () => {
+                if((await submitEvent())){
+                    let passengers: Passenger[] = [];
+                    
+                    for (var i = 0; i < passengerCount; i++) {
+                        passengers.push({
+                            fname: firstNames[i],
+                            lname: lastNames[i],
+                            email: emails[i],
+                        });
+                    }
+
+                    navigate(routes.booking, {
+                        state: {
+                          passengers,
+                        }
+                      });
+                }
+                }} 
                 >Checkout</Button>
         </Flex>
     </Flex>

@@ -33,11 +33,12 @@ import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
 import { dummySavedPayments } from '../data/SavedPayments';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
+import { Passenger } from '../models/Passenger';
 
 export const BookingPage = ({
   cartState
@@ -57,8 +58,9 @@ export const BookingPage = ({
   });
   const toast = useToast();
   const { httpPost } = useApi(endpoints.book);
-
   const [cart] = cartState;
+
+  const { state } = useLocation();
 
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -93,6 +95,11 @@ export const BookingPage = ({
   useEffect(() => {
     setBookingRequest({ ...bookingRequest, flightIds: cart.map((flight) => flight.id) });
   }, [cart]);
+
+  useEffect(() => {
+    const {passengers} = state as {passengers: Passenger[]};
+    setBookingRequest({ ...bookingRequest, passengers: passengers});
+}, [state]);
 
   const renderPaymentDetails = () => {
     //switch statement defines flow based on payment type
