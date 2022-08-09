@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
 import seng3150.team4.flightpub.controllers.requests.UpdateUserRequest;
+import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
+import seng3150.team4.flightpub.domain.models.SavedPayment;
 import seng3150.team4.flightpub.domain.models.User;
 import seng3150.team4.flightpub.domain.models.UserRole;
 import seng3150.team4.flightpub.security.Authorized;
@@ -69,12 +71,19 @@ public class UserController {
 
     return new EntityResponse<>(userService.updateUser(user));
   }
+
   @Authorized
   @DeleteMapping("/{userId}")
   public StatusResponse deleteUseById(@PathVariable Long userId) {
     var user = userService.getUserByIdSecure(userId);
     userService.deleteUser(user);
     return new StatusResponse(HttpStatus.OK);
+  }
+
+  @Authorized
+  @GetMapping
+  public EntityCollectionResponse<SavedPayment> getAllSavedPayments() {
+    return null;
   }
 
   private static User userFromRequest(RegisterUserRequest request) {
