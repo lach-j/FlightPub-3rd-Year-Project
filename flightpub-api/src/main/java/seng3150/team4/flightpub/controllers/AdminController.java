@@ -20,7 +20,6 @@ import seng3150.team4.flightpub.services.AdminService;
 import java.util.Date;
 
 @RestController
-@RequestMapping(path = "/admin")
 @RequiredArgsConstructor
 
 
@@ -31,7 +30,7 @@ public class AdminController {
     private final IAirlineRepository airlineRepository;
     private final IFlightRepository flightRepository;
 
-
+    @PostMapping(path = "/book")
 
     public Destination updateCovid(Destination destination) {
         Destination savedDestination = destinationRepository.save(destination);

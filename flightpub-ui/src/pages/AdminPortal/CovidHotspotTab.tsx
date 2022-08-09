@@ -13,7 +13,7 @@ import {
     useToast,
     VStack,
 } from '@chakra-ui/react';
-import React, {SyntheticEvent, useState} from 'react';
+import React, {FormEvent, SyntheticEvent, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
@@ -21,21 +21,19 @@ import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} fro
 import {airports} from "../../data/airports";
 import DatePicker from 'react-datepicker';
 import {endpoints} from "../../constants/endpoints";
+import { Destination } from '../../models/Destination';
+import {httpPost, httpPut} from "../../services/ApiService";
 
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
     date: string;
-    flex?: number;
 }
 
 //container for search query
 interface SearchQuery {
-    departureDate: FlexiDate;
-    departureCode?: string;
-    destinationCode?: string;
-    tickets?: Map<string, number>;
-    returnFlight?: boolean;
+    covidDate: FlexiDate;
+    locationCode?: string;
 }
 
 const handleDiscardChanges = () => {
@@ -47,24 +45,20 @@ const handleDiscardChanges = () => {
 
 const handleSaveChanges = (e: SyntheticEvent) => {
     // TODO : actually make an entry
-    api.
+
 
 };
 
-const { httpGet, httpPost} = useApi("put endpoint path here");
 
 
 
-const hereIsYourFunction = () => {
-    httpPost(endpoints.admin, { ...this is the body of the request })
-        .then((response) => {
-            // Do something with the response...
-        });
-}
+
 
 export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
     const toast = useToast();
     const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
+    const [destination, setDestination] = useState<Destination>()
+
     //Formats from JavaScript Date type to string
     const formatDate = (date: Date) => {
         return new Date(date).toISOString().split('T')[0];
@@ -72,9 +66,18 @@ export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolea
 
     //authRequest : stores search query request
     const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-        departureDate: { date: formatDate(new Date()) },
+        covidDate: { date: formatDate(new Date()) },
     });
 
+    function handleCovidDestination (e: FormEvent<HTMLFormElement>) {
+        // e.preventDefault();
+        //
+        // httpPost(endpoints.admin, destination)
+        //     .then(() => {
+        //
+        //     }).finally( () => {})
+
+    }
 
     //Handles update of search query input, updating value(s)
     const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
@@ -92,7 +95,7 @@ export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolea
                     <AutoComplete
                         openOnFocus
                         onChange={(value) =>
-                            handleSearchQueryUpdate('departureCode', value)
+                            handleSearchQueryUpdate('locationCode', value)
                         }
                     >
                         <AutoCompleteInput variant='filled' />
@@ -115,7 +118,7 @@ export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolea
                     <FormLabel>Restriction Duration</FormLabel>
                     <DatePicker
                         dateFormat='dd/MM/yyyy'
-                        minDate={new Date(searchQuery.departureDate.date) || new Date()}
+                        minDate={new Date(searchQuery.covidDate.date) || new Date()}
                         selected={returnDate}
                         onChange={(date: Date) => setReturnDate(date)}
                     />
