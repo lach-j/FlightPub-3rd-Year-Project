@@ -13,14 +13,17 @@ import {
     useToast,
     VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, {SyntheticEvent, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
 import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from "@choc-ui/chakra-autocomplete";
 import {airlines} from "../../data/airline";
-
 import DatePicker from "react-datepicker";
+import {endpoints} from "../../constants/endpoints";
+import * as api from "../../services/ApiService";
+import {ApiError} from "../../services/ApiService";
+import {request} from "http";
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -43,26 +46,36 @@ const handleDiscardChanges = () => {
     window.location.reload();
 };
 
-
+const toast = useToast();
 
 const handleSaveChanges = () => {
     // TODO : actually make an entry
 
 };
 
+
+
+
 export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
     const toast = useToast();
-    const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
+    const [covidDate, setCovidDate] = useState(new Date()); // Return date, not currently used in request (visual only)
     //Formats from JavaScript Date type to string
     const formatDate = (date: Date) => {
         return new Date(date).toISOString().split('T')[0];
     };
+
+
+
 
     //authRequest : stores search query request
     const [searchQuery, setSearchQuery] = useState<SearchQuery>({
         departureDate: { date: formatDate(new Date()) },
     });
 
+    const handleSponsorshipUpdate = () => {
+        setIsLoading(true);
+
+    };
 
 
 
@@ -88,7 +101,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                             >
                                 <AutoCompleteInput variant='filled' />
                                 <AutoCompleteList>
-                                    {airlines.map(({ airlineName, airlineCode }) => (
+                                    {airlines.map(({ airlineName}) => (
                                         <AutoCompleteItem
                                             key={airlineName}
                                             value={airlineName}
@@ -107,8 +120,8 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                             <DatePicker
                                 dateFormat='dd/MM/yyyy'
                                 minDate={new Date(searchQuery.departureDate.date) || new Date()}
-                                selected={returnDate}
-                                onChange={(date: Date) => setReturnDate(date)}
+                                selected={covidDate}
+                                onChange={(date: Date) => setCovidDate(date)}
                             />
                         </FormControl>
                     </Box>
@@ -121,7 +134,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                         </Button>
                         <Button colorScheme={'blue'}
 
-                                onClick={handleSaveChanges}
+                                onClick={handleSponsorshipUpdate}
                         >
                             Confirm
                         </Button>

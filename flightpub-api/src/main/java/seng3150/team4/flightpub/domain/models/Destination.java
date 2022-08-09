@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /** Models the Destination table in the database. */
 @Entity
@@ -25,4 +26,7 @@ public class Destination implements IEntity {
 
   @Column(name = "CountryCode3")
   private String countryCode;
+
+  @Column(name = "CovidDuration")
+  private LocalDateTime covidDuration;
 }

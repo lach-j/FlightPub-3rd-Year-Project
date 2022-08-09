@@ -13,13 +13,15 @@ import {
     useToast,
     VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, {SyntheticEvent, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
 import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from "@choc-ui/chakra-autocomplete";
 import {airports} from "../../data/airports";
 import DatePicker from 'react-datepicker';
+import {endpoints} from "../../constants/endpoints";
+
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -43,10 +45,22 @@ const handleDiscardChanges = () => {
 
 
 
-const handleSaveChanges = () => {
+const handleSaveChanges = (e: SyntheticEvent) => {
     // TODO : actually make an entry
+    api.
 
 };
+
+const { httpGet, httpPost} = useApi("put endpoint path here");
+
+
+
+const hereIsYourFunction = () => {
+    httpPost(endpoints.admin, { ...this is the body of the request })
+        .then((response) => {
+            // Do something with the response...
+        });
+}
 
 export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
     const toast = useToast();
