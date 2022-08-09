@@ -41,8 +41,6 @@ public class Flight implements IEntity, Serializable {
   private int duration;
   @Column(name = "DurationSecondLeg")
   private Integer durationSecondLeg;
-  @Column(name = "Canceled")
-  private long canceled;
 
   @ManyToOne
   @JoinColumn(name = "DepartureCode", nullable = false)

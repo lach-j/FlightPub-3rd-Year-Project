@@ -23,10 +23,6 @@ public class Destination implements IEntity {
   @Id private String destinationCode;
   @Column(name = "Airport")
   private String airport;
-
   @Column(name = "CountryCode3")
   private String countryCode;
-
-  @Column(name = "CovidDuration")
-  private LocalDateTime covidDuration;
 }

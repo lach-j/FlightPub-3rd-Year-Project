@@ -27,7 +27,4 @@ public class Airline implements IEntity {
 
   @Column(name = "CountryCode3")
   private String countryCode;
-
-  @Column(name = "SponsoredDuration")
-  private LocalDateTime sponsoredDuration;
 }

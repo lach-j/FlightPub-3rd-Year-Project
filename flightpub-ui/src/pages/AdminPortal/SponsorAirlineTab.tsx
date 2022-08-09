@@ -46,7 +46,7 @@ const handleDiscardChanges = () => {
     window.location.reload();
 };
 
-const toast = useToast();
+
 
 const handleSaveChanges = () => {
     // TODO : actually make an entry

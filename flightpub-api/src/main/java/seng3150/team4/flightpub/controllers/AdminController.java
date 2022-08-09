@@ -16,13 +16,15 @@ import seng3150.team4.flightpub.domain.repositories.IAirlineRepository;
 import seng3150.team4.flightpub.domain.repositories.IDestinationRepository;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 import seng3150.team4.flightpub.services.AdminService;
+import seng3150.team4.flightpub.services.IAuthenticationService;
+import seng3150.team4.flightpub.services.IUserService;
 
 import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
-
-
+//@Authorized(allowedRoles = { UserRole.ADMINISTRATOR })
+// wiggin out for me ^^^
 
 public class AdminController {
 
@@ -30,18 +32,19 @@ public class AdminController {
     private final IAirlineRepository airlineRepository;
     private final IFlightRepository flightRepository;
 
-    @PostMapping(path = "/book")
-
+    @PostMapping(path = "/covidUpdate")
     public Destination updateCovid(Destination destination) {
         Destination savedDestination = destinationRepository.save(destination);
         return savedDestination;
     }
 
+    @PostMapping(path = "/airlineUpdate")
     public Airline updateAirline(Airline airline) {
         Airline savedAirline = airlineRepository.save(airline);
         return savedAirline;
     }
 
+    @PostMapping(path = "/flightUpdate")
     public Flight cancelFlight(Flight flight) {
         Flight canceledFlight = flightRepository.save(flight);
         return canceledFlight;
