@@ -17,7 +17,7 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PaymentRequest extends Validatable {
+public class PaymentRequest extends Validatable implements IPaymentRequest {
   private SavedPayment.PaymentType type;
   private String nickname;
 

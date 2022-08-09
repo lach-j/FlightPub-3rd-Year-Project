@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.core.email.RegisterEmailTemplate;
-import seng3150.team4.flightpub.domain.models.SavedPayment;
-import seng3150.team4.flightpub.domain.models.User;
-import seng3150.team4.flightpub.domain.models.UserRole;
+import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.domain.repositories.IPaymentRepository;
 import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
@@ -17,6 +15,9 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
 /** Service used to provide logic for User management tasks. */
 @Service
@@ -143,4 +144,58 @@ public class UserService implements IUserService {
 
     return paymentRepository.save(payment);
   }
+
+  @Override
+  public SavedPayment updatePayment(long userId, long paymentId, SavedPayment payment) {
+    var user = getUserByIdSecure(userId);
+
+    var existingPayment = user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
+
+    if (existingPayment.isEmpty())
+      throw new EntityNotFoundException(String.format("A payment with id %d was not found.", paymentId));
+
+    var updatablePayment = existingPayment.get();
+
+
+    if (!payment.getClass().equals(updatablePayment.getClass()))
+      throw new UnsupportedOperationException();
+
+    updateChangedDetails(updatablePayment, payment);
+
+    return paymentRepository.save(updatablePayment);
+  }
+
+  private static void updateChangedDetails(SavedPayment updatablePayment, SavedPayment payment) {
+    if (updatablePayment instanceof SavedPaymentPaypal) {
+      var up = (SavedPaymentPaypal)updatablePayment;
+      var p = (SavedPaymentPaypal)payment;
+
+      updateIfNotNull(p.getEmail(), up::setEmail);
+    }
+
+    if (updatablePayment instanceof SavedPaymentCard) {
+      var up = (SavedPaymentCard)updatablePayment;
+      var p = (SavedPaymentCard)payment;
+
+      updateIfNotNull(p.getCardNumber(), up::setCardNumber);
+      updateIfNotNull(p.getCardholder(), up::setCardholder);
+      updateIfNotNull(p.getCcv(), up::setCcv);
+      updateIfNotNull(p.getExpiryDate(), up::setExpiryDate);
+    }
+
+    if (updatablePayment instanceof SavedPaymentDirectDebit) {
+      var up = (SavedPaymentDirectDebit)updatablePayment;
+      var p = (SavedPaymentDirectDebit)payment;
+
+      updateIfNotNull(p.getAccountName(), up::setAccountName);
+      updateIfNotNull(p.getAccountNumber(), up::setAccountNumber);
+      updateIfNotNull(p.getBsb(), up::setBsb);
+    }
+  }
+
+  private static <T> void updateIfNotNull(T value, Consumer<T> setter) {
+    if (isNullOrEmpty(value)) return;
+    setter.accept(value);
+  }
+
 }

@@ -23,4 +23,6 @@ public interface IUserService {
   List<User> getUsersById(Collection<Long> userId);
 
   SavedPayment addNewPayment(long userId, SavedPayment payment);
+
+  SavedPayment updatePayment(long userId, long paymentId, SavedPayment payment);
 }

@@ -5,9 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import seng3150.team4.flightpub.controllers.requests.PaymentRequest;
-import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
-import seng3150.team4.flightpub.controllers.requests.UpdateUserRequest;
+import seng3150.team4.flightpub.controllers.requests.*;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
@@ -116,7 +114,18 @@ public class UserController {
     return new EntityResponse<>(savedPayment);
   }
 
-  private static SavedPayment resolvePaymentFromRequest(PaymentRequest request) {
+  @Authorized
+  @PatchMapping("/{userId}/payments/{paymentId}")
+  public EntityResponse<SavedPayment> updatePaymentDetails(
+          @PathVariable long userId, @PathVariable long paymentId, @RequestBody UpdatePaymentRequest request) {
+    request.validate();
+    var payment = resolvePaymentFromRequest(request);
+
+    var savedPayment = userService.updatePayment(userId, paymentId, payment);
+    return new EntityResponse<>(savedPayment);
+  }
+
+  private static SavedPayment resolvePaymentFromRequest(IPaymentRequest request) {
     if (request.getType() == SavedPayment.PaymentType.PAYPAL) {
       var payment = new SavedPaymentPaypal();
       payment.setEmail(request.getEmail());
