@@ -117,7 +117,7 @@ CREATE TABLE `CovidDestinations` (
   `CovidEndDate` datetime Default(NULL),
   PRIMARY KEY (`DestinationCode`),
   KEY `DestinationCountryCode_FK` (`CountryCode3`),
-  CONSTRAINT `DestinationCountryCode_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
+  CONSTRAINT `CovidDestinationCode_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `SponsoredAirlines` (
@@ -128,11 +128,11 @@ CREATE TABLE `SponsoredAirlines` (
   `SponsoredEndDate` datetime Default(NULL),
   PRIMARY KEY (`AirlineCode`),
   KEY `AirlinesCountryCode3_FK` (`CountryCode3`),
-  CONSTRAINT `AirlinesCountryCode3_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
+  CONSTRAINT `SponsoredAirlinesCode3_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`countryCode3`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `CanceledFlights` (
-  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `Id` BIGINT NOT NULL,
   `AirlineCode` char(2) NOT NULL,
   `FlightNumber` varchar(6) NOT NULL,
   `DepartureCode` char(3) NOT NULL,
@@ -151,9 +151,9 @@ CREATE TABLE `CanceledFlights` (
   KEY `FlightsStopOverCode_FK` (`StopOverCode`),
   KEY `FlightsDestinationCode_FK` (`DestinationCode`),
   KEY `FlightsPlaneCode_FK` (`PlaneCode`),
-  CONSTRAINT `FlightsPlaneCode_FK` FOREIGN KEY (`PlaneCode`) REFERENCES `PlaneType` (`PlaneCode`),
-  CONSTRAINT `FlightsAirlineCode_FK` FOREIGN KEY (`AirlineCode`) REFERENCES `Airlines` (`AirlineCode`),
-  CONSTRAINT `FlightsDepartureCode_FK` FOREIGN KEY (`DepartureCode`) REFERENCES `Destinations` (`DestinationCode`),
-  CONSTRAINT `FlightsDestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`),
-  CONSTRAINT `FlightsStopOverCode_FK` FOREIGN KEY (`StopOverCode`) REFERENCES `Destinations` (`DestinationCode`)
+  CONSTRAINT `CanceledPlaneCode_FK` FOREIGN KEY (`PlaneCode`) REFERENCES `PlaneType` (`PlaneCode`),
+  CONSTRAINT `CanceledAirlineCode_FK` FOREIGN KEY (`AirlineCode`) REFERENCES `Airlines` (`AirlineCode`),
+  CONSTRAINT `CanceledDepartureCode_FK` FOREIGN KEY (`DepartureCode`) REFERENCES `Destinations` (`DestinationCode`),
+  CONSTRAINT `CanceledDestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`),
+  CONSTRAINT `CanceledStopOverCode_FK` FOREIGN KEY (`StopOverCode`) REFERENCES `Destinations` (`DestinationCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
