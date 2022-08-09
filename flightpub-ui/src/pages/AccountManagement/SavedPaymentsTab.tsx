@@ -29,6 +29,7 @@ import { UserContext } from '../../services/UserContext';
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
+  const [editingPaymentData, setEditingPaymentData] = useState<SavedPayment | null>(null);
   const [savedPayments, setSavedPayments] = useState<SavedPayment[]>([]);
   const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
@@ -87,20 +88,35 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   }, [savedPayments]);
 
   const handleSavedPaymentUpdate = (field: string, value: any) => {
-    let updatedValue = { ...savedPaymentData, [field]: value } as SavedPayment;
-    setSavedPaymentData(updatedValue);
+    let updatedValue = { ...editingPaymentData, [field]: value } as SavedPayment;
+    setEditingPaymentData(updatedValue);
+    console.log(updatedValue);
   };
   const handleEditPayment = (payment: SavedPayment) => {
     setIsEdititng(savedPayments.findIndex((p) => p === payment));
+    setEditingPaymentData(payment);
     setSavedPaymentData(payment);
     onOpenAddPayment();
   };
 
   const handleUpdatePayment = () => {
-    if (!user?.id || !savedPaymentData?.id) return;
+    if (!user?.id || !savedPaymentData?.id || !editingPaymentData?.id) return;
+
+    const request: any = {};
+    Object.keys(editingPaymentData).forEach((key) => {
+      if (
+        editingPaymentData[key as keyof typeof editingPaymentData] !==
+        savedPaymentData[key as keyof typeof editingPaymentData]
+      )
+        request[key] = editingPaymentData[key as keyof typeof editingPaymentData];
+    });
 
     setIsLoading(true);
-    httpPatch(`/${user?.id}/payments/${savedPaymentData?.id}`)
+    httpPatch(`/${user?.id}/payments/${savedPaymentData?.id}`, {
+      ...request,
+      type: editingPaymentData.type,
+      id: editingPaymentData.id
+    })
       .then()
       .finally(() => {
         setIsLoading(false);
@@ -112,28 +128,28 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   }, [isOpenAddPayment]);
 
   const renderPaymentDetails = () => {
-    switch (savedPaymentData?.type) {
+    switch (editingPaymentData?.type) {
       case SavedPaymentType.CARD:
         return (
           <VStack mt='1em' gap='1em'>
             <FormControl>
               <FormLabel>Card Number</FormLabel>
               <Input
-                value={savedPaymentData.cardNumber}
+                value={editingPaymentData.cardNumber}
                 onChange={(event) => handleSavedPaymentUpdate('cardNumber', event.target.value)}
               />
             </FormControl>
             <FormControl>
               <FormLabel>Expiry Date</FormLabel>
               <Input
-                value={savedPaymentData.expiryDate}
+                value={editingPaymentData.expiryDate}
                 onChange={(event) => handleSavedPaymentUpdate('expiryDate', event.target.value)}
               />
             </FormControl>
             <FormControl>
               <FormLabel>Cardholder Name</FormLabel>
               <Input
-                value={savedPaymentData.cardholder}
+                value={editingPaymentData.cardholder}
                 onChange={(event) => handleSavedPaymentUpdate('cardholder', event.target.value)}
               />
             </FormControl>
@@ -141,7 +157,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <FormLabel>CCV</FormLabel>
               <Input
                 type='number'
-                value={savedPaymentData.ccv}
+                value={editingPaymentData.ccv}
                 onChange={(event) => handleSavedPaymentUpdate('ccv', event.target.value)}
               />
             </FormControl>
@@ -153,7 +169,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <FormControl>
               <FormLabel>PayPal Email</FormLabel>
               <Input
-                value={savedPaymentData.email}
+                value={editingPaymentData.email}
                 onChange={(event) => handleSavedPaymentUpdate('email', event.target.value)}
               />
             </FormControl>
@@ -167,7 +183,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <FormLabel>BSB</FormLabel>
               <Input
                 type='number'
-                value={savedPaymentData.bsb}
+                value={editingPaymentData.bsb}
                 onChange={(event) => handleSavedPaymentUpdate('bsb', event.target.value)}
               />
             </FormControl>
@@ -175,14 +191,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <FormLabel>Account Number</FormLabel>
               <Input
                 type='number'
-                value={savedPaymentData.accountNumber}
+                value={editingPaymentData.accountNumber}
                 onChange={(event) => handleSavedPaymentUpdate('accountNumber', event.target.value)}
               />
             </FormControl>
             <FormControl>
               <FormLabel>Account Name</FormLabel>
               <Input
-                value={savedPaymentData.accountName}
+                value={editingPaymentData.accountName}
                 onChange={(event) => handleSavedPaymentUpdate('accountName', event.target.value)}
               />
             </FormControl>
@@ -225,14 +241,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <FormControl>
               <FormLabel>Payment Nickname</FormLabel>
               <Input
-                value={savedPaymentData?.nickname}
+                value={editingPaymentData?.nickname}
                 onChange={(event) => handleSavedPaymentUpdate('nickname', event.target.value)}
               />
             </FormControl>
             <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
               <Select
-                value={savedPaymentData?.type}
+                value={editingPaymentData?.type}
                 onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}
               >
                 <option>Select an option</option>
@@ -247,7 +263,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <Flex justifyContent='space-between' w='full'>
               <HStack>
                 <Checkbox
-                  checked={savedPaymentData?.isDefault}
+                  checked={editingPaymentData?.isDefault}
                   onChange={(event) => handleSavedPaymentUpdate('isDefault', event.target.checked)}
                 >
                   Set as default?
