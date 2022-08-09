@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.controllers.requests.RegisterUserRequest;
 import seng3150.team4.flightpub.controllers.requests.UpdateUserRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
@@ -18,6 +19,7 @@ import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.utility.PasswordHash;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -87,6 +89,20 @@ public class UserController {
     var obfuscatedPaymentData = obfuscatePaymentInformation(user.getPayments());
 
     return new EntityCollectionResponse<>(obfuscatedPaymentData);
+  }
+
+  @Authorized
+  @GetMapping("/{userId}/payments/{paymentId}")
+  public EntityResponse<SavedPayment> getPaymentById(@PathVariable long userId, @PathVariable long paymentId) {
+    var user = userService.getUserByIdSecure(userId);
+
+    var obfuscatedPaymentData = obfuscatePaymentInformation(user.getPayments());
+    var payment = obfuscatedPaymentData.stream().filter(p -> p.getId() == paymentId).findFirst();
+
+    if (payment.isEmpty())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A payment with this Id was not found");
+
+    return new EntityResponse<>(payment.get());
   }
 
   private static Set<SavedPayment> obfuscatePaymentInformation(Set<SavedPayment> savedPaymentSet) {
