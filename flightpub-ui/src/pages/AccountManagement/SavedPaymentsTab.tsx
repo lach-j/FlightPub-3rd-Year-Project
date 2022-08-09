@@ -16,7 +16,8 @@ import {
   Select,
   useDisclosure,
   useToast,
-  VStack
+  VStack,
+  Text
 } from '@chakra-ui/react';
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
 import React, { useContext, useEffect, useState } from 'react';
@@ -34,7 +35,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
   const { user, setUser } = useContext(UserContext);
-  const { httpGet, httpPatch, httpPost } = useApi(endpoints.users);
+  const { httpGet, httpPatch, httpPost, httpDelete } = useApi(endpoints.users);
   const {
     isOpen: isOpenAddPayment,
     onOpen: onOpenAddPayment,
@@ -47,7 +48,6 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
     httpPost(`/${user?.id}/payments`, savedPaymentData)
       .then((payment) => {
         setSavedPayments((ps) => [...ps, payment]);
-
         toast({
           title: 'Payment Added',
           description: 'A new payment method has been added to your account.',
@@ -76,7 +76,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   }, [user]);
 
   const handleDeletePayment = (payment: SavedPayment) => {
-    setSavedPayments([...savedPayments.filter((p) => p !== payment)]);
+    if (!user?.id || !payment?.id) return;
+
+    setIsLoading(true);
+    httpDelete(`/${user?.id}/payments/${payment.id}`)
+      .then(() => setSavedPayments([...savedPayments.filter((p) => p !== payment)]))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -224,6 +231,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
       </HStack>
 
       <Flex gap='1em' alignItems='flex-start' flexWrap='wrap'>
+        {savedPayments.length === 0 && <Text>You have no saved payments...</Text>}
         {savedPayments.map((payment) => (
           <SavedPaymentComponent
             payment={payment}

@@ -129,6 +129,16 @@ public class UserController {
     return new EntityResponse<>(obfuscated);
   }
 
+  @Authorized
+  @DeleteMapping("/{userId}/payments/{paymentId}")
+  public Response deletePayment(
+          @PathVariable long userId, @PathVariable long paymentId) {
+
+    userService.deletePayment(userId, paymentId);
+
+    return new StatusResponse(HttpStatus.OK);
+  }
+
   private static SavedPayment resolvePaymentFromRequest(IPaymentRequest request) {
     if (request.getType() == SavedPayment.PaymentType.PAYPAL) {
       var payment = new SavedPaymentPaypal();

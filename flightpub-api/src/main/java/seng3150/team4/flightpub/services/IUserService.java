@@ -25,4 +25,6 @@ public interface IUserService {
   SavedPayment addNewPayment(long userId, SavedPayment payment);
 
   SavedPayment updatePayment(long userId, long paymentId, SavedPayment payment);
+
+  void deletePayment(long userId, long paymentId);
 }

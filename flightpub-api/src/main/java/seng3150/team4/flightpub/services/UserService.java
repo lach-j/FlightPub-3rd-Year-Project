@@ -165,6 +165,20 @@ public class UserService implements IUserService {
     return paymentRepository.save(updatablePayment);
   }
 
+  @Override
+  public void deletePayment(long userId, long paymentId) {
+    var user = getUserByIdSecure(userId);
+
+    var existingPayment = user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
+
+    if (existingPayment.isEmpty())
+      throw new EntityNotFoundException(String.format("A payment with id %d was not found.", paymentId));
+
+    var deletablePayment = existingPayment.get();
+
+    paymentRepository.delete(deletablePayment);
+  }
+
   private static void updateChangedDetails(SavedPayment updatablePayment, SavedPayment payment) {
     if (updatablePayment instanceof SavedPaymentPaypal) {
       var up = (SavedPaymentPaypal)updatablePayment;
