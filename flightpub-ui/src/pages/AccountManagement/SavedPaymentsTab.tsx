@@ -19,16 +19,21 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, BiPlus } from 'react-icons/all';
-import { dummySavedPayments } from '../../data/SavedPayments';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SavedPayment } from '../../models';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { SavedPaymentType } from '../../models/SavedPaymentTypes';
+import { UserContext } from '../../services/UserContext';
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
-  const [savedPayments, setSavedPayments] = useState(dummySavedPayments);
+  const [savedPayments, setSavedPayments] = useState<SavedPayment[]>([]);
   const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
+  const { user, setUser } = useContext(UserContext);
+  const { httpGet } = useApi(endpoints.users);
   const {
     isOpen: isOpenAddPayment,
     onOpen: onOpenAddPayment,
@@ -60,6 +65,13 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
       onCloseAddPayment();
     }, 2000);
   };
+
+  useEffect(() => {
+    if (!user) return;
+    httpGet(`/${user.id}/payments`).then((response: SavedPayment[]) => {
+      setSavedPayments(response);
+    });
+  }, [user]);
 
   const handleDeletePayment = (payment: SavedPayment) => {
     setSavedPayments([...savedPayments.filter((p) => p !== payment)]);
@@ -106,7 +118,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
 
   const renderPaymentDetails = () => {
     switch (savedPaymentData?.type) {
-      case 'card':
+      case SavedPaymentType.CARD:
         return (
           <VStack mt='1em' gap='1em'>
             <FormControl>
@@ -119,7 +131,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <FormControl>
               <FormLabel>Expiry Date</FormLabel>
               <Input
-                value={savedPaymentData.expiry}
+                value={savedPaymentData.expiryDate}
                 onChange={(event) => handleSavedPaymentUpdate('expiry', event.target.value)}
               />
             </FormControl>
@@ -140,7 +152,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             </FormControl>
           </VStack>
         );
-      case 'paypal':
+      case SavedPaymentType.PAYPAL:
         return (
           <VStack mt='1em' gap='1em'>
             <FormControl>
@@ -153,7 +165,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
             <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
           </VStack>
         );
-      case 'directDebit':
+      case SavedPaymentType.DIRECT_DEBIT:
         return (
           <VStack mt='1em' gap='1em'>
             <FormControl>
@@ -168,14 +180,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <FormLabel>Account Number</FormLabel>
               <Input
                 type='number'
-                value={savedPaymentData.accNumber}
+                value={savedPaymentData.accountNumber}
                 onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)}
               />
             </FormControl>
             <FormControl>
               <FormLabel>Account Name</FormLabel>
               <Input
-                value={savedPaymentData.accName}
+                value={savedPaymentData.accountName}
                 onChange={(event) => handleSavedPaymentUpdate('accName', event.target.value)}
               />
             </FormControl>

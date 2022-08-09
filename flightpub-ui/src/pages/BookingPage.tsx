@@ -32,12 +32,12 @@ import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
-import { dummySavedPayments } from '../data/SavedPayments';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
+import { SavedPaymentType } from '../models/SavedPaymentTypes';
 
 export const BookingPage = ({
   cartState
@@ -97,7 +97,7 @@ export const BookingPage = ({
     //switch statement defines flow based on payment type
     switch (savedPaymentData?.type) {
       //if users payment type is card
-      case 'card':
+      case SavedPaymentType.CARD:
         return (
           <VStack mt='1em' gap='1em' w='full'>
             <HStack w='full' gap='1em'>
@@ -123,7 +123,7 @@ export const BookingPage = ({
           </VStack>
         );
       // if users payment type is PayPal
-      case 'paypal':
+      case SavedPaymentType.PAYPAL:
         return (
           <VStack mt='1em' gap='1em' w='full'>
             <FormControl>
@@ -134,7 +134,7 @@ export const BookingPage = ({
           </VStack>
         );
       // if users payment type is PayPal
-      case 'directDebit':
+      case SavedPaymentType.DIRECT_DEBIT:
         return (
           <HStack w='full' mt='1em' gap='1em'>
             <FormControl>
@@ -152,10 +152,10 @@ export const BookingPage = ({
           </HStack>
         );
       //If user payment type is 'saved'
-      case 'saved':
+      case SavedPaymentType.SAVED:
         return (
           <Select>
-            {dummySavedPayments.map((s) => (
+            {([] as SavedPayment[]).map((s) => (
               <option value={s.nickname}>{s.nickname}</option>
             ))}
           </Select>
@@ -315,7 +315,7 @@ export const BookingPage = ({
             </FormControl>
             {renderPaymentDetails()}
           </VStack>
-          {savedPaymentData?.type !== 'saved' && (
+          {savedPaymentData?.type !== SavedPaymentType.SAVED && (
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
