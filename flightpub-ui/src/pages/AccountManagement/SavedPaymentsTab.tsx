@@ -33,7 +33,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
   const { user, setUser } = useContext(UserContext);
-  const { httpGet } = useApi(endpoints.users);
+  const { httpGet, httpPatch, httpPost } = useApi(endpoints.users);
   const {
     isOpen: isOpenAddPayment,
     onOpen: onOpenAddPayment,
@@ -41,36 +41,37 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   } = useDisclosure();
 
   const handleAddPayment = () => {
+    if (!savedPaymentData || !user) return;
     setIsLoading(true);
-    // Simulate api delay with timeout
-    let updated = savedPayments;
-    if (savedPaymentData) {
-      if (savedPaymentData.isDefault)
-        updated = updated.map((p) => {
-          return { ...p, isDefault: false };
-        });
-      setSavedPayments([...updated, savedPaymentData]);
-    }
+    httpPost(`/${user?.id}/payments`, savedPaymentData)
+      .then((payment) => {
+        setSavedPayments((ps) => [...ps, payment]);
 
-    setTimeout(() => {
-      toast({
-        title: 'Payment added',
-        description: 'A new payment method has been added to your account.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top'
+        toast({
+          title: 'Payment Added',
+          description: 'A new payment method has been added to your account.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+        onCloseAddPayment();
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-      onCloseAddPayment();
-    }, 2000);
   };
 
   useEffect(() => {
     if (!user) return;
-    httpGet(`/${user.id}/payments`).then((response: SavedPayment[]) => {
-      setSavedPayments(response);
-    });
+    setIsLoading(true);
+    httpGet(`/${user.id}/payments`)
+      .then((response: SavedPayment[]) => {
+        setSavedPayments(response);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [user]);
 
   const handleDeletePayment = (payment: SavedPayment) => {
@@ -96,20 +97,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   };
 
   const handleUpdatePayment = () => {
-    if (!(typeof isEdititng === 'number')) return;
+    if (!user?.id || !savedPaymentData?.id) return;
 
-    let updated = [...savedPayments];
     setIsLoading(true);
-    if (savedPaymentData) {
-      if (savedPaymentData.isDefault)
-        updated = updated.map((p) => {
-          return { ...p, isDefault: false };
-        });
-      updated[isEdititng] = savedPaymentData;
-      setSavedPayments(updated);
-      onCloseAddPayment();
-      setIsLoading(false);
-    }
+    httpPatch(`/${user?.id}/payments/${savedPaymentData?.id}`)
+      .then()
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -132,7 +127,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <FormLabel>Expiry Date</FormLabel>
               <Input
                 value={savedPaymentData.expiryDate}
-                onChange={(event) => handleSavedPaymentUpdate('expiry', event.target.value)}
+                onChange={(event) => handleSavedPaymentUpdate('expiryDate', event.target.value)}
               />
             </FormControl>
             <FormControl>
@@ -181,14 +176,14 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
               <Input
                 type='number'
                 value={savedPaymentData.accountNumber}
-                onChange={(event) => handleSavedPaymentUpdate('accNumber', event.target.value)}
+                onChange={(event) => handleSavedPaymentUpdate('accountNumber', event.target.value)}
               />
             </FormControl>
             <FormControl>
               <FormLabel>Account Name</FormLabel>
               <Input
                 value={savedPaymentData.accountName}
-                onChange={(event) => handleSavedPaymentUpdate('accName', event.target.value)}
+                onChange={(event) => handleSavedPaymentUpdate('accountName', event.target.value)}
               />
             </FormControl>
           </VStack>
@@ -241,9 +236,9 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
                 onChange={(event) => handleSavedPaymentUpdate('type', event.target.value)}
               >
                 <option>Select an option</option>
-                <option value='card'>Card</option>
-                <option value='directDebit'>Direct Debit</option>
-                <option value='paypal'>PayPal</option>
+                <option value={SavedPaymentType.CARD}>Card</option>
+                <option value={SavedPaymentType.DIRECT_DEBIT}>Direct Debit</option>
+                <option value={SavedPaymentType.PAYPAL}>PayPal</option>
               </Select>
             </FormControl>
             {renderPaymentDetails()}
@@ -259,7 +254,7 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
                 </Checkbox>
               </HStack>
               <HStack>
-                {typeof isEdititng === 'number' ? (
+                {savedPaymentData?.id ? (
                   <Button onClick={handleUpdatePayment} colorScheme='green'>
                     Update
                   </Button>

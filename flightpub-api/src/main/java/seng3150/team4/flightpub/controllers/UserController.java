@@ -111,7 +111,9 @@ public class UserController {
     var payment = resolvePaymentFromRequest(request);
 
     var savedPayment = userService.addNewPayment(userId, payment);
-    return new EntityResponse<>(savedPayment);
+
+    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment)).stream().findFirst().get();
+    return new EntityResponse<>(obfuscated);
   }
 
   @Authorized
@@ -122,7 +124,9 @@ public class UserController {
     var payment = resolvePaymentFromRequest(request);
 
     var savedPayment = userService.updatePayment(userId, paymentId, payment);
-    return new EntityResponse<>(savedPayment);
+
+    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment)).stream().findFirst().get();
+    return new EntityResponse<>(obfuscated);
   }
 
   private static SavedPayment resolvePaymentFromRequest(IPaymentRequest request) {
@@ -166,6 +170,8 @@ public class UserController {
                 SavedPaymentCard cardPayment = (SavedPaymentCard) p;
                 cardPayment.setCcv("");
                 var currentNumber = cardPayment.getCardNumber();
+                if (currentNumber.length() <= 4)
+                  return cardPayment;
                 cardPayment.setCardNumber(
                     "************" + currentNumber.substring(currentNumber.length() - 4));
                 return cardPayment;

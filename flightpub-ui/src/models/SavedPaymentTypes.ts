@@ -38,6 +38,7 @@ interface Saved {
 }
 
 export type SavedPayment = PaymentType & {
+  id?: number;
   nickname: string;
   isDefault?: boolean;
 };
