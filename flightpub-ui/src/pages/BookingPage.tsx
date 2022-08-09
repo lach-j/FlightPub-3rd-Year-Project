@@ -52,7 +52,8 @@ export const BookingPage = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
-    flightIds: []
+    flightIds: [],
+    passengers: []
   });
   const toast = useToast();
   const { httpPost } = useApi(endpoints.book);
