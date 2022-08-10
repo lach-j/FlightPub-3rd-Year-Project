@@ -24,7 +24,7 @@ public class WishlistController {
     public EntityResponse<Wishlist> createWishlist(@RequestBody WishlistRequest request) {
         request.validate();
 
-        var wishlist = wishlistService.createWishlist(request.getDestinations());
+        var wishlist = wishlistService.createWishlist(request.getDepartureCode(), request.getDestinations());
 
         return new EntityResponse<>(wishlist);
     }
