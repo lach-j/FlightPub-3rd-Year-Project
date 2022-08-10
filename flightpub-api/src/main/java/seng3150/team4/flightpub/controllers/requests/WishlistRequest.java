@@ -8,19 +8,25 @@ import seng3150.team4.flightpub.core.validation.*;
 
 import java.util.List;
 
+import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishlistRequest extends Validatable {
   private List<String> destinations;
+  private String departureCode;
 
   @Override
   protected ValidationResult getErrors() {
     var result = new ValidationResult();
 
+    if (isNullOrEmpty(departureCode))
+      result.addError(new ValidationError("departureCode").addError(ErrorConstants.REQUIRED));
+
     var destinationErrors = new ValidationError("destinations");
-    if (Validators.isNullOrEmpty(destinations) || destinations.isEmpty())
+    if (isNullOrEmpty(destinations) || destinations.isEmpty())
       destinationErrors.addError(ErrorConstants.REQUIRED);
     else if (destinations.size() > 10)
       destinationErrors.addError("The maximum number of wishlist items is 10");

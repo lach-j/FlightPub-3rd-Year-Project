@@ -8,5 +8,5 @@ import java.util.Set;
 public interface IWishlistService {
     Set<Wishlist> getWishlistForUser(long userId);
     Wishlist getWishlistById(long wishlistId);
-    Wishlist createWishlist(List<String> destinationCodes);
+    Wishlist createWishlist(String departureCode, List<String> destinationCodes);
 }

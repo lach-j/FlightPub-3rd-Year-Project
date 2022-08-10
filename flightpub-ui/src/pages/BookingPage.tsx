@@ -27,7 +27,7 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext } from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
@@ -39,6 +39,7 @@ import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
 import { Passenger } from '../models/Passenger';
 import { SavedPaymentType } from '../models/SavedPaymentTypes';
+import { UserContext } from '../services/UserContext';
 
 export const BookingPage = ({
   cartState
@@ -60,6 +61,7 @@ export const BookingPage = ({
   const { httpPost } = useApi(endpoints.book);
   const [cart, setCart] = cartState;
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
   const { state } = useLocation();
 
@@ -96,13 +98,40 @@ export const BookingPage = ({
   };
 
   useEffect(() => {
-    setBookingRequest({ ...bookingRequest, flightIds: cart.map((flight) => flight.id) });
-  }, [cart]);
-
-  useEffect(() => {
     const {passengers} = state as {passengers: Passenger[]};
-    setBookingRequest({ ...bookingRequest, passengers: passengers});
+    setBookingRequest({ ...bookingRequest, userId: user?.id, passengers: passengers, flightIds: cart.map((flight) => flight.id)});
+    console.log(bookingRequest.flightIds);
 }, [state]);
+
+const renderStopOver = (flight: Flight) => {
+  if (flight?.stopOverLocation){
+      return (
+          <Stat textAlign='center' flex='none'>
+          {(flight?.stopOverLocation.destinationCode || "NONE") && <>
+                  <Stat textAlign='center' flex='none'>
+                  <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                      hour12: false,
+                  }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                      timeStyle: 'short',
+                      hour12: false,
+                  })}</StatLabel>
+                  <StatNumber>{flight?.stopOverLocation.destinationCode || 'NONE'}</StatNumber>
+                  <StatHelpText>STOPOVER</StatHelpText>
+                  </Stat></>}
+          </Stat>
+      );
+  } else {
+      return (
+          <Stat textAlign='center' flex='none'>
+              <StatLabel></StatLabel>
+              <StatNumber>NO</StatNumber>
+              <StatHelpText>STOPOVER</StatHelpText>
+          </Stat>
+      );
+  }
+}
 
   const renderPaymentDetails = () => {
     //switch statement defines flow based on payment type
@@ -213,27 +242,8 @@ export const BookingPage = ({
                     <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                     <StatHelpText>DEPARTURE</StatHelpText>
                   </Stat>
-                  {flight?.stopOverLocation.destinationCode && (
-                    <>
-                      <HiOutlineArrowNarrowRight />
-                      <Stat textAlign='center' flex='none'>
-                        <StatLabel>
-                          {new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hour12: false
-                          }) +
-                            ' - ' +
-                            new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                              timeStyle: 'short',
-                              hour12: false
-                            })}
-                        </StatLabel>
-                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                        <StatHelpText>STOPOVER</StatHelpText>
-                      </Stat>
-                    </>
-                  )}
+                  <HiOutlineArrowNarrowRight />
+                  {renderStopOver(flight)}
                   <HiOutlineArrowNarrowRight />
                   <Stat textAlign='right' flex='none'>
                     <StatLabel>
