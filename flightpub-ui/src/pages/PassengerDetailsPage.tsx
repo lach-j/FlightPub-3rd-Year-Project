@@ -154,6 +154,36 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         }
     }
 
+    const renderStopOver = (flight: Flight) => {
+        if (flight?.stopOverLocation){
+            return (
+                <Stat textAlign='center' flex='none'>
+                {(flight?.stopOverLocation.destinationCode || "NONE") && <>
+                        <Stat textAlign='center' flex='none'>
+                        <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
+                            dateStyle: 'short',
+                            timeStyle: 'short',
+                            hour12: false,
+                        }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                            timeStyle: 'short',
+                            hour12: false,
+                        })}</StatLabel>
+                        <StatNumber>{flight?.stopOverLocation.destinationCode || 'NONE'}</StatNumber>
+                        <StatHelpText>STOPOVER</StatHelpText>
+                        </Stat></>}
+                </Stat>
+            );
+        } else {
+            return (
+                <Stat textAlign='center' flex='none'>
+                    <StatLabel></StatLabel>
+                    <StatNumber>NO</StatNumber>
+                    <StatHelpText>STOPOVER</StatHelpText>
+                </Stat>
+            );
+        }
+    }
+
     const renderFlightDetails = () => {
         return (
             <Flex justifyContent='center' direction='column' w='50em'>
@@ -189,20 +219,8 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                         <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                         <StatHelpText>DEPARTURE</StatHelpText>
                     </Stat>
-                    {flight?.stopOverLocation.destinationCode && <>
-                        <HiOutlineArrowNarrowRight />
-                        <Stat textAlign='center' flex='none'>
-                        <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hour12: false,
-                        }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                            timeStyle: 'short',
-                            hour12: false,
-                        })}</StatLabel>
-                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                        <StatHelpText>STOPOVER</StatHelpText>
-                        </Stat></>}
+                    <HiOutlineArrowNarrowRight />
+                    {renderStopOver(flight)}
                     <HiOutlineArrowNarrowRight />
                     <Stat textAlign='right' flex='none'>
                         <StatLabel>{new Date(flight?.arrivalTime).toLocaleString('en-AU', {
