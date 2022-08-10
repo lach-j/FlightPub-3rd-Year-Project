@@ -211,15 +211,20 @@ export const MapPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetState
                                   position: 'top'
                               });
                             } else {
-                              navigate(routes.passengerDetails, {
-                                state: {
-                                  result,
-                                }
+                              let r: Flight = result;
+                              setCart((cart) => [...cart, r]);
+                              toast({
+                                  title: 'Success!',
+                                  description: 'Flight added to cart successfully.',
+                                  status: 'success',
+                                  duration: 9000,
+                                  isClosable: true,
+                                  position: 'top'
                               });
                             }
                           }
                         }}>
-                          Book now
+                          Add to Cart
                         </Button>
                       </Box>
                     </Flex>

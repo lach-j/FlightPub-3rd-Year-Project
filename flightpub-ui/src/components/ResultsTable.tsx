@@ -112,10 +112,14 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                           position: 'top'
                       });
                     } else {
-                      navigate(routes.passengerDetails, {
-                        state: {
-                          result,
-                        }
+                      setCart((cart) => [...cart, result]);
+                      toast({
+                          title: 'Success!',
+                          description: 'Flight added to cart successfully.',
+                          status: 'success',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top'
                       });
                     }
                   }}

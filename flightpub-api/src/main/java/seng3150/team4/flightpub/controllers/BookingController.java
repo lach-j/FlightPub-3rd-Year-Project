@@ -10,7 +10,9 @@ import seng3150.team4.flightpub.controllers.requests.BookingRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.Booking;
+import seng3150.team4.flightpub.domain.models.Passenger;
 import seng3150.team4.flightpub.services.IBookingService;
+import seng3150.team4.flightpub.services.IPassengerService;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 public class BookingController {
 
   private final IBookingService bookingService;
+  private final IPassengerService passengerService;
 
   @PostMapping(path = "/book")
   public ResponseEntity<? extends Response> makeBooking(
@@ -29,6 +32,14 @@ public class BookingController {
     var booking = bookingFromRequest(bookingRequest);
 
     var savedBooking = bookingService.makeBooking(booking, bookingRequest.getFlightIds());
+
+    var passengers = bookingRequest.getPassengers();
+
+    var bookingId = savedBooking.getId();
+
+    for(Passenger p: passengers) {
+        passengerService.addPassenger(p, bookingId);
+    }
 
     return ResponseEntity.ok().body(new EntityResponse<>(savedBooking));
   }

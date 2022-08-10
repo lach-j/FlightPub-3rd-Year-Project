@@ -140,7 +140,7 @@ export default function Header({
                   </Box>
                 ))}{' '}
                 <br />
-                <NavLink to={routes.booking}>
+                <NavLink to={routes.passengerDetails}>
                   <Button colorScheme='red' disabled={cart.length === 0}>
                     Checkout
                   </Button>
