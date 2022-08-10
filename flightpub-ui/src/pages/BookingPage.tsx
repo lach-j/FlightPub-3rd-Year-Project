@@ -27,12 +27,19 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useEffect,
+  useState,
+  useContext
+} from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
-import {  useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
@@ -40,6 +47,7 @@ import { endpoints } from '../constants/endpoints';
 import { Passenger } from '../models/Passenger';
 import { SavedPaymentType } from '../models/SavedPaymentTypes';
 import { UserContext } from '../services/UserContext';
+import { FlightListAccordian } from '../components/FlightListAccordian';
 
 export const BookingPage = ({
   cartState
@@ -52,7 +60,7 @@ export const BookingPage = ({
   // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [bookingRequest, setBookingRequest] = useState<Booking>({
+  const [bookingRequest, setBookingRequest] = useState<any>({
     userId: 2,
     flightIds: [],
     passengers: []
@@ -98,40 +106,14 @@ export const BookingPage = ({
   };
 
   useEffect(() => {
-    const {passengers} = state as {passengers: Passenger[]};
-    setBookingRequest({ ...bookingRequest, userId: user?.id, passengers: passengers, flightIds: cart.map((flight) => flight.id)});
+    const { passengers } = state as { passengers: Passenger[] };
+    setBookingRequest({
+      ...bookingRequest,
+      passengers: passengers,
+      flightIds: cart.map((flight) => flight.id)
+    });
     console.log(bookingRequest.flightIds);
-}, [state]);
-
-const renderStopOver = (flight: Flight) => {
-  if (flight?.stopOverLocation){
-      return (
-          <Stat textAlign='center' flex='none'>
-          {(flight?.stopOverLocation.destinationCode || "NONE") && <>
-                  <Stat textAlign='center' flex='none'>
-                  <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                      hour12: false,
-                  }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                      timeStyle: 'short',
-                      hour12: false,
-                  })}</StatLabel>
-                  <StatNumber>{flight?.stopOverLocation.destinationCode || 'NONE'}</StatNumber>
-                  <StatHelpText>STOPOVER</StatHelpText>
-                  </Stat></>}
-          </Stat>
-      );
-  } else {
-      return (
-          <Stat textAlign='center' flex='none'>
-              <StatLabel></StatLabel>
-              <StatNumber>NO</StatNumber>
-              <StatHelpText>STOPOVER</StatHelpText>
-          </Stat>
-      );
-  }
-}
+  }, [state]);
 
   const renderPaymentDetails = () => {
     //switch statement defines flow based on payment type
@@ -210,57 +192,7 @@ const renderStopOver = (flight: Flight) => {
           Finalise Booking
         </Heading>
         <Text>Flights:</Text>
-        <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {cart.map((flight) => (
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex='1' textAlign='left'>
-                    <Flex width='full' justifyContent='space-between'>
-                      <HStack>
-                        <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
-                        <HiOutlineArrowNarrowRight />
-                        <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
-                      </HStack>
-                      <Text>{`$${flight.prices[0].price}`}</Text>
-                      <Text>{flight.airlineCode}</Text>
-                    </Flex>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Flex w='full' justifyContent='space-between' alignItems='center'>
-                  <Stat textAlign='left' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.departureTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
-                    <StatHelpText>DEPARTURE</StatHelpText>
-                  </Stat>
-                  <HiOutlineArrowNarrowRight />
-                  {renderStopOver(flight)}
-                  <HiOutlineArrowNarrowRight />
-                  <Stat textAlign='right' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.arrivalTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
-                    <StatHelpText>ARRIVAL</StatHelpText>
-                  </Stat>
-                </Flex>
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <FlightListAccordian flights={cart} />
         <Text mb='4em'>{`Subtotal: $${cart.reduce(
           (partialSum, a) => partialSum + a.prices[0].price,
           0

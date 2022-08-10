@@ -51,12 +51,10 @@ public class BookingController {
   @GetMapping("/bookings")
   public EntityCollectionResponse<Booking> getAllBookingForUser() {
 
-    return new EntityCollectionResponse<>(null);
-  }
+    var userId = currentUserContext.getCurrentUserId();
 
-  private static Booking bookingFromRequest() {
-    Booking booking = new Booking();
-    booking.setDateBooked(LocalDateTime.now());
-    return booking;
+    var bookings = bookingService.getBookingsByUserId(userId);
+
+    return new EntityCollectionResponse<>(bookings);
   }
 }

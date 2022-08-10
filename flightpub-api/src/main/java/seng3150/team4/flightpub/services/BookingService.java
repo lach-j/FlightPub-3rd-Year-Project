@@ -8,6 +8,7 @@ import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class BookingService implements IBookingService {
   @Override
   public Booking makeBooking(Set<Long> flightIds, long userId) {
     var booking = new Booking();
-    booking.setDateBooked(LocalDateTime.now());
+    booking.setDateBooked(LocalDateTime.now(ZoneOffset.UTC));
 
     var user = userService.getUserByIdSecure(userId);
     booking.setUser(user);
