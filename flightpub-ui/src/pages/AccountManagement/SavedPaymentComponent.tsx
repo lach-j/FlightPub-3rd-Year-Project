@@ -15,6 +15,7 @@ import { AiFillBank, AiFillCreditCard, BiTrash, ImPaypal } from 'react-icons/all
 import { EditIcon } from '@chakra-ui/icons';
 import React from 'react';
 import { SavedPayment } from '../../models';
+import { SavedPaymentType } from '../../models/SavedPaymentTypes';
 
 export const SavedPaymentComponent = ({
   payment,
@@ -29,7 +30,7 @@ export const SavedPaymentComponent = ({
     bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
   const renderPaymentDetails = () => {
     switch (payment.type) {
-      case 'card':
+      case SavedPaymentType.CARD:
         return (
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillCreditCard} fontSize='5xl' />
@@ -38,12 +39,12 @@ export const SavedPaymentComponent = ({
               <StatHelpText>CARD NUMBER</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.expiry}</StatLabel>
+              <StatLabel>{payment.expiryDate}</StatLabel>
               <StatHelpText>EXPIRES</StatHelpText>
             </Stat>
           </Flex>
         );
-      case 'paypal':
+      case SavedPaymentType.PAYPAL:
         return (
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={ImPaypal} fontSize='5xl' />
@@ -53,7 +54,7 @@ export const SavedPaymentComponent = ({
             </Stat>
           </Flex>
         );
-      case 'directDebit':
+      case SavedPaymentType.DIRECT_DEBIT:
         return (
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillBank} fontSize='5xl' />
@@ -62,7 +63,7 @@ export const SavedPaymentComponent = ({
               <StatHelpText>BSB</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.accNumber}</StatLabel>
+              <StatLabel>{payment.accountNumber}</StatLabel>
               <StatHelpText>ACC NUMBER</StatHelpText>
             </Stat>
           </Flex>

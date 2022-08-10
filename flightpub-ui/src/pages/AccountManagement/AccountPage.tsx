@@ -11,7 +11,6 @@ import {
   Tabs,
   useDisclosure
 } from '@chakra-ui/react';
-import React from 'react';
 import { SavedPaymentsTab } from './SavedPaymentsTab';
 import { MyDetailsTab } from './MyDetailsTab';
 import { ChangePasswordTab } from './ChangePasswordTab';
