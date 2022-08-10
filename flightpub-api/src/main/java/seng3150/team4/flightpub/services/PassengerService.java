@@ -57,14 +57,15 @@ public class PassengerService implements IPassengerService{
 
     private void sendEmail(Passenger p) {
 
-//        var bookinguser = userRepository.getById(booking.getUserId());
+        var booking = bookingRepository.getById(p.getBookingId());
+        var bookinguser = userRepository.getById(booking.getUserId());
 
         var flightIds = bookingRepository.getBookingFlights(p.getBookingId());
         Set<Long> flightsIdSet = new HashSet<>(flightIds.get());
         var flights = new HashSet<Flight>();
         flightRepository.findAllById(flightsIdSet).forEach(flights:: add);
 
-        String flightString = String.format("Booking made by %s %s:", "Keenan", "Groves");
+        String flightString = String.format("Booking made by %s:", (bookinguser.getFirstName() + " " + bookinguser.getLastName()));
         int x = 1;
 
         if (!flights.isEmpty()) {
