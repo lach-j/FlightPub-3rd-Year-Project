@@ -13,6 +13,6 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
   @Query("SELECT b FROM Booking b WHERE b.userId = ?1")
   Optional<List<Booking>> findByUserId(long userId);
 
-  @Query(nativeQuery = true, value = "SELECT f FROM Flights f WHERE f.id IN (SELECT bf.flightId FROM BookFlight bf WHERE bf.bookingid = ?1)")
-  Optional<List<Flight>> getBookingFlights(long bookingId);
+  @Query(nativeQuery = true, value="SELECT f.Id FROM Flights f WHERE f.Id IN (SELECT bf.flightId FROM BookFlight bf WHERE bf.bookingid = ?1)")
+  Optional<List<Long>> getBookingFlights(long bookingId);
 }

@@ -13,8 +13,10 @@ import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class PassengerService implements IPassengerService{
     private final IPassengerRepository passengerRepository;
 
     private final IBookingRepository bookingRepository;
+
+    private final IFlightRepository flightRepository;
 
     private final IUserRepository userRepository;
 
@@ -53,24 +57,30 @@ public class PassengerService implements IPassengerService{
 
     private void sendEmail(Passenger p) {
 
-        var booking = bookingRepository.getById(p.getBookingId());
-        var flights = bookingRepository.getBookingFlights(6);
-
 //        var bookinguser = userRepository.getById(booking.getUserId());
+
+        var flightIds = bookingRepository.getBookingFlights(p.getBookingId());
+        Set<Long> flightsIdSet = new HashSet<>(flightIds.get());
+        var flights = new HashSet<Flight>();
+        flightRepository.findAllById(flightsIdSet).forEach(flights:: add);
 
         String flightString = String.format("Booking made by %s %s:", "Keenan", "Groves");
         int x = 1;
 
         if (!flights.isEmpty()) {
-            for (Flight f : flights.get()) {
+            for (Flight f : flights) {
+                String depLoc = f.getDepartureLocation().getAirport();
+                String depTime = f.getDepartureTime().format(DateTimeFormatter.ISO_DATE_TIME);
+                String arrLoc = f.getArrivalLocation().getAirport();
+                String arrTime = f.getArrivalTime().format(DateTimeFormatter.ISO_DATE_TIME);
                 flightString = flightString
-                        + "\n"
-                        + String.format("Flight %s: Departing from %s at %s, arriving at %s at %s",
-                        x,
-                        f.getDepartureLocation().getAirport(),
-                        f.getDepartureTime().format(DateTimeFormatter.ISO_DATE_TIME),
-                        f.getArrivalLocation().getAirport(),
-                        f.getArrivalTime().format(DateTimeFormatter.ISO_DATE_TIME));
+                        + "<hr>"
+                        + "Flight "
+                        + x + ": Departing from "
+                        + depLoc + " at "
+                        + depTime + ", arriving at "
+                        + arrLoc + " at "
+                        + arrTime;
                 x++;
             }
         }
