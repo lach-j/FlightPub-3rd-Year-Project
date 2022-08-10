@@ -104,6 +104,36 @@ export const BookingPage = ({
     setBookingRequest({ ...bookingRequest, passengers: passengers});
 }, [state]);
 
+const renderStopOver = (flight: Flight) => {
+  if (flight?.stopOverLocation){
+      return (
+          <Stat textAlign='center' flex='none'>
+          {(flight?.stopOverLocation.destinationCode || "NONE") && <>
+                  <Stat textAlign='center' flex='none'>
+                  <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                      hour12: false,
+                  }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                      timeStyle: 'short',
+                      hour12: false,
+                  })}</StatLabel>
+                  <StatNumber>{flight?.stopOverLocation.destinationCode || 'NONE'}</StatNumber>
+                  <StatHelpText>STOPOVER</StatHelpText>
+                  </Stat></>}
+          </Stat>
+      );
+  } else {
+      return (
+          <Stat textAlign='center' flex='none'>
+              <StatLabel></StatLabel>
+              <StatNumber>NO</StatNumber>
+              <StatHelpText>STOPOVER</StatHelpText>
+          </Stat>
+      );
+  }
+}
+
   const renderPaymentDetails = () => {
     //switch statement defines flow based on payment type
     switch (savedPaymentData?.type) {
@@ -213,27 +243,8 @@ export const BookingPage = ({
                     <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                     <StatHelpText>DEPARTURE</StatHelpText>
                   </Stat>
-                  {flight?.stopOverLocation.destinationCode && (
-                    <>
-                      <HiOutlineArrowNarrowRight />
-                      <Stat textAlign='center' flex='none'>
-                        <StatLabel>
-                          {new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hour12: false
-                          }) +
-                            ' - ' +
-                            new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                              timeStyle: 'short',
-                              hour12: false
-                            })}
-                        </StatLabel>
-                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                        <StatHelpText>STOPOVER</StatHelpText>
-                      </Stat>
-                    </>
-                  )}
+                  <HiOutlineArrowNarrowRight />
+                  {renderStopOver(flight)}
                   <HiOutlineArrowNarrowRight />
                   <Stat textAlign='right' flex='none'>
                     <StatLabel>
