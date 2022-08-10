@@ -10,10 +10,14 @@ export const routes = {
   account: '/account',
   booking: '/booking',
   searchResults: '/searchResults',
-  holidayPackages: '/holidays',
+  holidayPackages: {
+    base: '/holidays',
+    holidayBooking: '/holidays/book',
+  },
   passengerDetails: '/passengerDetails',
   travelAgents: {
     base: '/travel-agents',
+    createHolidayBooking: '/travel-agents/createHolidayBooking',
     session: {
       base: '/travel-agents/session',
       id: '/travel-agents/session/:sessionId'

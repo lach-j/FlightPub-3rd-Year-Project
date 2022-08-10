@@ -22,7 +22,7 @@ export interface HolidayPackage {
   location: string;
   price: number;
   arrivalLocation: string;
-
+  accommodation: string;
 }
 
 export interface FeatureBadgeProps {

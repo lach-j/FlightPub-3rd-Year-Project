@@ -33,6 +33,8 @@ interface CreateHolidayPackageQuery {
   location: string;
   price: number;
   arrivalLocation: string;
+  flightIds: number[];
+  accommodation: string;
 }
 export function HolidayPackagesPage({
   cartState
@@ -56,7 +58,9 @@ export function HolidayPackagesPage({
     price: 600,
     packageNights: 7,
     location: 'Whistler',
-    arrivalLocation: 'SYD'
+    arrivalLocation: 'SYD',
+    flightIds: [1,2],
+    accommodation: 'The Example Hotel, Whistler',
   });
   const handleHolidayPackageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHolidayPackage({
@@ -231,6 +235,14 @@ export function HolidayPackagesPage({
                           onChange={handleHolidayPackageChange}
                       />
                     </FormControl>
+                    <FormControl isDisabled={loading} >
+                      <FormLabel>Accommodation</FormLabel>
+                      <Input
+                          name='accommodation'
+                          value={holidayPackage.accommodation}
+                          onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
                     <FormControl isDisabled={loading}>
                       <FormLabel>Price</FormLabel>
                       <Input
@@ -239,6 +251,25 @@ export function HolidayPackagesPage({
                           value={holidayPackage.price}
                           onChange={handleHolidayPackageChange}
                       />
+                    </FormControl>
+                      <FormControl isDisabled={loading}>
+                        <FormLabel>Flight Id 1:</FormLabel>
+                        <Input
+                            type='number'
+                            name='flight1'
+                            value={holidayPackage.flightIds[0]}
+                            onChange={handleHolidayPackageChange}
+                        />
+                      </FormControl>
+                      <FormControl isDisabled={loading}>
+                        <FormLabel>Flight Id 2:</FormLabel>
+                        <Input
+                            type='number'
+                            name='flight2'
+                            value={holidayPackage.flightIds[1]}
+                            onChange={handleHolidayPackageChange}
+                        />
+                      </FormControl>
                       <Box>
                         <FormControl>
                           <FormLabel>Arrival Location:</FormLabel>
@@ -267,7 +298,6 @@ export function HolidayPackagesPage({
                       <FormErrorMessage>
                         Values provided are incorrect
                       </FormErrorMessage>
-                    </FormControl>
                   </Stack>
                 </Box>
                 {/* Form submission button */}
