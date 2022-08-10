@@ -14,8 +14,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class BookingRequest extends Validatable {
 
-  private long userId;
-
   private Set<Long> flightIds;
 
   private Set<Passenger> passengers;

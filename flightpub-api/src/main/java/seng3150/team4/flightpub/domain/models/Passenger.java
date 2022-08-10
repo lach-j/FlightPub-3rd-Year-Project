@@ -18,14 +18,15 @@ public class Passenger implements IEntity {
     private long id;
 
     @Column(name = "FirstName")
-    private String fname;
+    private String firstName;
 
     @Column(name = "LastName")
-    private String lname;
+    private String lastName;
 
     @Column(name = "Email")
     private String email;
 
-    @JoinColumn(foreignKey = @ForeignKey(name = "BookingId"))
-    private long bookingId;
+    @ManyToOne
+    @JoinColumn(name = "BookingId")
+    private Booking booking;
 }

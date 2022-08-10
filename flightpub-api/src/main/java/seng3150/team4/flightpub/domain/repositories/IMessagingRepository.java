@@ -6,7 +6,6 @@ import seng3150.team4.flightpub.domain.models.MessagingSession;
 import seng3150.team4.flightpub.domain.models.User;
 
 import java.util.List;
-import java.util.Optional;
 
 /** Repository for making CRUD transactions on the User database table. */
 public interface IMessagingRepository extends JpaRepository<MessagingSession, Long> {

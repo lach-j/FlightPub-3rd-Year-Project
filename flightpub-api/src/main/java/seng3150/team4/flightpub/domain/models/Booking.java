@@ -20,8 +20,9 @@ public class Booking implements IEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "UserId")
-  private long userId;
+  @ManyToOne
+  @JoinColumn(name = "UserId")
+  private User user;
 
   @ManyToMany
   @JoinTable(

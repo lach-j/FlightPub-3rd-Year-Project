@@ -9,9 +9,6 @@ import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 import seng3150.team4.flightpub.domain.models.SavedPayment;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
 @Getter

@@ -3,14 +3,13 @@ package seng3150.team4.flightpub.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.Booking;
-import seng3150.team4.flightpub.domain.models.Flight;
 import seng3150.team4.flightpub.domain.repositories.IBookingRepository;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -19,14 +18,20 @@ public class BookingService implements IBookingService {
 
   private final IBookingRepository bookingRepository;
   private final IFlightRepository flightRepository;
+  private final IUserService userService;
 
   @Override
-  public Booking makeBooking(Booking booking, Set<Long> flightIds) {
-    var flights = new HashSet<Flight>();
-    flightRepository.findAllById(flightIds).forEach(flights::add);
+  public Booking makeBooking(Set<Long> flightIds, long userId) {
+    var booking = new Booking();
+    booking.setDateBooked(LocalDateTime.now());
+
+    var user = userService.getUserByIdSecure(userId);
+    booking.setUser(user);
+
+    var flights = new HashSet<>(flightRepository.findAllById(flightIds));
+
     booking.setFlights(flights);
-    Booking savedBooking = bookingRepository.save(booking);
-    return savedBooking;
+    return bookingRepository.save(booking);
   }
 
   @Override
@@ -44,7 +49,7 @@ public class BookingService implements IBookingService {
   }
 
   @Override
-  public Optional<List<Booking>> getBookingsByUserId(long userId) {
+  public List<Booking> getBookingsByUserId(long userId) {
     var bookings = bookingRepository.findByUserId(userId);
     if (bookings.isEmpty())
       throw new EntityNotFoundException(
