@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
 @Setter
 @ToString

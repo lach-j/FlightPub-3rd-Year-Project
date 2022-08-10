@@ -54,23 +54,25 @@ public class PassengerService implements IPassengerService{
     private void sendEmail(Passenger p) {
 
         var booking = bookingRepository.getById(p.getBookingId());
-        var flights = booking.getFlights();
+        var flights = bookingRepository.getBookingFlights(6);
 
 //        var bookinguser = userRepository.getById(booking.getUserId());
 
         String flightString = String.format("Booking made by %s %s:", "Keenan", "Groves");
         int x = 1;
 
-        for(Flight f: flights) {
-            flightString = flightString
-                    + "\n"
-                    + String.format("Flight %s: Departing from %s at %s, arriving at %s at %s",
+        if (!flights.isEmpty()) {
+            for (Flight f : flights.get()) {
+                flightString = flightString
+                        + "\n"
+                        + String.format("Flight %s: Departing from %s at %s, arriving at %s at %s",
                         x,
                         f.getDepartureLocation().getAirport(),
                         f.getDepartureTime().format(DateTimeFormatter.ISO_DATE_TIME),
                         f.getArrivalLocation().getAirport(),
                         f.getArrivalTime().format(DateTimeFormatter.ISO_DATE_TIME));
-            x++;
+                x++;
+            }
         }
 
         var bookingTemplate = new ConfirmBookingEmailTemplate();
