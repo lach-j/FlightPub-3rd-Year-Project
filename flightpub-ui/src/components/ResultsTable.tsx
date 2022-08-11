@@ -21,7 +21,7 @@ import { routes } from '../constants/routes';
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[],
-  data: Flight[],
+  data: any[],
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];

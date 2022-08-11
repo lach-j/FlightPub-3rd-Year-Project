@@ -385,6 +385,29 @@ export const SearchPage = () => {
 								>
 									{/* Location tag inputs */}
 									<VStack align='left'>
+										<Box>
+											<FormControl>
+												<FormLabel>Location Tags</FormLabel>
+												<HStack>
+													<AutoComplete
+														openOnFocus
+														suggestWhenEmpty
+														defaultValue=''
+														emptyState={true}
+														onChange={(value: string) => handleTagUpdate(value)}
+													>
+														<AutoCompleteInput variant='filled' />
+														<AutoCompleteList>
+															{tags.map(({ label }) => (
+																<AutoCompleteItem key={label} value={label} align='center'>
+																	<Text ml='4'>{label}</Text>
+																</AutoCompleteItem>
+															))}
+														</AutoCompleteList>
+													</AutoComplete>
+												</HStack>
+											</FormControl>
+										</Box>
 										<label>Selected Tags</label>
 										<Box width='15rem'>
 											<TagMessage length={searchTags.length} />
@@ -406,29 +429,6 @@ export const SearchPage = () => {
 											))}
 										</Box>
 									</VStack>
-									<Box>
-										<FormControl>
-											<FormLabel>Location Tags</FormLabel>
-											<HStack>
-												<AutoComplete
-													openOnFocus
-													suggestWhenEmpty
-													defaultValue=''
-													emptyState={true}
-													onChange={(value: string) => handleTagUpdate(value)}
-												>
-													<AutoCompleteInput variant='filled' />
-													<AutoCompleteList>
-														{tags.map(({ label }) => (
-															<AutoCompleteItem key={label} value={label} align='center'>
-																<Text ml='4'>{label}</Text>
-															</AutoCompleteItem>
-														))}
-													</AutoCompleteList>
-												</AutoComplete>
-											</HStack>
-										</FormControl>
-									</Box>
 
 									{/* Departure date input */}
 									<Box>
