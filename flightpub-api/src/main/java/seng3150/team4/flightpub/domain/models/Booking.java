@@ -1,5 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,4 +34,9 @@ public class Booking implements IEntity {
 
   @Column(name = "DateBooked")
   private LocalDateTime dateBooked;
+
+  @JsonManagedReference
+  @OneToMany
+  @JoinColumn(name = "BookingId", referencedColumnName = "Id")
+  private Set<Passenger> passengers;
 }

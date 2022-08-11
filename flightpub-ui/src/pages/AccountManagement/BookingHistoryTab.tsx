@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, ListItem, OrderedList, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { useApi } from '../../services/ApiService';
@@ -33,8 +33,16 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                 <Text>Booked: {moment(date).format('DD/MM/yyy HH:mm')}</Text>
                 <Text>Reference Number: {booking.id}</Text>
               </HStack>
-              <Text>Flights:</Text>
+              <Text mb='2'>Flights:</Text>
               <FlightListAccordian flights={booking.flights} />
+              <Text mt='4' mb='2'>
+                Passengers:
+              </Text>
+              <OrderedList>
+                {booking.passengers?.map((p) => (
+                  <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
+                ))}
+              </OrderedList>
             </Box>
           );
         })}
