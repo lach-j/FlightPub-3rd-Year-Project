@@ -17,7 +17,7 @@ import {
 
 import { ReactElement } from 'react';
 import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
-import { HolidayCardProps, FeatureBadgeProps } from '../models/HolidayCardProps';
+import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
 
 interface FeatureProps {
   text: string;
@@ -25,7 +25,7 @@ interface FeatureProps {
   icon?: ReactElement;
 }
 interface HolidayCardPropsObj {
-  data: HolidayCardProps;
+  data: HolidayPackage;
 }
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
   return (
@@ -67,24 +67,25 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
             <Circle size='10px' position='absolute' top={2} right={2} bg='red.200' />
           )}
 
-          <Image src={data.imageURL} alt={`Picture of ${data.name}`} roundedTop='lg' />
+          <Image src={data.imageURL} alt={`Picture of ${data.packageName}`} htmlHeight={600} htmlWidth={400} roundedTop='lg' />
 
           <Box p='4'>
             <HStack alignItems='baseline' spacing='1'>
               {data.isPopular && <FeatureBadge tagName='popular' tagColor='red' />}
-              {Object.values(data.tags).map((value) => {
+
+{/*              {Object.values(data.tags).map((value) => {
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
-              })}
+              })}*/}
             </HStack>
             <Flex mt='1' justifyContent='space-between' alignContent='center'>
-              <Box fontSize='2xl' fontWeight='semibold' as='h4' lineHeight='tight' isTruncated>
-                {data.name}
+              <Box fontSize='2xl'  minW='500px' fontWeight='semibold' as='h4' lineHeight='tight' isTruncated>
+                {data.packageName}
               </Box>
             </Flex>
 
             <HStack spacing='15px'>
               <Box fontSize='xl' color={useColorModeValue('gray.500', 'white')}>
-                {data.nights} nights
+                {data.packageNights} nights
               </Box>
 
               <Box fontSize='xl' color={useColorModeValue('gray.500', 'white')}>
@@ -95,7 +96,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
                 <Box as='span' color='gray.600' fontSize='lg'>
                   $
                 </Box>
-                {data.price.toFixed(2)}
+                {data?.price.toFixed(2)}
               </Box>
             </HStack>
           </Box>
@@ -118,22 +119,22 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
             overflow='hidden'
           >
             <Box pl={5}>
-              <Stack spacing={4}>
+              <Stack spacing={4} minW={500}>
                 <Heading fontSize='3xl' fontFamily='heading'>
-                  {data.tagline}
+                  {data.packageTagline}
                 </Heading>
                 <Text color='gray.500' fontSize='2xl'>
-                  {data.description}
+                  {data.packageDescription}
                 </Text>
                 <Feature
                   icon={<Icon as={GiNightSky} color='yellow.500' w={5} h={5} />}
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
-                  text={`${data.nights} Nights`}
+                  text={`${data.packageNights} Nights`}
                 />
                 <Feature
                   icon={<Icon as={ImAirplane} color='yellow.500' w={5} h={5} />}
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
-                  text='Flights + Accommodation'
+                  text={`Flights + Accommodation from ${data.arrivalLocation}`}
                 />
                 <Feature
                   icon={<Icon as={ImCheckmark2} color='yellow.500' w={5} h={5} />}

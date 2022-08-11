@@ -27,17 +27,19 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, SyntheticEvent, useEffect, useState, useContext } from 'react';
 import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { countries } from '../data/countries';
 import { SavedPayment } from '../models';
-import { dummySavedPayments } from '../data/SavedPayments';
-import { NavLink } from 'react-router-dom';
+import {  useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
+import { Passenger } from '../models/Passenger';
+import { SavedPaymentType } from '../models/SavedPaymentTypes';
+import { UserContext } from '../services/UserContext';
 
 export const BookingPage = ({
   cartState
@@ -52,12 +54,16 @@ export const BookingPage = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<Booking>({
     userId: 2,
-    flightIds: []
+    flightIds: [],
+    passengers: []
   });
   const toast = useToast();
   const { httpPost } = useApi(endpoints.book);
+  const [cart, setCart] = cartState;
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
-  const [cart] = cartState;
+  const { state } = useLocation();
 
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -72,6 +78,8 @@ export const BookingPage = ({
           isClosable: true,
           position: 'top'
         });
+        setCart([]);
+        navigate(routes.home);
       })
       .catch((err: ApiError) => {
         if (err.statusCode === 401) {
@@ -90,14 +98,46 @@ export const BookingPage = ({
   };
 
   useEffect(() => {
-    setBookingRequest({ ...bookingRequest, flightIds: cart.map((flight) => flight.id) });
-  }, [cart]);
+    const {passengers} = state as {passengers: Passenger[]};
+    setBookingRequest({ ...bookingRequest, userId: user?.id, passengers: passengers, flightIds: cart.map((flight) => flight.id)});
+    console.log(bookingRequest.flightIds);
+}, [state]);
+
+const renderStopOver = (flight: Flight) => {
+  if (flight?.stopOverLocation){
+      return (
+          <Stat textAlign='center' flex='none'>
+          {(flight?.stopOverLocation.destinationCode || "NONE") && <>
+                  <Stat textAlign='center' flex='none'>
+                  <StatLabel>{new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                      hour12: false,
+                  }) + ' - ' + new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
+                      timeStyle: 'short',
+                      hour12: false,
+                  })}</StatLabel>
+                  <StatNumber>{flight?.stopOverLocation.destinationCode || 'NONE'}</StatNumber>
+                  <StatHelpText>STOPOVER</StatHelpText>
+                  </Stat></>}
+          </Stat>
+      );
+  } else {
+      return (
+          <Stat textAlign='center' flex='none'>
+              <StatLabel></StatLabel>
+              <StatNumber>NO</StatNumber>
+              <StatHelpText>STOPOVER</StatHelpText>
+          </Stat>
+      );
+  }
+}
 
   const renderPaymentDetails = () => {
     //switch statement defines flow based on payment type
     switch (savedPaymentData?.type) {
       //if users payment type is card
-      case 'card':
+      case SavedPaymentType.CARD:
         return (
           <VStack mt='1em' gap='1em' w='full'>
             <HStack w='full' gap='1em'>
@@ -123,7 +163,7 @@ export const BookingPage = ({
           </VStack>
         );
       // if users payment type is PayPal
-      case 'paypal':
+      case SavedPaymentType.PAYPAL:
         return (
           <VStack mt='1em' gap='1em' w='full'>
             <FormControl>
@@ -134,7 +174,7 @@ export const BookingPage = ({
           </VStack>
         );
       // if users payment type is PayPal
-      case 'directDebit':
+      case SavedPaymentType.DIRECT_DEBIT:
         return (
           <HStack w='full' mt='1em' gap='1em'>
             <FormControl>
@@ -152,10 +192,10 @@ export const BookingPage = ({
           </HStack>
         );
       //If user payment type is 'saved'
-      case 'saved':
+      case SavedPaymentType.SAVED:
         return (
           <Select>
-            {dummySavedPayments.map((s) => (
+            {([] as SavedPayment[]).map((s) => (
               <option value={s.nickname}>{s.nickname}</option>
             ))}
           </Select>
@@ -202,27 +242,8 @@ export const BookingPage = ({
                     <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
                     <StatHelpText>DEPARTURE</StatHelpText>
                   </Stat>
-                  {flight?.stopOverLocation.destinationCode && (
-                    <>
-                      <HiOutlineArrowNarrowRight />
-                      <Stat textAlign='center' flex='none'>
-                        <StatLabel>
-                          {new Date(flight?.arrivalTimeStopOver || '').toLocaleString('en-AU', {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                            hour12: false
-                          }) +
-                            ' - ' +
-                            new Date(flight?.departureTimeStopOver || '').toLocaleString('en-AU', {
-                              timeStyle: 'short',
-                              hour12: false
-                            })}
-                        </StatLabel>
-                        <StatNumber>{flight?.stopOverLocation.destinationCode}</StatNumber>
-                        <StatHelpText>STOPOVER</StatHelpText>
-                      </Stat>
-                    </>
-                  )}
+                  <HiOutlineArrowNarrowRight />
+                  {renderStopOver(flight)}
                   <HiOutlineArrowNarrowRight />
                   <Stat textAlign='right' flex='none'>
                     <StatLabel>
@@ -315,7 +336,7 @@ export const BookingPage = ({
             </FormControl>
             {renderPaymentDetails()}
           </VStack>
-          {savedPaymentData?.type !== 'saved' && (
+          {savedPaymentData?.type !== SavedPaymentType.SAVED && (
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>

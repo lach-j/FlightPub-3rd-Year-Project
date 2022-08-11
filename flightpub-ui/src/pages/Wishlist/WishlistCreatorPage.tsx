@@ -1,12 +1,29 @@
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { useState } from 'react';
-import { Box, Button, Heading, HStack, Input, useToast, VStack } from '@chakra-ui/react';
-import { Airport } from '../../utility/geolocation';
+import { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  useToast,
+  VStack,
+  Text
+} from '@chakra-ui/react';
+import { Airport, findNearestAirport } from '../../utility/geolocation';
 import { airports } from '../../data/airports';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../constants/routes';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteList,
+  AutoCompleteItem
+} from '@choc-ui/chakra-autocomplete';
 
 // fake data generator
 const getItems = (count: number, offset: number = 0) =>
@@ -64,8 +81,19 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 export const WishlistCreatorPage = (props: any) => {
   const [items, setItems] = useState<Airport[]>(airports);
+  const [departureAirport, setDepartureAirport] = useState<Airport | undefined>();
   const [selected, setSelected] = useState<Airport[]>([]);
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) =>
+      setDepartureAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]))
+    );
+  }, []);
+
+  useEffect(() => {
+    console.log(departureAirport?.code);
+  }, [departureAirport]);
 
   const navigate = useNavigate();
   const { httpPost } = useApi(endpoints.wishlist);
@@ -77,6 +105,15 @@ export const WishlistCreatorPage = (props: any) => {
   const handleSubmitWishlist = () => {
     const items = getOrderedWishlistItems();
 
+    if (!departureAirport?.code) {
+      toast({
+        status: 'error',
+        title: 'Invalid Wishlist',
+        description: 'You must select your departure location before submitting'
+      });
+      return;
+    }
+
     if (items.length <= 0) {
       toast({
         status: 'error',
@@ -86,7 +123,7 @@ export const WishlistCreatorPage = (props: any) => {
       return;
     }
 
-    httpPost('', { destinations: items })
+    httpPost('', { destinations: items, departureCode: departureAirport.code })
       .then((res) => {
         toast({
           title: 'Wishlist Created',
@@ -155,6 +192,25 @@ export const WishlistCreatorPage = (props: any) => {
       <VStack gap='3'>
         <DragDropContext onDragEnd={onDragEnd}>
           <HStack alignItems={'flex-start'} gap='10'>
+            <FormControl isRequired>
+              <FormLabel>Departure Location</FormLabel>
+              <AutoComplete
+                openOnFocus
+                suggestWhenEmpty
+                defaultValue={departureAirport?.code}
+                key={departureAirport?.code}
+                onChange={(value) => setDepartureAirport(airports.find((a) => a.code === value))}
+              >
+                <AutoCompleteInput variant='filled' />
+                <AutoCompleteList>
+                  {airports.map(({ code, city }) => (
+                    <AutoCompleteItem key={code} value={code} align='center'>
+                      <Text ml='4'>{city}</Text>
+                    </AutoCompleteItem>
+                  ))}
+                </AutoCompleteList>
+              </AutoComplete>
+            </FormControl>
             <VStack>
               <Heading as='h2'>Destinations</Heading>
               <Input

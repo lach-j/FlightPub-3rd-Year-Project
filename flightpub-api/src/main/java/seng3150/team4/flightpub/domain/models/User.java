@@ -37,5 +37,8 @@ public class User implements IEntity {
 
   private UserRole role;
 
-  // TODO: add saved payments and other user data to model
+  @JsonIgnore
+  @OneToMany
+  @JoinColumn(name = "UserId")
+  private Set<SavedPayment> payments;
 }

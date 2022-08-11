@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from
 import {
   Box,
   Button,
+  Circle,
   Divider,
   Flex,
   HStack,
@@ -96,7 +97,22 @@ export default function Header({
           </Menu>
           <Popover>
             <PopoverTrigger>
-              <IconButton aria-label='cart' icon={<FaShoppingCart />} />
+              <Box position='relative'>
+                <IconButton aria-label='cart' icon={<FaShoppingCart />} />
+                {cart.length > 0 && (
+                  <Circle
+                    position='absolute'
+                    bottom='-5px'
+                    right='-5px'
+                    left='25px'
+                    top='25px'
+                    background='red'
+                    color='white'
+                  >
+                    {cart.length}
+                  </Circle>
+                )}
+              </Box>
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />
@@ -105,7 +121,7 @@ export default function Header({
               <PopoverBody>
                 {cart.length === 0 && <Text>Your cart is empty, add a flight to checkout!</Text>}
                 {cart.map((item) => (
-                  <Text>
+                  <Box>
                     To: {item.arrivalLocation.destinationCode} <br />
                     From: {item.departureLocation.destinationCode} <br />
                     On: {item.departureTime} <br />
@@ -121,10 +137,10 @@ export default function Header({
                       Remove
                     </Text>
                     <Divider orientation='horizontal' />
-                  </Text>
+                  </Box>
                 ))}{' '}
                 <br />
-                <NavLink to={routes.booking}>
+                <NavLink to={routes.passengerDetails}>
                   <Button colorScheme='red' disabled={cart.length === 0}>
                     Checkout
                   </Button>
