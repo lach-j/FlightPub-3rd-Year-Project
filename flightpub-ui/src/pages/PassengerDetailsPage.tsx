@@ -154,6 +154,42 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         }
     }
 
+    const handleAddPassenger = () => {
+        firstNames.push('');
+        lastNames.push('');
+        emails.push('');
+        confEmails.push('');
+    }
+
+    const handleRemovePassenger = (index: number) => (event: SyntheticEvent) => {
+        event.preventDefault();
+        console.log(index);
+        let tempFNArray = [];
+        let tempLNArray = [];
+        let tempEArray = [];
+        let tempCEArray = [];
+        
+        for (let i = 0; i < passengerCount; i++){
+            if (i !== index) {
+                // console.log('entered');
+                tempFNArray.push(firstNames[i]);
+                tempLNArray.push(lastNames[i]);
+                tempEArray.push(emails[i]);
+                tempCEArray.push(confEmails[i]);
+            }
+        }
+
+        // console.log(tempFNArray);
+        // console.log(tempLNArray);
+        // console.log(tempEArray);
+        // console.log(tempCEArray);
+
+        setFirstNames(tempFNArray);
+        setLastNames(tempLNArray);
+        setEmails(tempEArray);
+        setConfEmails(tempCEArray);
+    }
+
     const renderStopOver = (flight: Flight) => {
         if (flight?.stopOverLocation){
             return (
@@ -319,6 +355,16 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                                 )}
                             </Select>
                         </FormControl>
+                        <Button
+                            colorScheme='gray'
+                            onClick={() => {
+                                handleRemovePassenger(i);
+                                setPassengerCount(passengerCount - 1);
+                            }}
+                            >
+                            {' '}
+                            Remove
+                        </Button>
                     </VStack>
                 );
             }
@@ -332,7 +378,11 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         <Flex justifyContent='center' direction='column' w='50em'>
             {renderFlightDetails()}
             {renderPassengerForms()}
-            <Button leftIcon={<BsFillPlusCircleFill/>} onClick={() => setPassengerCount(passengerCount + 1)}>Add another passenger</Button>
+            <Button leftIcon={<BsFillPlusCircleFill/>} 
+                onClick={() => {
+                    handleAddPassenger();
+                    setPassengerCount(passengerCount + 1);
+                }}>Add another passenger</Button>
             <Button
             type='button'
             colorScheme='red'
