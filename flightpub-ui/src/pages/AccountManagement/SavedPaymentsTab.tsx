@@ -43,9 +43,9 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   } = useDisclosure();
 
   const handleAddPayment = () => {
-    if (!savedPaymentData || !user) return;
+    if (!editingPaymentData || !user) return;
     setIsLoading(true);
-    httpPost(`/${user?.id}/payments`, savedPaymentData)
+    httpPost(`/${user?.id}/payments`, editingPaymentData)
       .then((payment) => {
         setSavedPayments((ps) => [...ps, payment]);
         toast({
@@ -97,7 +97,6 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   const handleSavedPaymentUpdate = (field: string, value: any) => {
     let updatedValue = { ...editingPaymentData, [field]: value } as SavedPayment;
     setEditingPaymentData(updatedValue);
-    console.log(updatedValue);
   };
   const handleEditPayment = (payment: SavedPayment) => {
     setIsEdititng(savedPayments.findIndex((p) => p === payment));

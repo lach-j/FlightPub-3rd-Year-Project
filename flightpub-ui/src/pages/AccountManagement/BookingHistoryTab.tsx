@@ -43,6 +43,11 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                   <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
                 ))}
               </OrderedList>
+              <Text mt='4'>
+                <Text fontWeight='bold'>Total Cost:</Text>
+                {' $'}
+                {booking.flights.reduce((a, b) => a + b.prices[0].price, 0)}
+              </Text>
             </Box>
           );
         })}

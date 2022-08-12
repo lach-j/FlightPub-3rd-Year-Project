@@ -48,6 +48,7 @@ import { Passenger } from '../models/Passenger';
 import { SavedPaymentType } from '../models/SavedPaymentTypes';
 import { UserContext } from '../services/UserContext';
 import { FlightListAccordian } from '../components/FlightListAccordian';
+import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
 
 export const BookingPage = ({
   cartState
@@ -112,78 +113,7 @@ export const BookingPage = ({
       passengers: passengers,
       flightIds: cart.map((flight) => flight.id)
     });
-    console.log(bookingRequest.flightIds);
   }, [state]);
-
-  const renderPaymentDetails = () => {
-    //switch statement defines flow based on payment type
-    switch (savedPaymentData?.type) {
-      //if users payment type is card
-      case SavedPaymentType.CARD:
-        return (
-          <VStack mt='1em' gap='1em' w='full'>
-            <HStack w='full' gap='1em'>
-              <FormControl>
-                <FormLabel>Card Number</FormLabel>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Cardholder Name</FormLabel>
-                <Input />
-              </FormControl>
-            </HStack>
-            <HStack w='full' gap='1em'>
-              <FormControl>
-                <FormLabel>Expiry Date</FormLabel>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormLabel>CCV</FormLabel>
-                <Input />
-              </FormControl>
-            </HStack>
-          </VStack>
-        );
-      // if users payment type is PayPal
-      case SavedPaymentType.PAYPAL:
-        return (
-          <VStack mt='1em' gap='1em' w='full'>
-            <FormControl>
-              <FormLabel>PayPal Email</FormLabel>
-              <Input />
-            </FormControl>
-            <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
-          </VStack>
-        );
-      // if users payment type is PayPal
-      case SavedPaymentType.DIRECT_DEBIT:
-        return (
-          <HStack w='full' mt='1em' gap='1em'>
-            <FormControl>
-              <FormLabel>BSB</FormLabel>
-              <Input type='number' />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Account Number</FormLabel>
-              <Input type='number' />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Account Name</FormLabel>
-              <Input />
-            </FormControl>
-          </HStack>
-        );
-      //If user payment type is 'saved'
-      case SavedPaymentType.SAVED:
-        return (
-          <Select>
-            {([] as SavedPayment[]).map((s) => (
-              <option value={s.nickname}>{s.nickname}</option>
-            ))}
-          </Select>
-        );
-    }
-  };
 
   return (
     <Flex justifyContent='center' p='5em'>
@@ -260,13 +190,13 @@ export const BookingPage = ({
                 }
               >
                 <option>Select an option</option>
-                <option value='card'>Card</option>
-                <option value='directDebit'>Direct Debit</option>
-                <option value='paypal'>PayPal</option>
-                <option value='saved'>Saved Payment</option>
+                <option value={SavedPaymentType.CARD}>Card</option>
+                <option value={SavedPaymentType.DIRECT_DEBIT}>Direct Debit</option>
+                <option value={SavedPaymentType.PAYPAL}>PayPal</option>
+                <option value={SavedPaymentType.SAVED}>Saved Payment</option>
               </Select>
             </FormControl>
-            {renderPaymentDetails()}
+            {savedPaymentData?.type && <PaymentDetailsForm paymentType={savedPaymentData?.type} />}
           </VStack>
           {savedPaymentData?.type !== SavedPaymentType.SAVED && (
             <Switch mt='2em'>Save payment for future transactions?</Switch>
