@@ -16,6 +16,7 @@ import { Booking } from '../../models/Booking';
 import { FlightListAccordian } from '../../components/FlightListAccordian';
 import moment from 'moment';
 import { number } from 'yup';
+import { SavedPaymentComponent } from './SavedPaymentComponent';
 
 export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { httpGet } = useApi(endpoints.bookings);
@@ -77,19 +78,34 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
               </HStack>
               <Text mb='2'>Flights:</Text>
               <FlightListAccordian flights={booking.flights} />
-              <Text mt='4' mb='2'>
-                Passengers:
-              </Text>
-              <OrderedList>
-                {booking.passengers?.map((p) => (
-                  <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
-                ))}
-              </OrderedList>
-              <Text mt='4'>
-                <Text fontWeight='bold'>Total Cost:</Text>
-                {' $'}
-                {booking.flights.reduce((a, b) => a + b.prices[0].price, 0)}
-              </Text>
+              <HStack alignItems='baseline' justifyContent='space-between'>
+                <Box>
+                  <Text mt='4' mb='2'>
+                    Passengers:
+                  </Text>
+                  <OrderedList>
+                    {booking.passengers?.map((p) => (
+                      <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
+                    ))}
+                  </OrderedList>
+
+                  <Text mt='4'>
+                    <Text fontWeight='bold'>Total Cost:</Text>
+                    {' $'}
+                    {booking.flights.reduce((a, b) => a + b.prices[0].price, 0)}
+                  </Text>
+                </Box>
+                {booking?.payment?.type && (
+                  <Box>
+                    <Text mb='4'>Payment Used:</Text>
+                    <SavedPaymentComponent
+                      showButtons={false}
+                      showSmall
+                      payment={{ nickname: '', payment: booking.payment }}
+                    ></SavedPaymentComponent>
+                  </Box>
+                )}
+              </HStack>
             </Box>
           );
         })}

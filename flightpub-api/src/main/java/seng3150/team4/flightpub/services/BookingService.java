@@ -29,6 +29,7 @@ public class BookingService implements IBookingService {
 
     var user = userService.getUserByIdSecure(userId);
     booking.setUser(user);
+    booking.setPayment(payment);
 
     var flights = new HashSet<>(flightRepository.findAllById(flightIds));
 
