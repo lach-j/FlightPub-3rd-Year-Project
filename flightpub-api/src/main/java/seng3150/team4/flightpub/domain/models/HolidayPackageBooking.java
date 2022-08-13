@@ -1,5 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,12 +24,17 @@ public class HolidayPackageBooking implements IEntity {
     @Column(name = "UserId")
     private long userId;
 
-    @ManyToMany
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "holidayPackageId", nullable = false)
+    private HolidayPackage holidayPackage;
+
+    @ManyToOne
     @JoinTable(
             name = "HolidayPackageBookedFlights",
             joinColumns = {@JoinColumn(name = "HolidayPackageBookingId")},
             inverseJoinColumns = {@JoinColumn(name = "FlightBookingId")})
-    private Set<Booking> flightBookings = new HashSet<>();
+    private Booking flightBooking;
 
     @Column(name = "DateBooked")
     private LocalDateTime dateBooked;

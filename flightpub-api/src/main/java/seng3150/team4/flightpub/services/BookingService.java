@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.models.Flight;
+import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
 import seng3150.team4.flightpub.domain.repositories.IBookingRepository;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
@@ -26,6 +27,18 @@ public class BookingService implements IBookingService {
     flightRepository.findAllById(flightIds).forEach(flights::add);
     booking.setFlights(flights);
     Booking savedBooking = bookingRepository.save(booking);
+    return savedBooking;
+  }
+  @Override
+  public Booking makeBookingFromHolidayPackage(HolidayPackageBooking booking, Set<Long> flightIds) {
+    var flights = new HashSet<Flight>();
+    flightRepository.findAllById(flightIds).forEach(flights::add);
+
+    var flightBooking = new Booking();
+    flightBooking.setDateBooked(booking.getDateBooked());
+    flightBooking.setUserId(booking.getUserId());
+    flightBooking.setFlights(flights);
+    Booking savedBooking = bookingRepository.save(flightBooking);
     return savedBooking;
   }
 
