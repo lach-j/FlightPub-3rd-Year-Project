@@ -4,15 +4,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "SavedPayment_DirectDebit")
+@Table(name = "Payment_DirectDebit")
 @Getter
 @Setter
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name = "SavedPaymentId")
-public class SavedPaymentDirectDebit extends SavedPayment {
+@PrimaryKeyJoinColumn(name = "PaymentId")
+public class PaymentDirectDebit extends Payment {
 
     @Column(name = "BSB")
     private String bsb;

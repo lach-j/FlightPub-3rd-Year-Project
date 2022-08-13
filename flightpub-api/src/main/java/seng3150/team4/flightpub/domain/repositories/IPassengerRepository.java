@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IPassengerRepository extends JpaRepository<Passenger, Long> {
-    @Query("SELECT p FROM Passenger p WHERE p.bookingId=?1")
-    Optional<List<Passenger>> findByFlightBookingId(long bookingId);
+    @Query("SELECT p FROM Passenger p WHERE p.booking.id=?1")
+    List<Passenger> findByFlightBookingId(long bookingId);
 }

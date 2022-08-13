@@ -12,6 +12,7 @@ import seng3150.team4.flightpub.security.CurrentUserContext;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +59,7 @@ public class WishlistService implements IWishlistService {
             throw new EntityNotFoundException(String.format("Destination with id %s not found.", departureCode));
 
         wishlist.setDepartureLocation(departureLocation.get());
-        wishlist.setDateCreated(LocalDateTime.now());
+        wishlist.setDateCreated(LocalDateTime.now(ZoneOffset.UTC));
 
         var wishlistSaved = wishlistRepository.save(wishlist);
 
