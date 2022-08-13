@@ -39,4 +39,8 @@ public class Booking implements IEntity {
   @OneToMany
   @JoinColumn(name = "BookingId", referencedColumnName = "Id")
   private Set<Passenger> passengers;
+
+  @ManyToOne
+  @JoinColumn(name = "PaymentId")
+  private Payment payment;
 }

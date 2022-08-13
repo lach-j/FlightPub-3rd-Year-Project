@@ -3,6 +3,7 @@ package seng3150.team4.flightpub.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.Booking;
+import seng3150.team4.flightpub.domain.models.Payment;
 import seng3150.team4.flightpub.domain.repositories.IBookingRepository;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 
@@ -22,7 +23,7 @@ public class BookingService implements IBookingService {
   private final IUserService userService;
 
   @Override
-  public Booking makeBooking(Set<Long> flightIds, long userId) {
+  public Booking makeBooking(Set<Long> flightIds, long userId, Payment payment) {
     var booking = new Booking();
     booking.setDateBooked(LocalDateTime.now(ZoneOffset.UTC));
 

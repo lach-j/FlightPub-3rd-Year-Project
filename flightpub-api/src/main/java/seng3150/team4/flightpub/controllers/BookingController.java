@@ -16,8 +16,7 @@ import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IBookingService;
 import seng3150.team4.flightpub.services.IPassengerService;
-
-import java.time.LocalDateTime;
+import seng3150.team4.flightpub.services.PaymentService;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +24,7 @@ public class BookingController {
 
   private final IBookingService bookingService;
   private final IPassengerService passengerService;
+  private final PaymentService paymentService;
   private final CurrentUserContext currentUserContext;
 
   @Authorized
@@ -35,8 +35,10 @@ public class BookingController {
     var userId = currentUserContext.getCurrentUserId();
     bookingRequest.validate();
 
+    var payment = paymentService.addPayment(bookingRequest.getPayment());
+
     var savedBooking =
-        bookingService.makeBooking(bookingRequest.getFlightIds(), userId);
+        bookingService.makeBooking(bookingRequest.getFlightIds(), userId, payment);
 
     var passengers = bookingRequest.getPassengers();
 

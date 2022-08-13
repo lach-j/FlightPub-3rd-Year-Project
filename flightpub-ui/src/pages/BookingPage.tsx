@@ -49,6 +49,7 @@ import { PaymentType, SavedPaymentType } from '../models/SavedPaymentTypes';
 import { UserContext } from '../services/UserContext';
 import { FlightListAccordian } from '../components/FlightListAccordian';
 import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
+import { TypeOf } from 'yup';
 
 export const BookingPage = ({
   cartState
@@ -59,7 +60,7 @@ export const BookingPage = ({
     document.title = 'FlightPub - Bookings';
   });
   // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
-  const [paymentData, setPaymentData] = useState<PaymentType | null>(null);
+  const [paymentType, setPaymentType] = useState<SavedPaymentType | undefined>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<any>({
     userId: 2,
@@ -106,6 +107,10 @@ export const BookingPage = ({
       .finally(() => onClose());
   };
 
+  const onPaymentFieldChange = (field: string, value: any) => {
+    setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, [field]: value } }));
+  };
+
   useEffect(() => {
     const { passengers } = state as { passengers: Passenger[] };
     setBookingRequest({
@@ -114,6 +119,11 @@ export const BookingPage = ({
       flightIds: cart.map((flight) => flight.id)
     });
   }, [state]);
+
+  useEffect(() => {
+    if (paymentType)
+      setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, type: paymentType } }));
+  }, [paymentType]);
 
   return (
     <Flex justifyContent='center' p='5em'>
@@ -184,8 +194,12 @@ export const BookingPage = ({
             <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
               <Select
-                value={paymentData?.type}
-                onChange={(event) => setPaymentData({ type: event.target.value } as PaymentType)}
+                value={paymentType?.toString()}
+                onChange={(event) =>
+                  setPaymentType(
+                    SavedPaymentType[event.target.value as keyof typeof SavedPaymentType]
+                  )
+                }
               >
                 <option>Select an option</option>
                 <option value={SavedPaymentType.CARD}>Card</option>
@@ -194,9 +208,11 @@ export const BookingPage = ({
                 <option value={SavedPaymentType.SAVED}>Saved Payment</option>
               </Select>
             </FormControl>
-            {paymentData?.type && <PaymentDetailsForm paymentType={paymentData.type} />}
+            {paymentType && (
+              <PaymentDetailsForm onFieldChange={onPaymentFieldChange} paymentType={paymentType} />
+            )}
           </VStack>
-          {paymentData?.type !== SavedPaymentType.SAVED && (
+          {paymentType !== SavedPaymentType.SAVED && (
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>

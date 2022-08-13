@@ -1,5 +1,5 @@
 import { VStack, HStack, FormControl, FormLabel, Input, Button, Select } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import React, { HTMLInputTypeAttribute, useContext, useEffect, useState } from 'react';
 import { BiLinkExternal } from 'react-icons/bi';
 import { endpoints } from '../constants/endpoints';
 import { SavedPayment, SavedPaymentType } from '../models/SavedPaymentTypes';
@@ -23,6 +23,10 @@ export const PaymentDetailsForm = ({
     });
   }, [user]);
 
+  const handleChanges = (fieldValue: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFieldChange && onFieldChange(fieldValue, e.target.value);
+  };
+
   //switch statement defines flow based on payment type
   switch (paymentType) {
     //if users payment type is card
@@ -32,21 +36,21 @@ export const PaymentDetailsForm = ({
           <HStack w='full' gap='1em'>
             <FormControl>
               <FormLabel>Card Number</FormLabel>
-              <Input />
+              <Input onChange={handleChanges('cardNumber')} />
             </FormControl>
             <FormControl>
               <FormLabel>Cardholder Name</FormLabel>
-              <Input />
+              <Input onChange={handleChanges('cardholder')} />
             </FormControl>
           </HStack>
           <HStack w='full' gap='1em'>
             <FormControl>
               <FormLabel>Expiry Date</FormLabel>
-              <Input />
+              <Input onChange={handleChanges('expiryDate')} />
             </FormControl>
             <FormControl>
               <FormLabel>CCV</FormLabel>
-              <Input />
+              <Input onChange={handleChanges('ccv')} />
             </FormControl>
           </HStack>
         </VStack>
@@ -57,7 +61,7 @@ export const PaymentDetailsForm = ({
         <VStack mt='1em' gap='1em' w='full'>
           <FormControl>
             <FormLabel>PayPal Email</FormLabel>
-            <Input />
+            <Input onChange={handleChanges('email')} />
           </FormControl>
           <Button rightIcon={<BiLinkExternal />}>Link PayPal Account</Button>
         </VStack>
@@ -68,15 +72,15 @@ export const PaymentDetailsForm = ({
         <HStack w='full' mt='1em' gap='1em'>
           <FormControl>
             <FormLabel>BSB</FormLabel>
-            <Input type='number' />
+            <Input type='number' onChange={handleChanges('bsb')} />
           </FormControl>
           <FormControl>
             <FormLabel>Account Number</FormLabel>
-            <Input type='number' />
+            <Input type='number' onChange={handleChanges('accountNumber')} />
           </FormControl>
           <FormControl>
             <FormLabel>Account Name</FormLabel>
-            <Input />
+            <Input onChange={handleChanges('accountName')} />
           </FormControl>
         </HStack>
       );
