@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, SyntheticEvent, useEffect, useState} from 'react';
+import React, { SyntheticEvent, useEffect, useState} from 'react';
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import {NavLink} from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { HolidayCard } from '../components/HolidayCard';
-import { HolidayCardProps, HolidayPackage } from '../models/HolidayCardProps';
+import { HolidayPackage } from '../models/HolidayCardProps';
 import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from "@choc-ui/chakra-autocomplete";
 import {airports} from "../data/airports";
 
@@ -36,11 +36,8 @@ interface CreateHolidayPackageQuery {
   flightIds: number[];
   accommodation: string;
 }
-export function HolidayPackagesPage({
-  cartState
-}: {
-  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
-}) {
+export function HolidayPackagesPage() {
+
   useEffect(() => {
     document.title = 'FlightPub - Holiday Packages';
   });
@@ -149,10 +146,11 @@ export function HolidayPackagesPage({
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
   }, [airport]);
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
     httpGetAirlines('').then(setAirlines);
-    httpGetHolidayPackages('').then(setHolidayPackageList)
+    httpGetHolidayPackages('/getAll').then(setHolidayPackageList)
   }, []);
 
   return (

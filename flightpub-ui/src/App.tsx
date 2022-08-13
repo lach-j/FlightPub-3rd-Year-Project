@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AccountPage,
   BookingPage,
@@ -15,13 +15,13 @@ import {
   TravelAgentMessagingPage,
   SessionListComponent,
   WishlistCreatorPage,
-  WishlistMainScreen, TravelAgentHolidayBookingPage
+  WishlistMainScreen,
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
 import Header from './components/Header';
-import { Box, Flex, useRadioGroupContext } from '@chakra-ui/react';
-import { Flight, User } from './models';
+import { Box, Flex } from '@chakra-ui/react';
+import { Flight } from './models';
 import { UserProvider } from './services/UserContext';
 import {HolidayPackageBookingPage} from "./pages/HolidayPackageBookingPage";
 
@@ -77,14 +77,13 @@ const App = () => {
             <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
             <Route
               path={routes.holidayPackages.base}
-              element={<HolidayPackagesPage cartState={cartState} />}
+              element={<HolidayPackagesPage />}
             />
             <Route
                 path={routes.holidayPackages.holidayBooking}
-                element={<HolidayPackageBookingPage cartState={cartState} />}
+                element={<HolidayPackageBookingPage />}
             />
             <Route path={routes.travelAgents.base} element={<SessionListComponent />} />
-            <Route path={routes.travelAgents.createHolidayBooking} element={<TravelAgentHolidayBookingPage />} />
 
             <Route path={routes.travelAgents.session.id} element={<TravelAgentMessagingPage />} />
             <Route
