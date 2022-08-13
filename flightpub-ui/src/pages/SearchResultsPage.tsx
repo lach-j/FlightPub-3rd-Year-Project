@@ -37,6 +37,7 @@ import { Airline, ColumnDefinition, Flight, Price } from '../models';
 import { airports } from '../data/airports';
 import { ResultsTable } from '../components/ResultsTable';
 import { SearchResult } from '../models/SearchResult';
+import { tags } from '../data/tags';
 
 //Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string =>
@@ -97,7 +98,7 @@ export function SearchResultsPage({
 	const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
 	const getMaxPrice = (prices: Price[]) => Math.max(...prices.map((p) => p.price));
 
-	const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
+	const [filterTags, setFilterTags] = useState<Array<string>>([]); //user input search tags
 
 	const [searchResultsWithTags, setSearchResultsWithTags] = useState<Array<SearchResult>>([]);
 
@@ -158,7 +159,7 @@ export function SearchResultsPage({
 		const { results, query } = state as { query: any; results: Flight[] };
 		setResults(results);
 		setQuery(query);
-		setSearchTags(query.searchTags);
+		setFilterTags(query.searchTags);
 		GenerateSearchResults();
 		const flightTimes = results.map((r) => r.duration);
 		const maxDuration = Math.max(...flightTimes);
@@ -227,7 +228,7 @@ export function SearchResultsPage({
 
 	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: any) {
-		if (searchTags.includes(value)) {
+		if (filterTags.includes(value)) {
 			toast({
 				title: 'Tag Already Exists',
 				description: 'You have already added this tag to your search.',
@@ -238,20 +239,9 @@ export function SearchResultsPage({
 			});
 			return;
 		}
-		setSearchTags((searchTags) => [...searchTags, value]);
+		setFilterTags((searchTags) => [...searchTags, value]);
 		// handleSearchQueryUpdate('searchTags', searchTags);
 	}
-
-	//tags information for search
-	const tags = [
-		{ label: 'Beach', value: 'beach' },
-		{ label: 'Snow', value: 'snow' },
-		{ label: 'Holiday', value: 'holiday' },
-		{ label: 'Family-Friendly', value: 'family-friendly' },
-		{ label: 'Sports', value: 'sports' },
-		{ label: 'Romantic', value: 'romantic' },
-		{ label: 'Asia', value: 'asia' }
-	];
 
 	return (
 		<Box p='1em'>
@@ -340,8 +330,8 @@ export function SearchResultsPage({
 							</Box>
 							<label>Selected Tags:</label>
 							<Box width='15rem'>
-								<TagMessage length={searchTags.length} />
-								{searchTags.map((item) => (
+								<TagMessage length={filterTags.length} />
+								{filterTags.map((item) => (
 									<Tag
 										size='md'
 										key={item}
@@ -352,7 +342,7 @@ export function SearchResultsPage({
 										<TagLabel>{item}</TagLabel>
 										<TagCloseButton
 											onClick={() =>
-												setSearchTags(searchTags.filter((value) => value !== item))
+												setFilterTags(filterTags.filter((value) => value !== item))
 											}
 										/>
 									</Tag>

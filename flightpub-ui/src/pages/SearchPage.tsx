@@ -52,6 +52,7 @@ import { ApiError, useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { airports } from '../data/airports';
 import { Airport, findNearestAirport } from '../utility/geolocation';
+import { tags } from '../data/tags';
 
 export interface Item {
 	label: string;
@@ -165,18 +166,7 @@ export const SearchPage = () => {
 		{ key: 'PME', label: 'Premium Economy' }
 	];
 
-	//tags information for search
-	const tags = [
-		{ label: 'Beach', value: 'beach' },
-		{ label: 'Snow', value: 'snow' },
-		{ label: 'Holiday', value: 'holiday' },
-		{ label: 'Family-Friendly', value: 'family-friendly' },
-		{ label: 'Sports', value: 'sports' },
-		{ label: 'Romantic', value: 'romantic' },
-		{ label: 'Asia', value: 'asia' },
-		{ label: 'Surfing', value: 'surfing' }
-	];
-
+	//TODO: something is going wrong here, the searchTags array is fine, but is not updating the searchQuery properly
 	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: string) {
 		if (searchTags.includes(value)) {
@@ -393,10 +383,10 @@ export const SearchPage = () => {
 													<AutoComplete
 														openOnFocus
 														suggestWhenEmpty
-														onChange={(e) => {
-															setSearchTags(e.target.value);
-														}}
-													// onChange={(value: string) => handleTagUpdate(value)}
+														// onChange={(e) => {
+														// 	handleTagUpdate(e.target.value);
+														// }}
+														onChange={(value: string) => handleTagUpdate(value)}
 													>
 														<AutoCompleteInput
 															variant='filled'
@@ -427,7 +417,7 @@ export const SearchPage = () => {
 													<TagLabel>{item}</TagLabel>
 													<TagCloseButton
 														onClick={() =>
-															setSearchTags(searchTags.filter((value) => value !== item))
+															setSearchTags(searchTags.filter(value => value !== item))
 														}
 													/>
 												</Tag>
