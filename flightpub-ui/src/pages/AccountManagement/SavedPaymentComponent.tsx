@@ -29,17 +29,17 @@ export const SavedPaymentComponent = ({
   const formatBSB = (bsb: number): string =>
     bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
   const renderPaymentDetails = () => {
-    switch (payment.type) {
+    switch (payment.payment.type) {
       case SavedPaymentType.CARD:
         return (
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillCreditCard} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{payment.cardNumber}</StatLabel>
+              <StatLabel>{payment.payment.cardNumber}</StatLabel>
               <StatHelpText>CARD NUMBER</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.expiryDate}</StatLabel>
+              <StatLabel>{payment.payment.expiryDate}</StatLabel>
               <StatHelpText>EXPIRES</StatHelpText>
             </Stat>
           </Flex>
@@ -49,7 +49,7 @@ export const SavedPaymentComponent = ({
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={ImPaypal} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{payment.email}</StatLabel>
+              <StatLabel>{payment.payment.email}</StatLabel>
               <StatHelpText>PAYPAL EMAIL</StatHelpText>
             </Stat>
           </Flex>
@@ -59,11 +59,11 @@ export const SavedPaymentComponent = ({
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillBank} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{formatBSB(payment.bsb)}</StatLabel>
+              <StatLabel>{formatBSB(payment.payment.bsb)}</StatLabel>
               <StatHelpText>BSB</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.accountNumber}</StatLabel>
+              <StatLabel>{payment.payment.accountNumber}</StatLabel>
               <StatHelpText>ACC NUMBER</StatHelpText>
             </Stat>
           </Flex>

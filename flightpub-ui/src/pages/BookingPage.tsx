@@ -45,7 +45,7 @@ import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
 import { Passenger } from '../models/Passenger';
-import { SavedPaymentType } from '../models/SavedPaymentTypes';
+import { PaymentType, SavedPaymentType } from '../models/SavedPaymentTypes';
 import { UserContext } from '../services/UserContext';
 import { FlightListAccordian } from '../components/FlightListAccordian';
 import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
@@ -59,7 +59,7 @@ export const BookingPage = ({
     document.title = 'FlightPub - Bookings';
   });
   // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
-  const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
+  const [paymentData, setPaymentData] = useState<PaymentType | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<any>({
     userId: 2,
@@ -184,10 +184,8 @@ export const BookingPage = ({
             <FormControl mt='1em'>
               <FormLabel>Payment Type</FormLabel>
               <Select
-                value={savedPaymentData?.type}
-                onChange={(event) =>
-                  setSavedPaymentData({ type: event.target.value } as SavedPayment)
-                }
+                value={paymentData?.type}
+                onChange={(event) => setPaymentData({ type: event.target.value } as PaymentType)}
               >
                 <option>Select an option</option>
                 <option value={SavedPaymentType.CARD}>Card</option>
@@ -196,9 +194,9 @@ export const BookingPage = ({
                 <option value={SavedPaymentType.SAVED}>Saved Payment</option>
               </Select>
             </FormControl>
-            {savedPaymentData?.type && <PaymentDetailsForm paymentType={savedPaymentData?.type} />}
+            {paymentData?.type && <PaymentDetailsForm paymentType={paymentData.type} />}
           </VStack>
-          {savedPaymentData?.type !== SavedPaymentType.SAVED && (
+          {paymentData?.type !== SavedPaymentType.SAVED && (
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
