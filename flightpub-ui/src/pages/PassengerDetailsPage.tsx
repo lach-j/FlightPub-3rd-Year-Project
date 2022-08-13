@@ -161,9 +161,7 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         confEmails.push('');
     }
 
-    const handleRemovePassenger = (index: number) => (event: SyntheticEvent) => {
-        event.preventDefault();
-        console.log(index);
+    const handleRemovePassenger = (index: number)  => {
         let tempFNArray = [];
         let tempLNArray = [];
         let tempEArray = [];
@@ -171,18 +169,12 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
         
         for (let i = 0; i < passengerCount; i++){
             if (i !== index) {
-                // console.log('entered');
                 tempFNArray.push(firstNames[i]);
                 tempLNArray.push(lastNames[i]);
                 tempEArray.push(emails[i]);
                 tempCEArray.push(confEmails[i]);
             }
         }
-
-        // console.log(tempFNArray);
-        // console.log(tempLNArray);
-        // console.log(tempEArray);
-        // console.log(tempCEArray);
 
         setFirstNames(tempFNArray);
         setLastNames(tempLNArray);
@@ -356,9 +348,13 @@ export const PassengerDetailsPage = ({ cartState }: { cartState: [Flight[], Disp
                             </Select>
                         </FormControl>
                         <Button
+                            id={i.toString()}
                             colorScheme='gray'
-                            onClick={() => {
-                                handleRemovePassenger(i);
+                            name={i.toString()}
+                            onClick={(e) => {
+                                let index = Number(e.currentTarget.getAttribute("id"));
+                                console.log(index);
+                                handleRemovePassenger(index);
                                 setPassengerCount(passengerCount - 1);
                             }}
                             >
