@@ -124,6 +124,20 @@ export const BookingPage = ({
       .required(),
   });
 
+  const directDebitDetailsSchema = yup.object().shape({
+    bsb: yup
+      .string()
+      .matches(/^\d{6}$/)
+      .required(),
+    accountNumber: yup
+      .string()
+      .matches(/^\d{12}$/)
+      .required(),
+    accountName: yup
+      .string()
+      .required(),
+  });
+
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     onOpen();
