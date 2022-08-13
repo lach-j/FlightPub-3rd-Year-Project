@@ -158,6 +158,7 @@ export function SearchResultsPage({
 		const { results, query } = state as { query: any; results: Flight[] };
 		setResults(results);
 		setQuery(query);
+		setSearchTags(query.searchTags);
 		GenerateSearchResults();
 		const flightTimes = results.map((r) => r.duration);
 		const maxDuration = Math.max(...flightTimes);
@@ -170,7 +171,7 @@ export function SearchResultsPage({
 	//create search result objects, which are flights with associated tags
 	function GenerateSearchResults() {
 		const sr = new Array<SearchResult>();
-		results.map((f, idx) => {
+		results?.map((f, idx) => {
 			sr[idx]['flight'] = f;
 			sr[idx]['tags'] = airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags;
 		})
