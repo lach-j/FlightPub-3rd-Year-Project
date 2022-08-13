@@ -50,6 +50,7 @@ import { UserContext } from '../services/UserContext';
 import { FlightListAccordian } from '../components/FlightListAccordian';
 import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
 import { TypeOf } from 'yup';
+import * as yup from 'yup';
 
 export const BookingPage = ({
   cartState
@@ -63,7 +64,7 @@ export const BookingPage = ({
   const [paymentType, setPaymentType] = useState<SavedPaymentType | undefined>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingRequest, setBookingRequest] = useState<any>({
-    userId: 2,
+    userId: 0,
     flightIds: [],
     passengers: []
   });
@@ -74,6 +75,35 @@ export const BookingPage = ({
   const { user, setUser } = useContext(UserContext);
 
   const { state } = useLocation();
+
+  const billingDetailsSchema = yup.object().shape({
+    firstName: yup
+      .string()
+      .matches(/[a-zA-Z]/)
+      .required(),
+    lastName: yup
+      .string()
+      .matches(/[a-zA-Z]/)
+      .required(),
+    company: yup
+      .string(),
+    addressLine1: yup
+      .string()
+      .required(),
+    addressLine2: yup
+      .string(),
+    city: yup
+      .string()
+      .matches(/[a-zA-Z]/)
+      .required(),
+    postCode: yup
+      .string()
+      .matches(/^\d{4}$/)
+      .required(),
+    state: yup
+      .string()
+      .required(),
+  });
 
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
