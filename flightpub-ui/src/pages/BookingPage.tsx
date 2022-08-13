@@ -105,6 +105,25 @@ export const BookingPage = ({
       .required(),
   });
 
+  const cardDetailsSchema = yup.object().shape({
+    cardNumber: yup
+      .string()
+      .matches(/^\d{16}$/)
+      .required(),
+    cardHolderName: yup
+      .string()
+      .matches(/[a-zA-Z]/)
+      .required(),
+    expiryDate: yup
+      .string()
+      .matches(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/)
+      .required(),
+    cvv: yup
+      .string()
+      .matches(/^\d{3}$/)
+      .required(),
+  });
+
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     onOpen();
