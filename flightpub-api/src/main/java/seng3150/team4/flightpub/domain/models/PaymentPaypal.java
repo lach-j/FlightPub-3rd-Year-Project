@@ -10,12 +10,12 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SavedPayment_Paypal")
+@Table(name = "Payment_Paypal")
 @Getter
 @Setter
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name = "SavedPaymentId")
-public class SavedPaymentPaypal extends SavedPayment {
+@PrimaryKeyJoinColumn(name = "PaymentId")
+public class PaymentPaypal extends Payment {
 
     @Column(name = "Email")
     private String email;

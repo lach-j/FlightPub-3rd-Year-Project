@@ -7,7 +7,7 @@ import seng3150.team4.flightpub.core.validation.ErrorConstants;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
-import seng3150.team4.flightpub.domain.models.SavedPayment;
+import seng3150.team4.flightpub.domain.models.Payment;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
@@ -15,7 +15,7 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @Setter
 @NoArgsConstructor
 public class PaymentRequest extends Validatable implements IPaymentRequest {
-  private SavedPayment.PaymentType type;
+  private Payment.PaymentType type;
   private String nickname;
 
   private String bsb;
@@ -38,7 +38,7 @@ public class PaymentRequest extends Validatable implements IPaymentRequest {
     if (isNullOrEmpty(nickname))
       result.addError(new ValidationError("nickname").addError(ErrorConstants.REQUIRED));
 
-    if (type == SavedPayment.PaymentType.DIRECT_DEBIT) {
+    if (type == Payment.PaymentType.DIRECT_DEBIT) {
       if (isNullOrEmpty(bsb))
         result.addError(new ValidationError("bsb").addError(ErrorConstants.REQUIRED));
       if (isNullOrEmpty(accountName))
@@ -47,7 +47,7 @@ public class PaymentRequest extends Validatable implements IPaymentRequest {
         result.addError(new ValidationError("accountNumber").addError(ErrorConstants.REQUIRED));
     }
 
-    if (type == SavedPayment.PaymentType.CARD) {
+    if (type == Payment.PaymentType.CARD) {
       if (isNullOrEmpty(cardNumber))
         result.addError(new ValidationError("cardNumber").addError(ErrorConstants.REQUIRED));
       if (isNullOrEmpty(expiryDate))
@@ -58,7 +58,7 @@ public class PaymentRequest extends Validatable implements IPaymentRequest {
         result.addError(new ValidationError("ccv").addError(ErrorConstants.REQUIRED));
     }
 
-    if (type == SavedPayment.PaymentType.PAYPAL) {
+    if (type == Payment.PaymentType.PAYPAL) {
       if (isNullOrEmpty(email))
         result.addError(new ValidationError("email").addError(ErrorConstants.REQUIRED));
     }

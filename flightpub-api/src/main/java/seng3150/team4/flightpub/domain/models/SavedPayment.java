@@ -12,12 +12,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
 public class SavedPayment implements IEntity {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "Id")
-  private long Id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @JsonIgnore
   @ManyToOne
@@ -27,12 +27,7 @@ public class SavedPayment implements IEntity {
   @Column(name = "Nickname")
   private String nickname;
 
-  @Column(name = "Type")
-  private PaymentType type;
-
-  public enum PaymentType {
-    DIRECT_DEBIT,
-    CARD,
-    PAYPAL
-  }
+  @JoinColumn(name = "PaymentId")
+  @OneToOne
+  private Payment payment;
 }
