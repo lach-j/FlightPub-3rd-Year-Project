@@ -138,6 +138,10 @@ export const BookingPage = ({
       .required(),
   });
 
+  const paypalSchema = yup.object().shape({
+    email: yup.string().email('must be a valid email').required(),
+  });
+
   const handleBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     onOpen();
