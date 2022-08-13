@@ -20,26 +20,30 @@ import { SavedPaymentType } from '../../models/SavedPaymentTypes';
 export const SavedPaymentComponent = ({
   payment,
   onDelete,
-  onEdit
+  onEdit,
+  showButtons = true,
+  showSmall = false
 }: {
   payment: SavedPayment;
-  onDelete: () => void;
-  onEdit: () => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
+  showButtons?: boolean;
+  showSmall?: boolean;
 }) => {
   const formatBSB = (bsb: number): string =>
     bsb.toString().substring(0, 3) + '-' + bsb.toString().substring(3, 6);
   const renderPaymentDetails = () => {
-    switch (payment.type) {
+    switch (payment.payment.type) {
       case SavedPaymentType.CARD:
         return (
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillCreditCard} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{payment.cardNumber}</StatLabel>
+              <StatLabel>{payment.payment.cardNumber}</StatLabel>
               <StatHelpText>CARD NUMBER</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.expiryDate}</StatLabel>
+              <StatLabel>{payment.payment.expiryDate}</StatLabel>
               <StatHelpText>EXPIRES</StatHelpText>
             </Stat>
           </Flex>
@@ -49,7 +53,7 @@ export const SavedPaymentComponent = ({
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={ImPaypal} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{payment.email}</StatLabel>
+              <StatLabel>{payment.payment.email}</StatLabel>
               <StatHelpText>PAYPAL EMAIL</StatHelpText>
             </Stat>
           </Flex>
@@ -59,11 +63,11 @@ export const SavedPaymentComponent = ({
           <Flex justifyContent='space-between' w='full' alignItems='center' flex={1}>
             <Icon as={AiFillBank} fontSize='5xl' />
             <Stat flex='none'>
-              <StatLabel>{formatBSB(payment.bsb)}</StatLabel>
+              <StatLabel>{formatBSB(payment.payment.bsb)}</StatLabel>
               <StatHelpText>BSB</StatHelpText>
             </Stat>
             <Stat flex='none'>
-              <StatLabel>{payment.accountNumber}</StatLabel>
+              <StatLabel>{payment.payment.accountNumber}</StatLabel>
               <StatHelpText>ACC NUMBER</StatHelpText>
             </Stat>
           </Flex>
@@ -72,31 +76,40 @@ export const SavedPaymentComponent = ({
   };
 
   return (
-    <Box border='1px' w='20em' h='10em' p='1em' rounded='2xl'>
+    <Box
+      border='1px'
+      w='20em'
+      h={showSmall ? '5em' : '10em'}
+      p='1em'
+      rounded='2xl'
+      justifyContent='center'
+    >
       <VStack h='full'>
         <Flex justifyContent='space-between' w='full'>
           <HStack>
             <Text>{payment.nickname}</Text>
             {payment?.isDefault && <Badge colorScheme='blue'>Default</Badge>}
           </HStack>
-          <HStack>
-            <IconButton
-              onClick={onDelete}
-              aria-label='delete'
-              icon={<BiTrash />}
-              size='sm'
-              variant='outline'
-              colorScheme='red'
-            />
-            <IconButton
-              onClick={onEdit}
-              aria-label='edit'
-              icon={<EditIcon />}
-              size='sm'
-              variant='outline'
-              colorScheme='black'
-            />
-          </HStack>
+          {showButtons && (
+            <HStack>
+              <IconButton
+                onClick={onDelete}
+                aria-label='delete'
+                icon={<BiTrash />}
+                size='sm'
+                variant='outline'
+                colorScheme='red'
+              />
+              <IconButton
+                onClick={onEdit}
+                aria-label='edit'
+                icon={<EditIcon />}
+                size='sm'
+                variant='outline'
+                colorScheme='black'
+              />
+            </HStack>
+          )}
         </Flex>
         {renderPaymentDetails()}
       </VStack>

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,6 +29,10 @@ public class Wishlist implements IEntity {
     @ManyToOne
     @JoinColumn(name = "UserId", referencedColumnName = "Id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "DepartureDestinationCode", referencedColumnName = "DestinationCode")
+    private Destination departureLocation;
 
     @JsonManagedReference
     @OneToMany

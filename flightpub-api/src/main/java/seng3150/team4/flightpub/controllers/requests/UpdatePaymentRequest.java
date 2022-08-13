@@ -8,7 +8,7 @@ import seng3150.team4.flightpub.core.validation.ErrorConstants;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
-import seng3150.team4.flightpub.domain.models.SavedPayment;
+import seng3150.team4.flightpub.domain.models.Payment;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
@@ -17,7 +17,7 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatePaymentRequest extends Validatable implements IPaymentRequest {
-  private SavedPayment.PaymentType type;
+  private Payment.PaymentType type;
   private String nickname;
 
   private String bsb;

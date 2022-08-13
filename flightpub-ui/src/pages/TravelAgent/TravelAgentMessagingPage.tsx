@@ -8,7 +8,8 @@ import {
   Text,
   Flex,
   Avatar,
-  useToast
+  useToast,
+  Link
 } from '@chakra-ui/react';
 import React, { Children, useContext, useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
@@ -175,6 +176,23 @@ const MessageComponent = ({
   const fromCurrentUser = message.user?.id !== currentUser?.id;
   const dateSent =
     message.dateSent instanceof Date ? message.dateSent : new Date(`${message.dateSent}Z`);
+
+  const convertLinks = (text: string) => {
+    const regex = /(https?:\/\/(?:[a-zA-Z]|:|[0-9]|\/|-)+)/;
+
+    const textArray = text.split(regex);
+    return textArray.map((str) => {
+      if (regex.test(str)) {
+        return (
+          <Link href={str} textDecoration='underline'>
+            {str}
+          </Link>
+        );
+      }
+      return str;
+    });
+  };
+
   return (
     <Flex
       alignSelf={fromCurrentUser ? 'flex-start' : 'flex-end'}
@@ -194,7 +212,7 @@ const MessageComponent = ({
           rounded='full'
           w='fit-content'
         >
-          <Text>{message.content}</Text>
+          <Text>{convertLinks(message.content)}</Text>
         </Box>
       </HStack>
       <Text

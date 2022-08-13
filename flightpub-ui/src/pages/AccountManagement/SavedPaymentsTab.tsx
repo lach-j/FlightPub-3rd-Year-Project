@@ -25,12 +25,18 @@ import { SavedPayment } from '../../models';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
-import { SavedPaymentType } from '../../models/SavedPaymentTypes';
+import { PaymentType, SavedPaymentType } from '../../models/SavedPaymentTypes';
 import { UserContext } from '../../services/UserContext';
+import { string } from 'yup';
+
+type SavedPaymentQuery = PaymentType & {
+  nickname: string;
+  isDefault?: boolean;
+};
 
 export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [savedPaymentData, setSavedPaymentData] = useState<SavedPayment | null>(null);
-  const [editingPaymentData, setEditingPaymentData] = useState<SavedPayment | null>(null);
+  const [editingPaymentData, setEditingPaymentData] = useState<SavedPaymentQuery>();
   const [savedPayments, setSavedPayments] = useState<SavedPayment[]>([]);
   const [isEdititng, setIsEdititng] = useState<number | null>(null);
   const toast = useToast();
@@ -43,9 +49,9 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   } = useDisclosure();
 
   const handleAddPayment = () => {
-    if (!savedPaymentData || !user) return;
+    if (!editingPaymentData || !user) return;
     setIsLoading(true);
-    httpPost(`/${user?.id}/payments`, savedPaymentData)
+    httpPost(`/${user?.id}/payments`, editingPaymentData)
       .then((payment) => {
         setSavedPayments((ps) => [...ps, payment]);
         toast({
@@ -95,34 +101,37 @@ export const SavedPaymentsTab = ({ setIsLoading }: { setIsLoading: (value: boole
   }, [savedPayments]);
 
   const handleSavedPaymentUpdate = (field: string, value: any) => {
-    let updatedValue = { ...editingPaymentData, [field]: value } as SavedPayment;
-    setEditingPaymentData(updatedValue);
-    console.log(updatedValue);
+    let updatedValue = { ...editingPaymentData, [field]: value };
+    setEditingPaymentData(updatedValue as SavedPaymentQuery);
   };
   const handleEditPayment = (payment: SavedPayment) => {
     setIsEdititng(savedPayments.findIndex((p) => p === payment));
-    setEditingPaymentData(payment);
+    setEditingPaymentData({ ...payment.payment, nickname: payment.nickname });
     setSavedPaymentData(payment);
     onOpenAddPayment();
   };
 
   const handleUpdatePayment = () => {
-    if (!user?.id || !savedPaymentData?.id || !editingPaymentData?.id) return;
+    if (!user?.id || !savedPaymentData?.id || !editingPaymentData) return;
 
     const request: any = {};
     Object.keys(editingPaymentData).forEach((key) => {
-      if (
-        editingPaymentData[key as keyof typeof editingPaymentData] !==
-        savedPaymentData[key as keyof typeof editingPaymentData]
-      )
-        request[key] = editingPaymentData[key as keyof typeof editingPaymentData];
+      if (key === 'nickname' && savedPaymentData.nickname != editingPaymentData.nickname) {
+        request[key] = editingPaymentData[key];
+      } else {
+        if (
+          editingPaymentData[key as keyof SavedPaymentQuery] ===
+          savedPaymentData.payment[key as keyof PaymentType]
+        )
+          request[key] = editingPaymentData[key as keyof SavedPaymentQuery];
+      }
     });
 
     setIsLoading(true);
     httpPatch(`/${user?.id}/payments/${savedPaymentData?.id}`, {
       ...request,
-      type: editingPaymentData.type,
-      id: editingPaymentData.id
+      type: savedPaymentData.payment.type,
+      id: savedPaymentData.id
     })
       .then()
       .finally(() => {
