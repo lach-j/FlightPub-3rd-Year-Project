@@ -170,41 +170,49 @@ CREATE TABLE `Message` (
   CONSTRAINT `M_SessionId_FK` FOREIGN KEY (`SessionId`) REFERENCES `MessagingSession` (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
-CREATE TABLE `SavedPayment` (
+CREATE TABLE `Payment` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
-  `UserId` BIGINT NOT NULL,
-  `Nickname` VARCHAR(255) NOT NULL,
   `Type` INT NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `SP_UserId_FK` (`UserId`),
-  CONSTRAINT `SP_UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE
+  PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
-CREATE TABLE `SavedPayment_DirectDebit` (
-  `SavedPaymentId` BIGINT NOT NULL,
+CREATE TABLE `Payment_DirectDebit` (
+  `PaymentId` BIGINT NOT NULL,
   `BSB` VARCHAR(255) NOT NULL,
   `AccountName` VARCHAR(255) NOT NULL,
   `AccountNumber` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`SavedPaymentId`),
-  KEY `SavedPaymentId_DD_FK` (`SavedPaymentId`),
-  CONSTRAINT `SavedPaymentId_DD_FK` FOREIGN KEY (`SavedPaymentId`) REFERENCES `SavedPayment` (`Id`) ON DELETE CASCADE
+  PRIMARY KEY (`PaymentId`),
+  KEY `PaymentId_DD_FK` (`PaymentId`),
+  CONSTRAINT `PaymentId_DD_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
-CREATE TABLE `SavedPayment_Card` (
-  `SavedPaymentId` BIGINT NOT NULL,
+CREATE TABLE `Payment_Card` (
+  `PaymentId` BIGINT NOT NULL,
   `CardNumber` VARCHAR(255) NOT NULL,
   `ExpiryDate` VARCHAR(255) NOT NULL,
   `Cardholder` VARCHAR(255) NOT NULL,
   `CCV` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`SavedPaymentId`),
-  KEY `SavedPaymentId_C_FK` (`SavedPaymentId`),
-  CONSTRAINT `SavedPaymentId_C_FK` FOREIGN KEY (`SavedPaymentId`) REFERENCES `SavedPayment` (`Id`) ON DELETE CASCADE
+  PRIMARY KEY (`PaymentId`),
+  KEY `PaymentId_C_FK` (`PaymentId`),
+  CONSTRAINT `PaymentId_C_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
-CREATE TABLE `SavedPayment_PayPal` (
-  `SavedPaymentId` BIGINT NOT NULL,
+CREATE TABLE `Payment_PayPal` (
+  `PaymentId` BIGINT NOT NULL,
   `Email` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`SavedPaymentId`),
-  KEY `SavedPaymentId_PP_FK` (`SavedPaymentId`),
-  CONSTRAINT `SavedPaymentId_PP_FK` FOREIGN KEY (`SavedPaymentId`) REFERENCES `SavedPayment` (`Id`) ON DELETE CASCADE
+  PRIMARY KEY (`PaymentId`),
+  KEY `PaymentId_PP_FK` (`PaymentId`),
+  CONSTRAINT `PaymentId_PP_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+
+CREATE TABLE `SavedPayment` (
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `UserId` BIGINT NOT NULL,
+  `Nickname` VARCHAR(255) NOT NULL,
+  `PaymentId` BIGINT NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `SP_UserId_FK` (`UserId`),
+  KEY `SP_PaymentId_FK` (`PaymentId`),
+  CONSTRAINT `SP_UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE,
+  CONSTRAINT `SP_PaymentId_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;

@@ -6,9 +6,9 @@ import lombok.Setter;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 import seng3150.team4.flightpub.domain.models.Destination;
-
 import javax.persistence.*;
 import java.util.Set;
+
 
 @Getter
 @Setter

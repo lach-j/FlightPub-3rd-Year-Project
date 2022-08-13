@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.core.email.RegisterEmailTemplate;
 import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.domain.repositories.IPaymentRepository;
+import seng3150.team4.flightpub.domain.repositories.ISavedPaymentRepository;
 import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 
@@ -27,7 +28,7 @@ public class UserService implements IUserService {
   private final IUserRepository userRepository;
   private final IEmailSenderService emailSenderService;
   private final CurrentUserContext currentUserContext;
-  private final IPaymentRepository paymentRepository;
+  private final ISavedPaymentRepository savedPaymentRepository;
 
   // Registers a new user
   @Override
@@ -142,7 +143,7 @@ public class UserService implements IUserService {
 
     payment.setUser(user);
 
-    return paymentRepository.save(payment);
+    return savedPaymentRepository.save(payment);
   }
 
   @Override
@@ -162,7 +163,7 @@ public class UserService implements IUserService {
 
     updateChangedDetails(updatablePayment, payment);
 
-    return paymentRepository.save(updatablePayment);
+    return savedPaymentRepository.save(updatablePayment);
   }
 
   @Override
@@ -176,20 +177,27 @@ public class UserService implements IUserService {
 
     var deletablePayment = existingPayment.get();
 
-    paymentRepository.delete(deletablePayment);
+    savedPaymentRepository.delete(deletablePayment);
   }
 
-  private static void updateChangedDetails(SavedPayment updatablePayment, SavedPayment payment) {
-    if (updatablePayment instanceof SavedPaymentPaypal) {
-      var up = (SavedPaymentPaypal)updatablePayment;
-      var p = (SavedPaymentPaypal)payment;
+  private static void updateChangedDetails(SavedPayment updatableSavedPayment, SavedPayment savedPayment) {
+
+    updateIfNotNull(savedPayment.getNickname(), updatableSavedPayment::setNickname);
+
+    var updatablePayment = updatableSavedPayment.getPayment();
+    var payment = savedPayment.getPayment();
+
+
+    if (updatablePayment instanceof PaymentPaypal) {
+      var up = (PaymentPaypal)updatablePayment;
+      var p = (PaymentPaypal)payment;
 
       updateIfNotNull(p.getEmail(), up::setEmail);
     }
 
-    if (updatablePayment instanceof SavedPaymentCard) {
-      var up = (SavedPaymentCard)updatablePayment;
-      var p = (SavedPaymentCard)payment;
+    if (updatablePayment instanceof PaymentCard) {
+      var up = (PaymentCard)updatablePayment;
+      var p = (PaymentCard)payment;
 
       updateIfNotNull(p.getCardNumber(), up::setCardNumber);
       updateIfNotNull(p.getCardholder(), up::setCardholder);
@@ -197,9 +205,9 @@ public class UserService implements IUserService {
       updateIfNotNull(p.getExpiryDate(), up::setExpiryDate);
     }
 
-    if (updatablePayment instanceof SavedPaymentDirectDebit) {
-      var up = (SavedPaymentDirectDebit)updatablePayment;
-      var p = (SavedPaymentDirectDebit)payment;
+    if (updatablePayment instanceof PaymentDirectDebit) {
+      var up = (PaymentDirectDebit)updatablePayment;
+      var p = (PaymentDirectDebit)payment;
 
       updateIfNotNull(p.getAccountName(), up::setAccountName);
       updateIfNotNull(p.getAccountNumber(), up::setAccountNumber);

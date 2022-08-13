@@ -1,11 +1,12 @@
 package seng3150.team4.flightpub.controllers.requests;
 
+import seng3150.team4.flightpub.domain.models.Payment;
 import seng3150.team4.flightpub.domain.models.SavedPayment;
 
 public interface IPaymentRequest {
 
-    SavedPayment.PaymentType getType();
-    void setType(SavedPayment.PaymentType type);
+    Payment.PaymentType getType();
+    void setType(Payment.PaymentType type);
 
     String getNickname();
     void setNickname(String nickname);
