@@ -173,7 +173,8 @@ export const SearchPage = () => {
 		{ label: 'Family-Friendly', value: 'family-friendly' },
 		{ label: 'Sports', value: 'sports' },
 		{ label: 'Romantic', value: 'romantic' },
-		{ label: 'Asia', value: 'asia' }
+		{ label: 'Asia', value: 'asia' },
+		{ label: 'Surfing', value: 'surfing' }
 	];
 
 	//update the search tags, and prevent duplicate tags
@@ -212,6 +213,7 @@ export const SearchPage = () => {
 
 	return (
 		<Box p='2em'>
+			{searchQuery?.searchTags}
 			<Center>
 				<form onSubmit={handleSearch}>
 					<FormControl as='fieldset'>
@@ -392,11 +394,12 @@ export const SearchPage = () => {
 													<AutoComplete
 														openOnFocus
 														suggestWhenEmpty
-														defaultValue=''
-														emptyState={true}
 														onChange={(value: string) => handleTagUpdate(value)}
 													>
-														<AutoCompleteInput variant='filled' />
+														<AutoCompleteInput
+															variant='filled'
+															placeholder='Surfing'
+														/>
 														<AutoCompleteList>
 															{tags.map(({ label }) => (
 																<AutoCompleteItem key={label} value={label} align='center'>
