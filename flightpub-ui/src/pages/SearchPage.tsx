@@ -178,7 +178,7 @@ export const SearchPage = () => {
 	];
 
 	//update the search tags, and prevent duplicate tags
-	function handleTagUpdate(value: any) {
+	function handleTagUpdate(value: string) {
 		if (searchTags.includes(value)) {
 			toast({
 				title: 'Tag Already Exists',
@@ -213,7 +213,6 @@ export const SearchPage = () => {
 
 	return (
 		<Box p='2em'>
-			{searchQuery?.searchTags}
 			<Center>
 				<form onSubmit={handleSearch}>
 					<FormControl as='fieldset'>
@@ -394,7 +393,10 @@ export const SearchPage = () => {
 													<AutoComplete
 														openOnFocus
 														suggestWhenEmpty
-														onChange={(value: string) => handleTagUpdate(value)}
+														onChange={(e) => {
+															setSearchTags(e.target.value);
+														}}
+													// onChange={(value: string) => handleTagUpdate(value)}
 													>
 														<AutoCompleteInput
 															variant='filled'
