@@ -8,6 +8,7 @@ import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
@@ -32,7 +33,7 @@ public class FlightQueryRequest extends Validatable {
     var departureDateErrors = new ValidationError("departureDate");
     if (!isNullOrEmpty(departureDate)) {
       // Ensure that query dates are in the future
-      if (departureDate.getMaxDateTime().isBefore(LocalDateTime.now()))
+      if (departureDate.getMaxDateTime().isBefore(LocalDateTime.now(ZoneOffset.UTC)))
         departureDateErrors.addError("Cannot query past flights");
 
       // Ensure that the flex value is less than 7

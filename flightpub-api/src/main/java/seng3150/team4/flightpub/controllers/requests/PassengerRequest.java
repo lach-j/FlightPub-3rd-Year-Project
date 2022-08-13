@@ -8,7 +8,7 @@ import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
 
-import static seng3150.team4.flightpub.core.validation.Validators.*;
+import static seng3150.team4.flightpub.core.validation.Validators.emailValidator;
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
 @Getter

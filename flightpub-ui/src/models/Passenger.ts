@@ -1,5 +1,5 @@
 export interface Passenger {
-    fname: string;
-    lname: string;
-    email: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
