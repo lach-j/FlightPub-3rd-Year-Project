@@ -20,7 +20,6 @@ public class FlightQueryRequest extends Validatable {
   private FlexiDate departureDate;
   private String departureCode;
   private String destinationCode;
-
   private Map<String, Integer> tickets;
   private Boolean returnFlight;
 
