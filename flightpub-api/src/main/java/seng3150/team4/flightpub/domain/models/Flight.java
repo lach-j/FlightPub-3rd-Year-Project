@@ -59,4 +59,6 @@ public class Flight implements IEntity, Serializable {
   @OneToMany
   @JoinColumn(name = "FlightId", referencedColumnName = "Id")
   private Set<Price> prices;
+
+
 }

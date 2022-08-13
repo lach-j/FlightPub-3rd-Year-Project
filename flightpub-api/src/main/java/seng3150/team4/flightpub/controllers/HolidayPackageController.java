@@ -6,15 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import seng3150.team4.flightpub.controllers.requests.CreateHolidayPackageRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
-import seng3150.team4.flightpub.domain.models.Destination;
+import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.HolidayPackage;
 import seng3150.team4.flightpub.domain.repositories.IDestinationRepository;
 import seng3150.team4.flightpub.domain.repositories.IHolidayPackageRepository;
 import seng3150.team4.flightpub.services.IHolidayPackageService;
-import seng3150.team4.flightpub.controllers.responses.Response;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 
 @RestController

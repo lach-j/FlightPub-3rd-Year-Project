@@ -14,6 +14,7 @@ import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
+import seng3150.team4.flightpub.services.PaymentService;
 import seng3150.team4.flightpub.utility.PasswordHash;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ public class UserController {
 
   // Inject dependencies
   private final IUserService userService;
-  private final CurrentUserContext currentUserContext;
+  private final PaymentService paymentService;
 
   @PostMapping
   public ResponseEntity<? extends Response> registerUser(
@@ -82,9 +83,12 @@ public class UserController {
   public EntityCollectionResponse<SavedPayment> getAllSavedPayments(@PathVariable long userId) {
     var user = userService.getUserByIdSecure(userId);
 
-    var obfuscatedPaymentData = obfuscatePaymentInformation(user.getPayments());
+    for (var savedPayment : user.getPayments()) {
+      var obfuscatedPayment = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+        savedPayment.setPayment(obfuscatedPayment);
+    }
 
-    return new EntityCollectionResponse<>(obfuscatedPaymentData);
+    return new EntityCollectionResponse<>(user.getPayments());
   }
 
   @Authorized
@@ -93,8 +97,12 @@ public class UserController {
       @PathVariable long userId, @PathVariable long paymentId) {
     var user = userService.getUserByIdSecure(userId);
 
-    var obfuscatedPaymentData = obfuscatePaymentInformation(user.getPayments());
-    var payment = obfuscatedPaymentData.stream().filter(p -> p.getId() == paymentId).findFirst();
+    for (var savedPayment : user.getPayments()) {
+      var obfuscatedPayment = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+      savedPayment.setPayment(obfuscatedPayment);
+    }
+
+    var payment = user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
 
     if (payment.isEmpty())
       throw new ResponseStatusException(
@@ -105,15 +113,23 @@ public class UserController {
 
   @Authorized
   @PostMapping("/{userId}/payments")
-  public EntityResponse<SavedPayment> updatePaymentDetails(
+  public EntityResponse<SavedPayment> addNewSavedPayment(
       @PathVariable long userId, @RequestBody PaymentRequest request) {
     request.validate();
     var payment = resolvePaymentFromRequest(request);
 
-    var savedPayment = userService.addNewPayment(userId, payment);
+    var savedPayment = paymentService.addPayment(payment.getPayment());
 
-    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment)).stream().findFirst().get();
-    return new EntityResponse<>(obfuscated);
+    var userSavedPayment = new SavedPayment();
+    userSavedPayment.setNickname(request.getNickname());
+    userSavedPayment.setPayment(savedPayment);
+
+    var newNewPayment = userService.addNewPayment(userId, userSavedPayment);
+
+    var obfuscated = obfuscatePaymentInformation(Set.of(newNewPayment.getPayment())).stream().findFirst().get();
+
+    newNewPayment.setPayment(obfuscated);
+    return new EntityResponse<>(newNewPayment);
   }
 
   @Authorized
@@ -125,8 +141,9 @@ public class UserController {
 
     var savedPayment = userService.updatePayment(userId, paymentId, payment);
 
-    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment)).stream().findFirst().get();
-    return new EntityResponse<>(obfuscated);
+    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+    savedPayment.setPayment(obfuscated);
+    return new EntityResponse<>(savedPayment);
   }
 
   @Authorized
@@ -140,44 +157,48 @@ public class UserController {
   }
 
   private static SavedPayment resolvePaymentFromRequest(IPaymentRequest request) {
-    if (request.getType() == SavedPayment.PaymentType.PAYPAL) {
-      var payment = new SavedPaymentPaypal();
+
+    var newSavedPayment = new SavedPayment();
+    newSavedPayment.setNickname(request.getNickname());
+
+    if (request.getType() == Payment.PaymentType.PAYPAL) {
+      var payment = new PaymentPaypal();
       payment.setEmail(request.getEmail());
       payment.setType(request.getType());
-      payment.setNickname(request.getNickname());
-      return payment;
+      newSavedPayment.setPayment(payment);
+      return newSavedPayment;
     }
 
-    if (request.getType() == SavedPayment.PaymentType.DIRECT_DEBIT) {
-      var payment = new SavedPaymentDirectDebit();
+    if (request.getType() == Payment.PaymentType.DIRECT_DEBIT) {
+      var payment = new PaymentDirectDebit();
       payment.setAccountName(request.getAccountName());
       payment.setAccountNumber(request.getAccountNumber());
       payment.setBsb(request.getBsb());
       payment.setType(request.getType());
-      payment.setNickname(request.getNickname());
-      return payment;
+      newSavedPayment.setPayment(payment);
+      return newSavedPayment;
     }
 
-    if (request.getType() == SavedPayment.PaymentType.CARD) {
-      var payment = new SavedPaymentCard();
+    if (request.getType() == Payment.PaymentType.CARD) {
+      var payment = new PaymentCard();
       payment.setCardNumber(request.getCardNumber());
       payment.setCardholder(request.getCardholder());
       payment.setCcv(request.getCcv());
       payment.setType(request.getType());
       payment.setExpiryDate(request.getExpiryDate());
-      payment.setNickname(request.getNickname());
-      return payment;
+      newSavedPayment.setPayment(payment);
+      return newSavedPayment;
     }
 
     return new SavedPayment();
   }
 
-  private static Set<SavedPayment> obfuscatePaymentInformation(Set<SavedPayment> savedPaymentSet) {
+  private static Set<Payment> obfuscatePaymentInformation(Set<Payment> savedPaymentSet) {
     return savedPaymentSet.stream()
         .map(
             p -> {
-              if (p instanceof SavedPaymentCard) {
-                SavedPaymentCard cardPayment = (SavedPaymentCard) p;
+              if (p instanceof PaymentCard) {
+                PaymentCard cardPayment = (PaymentCard) p;
                 cardPayment.setCcv("");
                 var currentNumber = cardPayment.getCardNumber();
                 if (currentNumber.length() <= 4)

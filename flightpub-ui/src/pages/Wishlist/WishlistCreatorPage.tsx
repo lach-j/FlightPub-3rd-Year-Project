@@ -91,10 +91,6 @@ export const WishlistCreatorPage = (props: any) => {
     );
   }, []);
 
-  useEffect(() => {
-    console.log(departureAirport?.code);
-  }, [departureAirport]);
-
   const navigate = useNavigate();
   const { httpPost } = useApi(endpoints.wishlist);
 
