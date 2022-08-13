@@ -215,24 +215,10 @@ export const PassengerDetailsPage = ({
     }
 
     const handleRemovePassenger = (index: number)  => {
-        let tempFNArray = [];
-        let tempLNArray = [];
-        let tempEArray = [];
-        let tempCEArray = [];
-        
-        for (let i = 0; i < passengerCount; i++){
-            if (i !== index) {
-                tempFNArray.push(firstNames[i]);
-                tempLNArray.push(lastNames[i]);
-                tempEArray.push(emails[i]);
-                tempCEArray.push(confEmails[i]);
-            }
-        }
-
-        setFirstNames(tempFNArray);
-        setLastNames(tempLNArray);
-        setEmails(tempEArray);
-        setConfEmails(tempCEArray);
+        firstNames.splice(index, 1);
+        lastNames.splice(index, 1);
+        emails.splice(index, 1);
+        confEmails.splice(index, 1);
     }
 
     const renderPassengerForms = () => {
