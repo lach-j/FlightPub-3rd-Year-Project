@@ -26,10 +26,7 @@ public class HolidayPackageBookingService implements IHolidayPackageBookingServi
 
 
     @Override
-    public HolidayPackageBooking makeHolidayPackageBooking(HolidayPackageBooking holidayPackageBooking, Long bookingId) {
-        var flightBooking = new Booking();
-        bookingRepository.findById(bookingId);
-        holidayPackageBooking.setFlightBooking(flightBooking);
+    public HolidayPackageBooking makeHolidayPackageBooking(HolidayPackageBooking holidayPackageBooking) {
         HolidayPackageBooking saveHolidayPackageBooking = holidayPackageBookingRepository.save(holidayPackageBooking);
         return saveHolidayPackageBooking;
     }

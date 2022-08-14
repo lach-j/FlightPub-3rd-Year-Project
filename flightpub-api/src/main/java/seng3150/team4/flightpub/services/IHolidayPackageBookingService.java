@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface IHolidayPackageBookingService {
-    HolidayPackageBooking makeHolidayPackageBooking(HolidayPackageBooking booking, Long flightBookingIds);
+    HolidayPackageBooking makeHolidayPackageBooking(HolidayPackageBooking booking);
 
     void deleteHolidayPackageBooking(HolidayPackageBooking booking);
 }

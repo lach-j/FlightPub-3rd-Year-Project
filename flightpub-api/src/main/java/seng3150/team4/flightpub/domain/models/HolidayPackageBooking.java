@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Table(name = "HolidayPackageBooking")
 @Entity
@@ -28,13 +26,6 @@ public class HolidayPackageBooking implements IEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "holidayPackageId", nullable = false)
     private HolidayPackage holidayPackage;
-
-    @ManyToOne
-    @JoinTable(
-            name = "HolidayPackageBookedFlights",
-            joinColumns = {@JoinColumn(name = "HolidayPackageBookingId")},
-            inverseJoinColumns = {@JoinColumn(name = "FlightBookingId")})
-    private Booking flightBooking;
 
     @Column(name = "DateBooked")
     private LocalDateTime dateBooked;

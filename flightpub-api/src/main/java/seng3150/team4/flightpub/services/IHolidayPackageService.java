@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface IHolidayPackageService {
-    HolidayPackage makePackage(HolidayPackage holidayPackage, Set<Long> flightIds);
+    HolidayPackage makePackage(HolidayPackage holidayPackage, Set<Long> FlightIds);
 
     void deletePackage(HolidayPackage holidayPackage);
 
