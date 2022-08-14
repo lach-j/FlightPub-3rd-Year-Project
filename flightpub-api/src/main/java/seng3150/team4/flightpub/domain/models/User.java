@@ -35,6 +35,9 @@ public class User implements IEntity {
 
   private UserRole role;
 
+
+  private boolean deleted = false;
+
   @JsonIgnore
   @OneToMany
   @JoinColumn(name = "UserId")

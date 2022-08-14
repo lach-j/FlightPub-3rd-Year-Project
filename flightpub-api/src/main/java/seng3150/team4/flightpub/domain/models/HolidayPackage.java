@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -36,4 +38,12 @@ public class HolidayPackage implements IEntity {
     private Integer price;
     @Column(name = "arrivalLocation")
     private String arrivalLocation;
+    @Column(name = "accommodation")
+    private String accommodation;
+    @ManyToMany
+    @JoinTable(
+            name = "HolidayPackageFlights",
+            joinColumns = {@JoinColumn(name = "HolidayPackageId")},
+            inverseJoinColumns = {@JoinColumn(name = "FlightId")})
+    private Set<Flight> flights = new HashSet<>();
 }

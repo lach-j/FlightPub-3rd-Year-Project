@@ -114,6 +114,7 @@ CREATE TABLE `FPUser` (
   `LastName` VARCHAR(255),
   `Password` VARCHAR(255),
   `Role` INT,
+  `Deleted` BIT,
   PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 

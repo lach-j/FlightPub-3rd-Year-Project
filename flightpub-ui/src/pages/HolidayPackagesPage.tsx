@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, SyntheticEvent, useEffect, useState} from 'react';
+import React, { SyntheticEvent, useEffect, useState} from 'react';
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import { Airport, findNearestAirport } from '../utility/geolocation';
 import {NavLink} from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { HolidayCard } from '../components/HolidayCard';
-import { HolidayCardProps, HolidayPackage } from '../models/HolidayCardProps';
+import { HolidayPackage } from '../models/HolidayCardProps';
 import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from "@choc-ui/chakra-autocomplete";
 import {airports} from "../data/airports";
 
@@ -33,12 +33,11 @@ interface CreateHolidayPackageQuery {
   location: string;
   price: number;
   arrivalLocation: string;
+  flightIds: number[];
+  accommodation: string;
 }
-export function HolidayPackagesPage({
-  cartState
-}: {
-  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
-}) {
+export function HolidayPackagesPage() {
+
   useEffect(() => {
     document.title = 'FlightPub - Holiday Packages';
   });
@@ -56,7 +55,9 @@ export function HolidayPackagesPage({
     price: 600,
     packageNights: 7,
     location: 'Whistler',
-    arrivalLocation: 'SYD'
+    arrivalLocation: 'SYD',
+    flightIds: [1,2],
+    accommodation: 'The Example Hotel, Whistler',
   });
   const handleHolidayPackageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHolidayPackage({
@@ -145,10 +146,11 @@ export function HolidayPackagesPage({
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
   }, [airport]);
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
     httpGetAirlines('').then(setAirlines);
-    httpGetHolidayPackages('').then(setHolidayPackageList)
+    httpGetHolidayPackages('/getAll').then(setHolidayPackageList)
   }, []);
 
   return (
@@ -231,6 +233,14 @@ export function HolidayPackagesPage({
                           onChange={handleHolidayPackageChange}
                       />
                     </FormControl>
+                    <FormControl isDisabled={loading} >
+                      <FormLabel>Accommodation</FormLabel>
+                      <Input
+                          name='accommodation'
+                          value={holidayPackage.accommodation}
+                          onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
                     <FormControl isDisabled={loading}>
                       <FormLabel>Price</FormLabel>
                       <Input
@@ -239,6 +249,25 @@ export function HolidayPackagesPage({
                           value={holidayPackage.price}
                           onChange={handleHolidayPackageChange}
                       />
+                    </FormControl>
+                      <FormControl isDisabled={loading}>
+                        <FormLabel>Flight Id 1:</FormLabel>
+                        <Input
+                            type='number'
+                            name='flight1'
+                            value={holidayPackage.flightIds[0]}
+                            onChange={handleHolidayPackageChange}
+                        />
+                      </FormControl>
+                      <FormControl isDisabled={loading}>
+                        <FormLabel>Flight Id 2:</FormLabel>
+                        <Input
+                            type='number'
+                            name='flight2'
+                            value={holidayPackage.flightIds[1]}
+                            onChange={handleHolidayPackageChange}
+                        />
+                      </FormControl>
                       <Box>
                         <FormControl>
                           <FormLabel>Arrival Location:</FormLabel>
@@ -267,7 +296,6 @@ export function HolidayPackagesPage({
                       <FormErrorMessage>
                         Values provided are incorrect
                       </FormErrorMessage>
-                    </FormControl>
                   </Stack>
                 </Box>
                 {/* Form submission button */}

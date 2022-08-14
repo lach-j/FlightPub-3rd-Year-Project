@@ -1,3 +1,4 @@
+import {Flight} from "./Flight";
 
 export interface HolidayCardProps {
   isPopular: boolean;
@@ -22,7 +23,8 @@ export interface HolidayPackage {
   location: string;
   price: number;
   arrivalLocation: string;
-
+  accommodation: string;
+  flights: Array<Flight>;
 }
 
 export interface FeatureBadgeProps {
