@@ -12,6 +12,7 @@ export const endpoints = {
   recommended: '/flights/recommended',
   book: '/book',
   bookHolidayPackage: '/bookHolidayPackage',
+  bookings: '/bookings',
   createHolidayPackage: '/holidayPackages/createHolidayPackage',
   holidayPackages: '/holidayPackages',
   wishlist: '/wishlist'

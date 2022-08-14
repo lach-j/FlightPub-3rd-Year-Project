@@ -73,7 +73,7 @@ public class SecurityFilter implements HandlerInterceptor {
                     .collect(Collectors.joining(", "))));
       if (logResult)
         LOG.info(
-            "User with id {} approved to access restricted path \"/{}\" [{}]",
+            "User with id {} approved to access restricted path \"{}\" [{}]",
             userId,
             path,
             method);

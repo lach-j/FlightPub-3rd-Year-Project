@@ -3,7 +3,6 @@ package seng3150.team4.flightpub.domain.repositories;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import seng3150.team4.flightpub.core.search.DestinationCount;
 import seng3150.team4.flightpub.domain.models.Flight;
 
