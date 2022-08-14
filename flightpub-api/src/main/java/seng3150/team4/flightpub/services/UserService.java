@@ -103,6 +103,19 @@ public class UserService implements IUserService {
     return user.get();
   }
 
+  public User getUserByEmailSecure(String email) {
+
+    var user = getUserByEmail(email);
+
+    if (currentUserContext.getCurrentUserId() != user.getId()
+            && currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
+            && currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT)
+      throw new ResponseStatusException(
+              HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
+
+    return user;
+  }
+
   @Override
   public User getUserById(long userId) {
     // If the user does not exist that throw an exception
