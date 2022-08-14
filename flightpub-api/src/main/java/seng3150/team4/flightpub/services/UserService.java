@@ -17,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 
@@ -84,20 +85,18 @@ public class UserService implements IUserService {
   @Override
   public void deleteUser(User user) {
     // If the user does not exist that throw an exception
-    var userExists = userRepository.existsById(user.getId());
-    if (!userExists)
-      throw new EntityNotFoundException(
-          String.format("User with id %s was not found", user.getId()));
+    var storedUser = getUserByIdSecure(user.getId());
 
     // Otherwise, delete the user
-    userRepository.delete(user);
+    storedUser.setDeleted(true);
+    userRepository.save(storedUser);
   }
 
   @Override
   public User getUserByEmail(String email) {
     // If the user does not exist that throw an exception
     var user = userRepository.findByEmail(email);
-    if (user.isEmpty())
+    if (user.isEmpty() || user.get().isDeleted())
       throw new EntityNotFoundException(String.format("User with email %s was not found", email));
 
     // Otherwise, return the user
@@ -108,7 +107,7 @@ public class UserService implements IUserService {
   public User getUserById(long userId) {
     // If the user does not exist that throw an exception
     var user = userRepository.findById(userId);
-    if (user.isEmpty())
+    if (user.isEmpty() || user.get().isDeleted())
       throw new EntityNotFoundException(String.format("User with id %s was not found", userId));
     // Otherwise, return the user
     return user.get();
@@ -129,7 +128,7 @@ public class UserService implements IUserService {
   @Override
   public List<User> getUsersById(Collection<Long> userIds) {
     // If the users does not exist that throw an exception
-    var users = userRepository.findAllById(userIds);
+    var users = userRepository.findAllById(userIds).stream().filter(u -> !u.isDeleted()).collect(Collectors.toList());
     if (users.isEmpty())
       throw new EntityNotFoundException("No users were found matching provided Ids");
 

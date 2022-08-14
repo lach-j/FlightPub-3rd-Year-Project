@@ -38,7 +38,7 @@ const editProfileForm: {
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { user, setUser } = useContext(UserContext);
 
-  const { httpPatch } = useApi(endpoints.users);
+  const { httpPatch, httpDelete } = useApi(endpoints.users);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -53,28 +53,36 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
   }, [user]);
 
   const handleDelete = () => {
+    if (!user?.id) return;
     setIsLoading(true);
-    // Simulate api delay with timeout
-    setTimeout(() => {
-      toast({
-        title: 'Account Deleted',
-        description: 'Your account was deleted successfully, you have been logged out permanently.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-        position: 'top'
+
+    httpDelete(`/${user?.id}`)
+      .then(() => {
+        toast({
+          title: 'Account Deleted',
+          description:
+            'Your account was deleted successfully, you have been logged out permanently.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top'
+        });
+        localStorage.removeItem('bearer-token');
+        localStorage.removeItem('user-id');
+        setUser(null);
+        navigate(routes.default);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-      navigate(routes.default);
-    }, 2000);
   };
 
   const handleSaveChanges = () => {
+    if (!userData) return;
     setIsLoading(true);
 
-    if (!userData) return;
-
     const { firstName, lastName, email } = userData;
+
     httpPatch(`/${user?.id}`, { firstName, lastName, email })
       .then((res) => {
         setUser(res);

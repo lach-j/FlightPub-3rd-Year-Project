@@ -72,7 +72,7 @@ public class UserController {
 
   @Authorized
   @DeleteMapping("/{userId}")
-  public StatusResponse deleteUseById(@PathVariable Long userId) {
+  public StatusResponse deleteUserById(@PathVariable Long userId) {
     var user = userService.getUserByIdSecure(userId);
     userService.deleteUser(user);
     return new StatusResponse(HttpStatus.OK);
