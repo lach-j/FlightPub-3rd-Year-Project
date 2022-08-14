@@ -1,6 +1,7 @@
 package seng3150.team4.flightpub.services;
 
 import seng3150.team4.flightpub.domain.models.Booking;
+import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
 import seng3150.team4.flightpub.domain.models.Payment;
 
 import java.util.List;

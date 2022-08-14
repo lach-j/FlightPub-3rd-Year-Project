@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.models.Payment;
+import seng3150.team4.flightpub.domain.models.Flight;
+import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
 import seng3150.team4.flightpub.domain.repositories.IBookingRepository;
 import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
 

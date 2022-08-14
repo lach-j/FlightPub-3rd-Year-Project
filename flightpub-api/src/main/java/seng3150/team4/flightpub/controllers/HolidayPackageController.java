@@ -8,6 +8,7 @@ import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.HolidayPackage;
+import seng3150.team4.flightpub.domain.models.User;
 import seng3150.team4.flightpub.domain.repositories.IDestinationRepository;
 import seng3150.team4.flightpub.domain.repositories.IHolidayPackageRepository;
 import seng3150.team4.flightpub.services.IHolidayPackageService;
@@ -31,13 +32,18 @@ public class HolidayPackageController {
         holidayPackages.addAll(holidayPackageRepository.findAll());
         return new EntityCollectionResponse<>(holidayPackages);
     }
+    @GetMapping("/holiday-packages/{holidayPackageId}")
+    public EntityResponse<HolidayPackage> getHolidayPackageById(@PathVariable long holidayPackageId) {
+        var holidayPackage = holidayPackageService.getHolidayPackageById(holidayPackageId);
+        return new EntityResponse<>(holidayPackage);
+    }
     //TODO: Add validation
-    @PostMapping("/createHolidayPackage")
+    @PostMapping("/holiday-packages")
     public ResponseEntity<? extends Response> makeBooking(
             @RequestBody CreateHolidayPackageRequest holidayPackageRequest) {
         holidayPackageRequest.validate();
         var holidayPackage = holidayPackageFromRequest(holidayPackageRequest);
-        var savedHolidayPackage = holidayPackageService.makePackage(holidayPackage);
+        var savedHolidayPackage = holidayPackageService.makePackage(holidayPackage, holidayPackageRequest.getFlightIds());
         return ResponseEntity.ok().body(new EntityResponse<>(savedHolidayPackage));
     }
 
@@ -53,6 +59,7 @@ public class HolidayPackageController {
         holidayPackage.setLocation(request.getLocation());
         holidayPackage.setPrice(request.getPrice());
         holidayPackage.setArrivalLocation(request.getArrivalLocation());
+        holidayPackage.setAccommodation(request.getAccommodation());
 
         return holidayPackage;
     }

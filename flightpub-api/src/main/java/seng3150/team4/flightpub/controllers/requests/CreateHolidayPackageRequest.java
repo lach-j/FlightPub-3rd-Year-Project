@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
+import seng3150.team4.flightpub.domain.models.Destination;
+import javax.persistence.*;
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -20,6 +24,8 @@ public class CreateHolidayPackageRequest extends Validatable {
     private String  location;
     private Integer price;
     private String  arrivalLocation;
+    private Set<Long> flightIds;
+    private String accommodation;
 
 
     @Override
