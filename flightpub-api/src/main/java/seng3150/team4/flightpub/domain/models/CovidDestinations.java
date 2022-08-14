@@ -28,7 +28,6 @@ public class CovidDestinations {
     @Column(name = "CovidEndDate")
     private LocalDateTime CovidEndDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DestinationCode", referencedColumnName = "DestinationCode")
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Destination> destinations;
 }

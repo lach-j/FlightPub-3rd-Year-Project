@@ -12,6 +12,7 @@ import {
     useDisclosure,
     useToast,
     VStack,
+    Center,
 } from '@chakra-ui/react';
 import React, {SyntheticEvent, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
@@ -87,61 +88,105 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
     return (
         <>
             <Heading mb='1em'>Sponsor Airline</Heading>
-            <form>
-                <VStack gap='2em'>
-                    <Box >
-                        {/* Sponsored Airline input */}
-                        <FormControl isRequired>
-                            <FormLabel>Choose Airline</FormLabel>
-                            <AutoComplete
-                                openOnFocus
-                                onChange={(value) =>
-                                    handleSearchQueryUpdate('airlineName', value)
-                                }
-                            >
-                                <AutoCompleteInput variant='filled' />
-                                <AutoCompleteList>
-                                    {airlines.map(({ airlineName}) => (
-                                        <AutoCompleteItem
-                                            key={airlineName}
-                                            value={airlineName}
-                                            align='center'
-                                        >
-                                            <Text ml='4'>{airlineName}</Text>
-                                        </AutoCompleteItem>
-                                    ))}
-                                </AutoCompleteList>
-                            </AutoComplete>
-                        </FormControl>
-                    </Box>
-                    <Box>
-                        <FormControl isRequired>
-                            <FormLabel>Sponsorship Duration</FormLabel>
-                            <DatePicker
-                                dateFormat='dd/MM/yyyy'
-                                minDate={new Date(searchQuery.departureDate.date) || new Date()}
-                                selected={covidDate}
-                                onChange={(date: Date) => setCovidDate(date)}
-                            />
-                        </FormControl>
-                    </Box>
-                    <Box>
-                        <Button colorScheme={'gray'}
+            <Center>
+            <HStack gap={'5em'}>
 
-                                onClick={handleDiscardChanges}
-                        >
-                            Clear
-                        </Button>
-                        <Button colorScheme={'blue'}
+                    <form>
+                        <VStack gap='2em'>
+                            <Box >
+                                {/* Sponsored Airline input */}
+                                <FormControl isRequired>
+                                    <FormLabel>Choose Airline</FormLabel>
+                                    <AutoComplete
+                                        openOnFocus
+                                        onChange={(value) =>
+                                            handleSearchQueryUpdate('airlineName', value)
+                                        }
+                                    >
 
-                                onClick={handleSponsorshipUpdate}
-                        >
-                            Confirm
-                        </Button>
-                    </Box>
-                </VStack>
-            </form>
+                                        <AutoCompleteInput variant='filled' />
+                                        <AutoCompleteList>
+                                            {airlines.map(({ airlineName}) => (
+                                                <AutoCompleteItem
+                                                    key={airlineName}
+                                                    value={airlineName}
+                                                    align='center'
+                                                >
+                                                    <Text ml='4'>{airlineName}</Text>
+                                                </AutoCompleteItem>
+                                            ))}
+                                        </AutoCompleteList>
+                                    </AutoComplete>
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <FormControl isRequired>
+                                    <FormLabel>Sponsorship Duration</FormLabel>
+                                    <DatePicker
+                                        dateFormat='dd/MM/yyyy'
+                                        minDate={new Date(searchQuery.departureDate.date) || new Date()}
+                                        selected={covidDate}
+                                        onChange={(date: Date) => setCovidDate(date)}
+                                    />
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <Button colorScheme={'gray'}
 
+                                        onClick={handleDiscardChanges}
+                                >
+                                    Clear
+                                </Button>
+                                <Button colorScheme={'blue'}
+
+                                        onClick={handleSponsorshipUpdate}
+                                >
+                                    Confirm
+                                </Button>
+                            </Box>
+                        </VStack>
+                    </form>
+                    <form>
+                        <VStack gap='2em'>
+                            <Box >
+                                {/* Sponsored Airline input */}
+                                <FormControl isRequired>
+                                    <FormLabel>Choose Airline</FormLabel>
+                                    <AutoComplete
+                                        openOnFocus
+                                        onChange={(value) =>
+                                            handleSearchQueryUpdate('airlineName', value)
+                                        }
+                                    >
+                                        <AutoCompleteInput variant='filled' />
+                                        <AutoCompleteList>
+                                            {airlines.map(({ airlineName}) => (
+                                                <AutoCompleteItem
+                                                    key={airlineName}
+                                                    value={airlineName}
+                                                    align='center'
+                                                >
+                                                    <Text ml='4'>{airlineName}</Text>
+                                                </AutoCompleteItem>
+                                            ))}
+                                        </AutoCompleteList>
+                                    </AutoComplete>
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <Button colorScheme={'blue'}
+
+                                        onClick={handleSponsorshipUpdate}
+                                >
+                                    Confirm
+                                </Button>
+                            </Box>
+                        </VStack>
+                    </form>
+
+
+            </HStack>
+        </Center>
         </>
     )
 }

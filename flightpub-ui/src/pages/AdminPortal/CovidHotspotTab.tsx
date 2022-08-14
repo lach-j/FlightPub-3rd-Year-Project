@@ -5,7 +5,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogOverlay, Box,
-    Button,
+    Button, Center,
     Divider, FormControl, FormLabel,
     Heading,
     HStack, Text,
@@ -86,6 +86,62 @@ export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolea
     return (
         <>
             <Heading mb='1em'>Covid Hotspot</Heading>
+            <Center>
+                <HStack gap={'5em'}>
+                    <form>
+                        <VStack gap='2em'>
+                            <Box >
+                                {/* Departure location input */}
+                                <FormControl isRequired>
+                                    <FormLabel>Covid Location</FormLabel>
+                                    <   AutoComplete
+                                        openOnFocus
+                                        onChange={(value) =>
+                                            handleSearchQueryUpdate('locationCode', value)
+                                        }
+                                    >
+                                        <AutoCompleteInput variant='filled' />
+                                        <AutoCompleteList>
+                                            {airports.map(({ code, city }) => (
+                                                <AutoCompleteItem
+                                                    key={code}
+                                                    value={code}
+                                                    align='center'
+                                                >
+                                                    <Text ml='4'>{city}</Text>
+                                                </AutoCompleteItem>
+                                            ))}
+                                        </AutoCompleteList>
+                                    </AutoComplete>
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <FormControl>
+                                    <FormLabel>Restriction Duration</FormLabel>
+                                    <DatePicker
+                                        dateFormat='dd/MM/yyyy'
+                                        minDate={new Date(searchQuery.covidDate.date) || new Date()}
+                                        selected={returnDate}
+                                        onChange={(date: Date) => setReturnDate(date)}
+                                    />
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <Button colorScheme={'gray'}
+
+                                        onClick={handleDiscardChanges}
+                                >
+                                    Clear
+                                </Button>
+                                <Button colorScheme={'blue'}
+
+                                        onClick={handleSaveChanges}
+                                >
+                                    Confirm
+                                </Button>
+                            </Box>
+                        </VStack>
+                    </form>
             <form>
             <VStack gap='2em'>
             <Box >
@@ -140,6 +196,8 @@ export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolea
                 </Box>
             </VStack>
             </form>
+                </HStack>
+            </Center>
 
         </>
 

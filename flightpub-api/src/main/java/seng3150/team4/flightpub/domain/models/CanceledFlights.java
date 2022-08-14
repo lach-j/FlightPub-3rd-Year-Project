@@ -24,8 +24,10 @@ public class CanceledFlights {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
 
-    @JoinColumn(name = "FlightId", referencedColumnName = "Id")
-    private Set<Flight> flights;
+    @OneToOne(fetch = FetchType.LAZY)
+//    either (name = "FlightId", referencedColumnName = "Id")
+    @JoinColumn(name = "Id")
+    private Flight flights;
 
     @Column(name = "Canceled")
     private boolean Canceled;

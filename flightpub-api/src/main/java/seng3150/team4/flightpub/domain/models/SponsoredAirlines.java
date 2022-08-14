@@ -26,7 +26,6 @@ public class SponsoredAirlines {
     @Column(name = "SponsoredEndDate")
     private String CovidEndDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AirlineCode", referencedColumnName = "SponsoredCode")
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Airline> airlines;
 }
