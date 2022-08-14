@@ -11,15 +11,14 @@ import {
   Link,
   Spinner,
   Stack,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import * as api from '../services/ApiService';
+import { useApi } from '../services/ApiService';
 import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { endpoints } from '../constants/endpoints';
-
 
 function useQuery() {
   const { search } = useLocation();
@@ -27,14 +26,16 @@ function useQuery() {
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-export const PasswordResetPage = ({
-                                    redirectPath,
-                                  }: {
-  redirectPath?: string;
-}) => {
+export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) => {
+  useEffect(() => {
+    document.title = 'FlightPub - Reset Password';
+  });
+
   const [loading, setLoading] = useState(false);
   //authError : boolean flag determining if an error has occurred
   const [authError, setAuthError] = useState(false);
+
+  const { httpPost } = useApi(endpoints.reset);
 
   //resetRequest : contains password reset data to be sent to password reset API
   const [resetRequest, setResetRequest] = useState<{
@@ -87,24 +88,25 @@ export const PasswordResetPage = ({
     }
 
     setTimeout(() => {
-      api
-        .httpPost(endpoints.reset, resetRequest)
+      httpPost('', resetRequest)
         .then((authResponse) => {
           redirectUser();
         })
-        .catch((err: ApiError) => { //if an error occurs
-          if (err.statusCode === 400) { //if not all fields filled
+        .catch((err: ApiError) => {
+          //if an error occurs
+          if (err.statusCode === 400) {
+            //if not all fields filled
             setAuthError(true);
             setErrMessage('All fields are mandatory');
-          } else { //for all other errors
+          } else {
+            //for all other errors
             toast({
               title: 'Error.',
-              description:
-                'An internal error has occurred, please try again later.',
+              description: 'An internal error has occurred, please try again later.',
               status: 'error',
               duration: 9000,
               isClosable: true,
-              position: 'top',
+              position: 'top'
             });
           }
         })
@@ -114,12 +116,10 @@ export const PasswordResetPage = ({
     setAuthError(false); //reset authError boolean on page reload
   };
   //Handles update of reset password input, updating value(s)
-  const handleResetDetailsChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleResetDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setResetRequest({
       ...resetRequest,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
 
@@ -137,13 +137,7 @@ export const PasswordResetPage = ({
   return (
     <Grid w='100vw' h='100vh' p='5'>
       <Center>
-        <Box
-          border='2px'
-          borderColor='gray.200'
-          p='10'
-          borderRadius='2xl'
-          w='md'
-        >
+        <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
           <form onSubmit={handleReset}>
             <Stack spacing='12'>
               <Box>
@@ -151,7 +145,7 @@ export const PasswordResetPage = ({
               </Box>
               <Box>
                 <Stack spacing='3'>
-                  //new password input
+                  {/* //new password input */}
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
                     <Input
@@ -161,25 +155,19 @@ export const PasswordResetPage = ({
                       onChange={handleResetDetailsChange}
                     />
                   </FormControl>
-
-                  //re-enter new password input
+                  {/* //re-enter new password input */}
                   <FormControl isDisabled={loading} isInvalid={authError}>
                     <FormLabel>New Password</FormLabel>
-                    <Input
-                      type='password'
-                      name={'confirm'}
-                      onChange={handleResetDetailsChange}
-                    />
+                    <Input type='password' name='confirm' onChange={handleResetDetailsChange} />
                     <FormErrorMessage>{errMessage}</FormErrorMessage>
                   </FormControl>
                 </Stack>
-
               </Box>
-              <Button type='submit' isLoading={loading} colorScheme='red'> //reset password submission button
-                Reset password
+              <Button type='submit' isLoading={loading} colorScheme='red'>
+                Reset Password
+                {/* //reset password submission button */}
               </Button>
-
-              //Button redirects user to registration page
+              {/* //Button redirects user to registration page */}
               <Box textAlign='center'>
                 Don't have an account?{' '}
                 <Link as={RouteLink} to={routes.register}>

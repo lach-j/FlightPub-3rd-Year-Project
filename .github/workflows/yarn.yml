@@ -1,9 +1,13 @@
 name: Build UI
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
+    paths:
+      - "flightpub-ui/**"
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
+    paths:
+      - "flightpub-ui/**"
 jobs:
   build:
     env:
@@ -14,9 +18,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          node-version: "16.14.0"
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
       - run: yarn install --frozen-lockfile
         working-directory: ./flightpub-ui
       - run: yarn build

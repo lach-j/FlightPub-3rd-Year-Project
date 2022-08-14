@@ -1,8 +1,23 @@
-import { Button, HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  HStack,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useToast
+} from '@chakra-ui/react';
 import * as _ from 'lodash';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[],
@@ -10,20 +25,21 @@ type ResultsTableProps = {
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
-}
+};
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({
-                                                            columns,
-                                                            data,
-                                                            children,
-                                                            sortable = false,
-                                                            keyAccessor,
-                                                            cartState,
-                                                          }) => {
+  columns,
+  data,
+  children,
+  sortable = false,
+  keyAccessor,
+  cartState
+}) => {
   const toast = useToast();
   const [cart, setCart] = cartState;
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
   const [descending, setDescending] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const sortFunc = (a: any, b: any): number => {
     let o1 = _.get(a, sortingColumn?.accessor);
@@ -52,51 +68,68 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
     }
   };
 
-  const sortIcon = () => descending ? <TriangleDownIcon /> : <TriangleUpIcon />;
+  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
 
   return (
     <Table width='100%'>
       <TableCaption>Prices subject to change. T&C's apply</TableCaption>
       <Thead>
         <Tr>
-          {columns.map((column) =>
+          {columns.map((column) => (
             <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
                 {column === sortingColumn && sortIcon()}
               </HStack>
-            </Th>,
-          )}
+            </Th>
+          ))}
         </Tr>
       </Thead>
       <Tbody>
         {data.sort(sortFunc).map((result: any) => {
-            return <Tr key={_.get(result, keyAccessor)}>
-              {columns.map((column) =>
-                <Td
-                  key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
+          return (
+            <Tr key={_.get(result, keyAccessor)}>
+              {columns.map((column) => (
+                <Td key={column.accessor}>
+                  {column?.transform
+                    ? column.transform(_.get(result, column.accessor))
+                    : _.get(result, column.accessor)}
+                </Td>
+              ))}
               {children}
               <Td>
-                <Button type='button'
-                        colorScheme='red'
-                        onClick={() => {
-                          setCart(cart => [...cart, result]);
-                          toast({
-                            title: 'Success!',
-                            description:
-                              'Flight added to cart successfully.',
-                            status: 'success',
-                            duration: 9000,
-                            isClosable: true,
-                            position: 'top',
-                          });
-                        }}>
-                  Add to Cart
+                <Button
+                  type='button'
+                  colorScheme='red'
+                  onClick={() => {
+                    if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
+                      toast({
+                          title: 'Error!',
+                          description: 'Flight already in cart!.',
+                          status: 'error',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top'
+                      });
+                    } else {
+                      setCart((cart) => [...cart, result]);
+                      toast({
+                          title: 'Success!',
+                          description: 'Flight added to cart successfully.',
+                          status: 'success',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top'
+                      });
+                    }
+                  }}
+                >
+                  Book Now
                 </Button>
               </Td>
-            </Tr>;
-          },
-        )}
+            </Tr>
+          );
+        })}
       </Tbody>
     </Table>
   );

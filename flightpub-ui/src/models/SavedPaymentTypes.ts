@@ -1,39 +1,45 @@
-type PaymentType =
-  | DirectDebitPayment
-  | CardPayment
-  | PaypalPayment
-  | Saved
+export type PaymentType = DirectDebitPayment | CardPayment | PaypalPayment | Saved;
 
 interface DirectDebitPayment extends Payment {
-  type: 'directDebit';
+  type: SavedPaymentType.DIRECT_DEBIT;
   bsb: number;
-  accNumber: number;
-  accName: string;
+  accountNumber: number;
+  accountName: string;
 }
 
 interface CardPayment extends Payment {
-  type: 'card';
+  type: SavedPaymentType.CARD;
   cardNumber: string;
-  expiry: string;
+  expiryDate: string;
   cardholder?: string;
   ccv?: number;
 }
 
 interface PaypalPayment extends Payment {
-  type: 'paypal';
+  type: SavedPaymentType.PAYPAL;
   email: string;
   token?: string;
 }
 
-interface Saved extends Payment {
-  type: 'saved';
-}
-
 interface Payment {
-  type: 'card' | 'directDebit' | 'paypal' | 'saved';
+  type: SavedPaymentType;
+  id: number;
 }
 
-export type SavedPayment = PaymentType & {
+export enum SavedPaymentType {
+  DIRECT_DEBIT = 'DIRECT_DEBIT',
+  CARD = 'CARD',
+  PAYPAL = 'PAYPAL',
+  SAVED = 'SAVED'
+}
+
+interface Saved {
+  type: SavedPaymentType.SAVED;
+}
+
+export type SavedPayment = {
+  id?: number;
   nickname: string;
   isDefault?: boolean;
-}
+  payment: PaymentType;
+};

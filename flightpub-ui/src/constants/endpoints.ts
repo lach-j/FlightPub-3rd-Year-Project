@@ -13,6 +13,10 @@ export const endpoints = {
   book: '/book',
   covidUpdate: '/covidUpdate',
   airlineUpdate: '/airlineUpdate',
-  flightUpdate: '/flightUpdate'
-
+  flightUpdate: '/flightUpdate',
+  bookHolidayPackage: '/bookHolidayPackage',
+  bookings: '/bookings',
+  createHolidayPackage: '/holidayPackages/createHolidayPackage',
+  holidayPackages: '/holidayPackages',
+  wishlist: '/wishlist'
 };

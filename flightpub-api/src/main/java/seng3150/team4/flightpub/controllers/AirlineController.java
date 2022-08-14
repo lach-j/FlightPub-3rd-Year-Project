@@ -10,7 +10,6 @@ import seng3150.team4.flightpub.domain.models.Airline;
 import seng3150.team4.flightpub.domain.repositories.IAirlineRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/airlines")
@@ -31,6 +30,6 @@ public class AirlineController {
     // Convert Iterable to List
     airlineRepository.findAll().forEach(airlines::add);
 
-    return new EntityCollectionResponse<List<Airline>>(airlines);
+    return new EntityCollectionResponse<>(airlines);
   }
 }

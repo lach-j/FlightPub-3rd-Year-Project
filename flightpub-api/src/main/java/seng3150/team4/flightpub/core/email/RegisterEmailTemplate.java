@@ -12,12 +12,18 @@ public class RegisterEmailTemplate extends EmailTemplate {
 
   @Setter private String firstName;
 
-  public RegisterEmailTemplate() {
-    super(TEMPLATE_ID, FROM_NAME);
-  }
-
   @Override
   public Map<String, Object> getMappedValues() {
     return Map.of("firstName", firstName);
+  }
+
+  @Override
+  public String getTemplateId() {
+    return TEMPLATE_ID;
+  }
+
+  @Override
+  public String getFromName() {
+    return FROM_NAME;
   }
 }
