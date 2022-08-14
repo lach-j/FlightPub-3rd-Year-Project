@@ -15,8 +15,9 @@ import seng3150.team4.flightpub.controllers.responses.TokenResponse;
 import seng3150.team4.flightpub.services.IAuthenticationService;
 import seng3150.team4.flightpub.services.IUserService;
 
-@RestController
+import javax.persistence.EntityNotFoundException;
 
+@RestController
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -30,8 +31,14 @@ public class AuthController {
     loginRequest.validate();
 
     // Attempt to login the user with the provided credentials
-    var token =
-        authenticationService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+
+    String token;
+
+    try {
+      token = authenticationService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+    } catch (EntityNotFoundException ex) {
+      token = null;
+    }
 
     // If the login was not successful then respond with an error
     if (token == null)

@@ -1,5 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,14 +19,16 @@ public class Passenger implements IEntity {
     private long id;
 
     @Column(name = "FirstName")
-    private String fname;
+    private String firstName;
 
     @Column(name = "LastName")
-    private String lname;
+    private String lastName;
 
     @Column(name = "Email")
     private String email;
 
-    @JoinColumn(foreignKey = @ForeignKey(name = "BookingId"))
-    private long bookingId;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "BookingId")
+    private Booking booking;
 }
