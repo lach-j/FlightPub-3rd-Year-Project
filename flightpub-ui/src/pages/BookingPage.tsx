@@ -371,6 +371,10 @@ export const BookingPage = ({
       setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, type: paymentType } }));
   }, [paymentType]);
 
+  if (!user) {
+    navigate(routes.login, {state: {redirectUrl: routes.home}})
+  } 
+
   return (
     <Flex justifyContent='center' p='5em'>
       <Flex justifyContent='center' direction='column' w='50em'>
