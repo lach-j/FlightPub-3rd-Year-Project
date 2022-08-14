@@ -320,7 +320,6 @@ export const PassengerDetailsPage = ({
         }
         return forms;
     }
-    
 
   const renderFlightDetails = () => {
     return (
@@ -383,6 +382,10 @@ export const PassengerDetailsPage = ({
       </Flex>
     );
   };
+
+    if (!user) {
+        navigate(routes.login, {state: {redirectUrl: routes.home}})
+    }
 
   return (
     <Flex justifyContent='center' p='5em'>
