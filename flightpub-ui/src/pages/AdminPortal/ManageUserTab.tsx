@@ -1,50 +1,10 @@
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  Center,
-  Divider,
-  Heading,
-  HStack,
-  useDisclosure,
-  useToast,
-  VStack,
-  Input,
-  Select,
-  Box,
-  Text,
-  toast
-} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { CustomEditible } from '../../components/CustomEditable';
-import { routes } from '../../constants/routes';
-import { useNavigate } from 'react-router-dom';
-import { Airline, ColumnDefinition, Flight, Price, User } from '../../models';
+import { Button, Heading, HStack, useToast, Input, Box, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import { User } from '../../models';
 import { ApiError, useApi } from '../../services/ApiService';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
 import _ from 'lodash';
 import { UserDetailsForm } from '../AccountManagement/MyDetailsTab';
 import { endpoints } from '../../constants/endpoints';
-
-const editProfileForm: {
-  inputs: Array<{ label: string; name: keyof User; type?: string }>;
-} = {
-  inputs: [
-    { label: 'Email', name: 'email' },
-    { label: 'First Name', name: 'firstName' },
-    { label: 'Last name', name: 'lastName' }
-    // { label: 'Phone Number', name: 'ph', type: 'tel' }
-  ]
-};
 
 export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [user, setUser] = useState<User | undefined>();
