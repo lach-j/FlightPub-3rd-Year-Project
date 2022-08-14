@@ -10,8 +10,6 @@ import java.util.Set;
 public interface IBookingService {
   Booking makeBooking(Set<Long> flightIds, long userId, Payment payment);
 
-  Booking makeBookingFromHolidayPackage(HolidayPackageBooking booking, Set<Long> flightIds);
-
   void deleteBooking(Booking booking);
 
   Booking getBookingById(long bookingId);

@@ -38,18 +38,6 @@ public class BookingService implements IBookingService {
     booking.setFlights(flights);
     return bookingRepository.save(booking);
   }
-  @Override
-  public Booking makeBookingFromHolidayPackage(HolidayPackageBooking booking, Set<Long> flightIds) {
-    var flights = new HashSet<Flight>();
-    flightRepository.findAllById(flightIds).forEach(flights::add);
-
-    var flightBooking = new Booking();
-    flightBooking.setDateBooked(booking.getDateBooked());
-    flightBooking.setUserId(booking.getUserId());
-    flightBooking.setFlights(flights);
-    Booking savedBooking = bookingRepository.save(flightBooking);
-    return savedBooking;
-  }
 
   @Override
   public void deleteBooking(Booking booking) {
