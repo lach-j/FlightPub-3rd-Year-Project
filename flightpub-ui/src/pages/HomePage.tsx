@@ -93,7 +93,7 @@ export function HomePage({
             </Button>
           </Box>
           <Heading as='h1' size='lg'>
-            Cheapest flights from {airport?.city}
+            Cheapest flights from {airport?.city ?? "your location"}
           </Heading>
           <Center>
             <ResultsTable
