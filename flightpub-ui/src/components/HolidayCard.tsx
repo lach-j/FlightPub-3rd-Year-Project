@@ -15,18 +15,20 @@ import {
   Spacer
 } from '@chakra-ui/react';
 
-import { ReactElement } from 'react';
+import {Dispatch, ReactElement, SetStateAction} from 'react';
 import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
 import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
+import {ColumnDefinition, Flight} from "../models";
 
 interface FeatureProps {
   text: string;
   iconBg: string;
   icon?: ReactElement;
 }
-interface HolidayCardPropsObj {
-  data: HolidayPackage;
+type HolidayCardPropsObj = {
+  data: HolidayPackage
 }
+
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
   return (
     <HStack alignItems='baseline' spacing='1'>
@@ -80,6 +82,11 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
             <Flex mt='1' justifyContent='space-between' alignContent='center'>
               <Box fontSize='2xl'  minW='500px' fontWeight='semibold' as='h4' lineHeight='tight' isTruncated>
                 {data.packageName}
+              </Box>
+            </Flex>
+            <Flex mt='1' justifyContent='space-between' alignContent='center'>
+              <Box  color={useColorModeValue('gray.500', 'white')} fontSize='xl'  minW='500px' fontWeight='semibold' as='h2' lineHeight='tight' isTruncated>
+                {data.accommodation}
               </Box>
             </Flex>
 
