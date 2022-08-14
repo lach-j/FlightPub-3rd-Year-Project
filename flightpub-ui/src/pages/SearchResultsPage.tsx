@@ -173,8 +173,11 @@ export function SearchResultsPage({
 	function GenerateSearchResults(res: Flight[]) {
 		const sr = new Array<SearchResult>();
 		res?.map((f, idx) => {
-			sr[idx]['flight'] = f;
-			sr[idx]['tags'] = airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags;
+			const construct: SearchResult = {
+				flight: f,
+				tags: airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags
+			}
+			sr.push(construct);
 		})
 		setSearchResultsWithTags(sr);
 	}
@@ -240,12 +243,10 @@ export function SearchResultsPage({
 			return;
 		}
 		setFilterTags((searchTags) => [...searchTags, value]);
-		// handleSearchQueryUpdate('searchTags', searchTags);
 	}
 
 	return (
 		<Box p='1em'>
-			filterTags: {filterTags}<br/>Search Results With Tags: {searchResultsWithTags?.map((sr) => {return sr.tags})}
 			<HStack
 				divider={<StackDivider borderColor='gray.200' />}
 				spacing={10}
