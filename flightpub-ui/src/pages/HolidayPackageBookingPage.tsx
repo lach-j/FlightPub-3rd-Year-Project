@@ -34,7 +34,6 @@ import {Airline, SavedPayment} from "../models";
 import {Airport, findNearestAirport} from "../utility/geolocation";
 import {countries} from "../data/countries";
 import {SavedPaymentType} from "../models/SavedPaymentTypes";
-import {Booking} from "../models/Booking";
 
 
 export const HolidayPackageBookingPage = () => {
@@ -87,7 +86,7 @@ export const HolidayPackageBookingPage = () => {
         httpGetHolidayPackages('/fetchById/1').then(setHolidayPackage)
     }, []);
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [bookingRequest, setBookingRequest] = useState<Booking>({
+    const [bookingRequest, setBookingRequest] = useState<any>({
         userId: 2,
         flightIds: [],
         passengers: []
