@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface IHolidayPackageBookingRepository extends JpaRepository<HolidayPackageBooking, Long> {
     @Query("SELECT b FROM HolidayPackageBooking b WHERE b.userId = ?1")
-    Optional<List<HolidayPackageBooking>> findByUserId(long userId);
+    List<HolidayPackageBooking> findByUserId(long userId);
 }

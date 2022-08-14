@@ -9,10 +9,7 @@ import seng3150.team4.flightpub.controllers.requests.HolidayPackageBookingReques
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
-import seng3150.team4.flightpub.domain.models.Passenger;
-import seng3150.team4.flightpub.services.IBookingService;
 import seng3150.team4.flightpub.services.IHolidayPackageBookingService;
-import seng3150.team4.flightpub.services.IPassengerService;
 
 import java.time.LocalDateTime;
 

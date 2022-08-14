@@ -24,7 +24,7 @@ public class HolidayPackageBooking implements IEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "holidayPackageId", nullable = false)
+    @JoinColumn(name = "HolidayPackageId", nullable = false)
     private HolidayPackage holidayPackage;
 
     @Column(name = "DateBooked")
