@@ -145,6 +145,7 @@ export const SearchPage = () => {
 					isClosable: true,
 					position: 'top'
 				});
+				console.log(err)
 			})
 			.finally(onClose);
 	}
@@ -405,7 +406,7 @@ export const SearchPage = () => {
 										</Box>
 										<label>Selected Tags</label>
 										<Box width='15rem'>
-											<TagMessage length={searchTags.length} />
+											<TagMessage length={searchTags?.length} />
 											{searchTags.map((item) => (
 												<Tag
 													size='md'

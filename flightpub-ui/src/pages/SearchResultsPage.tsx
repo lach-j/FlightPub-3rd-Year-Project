@@ -159,8 +159,8 @@ export function SearchResultsPage({
 		const { results, query } = state as { query: any; results: Flight[] };
 		setResults(results);
 		setQuery(query);
-		setFilterTags(query.searchTags);
-		GenerateSearchResults();
+		setFilterTags(query?.searchTags);
+		GenerateSearchResults(results);
 		const flightTimes = results.map((r) => r.duration);
 		const maxDuration = Math.max(...flightTimes);
 		const minDuration = Math.min(...flightTimes);
@@ -170,9 +170,9 @@ export function SearchResultsPage({
 	}, [state]);
 
 	//create search result objects, which are flights with associated tags
-	function GenerateSearchResults() {
+	function GenerateSearchResults(res: Flight[]) {
 		const sr = new Array<SearchResult>();
-		results?.map((f, idx) => {
+		res?.map((f, idx) => {
 			sr[idx]['flight'] = f;
 			sr[idx]['tags'] = airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags;
 		})
@@ -228,7 +228,7 @@ export function SearchResultsPage({
 
 	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: any) {
-		if (filterTags.includes(value)) {
+		if (filterTags?.includes(value)) {
 			toast({
 				title: 'Tag Already Exists',
 				description: 'You have already added this tag to your search.',
@@ -245,6 +245,7 @@ export function SearchResultsPage({
 
 	return (
 		<Box p='1em'>
+			filterTags: {filterTags}<br/>Search Results With Tags: {searchResultsWithTags?.map((sr) => {return sr.tags})}
 			<HStack
 				divider={<StackDivider borderColor='gray.200' />}
 				spacing={10}
@@ -330,8 +331,8 @@ export function SearchResultsPage({
 							</Box>
 							<label>Selected Tags:</label>
 							<Box width='15rem'>
-								<TagMessage length={filterTags.length} />
-								{filterTags.map((item) => (
+								<TagMessage length={filterTags?.length} />
+								{filterTags?.map((item) => (
 									<Tag
 										size='md'
 										key={item}
@@ -342,7 +343,7 @@ export function SearchResultsPage({
 										<TagLabel>{item}</TagLabel>
 										<TagCloseButton
 											onClick={() =>
-												setFilterTags(filterTags.filter((value) => value !== item))
+												setFilterTags(filterTags?.filter((value) => value !== item))
 											}
 										/>
 									</Tag>
