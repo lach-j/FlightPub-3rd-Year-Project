@@ -13,7 +13,7 @@ CREATE TABLE `Country` (
   `MotherCountryCode3` char(3) NOT NULL DEFAULT '',
   `MotherCountryComment` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`CountryCode3`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Airlines` (
   `AirlineCode` char(2) NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE `FPUser` (
   `Role` INT,
   `Deleted` BIT,
   PRIMARY KEY (`Id`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Wishlist` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -154,7 +154,7 @@ CREATE TABLE `Wishlist` (
   PRIMARY KEY (`Id`),
   KEY `UserId_FK` (`UserId`),
   CONSTRAINT `UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `WishlistItem` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -166,7 +166,7 @@ CREATE TABLE `WishlistItem` (
   KEY `DestinationCode_FK` (`DestinationCode`),
   CONSTRAINT `WishlistId_FK` FOREIGN KEY (`WishlistId`) REFERENCES `Wishlist` (`Id`),
   CONSTRAINT `DestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `MessagingSession` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -175,7 +175,7 @@ CREATE TABLE `MessagingSession` (
   PRIMARY KEY (`Id`),
   KEY `MS_WishlistId_FK` (`WishlistId`),
   CONSTRAINT `MS_WishlistId_FK` FOREIGN KEY (`WishlistId`) REFERENCES `Wishlist` (`Id`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `MessagingSession_FPUser` (
   `SessionId` BIGINT NOT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE `MessagingSession_FPUser` (
   KEY `MSFP_UserId_FK` (`UserId`),
   CONSTRAINT `MSFP_UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `MSFP_SessionId_FK` FOREIGN KEY (`SessionId`) REFERENCES `MessagingSession` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Message` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -198,13 +198,13 @@ CREATE TABLE `Message` (
   KEY `M_UserId_FK` (`UserId`),
   CONSTRAINT `M_UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `M_SessionId_FK` FOREIGN KEY (`SessionId`) REFERENCES `MessagingSession` (`Id`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Payment` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
   `Type` INT NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Payment_DirectDebit` (
   `PaymentId` BIGINT NOT NULL,
@@ -214,7 +214,7 @@ CREATE TABLE `Payment_DirectDebit` (
   PRIMARY KEY (`PaymentId`),
   KEY `PaymentId_DD_FK` (`PaymentId`),
   CONSTRAINT `PaymentId_DD_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Payment_Card` (
   `PaymentId` BIGINT NOT NULL,
@@ -225,7 +225,7 @@ CREATE TABLE `Payment_Card` (
   PRIMARY KEY (`PaymentId`),
   KEY `PaymentId_C_FK` (`PaymentId`),
   CONSTRAINT `PaymentId_C_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Payment_PayPal` (
   `PaymentId` BIGINT NOT NULL,
@@ -233,7 +233,7 @@ CREATE TABLE `Payment_PayPal` (
   PRIMARY KEY (`PaymentId`),
   KEY `PaymentId_PP_FK` (`PaymentId`),
   CONSTRAINT `PaymentId_PP_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `SavedPayment` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -245,4 +245,4 @@ CREATE TABLE `SavedPayment` (
   KEY `SP_PaymentId_FK` (`PaymentId`),
   CONSTRAINT `SP_UserId_FK` FOREIGN KEY (`UserId`) REFERENCES `FPUser` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `SP_PaymentId_FK` FOREIGN KEY (`PaymentId`) REFERENCES `Payment` (`Id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
