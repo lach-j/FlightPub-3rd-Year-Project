@@ -16,14 +16,15 @@ import {
   Input,
   Select,
   Box,
-  Text
+  Text,
+  toast
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
 import { Airline, ColumnDefinition, Flight, Price, User } from '../../models';
-import { useApi } from '../../services/ApiService';
+import { ApiError, useApi } from '../../services/ApiService';
 import {
   AutoComplete,
   AutoCompleteInput,
@@ -49,12 +50,49 @@ export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean)
   const [user, setUser] = useState<User | undefined>();
   const [userIdentifier, setUserIdentifier] = useState('');
 
+  const toast = useToast();
+
   const { httpGet } = useApi(endpoints.users);
 
-  const searchUser = () => {
-    httpGet(`/${userIdentifier}`).then((user) => {
-      setUser(user);
+  const handlePostDelete = () => {
+    toast({
+      title: 'Account Deleted',
+      description: 'This account was deleted successfully.',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
     });
+    setUser(undefined);
+  };
+
+  const handlePostSave = (savedUser: User) => {
+    setUser(savedUser);
+    toast({
+      title: 'Details updated',
+      description: 'This accounts details were updated successfully.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'top'
+    });
+  };
+
+  const searchUser = () => {
+    httpGet(`/${userIdentifier}`)
+      .then((user) => {
+        setUser(user);
+      })
+      .catch((err: ApiError) => {
+        if (err.message.includes('404')) {
+          toast({
+            title: 'User Not Found',
+            description: `A user with identifier ${userIdentifier} does not exist.`,
+            status: 'error',
+            isClosable: true
+          });
+        }
+      });
   };
 
   return (
@@ -62,20 +100,16 @@ export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean)
       <HStack>
         <Heading mb='0.5em'>Manage Users</Heading>
         <HStack w='full'>
-          <Box whiteSpace='nowrap'>Find user by</Box>
-          <Select>
-            <option>Id</option>
-            <option>Email</option>
-          </Select>
+          <Box whiteSpace='nowrap'>User Id or Email</Box>
           <Input onChange={(e) => setUserIdentifier(e.target.value)} />
           <Button onClick={searchUser}>Search</Button>
         </HStack>
       </HStack>
       {user ? (
         <UserDetailsForm
-          setIsLoading={() => {}}
-          onDelete={() => {}}
-          onSave={() => {}}
+          setIsLoading={setIsLoading}
+          onDelete={handlePostDelete}
+          onSave={handlePostSave}
           user={user}
           showRole
         />

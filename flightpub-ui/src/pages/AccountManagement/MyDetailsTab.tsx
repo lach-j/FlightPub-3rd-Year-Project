@@ -7,8 +7,11 @@ import {
   AlertDialogOverlay,
   Button,
   Divider,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
+  Select,
   useDisclosure,
   useEditable,
   useToast,
@@ -23,17 +26,7 @@ import { User } from '../../models';
 import _ from 'lodash';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
-
-const editProfileForm: {
-  inputs: Array<{ label: string; name: keyof User; type?: string }>;
-} = {
-  inputs: [
-    { label: 'Email', name: 'email' },
-    { label: 'First Name', name: 'firstName' },
-    { label: 'Last name', name: 'lastName' }
-    // { label: 'Phone Number', name: 'ph', type: 'tel' }
-  ]
-};
+import { UserRole } from '../../models/User';
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { user, setUser } = useContext(UserContext);
@@ -82,6 +75,16 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
   );
 };
 
+const editProfileForm: {
+  inputs: Array<{ label: string; name: keyof User; type?: string }>;
+} = {
+  inputs: [
+    { label: 'Email', name: 'email' },
+    { label: 'First Name', name: 'firstName' },
+    { label: 'Last name', name: 'lastName' }
+  ]
+};
+
 export const UserDetailsForm = ({
   setIsLoading,
   user,
@@ -125,9 +128,9 @@ export const UserDetailsForm = ({
     if (!userData) return;
     setIsLoading(true);
 
-    const { firstName, lastName, email } = userData;
+    const { firstName, lastName, email, role } = userData;
 
-    httpPatch(`/${user?.id}`, { firstName, lastName, email })
+    httpPatch(`/${user?.id}`, { firstName, lastName, email, role })
       .then((res) => {
         onSave(res);
         setIsLoading(false);
@@ -164,6 +167,29 @@ export const UserDetailsForm = ({
               onSave={(value) => setUserData((data) => ({ ...data, [input.name]: value } as User))}
             />
           ))}
+          {showRole && (
+            <>
+              <FormControl>
+                <FormLabel>User Role</FormLabel>
+                <Select
+                  value={userData?.role}
+                  onChange={(e) =>
+                    setUserData(
+                      (userData) =>
+                        ({
+                          ...userData,
+                          role: UserRole[e.target.value as keyof typeof UserRole]
+                        } as User)
+                    )
+                  }
+                >
+                  <option value={UserRole.STANDARD_USER}>Standard User</option>
+                  <option value={UserRole.TRAVEL_AGENT}>Travel Agent</option>
+                  <option value={UserRole.ADMINISTRATOR}>Administrator</option>
+                </Select>
+              </FormControl>
+            </>
+          )}
           <HStack w='full' gap='1em'>
             <Button colorScheme='blue' disabled={!isDirty} onClick={handleSaveChanges}>
               Save
