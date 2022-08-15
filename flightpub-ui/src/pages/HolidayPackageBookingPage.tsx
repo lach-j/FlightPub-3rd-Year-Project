@@ -767,7 +767,7 @@ export const HolidayPackageBookingPage = () => {
         <Center>
           <Box>
             {holidayPackage ? (
-              <HolidayCard data={holidayPackage}></HolidayCard>
+              <HolidayCard data={holidayPackage} showBookButton={false}></HolidayCard>
             ) : (
               <h1>Nothing here, please check back later!</h1>
             )}

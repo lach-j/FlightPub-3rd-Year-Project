@@ -1,6 +1,13 @@
-import {HolidayPackage} from "./HolidayCardProps";
+import { HolidayPackage } from './HolidayCardProps';
+import { User } from './User';
+import { Booking } from './Booking';
+import { PaymentType } from './SavedPaymentTypes';
 
 export interface HolidayPackageBooking {
-    userId: any;
-    holidayPackage: HolidayPackage;
+  id: number;
+  user: User;
+  dateBooked: Date;
+  payment: PaymentType;
+  booking: Booking;
+  holidayPackage: HolidayPackage;
 }

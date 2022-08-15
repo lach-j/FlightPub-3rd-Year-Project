@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import {
   Box,
   Button,
@@ -49,12 +49,12 @@ export default function Header({
   };
 
   const handleCheckout = () => {
-    if(user) {
+    if (user) {
       navigate(routes.passengerDetails);
     } else {
-      navigate(routes.login, {state: {redirectUrl: routes.passengerDetails}});
+      navigate(routes.login, { state: { redirectUrl: routes.passengerDetails } });
     }
-  }
+  };
 
   return (
     <Box minH='75' h='75' bg='black'>
@@ -66,6 +66,9 @@ export default function Header({
           </Button>
           <Button as={NavLink} to={routes.search}>
             Search
+          </Button>
+          <Button as={NavLink} to={routes.holidayPackages.base}>
+            Holidays
           </Button>
           <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} />
           <Menu>
