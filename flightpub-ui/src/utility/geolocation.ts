@@ -9,6 +9,7 @@ export interface Airport {
   city: string;
   country: string;
   code: string;
+	tags: Array<string>;
 }
 
 export const findNearestAirport = (location: Position): Airport | undefined => {

@@ -52,6 +52,7 @@ import { ApiError, useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { airports } from '../data/airports';
 import { Airport, findNearestAirport } from '../utility/geolocation';
+import { tags } from '../data/tags';
 
 export interface Item {
 	label: string;
@@ -89,32 +90,22 @@ export const SearchPage = () => {
 
 	const { httpGet } = useApi(endpoints.flightSearch);
 
-	//Formats from JavaScript Date type to string
-	const formatDate = (date: Date) => {
-		return new Date(date).toISOString().split('T')[0];
-	};
-	//authRequest : stores search query request
-	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-		departureDate: { date: formatDate(new Date()) }
-	});
-
 	//stateful airport storage
 	const [airport, setAirport] = useState<Airport | undefined>();
-
-	//update the user's location as a side effect
-	useEffect(() => {
-		if (!navigator.geolocation) return;
-		navigator.geolocation.getCurrentPosition(getPosition);
-	});
 
 	//handle the getCurrentPosition callback
 	function getPosition(position: any) {
 		setAirport(findNearestAirport([position.coords.longitude, position.coords.latitude]));
 	}
 
-	useEffect(() => {
-		handleSearchQueryUpdate('destinationCode', airport?.code);
-	}, [airport]);
+	//Formats from JavaScript Date type to string
+	const formatDate = (date: Date) => {
+		return new Date(date).toISOString().split('T')[0];
+	};
+	//authRequest : stores search query request
+	const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+		departureDate: { date: formatDate(new Date()) },
+	});
 
 	const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -122,6 +113,13 @@ export const SearchPage = () => {
 	const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
 		setSearchQuery({ ...searchQuery, [field]: value });
 	};
+
+	//update the user's location and set the search query
+	useEffect(() => {
+		if (!navigator.geolocation) return;
+		navigator.geolocation.getCurrentPosition(getPosition);
+		handleSearchQueryUpdate('destinationCode', airport?.code);
+	}, [airport]);
 
 	//Handles search event for search form
 	function handleSearch(e: FormEvent<HTMLFormElement>) {
@@ -147,6 +145,7 @@ export const SearchPage = () => {
 					isClosable: true,
 					position: 'top'
 				});
+				console.log(err)
 			})
 			.finally(onClose);
 	}
@@ -168,19 +167,8 @@ export const SearchPage = () => {
 		{ key: 'PME', label: 'Premium Economy' }
 	];
 
-	//tags information for search
-	const tags = [
-		{ label: 'Beach', value: 'beach' },
-		{ label: 'Snow', value: 'snow' },
-		{ label: 'Holiday', value: 'holiday' },
-		{ label: 'Family-Friendly', value: 'family-friendly' },
-		{ label: 'Sports', value: 'sports' },
-		{ label: 'Romantic', value: 'romantic' },
-		{ label: 'Asia', value: 'asia' }
-	];
-
 	//update the search tags, and prevent duplicate tags
-	function handleTagUpdate(value: any) {
+	function handleTagUpdate(value: string) {
 		if (searchTags.includes(value)) {
 			toast({
 				title: 'Tag Already Exists',
@@ -193,7 +181,7 @@ export const SearchPage = () => {
 			return;
 		}
 		setSearchTags((searchTags) => [...searchTags, value]);
-		handleSearchQueryUpdate('searchTags', searchTags);
+		handleSearchQueryUpdate('searchTags', searchTags.push(value));
 	}
 
 	//props for the tag message which displays when no tags are selected
@@ -239,11 +227,12 @@ export const SearchPage = () => {
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
-												defaultValue={airport?.code}
-												key={airport?.code}
 												onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
 											>
-												<AutoCompleteInput variant='filled' />
+												<AutoCompleteInput
+													variant='filled'
+													placeholder={airport ? (airport?.city + " / " + airport?.code) : ("City / CODE")}
+												/>
 												<AutoCompleteList>
 													{airports.map(({ code, city }) => (
 														<AutoCompleteItem key={code} value={code} align='center'>
@@ -258,7 +247,7 @@ export const SearchPage = () => {
 									{/* Arrival location input */}
 									<Box>
 										<FormControl>
-											<FormLabel>Arrival Location:</FormLabel>
+											<FormLabel>Arrival Location</FormLabel>
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
@@ -304,7 +293,7 @@ export const SearchPage = () => {
 									{/* Ticket type input */}
 									<Box>
 										<FormControl isRequired>
-											<FormLabel htmlFor='flightClass'>Tickets: </FormLabel>
+											<FormLabel htmlFor='flightClass'>Tickets </FormLabel>
 											<Accordion allowToggle w='20em'>
 												<AccordionItem>
 													<AccordionButton>
@@ -362,7 +351,7 @@ export const SearchPage = () => {
 									<Box>
 										{/* Handles type of flight (return or one-way) */}
 										<FormControl isRequired>
-											<FormLabel htmlFor='flightType'>Type: </FormLabel>
+											<FormLabel htmlFor='flightType'>Type </FormLabel>
 											<Select
 												onChange={(e) =>
 													handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
@@ -387,9 +376,38 @@ export const SearchPage = () => {
 								>
 									{/* Location tag inputs */}
 									<VStack align='left'>
-										<label>Selected Tags:</label>
+										<Box>
+											<FormControl>
+												<FormLabel>Location Tags</FormLabel>
+												<HStack>
+													<AutoComplete
+														openOnFocus
+														suggestWhenEmpty
+														onChange={
+															(value: string) => {
+																handleTagUpdate(value);
+																handleSearchQueryUpdate('searchTags', [...searchTags]);
+															}
+														}
+													>
+														<AutoCompleteInput
+															variant='filled'
+															placeholder='Surfing'
+														/>
+														<AutoCompleteList>
+															{tags.map(({ label }) => (
+																<AutoCompleteItem key={label} value={label} align='center'>
+																	<Text ml='4'>{label}</Text>
+																</AutoCompleteItem>
+															))}
+														</AutoCompleteList>
+													</AutoComplete>
+												</HStack>
+											</FormControl>
+										</Box>
+										<label>Selected Tags</label>
 										<Box width='15rem'>
-											<TagMessage length={searchTags.length} />
+											<TagMessage length={searchTags?.length} />
 											{searchTags.map((item) => (
 												<Tag
 													size='md'
@@ -400,37 +418,15 @@ export const SearchPage = () => {
 												>
 													<TagLabel>{item}</TagLabel>
 													<TagCloseButton
-														onClick={() =>
-															setSearchTags(searchTags.filter((value) => value !== item))
-														}
+														onClick={() => {
+															setSearchTags(searchTags.filter(value => value !== item));
+															handleSearchQueryUpdate('searchTags', [...searchTags.filter(value => value !== item)]);
+														}}
 													/>
 												</Tag>
 											))}
 										</Box>
 									</VStack>
-									<Box>
-										<FormControl>
-											<FormLabel>Location Tags:</FormLabel>
-											<HStack>
-												<AutoComplete
-													openOnFocus
-													suggestWhenEmpty
-													defaultValue=''
-													emptyState={true}
-													onChange={(value: string) => handleTagUpdate(value)}
-												>
-													<AutoCompleteInput variant='filled' />
-													<AutoCompleteList>
-														{tags.map(({ label }) => (
-															<AutoCompleteItem key={label} value={label} align='center'>
-																<Text ml='4'>{label}</Text>
-															</AutoCompleteItem>
-														))}
-													</AutoCompleteList>
-												</AutoComplete>
-											</HStack>
-										</FormControl>
-									</Box>
 
 									{/* Departure date input */}
 									<Box>
@@ -529,11 +525,11 @@ export const SearchPage = () => {
 						</VStack>
 					</FormControl>
 				</form>
-			</Center>
+			</Center >
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
 			</Modal>
-		</Box>
+		</Box >
 	);
 };

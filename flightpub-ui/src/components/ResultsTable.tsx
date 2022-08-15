@@ -21,7 +21,7 @@ import { routes } from '../constants/routes';
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[],
-  data: Flight[],
+  data: any[],
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
@@ -112,10 +112,14 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                           position: 'top'
                       });
                     } else {
-                      navigate(routes.passengerDetails, {
-                        state: {
-                          result,
-                        }
+                      setCart((cart) => [...cart, result]);
+                      toast({
+                          title: 'Success!',
+                          description: 'Flight added to cart successfully.',
+                          status: 'success',
+                          duration: 9000,
+                          isClosable: true,
+                          position: 'top'
                       });
                     }
                   }}

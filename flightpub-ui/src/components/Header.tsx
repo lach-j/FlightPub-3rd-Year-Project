@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from
 import {
   Box,
   Button,
+  Circle,
   Divider,
   Flex,
   HStack,
@@ -18,7 +19,8 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
@@ -37,6 +39,7 @@ export default function Header({
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
 
   const handleLogout = () => {
     setUser(null);
@@ -44,6 +47,14 @@ export default function Header({
     localStorage.removeItem('user-id');
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   };
+
+  const handleCheckout = () => {
+    if(user) {
+      navigate(routes.passengerDetails);
+    } else {
+      navigate(routes.login, {state: {redirectUrl: routes.passengerDetails}});
+    }
+  }
 
   return (
     <Box minH='75' h='75' bg='black'>
@@ -96,7 +107,22 @@ export default function Header({
           </Menu>
           <Popover>
             <PopoverTrigger>
-              <IconButton aria-label='cart' icon={<FaShoppingCart />} />
+              <Box position='relative'>
+                <IconButton aria-label='cart' icon={<FaShoppingCart />} />
+                {cart.length > 0 && (
+                  <Circle
+                    position='absolute'
+                    bottom='-5px'
+                    right='-5px'
+                    left='25px'
+                    top='25px'
+                    background='red'
+                    color='white'
+                  >
+                    {cart.length}
+                  </Circle>
+                )}
+              </Box>
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />
@@ -105,7 +131,7 @@ export default function Header({
               <PopoverBody>
                 {cart.length === 0 && <Text>Your cart is empty, add a flight to checkout!</Text>}
                 {cart.map((item) => (
-                  <Text>
+                  <Box>
                     To: {item.arrivalLocation.destinationCode} <br />
                     From: {item.departureLocation.destinationCode} <br />
                     On: {item.departureTime} <br />
@@ -121,14 +147,12 @@ export default function Header({
                       Remove
                     </Text>
                     <Divider orientation='horizontal' />
-                  </Text>
+                  </Box>
                 ))}{' '}
                 <br />
-                <NavLink to={routes.booking}>
-                  <Button colorScheme='red' disabled={cart.length === 0}>
-                    Checkout
-                  </Button>
-                </NavLink>
+                <Button colorScheme='red' disabled={cart.length === 0} onClick={handleCheckout}>
+                  Checkout
+                </Button>
               </PopoverBody>
             </PopoverContent>
           </Popover>

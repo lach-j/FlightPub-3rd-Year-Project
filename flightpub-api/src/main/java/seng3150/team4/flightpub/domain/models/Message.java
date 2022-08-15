@@ -31,6 +31,7 @@ public class Message implements IEntity {
     @Column(name = "Content")
     private String content;
 
+    @JoinColumn(name = "UserId")
     @ManyToOne
     User user;
 

@@ -10,82 +10,109 @@ import {
   Heading,
   HStack,
   useDisclosure,
+  useEditable,
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../services/UserContext';
+import { User } from '../../models';
+import _ from 'lodash';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
 
 const editProfileForm: {
-  inputs: Array<{ label: string; name: string; type?: string }>;
+  inputs: Array<{ label: string; name: keyof User; type?: string }>;
 } = {
   inputs: [
     { label: 'Email', name: 'email' },
-    { label: 'First Name', name: 'fname' },
-    { label: 'Last name', name: 'lname' },
-    { label: 'Phone Number', name: 'ph', type: 'tel' }
+    { label: 'First Name', name: 'firstName' },
+    { label: 'Last name', name: 'lastName' }
+    // { label: 'Phone Number', name: 'ph', type: 'tel' }
   ]
 };
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
+  const { user, setUser } = useContext(UserContext);
+
+  const { httpPatch, httpDelete } = useApi(endpoints.users);
+
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
 
-  const [userData, setUserData] = useState<any>({
-    email: 'user@example.com',
-    fname: 'Lachlan',
-    lname: 'Johnson',
-    ph: '+6112345678'
-  });
-  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [userData, setUserData] = useState<User | null>(user);
+  const isDirty = !_.isEqual(user, userData);
 
-  const handleDetailsUpdate = (field: string, value: string) => {
-    if (value === userData[field]) return;
-    setUserData({ ...userData, [field]: value });
-    setIsDirty(true);
-  };
+  useEffect(() => {
+    setUserData(user);
+  }, [user]);
 
   const handleDelete = () => {
+    if (!user?.id) return;
     setIsLoading(true);
-    // Simulate api delay with timeout
-    setTimeout(() => {
-      toast({
-        title: 'Account Deleted',
-        description: 'Your account was deleted successfully, you have been logged out permanently.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-        position: 'top'
+
+    httpDelete(`/${user?.id}`)
+      .then(() => {
+        toast({
+          title: 'Account Deleted',
+          description:
+            'Your account was deleted successfully, you have been logged out permanently.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top'
+        });
+        localStorage.removeItem('bearer-token');
+        localStorage.removeItem('user-id');
+        setUser(null);
+        navigate(routes.default);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-      navigate(routes.default);
-    }, 2000);
   };
 
   const handleSaveChanges = () => {
+    if (!userData) return;
     setIsLoading(true);
-    // Simulate api delay with timeout
-    setTimeout(() => {
-      toast({
-        title: 'Details updated',
-        description: 'Your account details have been updated successfully.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top'
+
+    const { firstName, lastName, email } = userData;
+
+    httpPatch(`/${user?.id}`, { firstName, lastName, email })
+      .then((res) => {
+        setUser(res);
+        toast({
+          title: 'Details updated',
+          description: 'Your account details have been updated successfully.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+        setIsLoading(false);
+      })
+      .catch(() => {
+        toast({
+          title: 'Error',
+          description: 'An error occurred, please try again later.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setIsLoading(false);
-      setIsDirty(false);
-    }, 2000);
   };
 
   const handleDiscardChanges = () => {
-    // TODO : replace this with real refresh logic
-    window.location.reload();
+    setUserData(user);
   };
 
   return (
@@ -96,10 +123,10 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
           {editProfileForm.inputs.map((input) => (
             <CustomEditible
               name={input.name}
-              value={userData?.[input.name]}
+              value={userData?.[input.name]?.toString()}
               label={input.label}
               type={input?.type || 'text'}
-              onSave={(value) => handleDetailsUpdate(input.name, value)}
+              onSave={(value) => setUserData((data) => ({ ...data, [input.name]: value } as User))}
             />
           ))}
           <HStack w='full' gap='1em'>

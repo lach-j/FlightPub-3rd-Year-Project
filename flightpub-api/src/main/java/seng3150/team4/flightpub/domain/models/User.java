@@ -1,8 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,5 +35,11 @@ public class User implements IEntity {
 
   private UserRole role;
 
-  // TODO: add saved payments and other user data to model
+
+  private boolean deleted = false;
+
+  @JsonIgnore
+  @OneToMany
+  @JoinColumn(name = "UserId")
+  private Set<SavedPayment> payments;
 }

@@ -11,10 +11,10 @@ import {
   Tabs,
   useDisclosure
 } from '@chakra-ui/react';
-import React from 'react';
 import { SavedPaymentsTab } from './SavedPaymentsTab';
 import { MyDetailsTab } from './MyDetailsTab';
 import { ChangePasswordTab } from './ChangePasswordTab';
+import { BookingHistoryTab } from './BookingHistoryTab';
 
 export const AccountPage = () => {
   const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();
@@ -31,6 +31,7 @@ export const AccountPage = () => {
             <Tab>My Details</Tab>
             <Tab>Change Password</Tab>
             <Tab>Saved Payments</Tab>
+            <Tab>Booking History</Tab>
           </TabList>
 
           <TabPanels mt='1em'>
@@ -42,6 +43,9 @@ export const AccountPage = () => {
             </TabPanel>
             <TabPanel>
               <SavedPaymentsTab setIsLoading={handleLoading} />
+            </TabPanel>
+            <TabPanel>
+              <BookingHistoryTab setIsLoading={handleLoading} />
             </TabPanel>
           </TabPanels>
         </Tabs>
