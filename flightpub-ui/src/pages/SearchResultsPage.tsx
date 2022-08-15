@@ -98,69 +98,72 @@ export function SearchResultsPage({
 	const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
 	const getMaxPrice = (prices: Price[]) => Math.max(...prices.map((p) => p.price));
 
-	const [filterTags, setFilterTags] = useState<Array<string>>([]); //user input search tags
+	const [filterTags, setFilterTags] = useState<string[]>([]); //user input search tags
 
-	const [searchResultsWithTags, setSearchResultsWithTags] = useState<Array<SearchResult>>([]);
+	const [searchResultsWithTags, setSearchResultsWithTags] = useState<SearchResult[]>([]);
 
 	//DataTable column definitions
 	const columns: ColumnDefinition<any>[] = [
 		{
-			accessor: 'airlineCode',
+			accessor: 'flight.airlineCode',
 			Header: 'Airline',
 			transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName
 		},
 		{
-			accessor: 'departureLocation.airport',
+			accessor: 'flight.departureLocation.airport',
 			Header: 'Departure Airport'
 		},
 		{
-			accessor: 'departureTime',
+			accessor: 'flight.departureTime',
 			Header: 'Departure Time',
 			transform: formatDateTime
 		},
 		{
-			accessor: 'arrivalTime',
+			accessor: 'flight.arrivalTime',
 			Header: 'Arrival Time',
 			transform: formatDateTime
 		},
 		{
-			accessor: 'arrivalLocation.airport',
+			accessor: 'flight.arrivalLocation.airport',
 			Header: 'Destination Airport'
 		},
 		{
-			accessor: 'stopOverLocation.airport',
+			accessor: 'flight.stopOverLocation.airport',
 			Header: 'Stop Over',
 			transform: (value: any) => value || '---'
 		},
 		{
-			accessor: 'prices',
+			accessor: 'flight.prices',
 			Header: 'Price',
 			transform: getPriceString,
 			sortValue: (prices: Price[], descending) =>
 				descending ? getMaxPrice(prices) : getMinPrice(prices)
 		},
 		{
-			accessor: 'duration',
+			accessor: 'flight.duration',
 			Header: 'Duration',
 			transform: (value: any) => convertMinsToHM(value)
 		},
 		{
-			accessor: 'airportsWithTags',
+			accessor: 'tags',
 			Header: 'Tags',
+			transform: (value: any) => value.map((v: string) => {
+				return toProperCase(v);
+			}).join(", ")
 		}
 	];
 	//sets airline information on-load
 	useEffect(() => {
 		httpGet('').then(setAirlines);
-	}, []);
+	}, []);	//don't add the httpGet dependency that eslint wants here, it will infinite loop
 
 	//sets results and query on-load
 	useEffect(() => {
 		const { results, query } = state as { query: any; results: Flight[] };
 		setResults(results);
 		setQuery(query);
-		setFilterTags(query.searchTags);
-		GenerateSearchResults();
+		setFilterTags(query?.searchTags);
+		GenerateSearchResults(results);
 		const flightTimes = results.map((r) => r.duration);
 		const maxDuration = Math.max(...flightTimes);
 		const minDuration = Math.min(...flightTimes);
@@ -169,12 +172,20 @@ export function SearchResultsPage({
 		setDurationFilter(maxDuration);
 	}, [state]);
 
+	//converts a string to proprt noun case (i.e. This Is A Sentence Full Of Proper Nouns)
+	function toProperCase(input: string) {
+		return input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase(); });
+	};
+
 	//create search result objects, which are flights with associated tags
-	function GenerateSearchResults() {
+	function GenerateSearchResults(res: Flight[]) {
 		const sr = new Array<SearchResult>();
-		results?.map((f, idx) => {
-			sr[idx]['flight'] = f;
-			sr[idx]['tags'] = airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags;
+		res?.forEach((f, idx) => {
+			const construct: SearchResult = {
+				flight: f,
+				tags: airports.find((airport) => airport.code === f.arrivalLocation.destinationCode)?.tags
+			}
+			sr.push(construct);
 		})
 		setSearchResultsWithTags(sr);
 	}
@@ -194,16 +205,16 @@ export function SearchResultsPage({
 	};
 
 	//Filters resultdata based on stored filter criteria
-	const filterResults = (result: Flight) => {
+	const filterResults = (result: SearchResult) => {
 		if (
-			result.prices.filter((p) => p.price < minPrice).length > 0 ||
-			result.prices.filter((p) => p.price > maxPrice).length > 0
+			result.flight.prices.filter((p) => p.price < minPrice).length > 0 ||
+			result.flight.prices.filter((p) => p.price > maxPrice).length > 0
 		)
 			return false;
 
-		if (airlineFilter && airlineFilter !== result.airlineCode) return false;
+		if (airlineFilter && airlineFilter !== result.flight.airlineCode) return false;
 
-		if (result.duration > durationFilter) return false;
+		if (result.flight.duration > durationFilter) return false;
 
 		return true;
 	};
@@ -228,7 +239,7 @@ export function SearchResultsPage({
 
 	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: any) {
-		if (filterTags.includes(value)) {
+		if (filterTags?.includes(value)) {
 			toast({
 				title: 'Tag Already Exists',
 				description: 'You have already added this tag to your search.',
@@ -240,7 +251,6 @@ export function SearchResultsPage({
 			return;
 		}
 		setFilterTags((searchTags) => [...searchTags, value]);
-		// handleSearchQueryUpdate('searchTags', searchTags);
 	}
 
 	return (
@@ -330,8 +340,8 @@ export function SearchResultsPage({
 							</Box>
 							<label>Selected Tags:</label>
 							<Box width='15rem'>
-								<TagMessage length={filterTags.length} />
-								{filterTags.map((item) => (
+								<TagMessage length={filterTags?.length} />
+								{filterTags?.map((item) => (
 									<Tag
 										size='md'
 										key={item}
@@ -342,7 +352,7 @@ export function SearchResultsPage({
 										<TagLabel>{item}</TagLabel>
 										<TagCloseButton
 											onClick={() =>
-												setFilterTags(filterTags.filter((value) => value !== item))
+												setFilterTags(filterTags?.filter((value) => value !== item))
 											}
 										/>
 									</Tag>
@@ -355,7 +365,7 @@ export function SearchResultsPage({
 				<Center flex='1'>
 					<ResultsTable
 						columns={columns}
-						data={results.filter(filterResults)}
+						data={searchResultsWithTags.filter(filterResults)}
 						keyAccessor='id'
 						sortable
 						cartState={[cart, setCart]}

@@ -32,7 +32,7 @@ public class HolidayPackageController {
         holidayPackages.addAll(holidayPackageRepository.findAll());
         return new EntityCollectionResponse<>(holidayPackages);
     }
-    @GetMapping("/holiday-packages/{holidayPackageId}")
+    @GetMapping("/{holidayPackageId}")
     public EntityResponse<HolidayPackage> getHolidayPackageById(@PathVariable long holidayPackageId) {
         var holidayPackage = holidayPackageService.getHolidayPackageById(holidayPackageId);
         return new EntityResponse<>(holidayPackage);

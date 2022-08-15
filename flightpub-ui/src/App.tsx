@@ -15,7 +15,7 @@ import {
   TravelAgentMessagingPage,
   SessionListComponent,
   WishlistCreatorPage,
-  WishlistMainScreen,
+  WishlistMainScreen
 } from './pages';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { routes } from './constants/routes';
@@ -23,7 +23,7 @@ import Header from './components/Header';
 import { Box, Flex } from '@chakra-ui/react';
 import { Flight } from './models';
 import { UserProvider } from './services/UserContext';
-import {HolidayPackageBookingPage} from "./pages/HolidayPackageBookingPage";
+import { HolidayPackageBookingPage } from './pages/HolidayPackageBookingPage';
 
 const noNavbar = [routes.login, routes.register, routes.forgotPassword, routes.resetPassword];
 
@@ -75,14 +75,8 @@ const App = () => {
               element={<SearchResultsPage cartState={cartState} />}
             />
             <Route path={routes.booking} element={<BookingPage cartState={cartState} />} />
-            <Route
-              path={routes.holidayPackages.base}
-              element={<HolidayPackagesPage />}
-            />
-            <Route
-                path={routes.holidayPackages.holidayBooking}
-                element={<HolidayPackageBookingPage />}
-            />
+            <Route path={routes.holidayPackages.base} element={<HolidayPackagesPage />} />
+            <Route path={routes.holidayPackages.book.id} element={<HolidayPackageBookingPage />} />
             <Route path={routes.travelAgents.base} element={<SessionListComponent />} />
 
             <Route path={routes.travelAgents.session.id} element={<TravelAgentMessagingPage />} />

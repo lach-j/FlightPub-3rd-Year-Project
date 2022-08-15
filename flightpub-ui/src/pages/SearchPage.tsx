@@ -141,7 +141,7 @@ export const SearchPage = () => {
 	useEffect(() => {
 		if (!navigator.geolocation) return;
 		navigator.geolocation.getCurrentPosition(getPosition);
-		handleSearchQueryUpdate('destinationCode', airport?.code);
+		// handleSearchQueryUpdate('departureCode', airport?.code);
 	}, [airport]);
 
 	//Handles search event for search form
@@ -174,6 +174,7 @@ export const SearchPage = () => {
 					isClosable: true,
 					position: 'top'
 				});
+				console.log(err)
 			})
 			.finally(onClose);
 	}
@@ -195,7 +196,6 @@ export const SearchPage = () => {
 		{ key: 'PME', label: 'Premium Economy' }
 	];
 
-	//TODO: something is going wrong here, the searchTags array is fine, but is not updating the searchQuery properly
 	//update the search tags, and prevent duplicate tags
 	function handleTagUpdate(value: string) {
 		if (searchTags.includes(value)) {
@@ -210,7 +210,7 @@ export const SearchPage = () => {
 			return;
 		}
 		setSearchTags((searchTags) => [...searchTags, value]);
-		handleSearchQueryUpdate('searchTags', searchTags);
+		handleSearchQueryUpdate('searchTags', searchTags.push(value));
 	}
 
 	//props for the tag message which displays when no tags are selected
@@ -282,13 +282,14 @@ export const SearchPage = () => {
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
-												emptyState={true}
+												// emptyState={true}
 												onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
 											>
 												<AutoCompleteInput
 													value={searchQuery.destinationCode}
 													defaultValue={searchQuery.destinationCode}
-													onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+													// onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+
 													variant='filled'
 												/>
 												<AutoCompleteList>
@@ -417,10 +418,12 @@ export const SearchPage = () => {
 													<AutoComplete
 														openOnFocus
 														suggestWhenEmpty
-														// onChange={(e) => {
-														// 	handleTagUpdate(e.target.value);
-														// }}
-														onChange={(value: string) => handleTagUpdate(value)}
+														onChange={
+															(value: string) => {
+																handleTagUpdate(value);
+																handleSearchQueryUpdate('searchTags', [...searchTags]);
+															}
+														}
 													>
 														<AutoCompleteInput
 															variant='filled'
@@ -439,7 +442,7 @@ export const SearchPage = () => {
 										</Box>
 										<label>Selected Tags</label>
 										<Box width='15rem'>
-											<TagMessage length={searchTags.length} />
+											<TagMessage length={searchTags?.length} />
 											{searchTags.map((item) => (
 												<Tag
 													size='md'
@@ -450,9 +453,10 @@ export const SearchPage = () => {
 												>
 													<TagLabel>{item}</TagLabel>
 													<TagCloseButton
-														onClick={() =>
-															setSearchTags(searchTags.filter(value => value !== item))
-														}
+														onClick={() => {
+															setSearchTags(searchTags.filter(value => value !== item));
+															handleSearchQueryUpdate('searchTags', [...searchTags.filter(value => value !== item)]);
+														}}
 													/>
 												</Tag>
 											))}
@@ -561,11 +565,11 @@ export const SearchPage = () => {
 						</VStack>
 					</FormControl>
 				</form>
-			</Center>
+			</Center >
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
 			</Modal>
-		</Box>
+		</Box >
 	);
 };
