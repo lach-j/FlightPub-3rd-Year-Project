@@ -8,9 +8,11 @@ import {
 	Button,
 	Center,
 	Checkbox,
+	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
+	ListItem,
 	Modal,
 	ModalOverlay,
 	NumberDecrementStepper,
@@ -22,6 +24,7 @@ import {
 	Spinner,
 	StackDivider,
 	Table,
+	TableContainer,
 	Tag,
 	TagCloseButton,
 	TagLabel,
@@ -32,6 +35,7 @@ import {
 	Thead,
 	Tooltip,
 	Tr,
+	UnorderedList,
 	useDisclosure,
 	useToast,
 	VStack
@@ -83,6 +87,25 @@ export const SearchPage = () => {
 	const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
 	const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
 	const toast = useToast();
+	const historyJson = localStorage.getItem("searchHistory")
+	const history = historyJson == null ? [] : JSON.parse(historyJson)
+	const items = history.map((searchQuery: SearchQuery, index: number) => {
+		function viewDetails() {
+			setSearchQuery(searchQuery)
+		}
+		return (
+			<Tr key={index}>
+				<Td width='100%'>
+					{searchQuery.departureCode}
+					-
+					{searchQuery.destinationCode}
+				</Td>
+				<Td>
+					<Button onClick={viewDetails}>View Details</Button>
+				</Td>
+			</Tr>
+		)
+	})
 
 	useEffect(() => {
 		document.title = 'FlightPub - Search';
@@ -124,6 +147,12 @@ export const SearchPage = () => {
 	//Handles search event for search form
 	function handleSearch(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault(); //prevents stand HTML form submission protocol
+		const historyJson = localStorage.getItem("searchHistory")
+		const history = historyJson == null ? [] : JSON.parse(historyJson)
+		history.unshift(searchQuery)
+		const recentHistory = history.slice(0, 5)
+		const newJson = JSON.stringify(recentHistory)
+		localStorage.setItem("searchHistory", newJson)
 		onOpen();
 		//gets flight in formation from search query
 		httpGet('', searchQuery)
@@ -230,6 +259,8 @@ export const SearchPage = () => {
 												onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
 											>
 												<AutoCompleteInput
+													value={searchQuery.departureCode}
+													defaultValue={searchQuery.departureCode}
 													variant='filled'
 													placeholder={airport ? (airport?.city + " / " + airport?.code) : ("City / CODE")}
 												/>
@@ -255,7 +286,10 @@ export const SearchPage = () => {
 												onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
 											>
 												<AutoCompleteInput
+													value={searchQuery.destinationCode}
+													defaultValue={searchQuery.destinationCode}
 													// onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+
 													variant='filled'
 												/>
 												<AutoCompleteList>
@@ -353,6 +387,7 @@ export const SearchPage = () => {
 										<FormControl isRequired>
 											<FormLabel htmlFor='flightType'>Type </FormLabel>
 											<Select
+												value={searchQuery.returnFlight ?'return':'one-way'}
 												onChange={(e) =>
 													handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
 												}
@@ -522,6 +557,11 @@ export const SearchPage = () => {
 									Search
 								</Button>
 							</Box>
+							<TableContainer width="100%">
+								<Table>
+									{items}
+								</Table>
+							</TableContainer>
 						</VStack>
 					</FormControl>
 				</form>
