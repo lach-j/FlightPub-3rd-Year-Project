@@ -118,7 +118,7 @@ export const SearchPage = () => {
 	useEffect(() => {
 		if (!navigator.geolocation) return;
 		navigator.geolocation.getCurrentPosition(getPosition);
-		handleSearchQueryUpdate('destinationCode', airport?.code);
+		// handleSearchQueryUpdate('departureCode', airport?.code);
 	}, [airport]);
 
 	//Handles search event for search form
@@ -251,11 +251,11 @@ export const SearchPage = () => {
 											<AutoComplete
 												openOnFocus
 												suggestWhenEmpty
-												emptyState={true}
+												// emptyState={true}
 												onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
 											>
 												<AutoCompleteInput
-													onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+													// onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
 													variant='filled'
 												/>
 												<AutoCompleteList>

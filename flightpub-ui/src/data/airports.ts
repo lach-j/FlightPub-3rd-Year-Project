@@ -206,7 +206,7 @@ export const airports: Airport[] = [
     city: 'Paris',
     country: 'France',
     code: 'ORY',
-		tags: ['beach', 'snow', 'holiday', 'family-friendly', 'sports', 'romantic', 'asia']
+		tags: ['holiday', 'family-friendly', 'sports']
   },
   {
     coordinates: [51.565056, 25.261125],
