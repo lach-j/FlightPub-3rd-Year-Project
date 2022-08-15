@@ -38,7 +38,6 @@ import { airports } from '../data/airports';
 import { ResultsTable } from '../components/ResultsTable';
 import { SearchResult } from '../models/SearchResult';
 import { tags } from '../data/tags';
-import { getValueTransition } from 'framer-motion/types/animation/utils/transitions';
 
 //Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string =>
