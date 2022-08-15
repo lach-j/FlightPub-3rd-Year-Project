@@ -13,7 +13,7 @@ export const endpoints = {
   book: '/book',
   bookHolidayPackage: '/bookHolidayPackage',
   bookings: '/bookings',
-  createHolidayPackage: '/holidayPackages/createHolidayPackage',
+  createHolidayPackage: '/holidayPackages/holiday-packages',
   holidayPackages: '/holidayPackages',
   wishlist: '/wishlist'
 };

@@ -15,19 +15,22 @@ import {
   Spacer
 } from '@chakra-ui/react';
 
-import {Dispatch, ReactElement, SetStateAction} from 'react';
+import React, { ReactElement } from 'react';
 import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
-import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
-import {ColumnDefinition, Flight} from "../models";
+import { FeatureBadgeProps, HolidayPackage } from '../models/HolidayCardProps';
+import { FlightListAccordian } from './FlightListAccordian';
+import { NavLink } from 'react-router-dom';
+import { routes } from '../constants/routes';
 
 interface FeatureProps {
   text: string;
   iconBg: string;
   icon?: ReactElement;
 }
+
 type HolidayCardPropsObj = {
-  data: HolidayPackage
-}
+  data: HolidayPackage;
+};
 
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
   return (
@@ -69,23 +72,44 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
             <Circle size='10px' position='absolute' top={2} right={2} bg='red.200' />
           )}
 
-          <Image src={data.imageURL} alt={`Picture of ${data.packageName}`} htmlHeight={600} htmlWidth={400} roundedTop='lg' />
+          <Image
+            src={data.imageURL}
+            alt={`Picture of ${data.packageName}`}
+            htmlHeight={600}
+            htmlWidth={400}
+            roundedTop='lg'
+          />
 
           <Box p='4'>
             <HStack alignItems='baseline' spacing='1'>
               {data.isPopular && <FeatureBadge tagName='popular' tagColor='red' />}
 
-{/*              {Object.values(data.tags).map((value) => {
+              {/*              {Object.values(data.tags).map((value) => {
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
               })}*/}
             </HStack>
             <Flex mt='1' justifyContent='space-between' alignContent='center'>
-              <Box fontSize='2xl'  minW='500px' fontWeight='semibold' as='h4' lineHeight='tight' isTruncated>
+              <Box
+                fontSize='2xl'
+                minW='500px'
+                fontWeight='semibold'
+                as='h4'
+                lineHeight='tight'
+                isTruncated
+              >
                 {data.packageName}
               </Box>
             </Flex>
             <Flex mt='1' justifyContent='space-between' alignContent='center'>
-              <Box  color={useColorModeValue('gray.500', 'white')} fontSize='xl'  minW='500px' fontWeight='semibold' as='h2' lineHeight='tight' isTruncated>
+              <Box
+                color={useColorModeValue('gray.500', 'white')}
+                fontSize='xl'
+                minW='500px'
+                fontWeight='semibold'
+                as='h2'
+                lineHeight='tight'
+                isTruncated
+              >
                 {data.accommodation}
               </Box>
             </Flex>
@@ -110,8 +134,13 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
           <Flex justifyContent='space-between' alignContent='end'>
             <Spacer />
             <Show below='md'>
-              <Button colorScheme='red' w='100%'>
-                View Package
+              <Button
+                colorScheme='red'
+                w='100%'
+                as={NavLink}
+                to={`${routes.holidayPackages.book.base}/${data.id}`}
+              >
+                Book Package
               </Button>
             </Show>
           </Flex>
@@ -148,8 +177,15 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
                   text='All Expenses Paid'
                 />
-                <Button colorScheme='red' size='md'>
-                  View Package
+                <Text>Flights:</Text>
+                <FlightListAccordian flights={data.flights} />
+                <Button
+                  colorScheme='red'
+                  size='md'
+                  as={NavLink}
+                  to={`${routes.holidayPackages.book.base}/${data.id}`}
+                >
+                  Book Package
                 </Button>
               </Stack>
             </Box>

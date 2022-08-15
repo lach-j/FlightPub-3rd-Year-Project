@@ -38,7 +38,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../../constants/routes';
@@ -239,7 +239,10 @@ export const SessionListComponent = () => {
                   );
                   return (
                     <ListItem>
-                      {airport?.city}, {airport?.country}
+                      <Text>{airport?.city}, {airport?.country}</Text>
+                      <Button as={NavLink} to={routes.holidayPackages.base} colorScheme='gray'>
+                        Create Package
+                      </Button>
                     </ListItem>
                   );
                 })}
