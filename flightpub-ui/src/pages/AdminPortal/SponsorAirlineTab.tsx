@@ -61,6 +61,8 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
     const toast = useToast();
     const [covidDate, setCovidDate] = useState(new Date()); // Return date, not currently used in request (visual only)
     //Formats from JavaScript Date type to string
+    const [iDFilter,setIDFilter] = useState("");
+
     const formatDate = (date: Date) => {
         return new Date(date).toISOString().split('T')[0];
     };

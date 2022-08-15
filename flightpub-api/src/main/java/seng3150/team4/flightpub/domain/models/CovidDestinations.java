@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @ToString
 
-public class CovidDestinations {
+public class CovidDestinations implements IEntity {
 
     @Column(name = "CovidCode")
     @Id private String CovidCode;

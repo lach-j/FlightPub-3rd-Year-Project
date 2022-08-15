@@ -9,46 +9,52 @@ import seng3150.team4.flightpub.controllers.requests.BookingRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
+import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.domain.models.Airline;
-import seng3150.team4.flightpub.domain.models.Destination;
-import seng3150.team4.flightpub.domain.models.Flight;
-import seng3150.team4.flightpub.domain.repositories.IAirlineRepository;
-import seng3150.team4.flightpub.domain.repositories.IDestinationRepository;
-import seng3150.team4.flightpub.domain.repositories.IFlightRepository;
+import seng3150.team4.flightpub.domain.repositories.*;
 import seng3150.team4.flightpub.services.AdminService;
 import seng3150.team4.flightpub.services.IAuthenticationService;
 import seng3150.team4.flightpub.services.IUserService;
-//import seng3150.team4.flightpub.security.Authorized;
-// wiggin out for me x2 ^^^
-
+import seng3150.team4.flightpub.security.Authorized;
+import java.util.ArrayList;
 import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
-//@Authorized(allowedRoles = { UserRole.ADMINISTRATOR })
-// wiggin out for me ^^^
+@Authorized(allowedRoles = { UserRole.ADMINISTRATOR })
 
 public class AdminController {
 
-    private final IDestinationRepository destinationRepository;
-    private final IAirlineRepository airlineRepository;
-    private final IFlightRepository flightRepository;
+    private final ICovidRepository destinationRepository;
+    private final ISponsorRepository airlineRepository;
+    private final ICanceledRepository flightRepository;
+
+
+    @PostMapping(path = "/getCovid")
+    public Response getCovidLocations() {
+        var locations = new ArrayList<CovidDestinations>() {};
+
+        // Convert Iterable to List
+        destinationRepository.findAll().forEach(locations::add);
+
+        return new EntityCollectionResponse<CovidDestinations>(locations);
+    }
 
     @PostMapping(path = "/covidUpdate")
-    public Destination updateCovid(Destination destination) {
-        Destination savedDestination = destinationRepository.save(destination);
+    public CovidDestinations updateCovid(CovidDestinations destination) {
+        CovidDestinations savedDestination  = destinationRepository.save(destination);
         return savedDestination;
     }
 
     @PostMapping(path = "/airlineUpdate")
-    public Airline updateAirline(Airline airline) {
-        Airline savedAirline = airlineRepository.save(airline);
+    public SponsoredAirlines updateAirline(SponsoredAirlines airline) {
+        SponsoredAirlines savedAirline = airlineRepository.save(airline);
         return savedAirline;
     }
 
     @PostMapping(path = "/flightUpdate")
-    public Flight cancelFlight(Flight flight) {
-        Flight canceledFlight = flightRepository.save(flight);
+    public CanceledFlights cancelFlight(CanceledFlights flight) {
+        CanceledFlights canceledFlight = flightRepository.save(flight);
         return canceledFlight;
     }
 

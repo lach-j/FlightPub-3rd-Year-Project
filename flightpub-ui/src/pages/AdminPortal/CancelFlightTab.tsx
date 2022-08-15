@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { Airline, ColumnDefinition, Flight, Price } from '../../models';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
@@ -26,6 +26,7 @@ import { ResultsTable } from '../../components/CancelFlightsTable';
 import { convertMinsToHM, formatDateTime } from '../../utility/formatting';
 import { airlines } from '../../data/airline';
 import { Airport, findNearestAirport } from '../../utility/geolocation';
+import {flights} from "../../data/flights";
 
 export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   //recommended : contains data table of cheapest flights based on user location
@@ -37,33 +38,30 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
+  const { state } = useLocation();
+
+  const [results, setResults] = useState<Flight[]>([]);
 
   const [idFilter, setIdFilter] = useState<number>();
 
-  const { httpGet } = useApi(endpoints.airlines);
+  const { httpGet } = useApi(endpoints.flightSearch);
 
-  //takes price and returns cheapest price value as a string
-  const getMinPriceString = (prices: Price[]) => {
-    if (!prices) return '---';
+  const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
+  const getMaxPrice = (prices: Price[]) => Math.max(...prices.map((p) => p.price));
+  const getPriceString = (prices: Price[]) => {
+    if (!prices) return '';
     let pricesVals = prices.map((p) => p.price);
     let minPrice = Math.min(...pricesVals);
-    return `$${minPrice}`;
+    let maxPrice = Math.max(...pricesVals);
+    return `$${minPrice}${maxPrice !== minPrice && ` - $${maxPrice}`}`;
   };
 
-  //Gets users current position and retrieves list of airlines
+  // retrieves list of airlines
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGet('').then(setAirlines);
+    httpGet('').then(setResults);
   }, []);
 
-  //Takes user location and finds nearest airport on load
-  useEffect(() => {
-    if (!userLocation) return;
-    let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
-    setAirport(airport);
-  }, [userLocation]);
+
 
   //Filters resultdata based on stored filter criteria
   const filterResults = (result: Flight) => {
@@ -80,25 +78,45 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
     {
-      accessor: 'id',
-      Header: 'Unique Id'
-    },
-    {
       accessor: 'airlineCode',
       Header: 'Airline',
-      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName || value
+      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName
     },
-    { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
-    { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
-    { accessor: 'arrivalTime', Header: 'Arrival Time', transform: formatDateTime },
-    { accessor: 'arrivalLocation.airport', Header: 'Destination Airport' },
+    {
+      accessor: 'departureLocation.airport',
+      Header: 'Departure Airport'
+    },
+    {
+      accessor: 'departureTime',
+      Header: 'Departure Time',
+      transform: formatDateTime
+    },
+    {
+      accessor: 'arrivalTime',
+      Header: 'Arrival Time',
+      transform: formatDateTime
+    },
+    {
+      accessor: 'arrivalLocation.airport',
+      Header: 'Destination Airport'
+    },
     {
       accessor: 'stopOverLocation.airport',
       Header: 'Stop Over',
       transform: (value: any) => value || '---'
     },
-    { accessor: 'prices', Header: 'Price', transform: getMinPriceString },
-    { accessor: 'duration', Header: 'Duration', transform: (value: any) => convertMinsToHM(value) }
+    {
+      accessor: 'prices',
+      Header: 'Price',
+      transform: getPriceString,
+      sortValue: (prices: Price[], descending) =>
+          descending ? getMaxPrice(prices) : getMinPrice(prices)
+    },
+    {
+      accessor: 'duration',
+      Header: 'Duration',
+      transform: (value: any) => convertMinsToHM(value)
+    }
   ];
 
   return (
@@ -108,7 +126,9 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
       <Center>
         <ResultsTable
           columns={columns}
-          data={recommended.filter(filterResults)}
+          data={results}
+          // data={flights.filter(filterResults)}
+          // data={recommended.filter(filterResults)}
           keyAccessor='id'
         ></ResultsTable>
       </Center>

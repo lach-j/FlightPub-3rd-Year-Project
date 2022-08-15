@@ -75,6 +75,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                                     key={column.accessor}>{column?.transform ? column.transform(_.get(result, column.accessor)) : _.get(result, column.accessor)}</Td>)}
                             {children}
                             <Td>
+                                {/*todo add creation functionality here*/}
                                 <Button type='button'
                                         colorScheme='red'
                                         onClick={() => {
