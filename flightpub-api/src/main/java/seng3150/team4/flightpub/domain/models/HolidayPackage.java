@@ -18,7 +18,7 @@ public class HolidayPackage implements IEntity {
 
     @Column(name = "Id")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "isPopular")
