@@ -27,6 +27,7 @@ import {
   AutoCompleteItem,
   AutoCompleteList
 } from '@choc-ui/chakra-autocomplete';
+import {endpoints} from "../../constants/endpoints";
 
 const editProfileForm: {
   inputs: Array<{ label: string; name: string; type?: string }>;
@@ -51,6 +52,10 @@ export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean)
     lname: 'Johnson',
     ph: '+6112345678'
   });
+
+  const { httpPatch, httpDelete } = useApi(endpoints.users);
+
+
   const handleDetailsUpdate = (field: string, value: string) => {
     if (value === userData[field]) return;
     setUserData({ ...userData, [field]: value });
@@ -103,7 +108,7 @@ export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean)
           {/*    openOnFocus*/}
           {/*    onChange={(value =>*/}
           {/*            handleSearchQueryUpdate*/}
-          {/*    */}
+
           {/*    )}*/}
 
           {/*>*/}
