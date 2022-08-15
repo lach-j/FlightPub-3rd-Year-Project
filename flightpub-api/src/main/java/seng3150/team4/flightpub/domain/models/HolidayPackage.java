@@ -48,8 +48,4 @@ public class HolidayPackage implements IEntity {
             inverseJoinColumns = {@JoinColumn(name = "FlightId")})
     private Set<Flight> flights = new HashSet<>();
 
-    @JsonManagedReference
-    @OneToMany
-    @JoinColumn(name = "HolidayPackageId", referencedColumnName = "Id")
-    private Set<HolidayPackageBooking> holidayPackageBookings;
 }

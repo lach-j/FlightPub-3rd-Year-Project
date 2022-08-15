@@ -25,7 +25,6 @@ public class HolidayPackageBooking implements IEntity {
     @JoinColumn(name = "UserId")
     private User user;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "HolidayPackageId", referencedColumnName = "Id")
     private HolidayPackage holidayPackage;

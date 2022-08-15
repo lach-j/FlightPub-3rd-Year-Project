@@ -2,12 +2,15 @@ package seng3150.team4.flightpub.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import seng3150.team4.flightpub.controllers.requests.HolidayPackageBookingRequest;
+import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
+import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
 import seng3150.team4.flightpub.domain.models.Passenger;
 import seng3150.team4.flightpub.security.Authorized;
@@ -53,5 +56,15 @@ public class HolidayPackageBookingController {
                 holidayPackageBookingService.makeHolidayPackageBooking(holidayPackageBookingRequest.getHolidayPackageId(), userId, payment, savedFlightBooking);
 
         return ResponseEntity.ok().body(new EntityResponse<>(holidayPackageSavedBooking));
+    }
+    @Authorized
+    @GetMapping("/packageBookings")
+    public EntityCollectionResponse<HolidayPackageBooking> getAllHolidayPackageBookingForUser() {
+
+        var userId = currentUserContext.getCurrentUserId();
+
+        var bookings = holidayPackageBookingService.getPackageBookingsByUserId(userId);
+
+        return new EntityCollectionResponse<>(bookings);
     }
 }
