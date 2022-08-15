@@ -84,26 +84,28 @@ export function HomePage({
   return (
     <Grid>
       <Center>
-        <VStack spacing={2} align='centre' width='100%'>
+        <VStack spacing={6} align='centre' width='100%'>
         <VStack spacing={0}>
         <Center backgroundColor='#112147' width='100%' mx='auto'>
           <img src={logo} alt='Logo' width='400px' />
         </Center>
         <HStack width='full' spacing={0} bgColor="#112147">
           <img src={plane} width='62%'/>
-          <Box bgColor='#112147' w="38%" color="white" h="100%" p='40px' fontSize='1.5em'>
+          <VStack w="38%" >
+          <Box bgColor='#112147' color="white" h="100%" p='40px' fontSize='1.5em'>
             <h1><b>Welcome to FlightPub!</b></h1> <br/>
             <p>Our wide range of luxurious getaways will surely entice you to plan your next trip away from the daily grind. With regular holiday
             offerings and an advanced map search system, we strive to take the guess work out of booking flights. Safe travels! Your journey awaits!</p>
-          </Box>
-        </HStack>
-        </VStack>  
-        <VStack spacing={2} align='center' divider={<StackDivider borderColor='white' />}>
+          </Box>`
           <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
+            <Button as={NavLink} to={routes.search} colorScheme='red' width='600px'>
               Search For a Flight
             </Button>
           </Box>
+          </VStack>
+        </HStack>
+        </VStack>  
+        <VStack spacing={6} align='center' divider={<StackDivider borderColor='white' />}>
           <Heading as='h1' size='lg'>
             Cheapest flights from {airport?.city ?? "your location"}
           </Heading>
