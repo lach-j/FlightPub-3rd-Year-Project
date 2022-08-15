@@ -98,7 +98,7 @@ export function HomePage({
             offerings and an advanced map search system, we strive to take the guess work out of booking flights. Safe travels! Your journey awaits!</p>
           </Box>`
           <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='600px'>
+            <Button as={NavLink} to={routes.search} colorScheme='red' width='300px'>
               Search For a Flight
             </Button>
           </Box>
