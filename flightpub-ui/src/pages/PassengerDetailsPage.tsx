@@ -66,19 +66,16 @@ export const PassengerDetailsPage = ({
   const passengerSchema = yup.object().shape({
     firstName: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
+      .required("First name is required"),
     lastName: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
-    email: yup.string().email('must be a valid email').required(),
-    confEmail: yup.string().email('must be a valid email').required()
+      .required("Last name is required"),
+    email: yup.string().email('Email must be a valid email address').required("Email is required"),
+    confEmail: yup.string().email('Confirm email must be a valid email address').required("Confirm email is required")
   });
 
   const submitEvent = async () => {
     let success = true;
-    var fails = [];
     for (var i = 0; i < passengerCount; i++) {
       let pass = {
         firstName: firstNames[i],
@@ -86,35 +83,46 @@ export const PassengerDetailsPage = ({
         email: emails[i],
         confEmail: confEmails[i]
       };
-      if (!(await validatePassenger(pass)) || emails[i] !== confEmails[i]) {
-        fails.push(i);
+      if (!(await validatePassenger(pass, (i + 1)))) {
         success = false;
       }
     }
-    if (!success) {
-      var message = 'Incorrectly filled for passenger(s) ';
-      for (var i = 0; i < fails.length; i++) {
-        if (fails.length - i !== 1) {
-          message = message + (fails[i] + 1) + ', ';
-        } else {
-          message = message + (fails[i] + 1) + '.';
+    return success;
+  };
+
+  const validatePassenger = async (passenger: any, index: number) => {
+    let success = true;
+    let errorArray: string[] = [];
+    try {
+        await passengerSchema.validate(passenger, { abortEarly: false });
+      } catch (e) {
+        if (e instanceof yup.ValidationError) {
+            success = false;
+            errorArray = e.errors;
         }
-      }
-      toast({
+    }
+    if (passenger.email !== passenger.confEmail) {
+        success = false;
+        errorArray.push("Emails do not match")
+    }
+
+    if (!success)
+    toast({
         title: 'Error!',
-        description: message,
+        description: generateErrorMsg(errorArray, index),
         status: 'error',
         duration: 9000,
         isClosable: true,
         position: 'top'
       });
-    }
     return success;
   };
 
-  const validatePassenger = async (passenger: any) => {
-    return await passengerSchema.isValid(passenger);
-  };
+  const generateErrorMsg = (array: string[], index: number) => {
+    let errorMsg = 'Incorrectly filled for Passenger ' + index + ':';
+    array.forEach(error => errorMsg = errorMsg + " - " + error);
+    return errorMsg;
+  }
 
   const handleCurrentUser = () => {
     if (user) {
