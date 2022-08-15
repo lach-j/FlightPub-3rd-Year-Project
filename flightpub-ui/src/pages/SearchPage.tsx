@@ -430,9 +430,9 @@ export const SearchPage = () => {
 															placeholder='Surfing'
 														/>
 														<AutoCompleteList>
-															{tags.map(({ label }) => (
-																<AutoCompleteItem key={label} value={label} align='center'>
-																	<Text ml='4'>{label}</Text>
+															{tags.map(({ value }) => (
+																<AutoCompleteItem key={value} value={value} align='center'>
+																	<Text ml='4'>{value}</Text>
 																</AutoCompleteItem>
 															))}
 														</AutoCompleteList>

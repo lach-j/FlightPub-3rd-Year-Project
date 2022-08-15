@@ -216,6 +216,10 @@ export function SearchResultsPage({
 
 		if (result.flight.duration > durationFilter) return false;
 
+		if (filterTags !== null && filterTags?.filter(value => result?.tags?.includes(value)).length === 0) {
+			return false;
+		}
+
 		return true;
 	};
 
@@ -328,9 +332,9 @@ export function SearchResultsPage({
 										>
 											<AutoCompleteInput variant='filled' />
 											<AutoCompleteList>
-												{tags.map(({ label }) => (
-													<AutoCompleteItem key={label} value={label} align='center'>
-														<Text ml='4'>{label}</Text>
+												{tags.map(({ value }) => (
+													<AutoCompleteItem key={value} value={value} align='center'>
+														<Text ml='4'>{value}</Text>
 													</AutoCompleteItem>
 												))}
 											</AutoCompleteList>
