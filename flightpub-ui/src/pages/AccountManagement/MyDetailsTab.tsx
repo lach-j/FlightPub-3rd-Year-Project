@@ -7,8 +7,11 @@ import {
   AlertDialogOverlay,
   Button,
   Divider,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
+  Select,
   useDisclosure,
   useEditable,
   useToast,
@@ -23,6 +26,54 @@ import { User } from '../../models';
 import _ from 'lodash';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
+import { UserRole } from '../../models/User';
+
+export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handlePostDelete = () => {
+    toast({
+      title: 'Account Deleted',
+      description: 'Your account was deleted successfully, you have been logged out permanently.',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
+    });
+    localStorage.removeItem('bearer-token');
+    localStorage.removeItem('user-id');
+    setUser(null);
+    navigate(routes.default);
+  };
+
+  const handlePostSave = (savedUser: User) => {
+    setUser(savedUser);
+    toast({
+      title: 'Details updated',
+      description: 'Your account details have been updated successfully.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'top'
+    });
+  };
+
+  return (
+    <>
+      <Heading mb='1em'>My Details</Heading>
+      {user && (
+        <UserDetailsForm
+          setIsLoading={setIsLoading}
+          user={user}
+          onDelete={handlePostDelete}
+          onSave={handlePostSave}
+        />
+      )}
+    </>
+  );
+};
 
 const editProfileForm: {
   inputs: Array<{ label: string; name: keyof User; type?: string }>;
@@ -31,17 +82,25 @@ const editProfileForm: {
     { label: 'Email', name: 'email' },
     { label: 'First Name', name: 'firstName' },
     { label: 'Last name', name: 'lastName' }
-    // { label: 'Phone Number', name: 'ph', type: 'tel' }
   ]
 };
 
-export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-  const { user, setUser } = useContext(UserContext);
-
+export const UserDetailsForm = ({
+  setIsLoading,
+  user,
+  onDelete,
+  onSave,
+  showRole = false
+}: {
+  setIsLoading: (value: boolean) => void;
+  user: User;
+  onDelete: () => void;
+  onSave: (user: User) => void;
+  showRole?: boolean;
+}) => {
   const { httpPatch, httpDelete } = useApi(endpoints.users);
 
   const toast = useToast();
-  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
 
@@ -58,19 +117,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
 
     httpDelete(`/${user?.id}`)
       .then(() => {
-        toast({
-          title: 'Account Deleted',
-          description:
-            'Your account was deleted successfully, you have been logged out permanently.',
-          status: 'success',
-          duration: 9000,
-          isClosable: true,
-          position: 'top'
-        });
-        localStorage.removeItem('bearer-token');
-        localStorage.removeItem('user-id');
-        setUser(null);
-        navigate(routes.default);
+        onDelete();
       })
       .finally(() => {
         setIsLoading(false);
@@ -81,19 +128,11 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
     if (!userData) return;
     setIsLoading(true);
 
-    const { firstName, lastName, email } = userData;
+    const { firstName, lastName, email, role } = userData;
 
-    httpPatch(`/${user?.id}`, { firstName, lastName, email })
+    httpPatch(`/${user?.id}`, { firstName, lastName, email, role })
       .then((res) => {
-        setUser(res);
-        toast({
-          title: 'Details updated',
-          description: 'Your account details have been updated successfully.',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-          position: 'top'
-        });
+        onSave(res);
         setIsLoading(false);
       })
       .catch(() => {
@@ -117,7 +156,6 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
 
   return (
     <>
-      <Heading mb='1em'>My Details</Heading>
       <form>
         <VStack gap='1em'>
           {editProfileForm.inputs.map((input) => (
@@ -129,6 +167,29 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
               onSave={(value) => setUserData((data) => ({ ...data, [input.name]: value } as User))}
             />
           ))}
+          {showRole && (
+            <>
+              <FormControl>
+                <FormLabel>User Role</FormLabel>
+                <Select
+                  value={userData?.role}
+                  onChange={(e) =>
+                    setUserData(
+                      (userData) =>
+                        ({
+                          ...userData,
+                          role: UserRole[e.target.value as keyof typeof UserRole]
+                        } as User)
+                    )
+                  }
+                >
+                  <option value={UserRole.STANDARD_USER}>Standard User</option>
+                  <option value={UserRole.TRAVEL_AGENT}>Travel Agent</option>
+                  <option value={UserRole.ADMINISTRATOR}>Administrator</option>
+                </Select>
+              </FormControl>
+            </>
+          )}
           <HStack w='full' gap='1em'>
             <Button colorScheme='blue' disabled={!isDirty} onClick={handleSaveChanges}>
               Save
@@ -152,7 +213,7 @@ export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) 
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete your account? This action cannot be undone.
+              Are you sure you want to delete this account? This action cannot be undone.
             </AlertDialogBody>
 
             <AlertDialogFooter>
