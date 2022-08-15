@@ -129,67 +129,63 @@ export const BookingPage = ({
   const billingDetailsSchema = yup.object().shape({
     firstName: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
+      .required("First name is required"),
     lastName: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
+      .required("Last name is required"),
     company: yup
       .string(),
     addressLine1: yup
       .string()
-      .required(),
+      .required("Address line  is required"),
     addressLine2: yup
       .string(),
     city: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
+      .required("City is required"),
     postCode: yup
       .string()
-      .matches(/^\d{4}$/)
-      .required(),
+      .matches(/^\d{4}$/, "Postcode must be 4 digits")
+      .required("Postcode is required"),
     state: yup
       .string()
-      .required(),
+      .required("State is required"),
   });
 
   const cardDetailsSchema = yup.object().shape({
     cardNumber: yup
       .string()
-      .matches(/^\d{16}$/)
-      .required(),
+      .matches(/^\d{16}$/, "Card number must be 16 digits")
+      .required("Card number is required"),
     cardholder: yup
       .string()
-      .matches(/[a-zA-Z]/)
-      .required(),
+      .required("Card holder name is required"),
     expiryDate: yup
       .string()
-      .matches(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/)
-      .required(),
+      .matches(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/, "Expiry date must be valid and follow format DD/YY")
+      .required("Expiry date is required"),
     ccv: yup
       .string()
-      .matches(/^\d{3}$/)
-      .required(),
+      .matches(/^\d{3}$/, "CCV must be 3 digits")
+      .required("CCV is required"),
   });
 
   const directDebitDetailsSchema = yup.object().shape({
     bsb: yup
       .string()
-      .matches(/^\d{6}$/)
-      .required(),
+      .matches(/^\d{6}$/, "BSB must be 6 digits")
+      .required("BSB is required"),
     accountNumber: yup
       .string()
-      .matches(/^\d{12}$/)
-      .required(),
+      .matches(/^\d{12}$/, "Account number must be 12 digits")
+      .required("Account number is required"),
     accountName: yup
       .string()
-      .required(),
+      .required("Account name is required"),
   });
 
   const paypalSchema = yup.object().shape({
-    email: yup.string().email('must be a valid email').required(),
+    email: yup.string().email('Must be a valid email').required("Email is required"),
   });
 
   const submitEvent = async () => {
@@ -207,16 +203,8 @@ export const BookingPage = ({
         state: billingForm.state,
       }
 
-      if (!(await validateSchema(billingDetailsSchema, billingDetails))){
+      if (!(await validateSchema(billingDetailsSchema, billingDetails, "Billing details"))){
         success = false;
-        toast({
-          title: 'Error!',
-          description: 'Invalid billing details. Please try again!',
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-          position: 'top'
-        });
       }
 
       var paymentDetails;
@@ -229,16 +217,8 @@ export const BookingPage = ({
             expiryDate: cardForm.expiryDate,
             ccv: cardForm.ccv,
           }
-          if (!(await validateSchema(cardDetailsSchema, paymentDetails))){
+          if (!(await validateSchema(cardDetailsSchema, paymentDetails, "Card details"))){
             success = false;
-            toast({
-              title: 'Error!',
-              description: 'Invalid card details. Please try again!',
-              status: 'error',
-              duration: 9000,
-              isClosable: true,
-              position: 'top'
-            });
           }
           break;
         case 'DIRECT_DEBIT':
@@ -247,32 +227,16 @@ export const BookingPage = ({
            accountNumber: directDebitForm.accountNumber,
            accountName: directDebitForm.accountName,
           }
-          if (!(await validateSchema(directDebitDetailsSchema, paymentDetails))){
+          if (!(await validateSchema(directDebitDetailsSchema, paymentDetails, "Direct debit details"))){
             success = false;
-            toast({
-              title: 'Error!',
-              description: 'Invalid direct debit details. Please try again!',
-              status: 'error',
-              duration: 9000,
-              isClosable: true,
-              position: 'top'
-            });
           }
           break;
         case 'PAYPAL':
           paymentDetails = {
             email: payPalEmail,
           }
-          if (!(await validateSchema(paypalSchema, paymentDetails))){
+          if (!(await validateSchema(paypalSchema, paymentDetails, "Paypal email"))){
             success = false;
-            toast({
-              title: 'Error!',
-              description: 'Invalid paypal email. Please try again!',
-              status: 'error',
-              duration: 9000,
-              isClosable: true,
-              position: 'top'
-            });
           }
           break;
       }
@@ -290,8 +254,35 @@ export const BookingPage = ({
     return success;
   }
 
-  const validateSchema = async (schema: yup.ObjectSchema<ObjectShape, any>, value: any) => {
+  const validateSchema = async (schema: yup.ObjectSchema<ObjectShape, any>, value: any, formName: string) => {
+    let success = true;
+    let errorArray: string[] = [];
+    try {
+      await schema.validate(value, { abortEarly: false });
+    } catch (e) {
+      if (e instanceof yup.ValidationError) {
+          success = false;
+          errorArray = e.errors;
+      }
+    }
+
+    if (!success) 
+    toast({
+      title: 'Error!',
+      description: generateErrorMsg(errorArray, formName),
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
+    });
+
     return await schema.isValid(value);
+  }
+
+  const generateErrorMsg = (array: string[], formName: string) => {
+    let errorMsg = formName + ' filled out incorrectly: ';
+    array.forEach(error => errorMsg = errorMsg + " - " + error);
+    return errorMsg;
   }
 
   const handleBillingChange = (fieldValue: keyof BillingDetails) => (e: ChangeEvent<HTMLInputElement>) => {
