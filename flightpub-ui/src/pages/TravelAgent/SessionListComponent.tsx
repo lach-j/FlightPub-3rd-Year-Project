@@ -21,18 +21,15 @@ import {
   AvatarBadge,
   AvatarGroup,
   useBreakpointValue,
-  Input,
   Checkbox,
   HStack,
   Box,
-  useModal,
   ModalContent,
   Button,
   ModalBody,
   ModalCloseButton,
   ModalFooter,
   ModalHeader,
-  List,
   ListItem,
   OrderedList,
   Text
@@ -158,6 +155,8 @@ export const SessionListComponent = () => {
     return menuItemList;
   };
 
+  const isUserAdmin = user?.role === UserRole.ADMINISTRATOR || user?.role === UserRole.TRAVEL_AGENT;
+
   const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
 
   return (
@@ -239,10 +238,18 @@ export const SessionListComponent = () => {
                   );
                   return (
                     <ListItem>
-                      <Text>{airport?.city}, {airport?.country}</Text>
-                      <Button as={NavLink} to={routes.holidayPackages.base} colorScheme='gray'>
-                        Create Package
-                      </Button>
+                      <Text>
+                        {airport?.city}, {airport?.country}
+                      </Text>
+                      <div>
+                        {isUserAdmin ? (
+                          <Button as={NavLink} to={routes.holidayPackages.base} colorScheme='gray'>
+                            Create Package
+                          </Button>
+                        ) : (
+                          <span></span>
+                        )}
+                      </div>
                     </ListItem>
                   );
                 })}

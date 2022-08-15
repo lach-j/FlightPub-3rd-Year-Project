@@ -30,6 +30,7 @@ interface FeatureProps {
 
 type HolidayCardPropsObj = {
   data: HolidayPackage;
+  showBookButton: boolean;
 };
 
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
@@ -53,7 +54,7 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
   );
 };
 
-export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
+export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButton }) => {
   return (
     <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px'>
       <HStack spacing={5}>
@@ -134,14 +135,18 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
           <Flex justifyContent='space-between' alignContent='end'>
             <Spacer />
             <Show below='md'>
-              <Button
-                colorScheme='red'
-                w='100%'
-                as={NavLink}
-                to={`${routes.holidayPackages.book.base}/${data.id}`}
-              >
-                Book Package
-              </Button>
+              {showBookButton ? (
+                <Button
+                  colorScheme='red'
+                  w='100%'
+                  as={NavLink}
+                  to={`${routes.holidayPackages.book.base}/${data.id}`}
+                >
+                  Book Package
+                </Button>
+              ) : (
+                <span></span>
+              )}
             </Show>
           </Flex>
         </Box>
@@ -179,14 +184,18 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
                 />
                 <Text>Flights:</Text>
                 <FlightListAccordian flights={data.flights} />
-                <Button
-                  colorScheme='red'
-                  size='md'
-                  as={NavLink}
-                  to={`${routes.holidayPackages.book.base}/${data.id}`}
-                >
-                  Book Package
-                </Button>
+                {showBookButton ? (
+                  <Button
+                    colorScheme='red'
+                    size='md'
+                    as={NavLink}
+                    to={`${routes.holidayPackages.book.base}/${data.id}`}
+                  >
+                    Book Package
+                  </Button>
+                ) : (
+                  <span></span>
+                )}
               </Stack>
             </Box>
           </Box>
