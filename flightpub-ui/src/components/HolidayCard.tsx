@@ -15,10 +15,10 @@ import {
   Spacer
 } from '@chakra-ui/react';
 
-import {Dispatch, ReactElement, SetStateAction} from 'react';
+import React, {ReactElement} from 'react';
 import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
 import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
-import {ColumnDefinition, Flight} from "../models";
+import {FlightListAccordian} from "./FlightListAccordian";
 
 interface FeatureProps {
   text: string;
@@ -148,6 +148,8 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
                   text='All Expenses Paid'
                 />
+                <Text>Flights:</Text>
+                <FlightListAccordian flights={data.flights} />
                 <Button colorScheme='red' size='md'>
                   View Package
                 </Button>
