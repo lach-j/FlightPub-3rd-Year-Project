@@ -12,11 +12,11 @@ import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.security.Authorized;
-import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.services.PaymentService;
 import seng3150.team4.flightpub.utility.PasswordHash;
 
+import javax.persistence.EntityExistsException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,11 +39,16 @@ public class UserController {
     // Create a user from the request
     var user = userFromRequest(registerUserRequest);
 
-    // Save the user to the database and send registration email
-    var savedUser = userService.registerUser(user);
+    try {
+      // Save the user to the database and send registration email
+      var savedUser = userService.registerUser(user);
 
-    // return saved used
-    return ResponseEntity.ok().body(new EntityResponse<>(savedUser));
+      // return saved used
+      return ResponseEntity.ok().body(new EntityResponse<>(savedUser));
+    } catch (EntityExistsException e) {
+      return ResponseEntity.status(HttpStatus.CONFLICT)
+          .body(new StatusResponse(HttpStatus.CONFLICT));
+    }
   }
 
   @Authorized
@@ -84,8 +89,9 @@ public class UserController {
     var user = userService.getUserByIdSecure(userId);
 
     for (var savedPayment : user.getPayments()) {
-      var obfuscatedPayment = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
-        savedPayment.setPayment(obfuscatedPayment);
+      var obfuscatedPayment =
+          obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+      savedPayment.setPayment(obfuscatedPayment);
     }
 
     return new EntityCollectionResponse<>(user.getPayments());
@@ -98,7 +104,8 @@ public class UserController {
     var user = userService.getUserByIdSecure(userId);
 
     for (var savedPayment : user.getPayments()) {
-      var obfuscatedPayment = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+      var obfuscatedPayment =
+          obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
       savedPayment.setPayment(obfuscatedPayment);
     }
 
@@ -126,7 +133,8 @@ public class UserController {
 
     var newNewPayment = userService.addNewPayment(userId, userSavedPayment);
 
-    var obfuscated = obfuscatePaymentInformation(Set.of(newNewPayment.getPayment())).stream().findFirst().get();
+    var obfuscated =
+        obfuscatePaymentInformation(Set.of(newNewPayment.getPayment())).stream().findFirst().get();
 
     newNewPayment.setPayment(obfuscated);
     return new EntityResponse<>(newNewPayment);
@@ -135,21 +143,23 @@ public class UserController {
   @Authorized
   @PatchMapping("/{userId}/payments/{paymentId}")
   public EntityResponse<SavedPayment> updatePaymentDetails(
-          @PathVariable long userId, @PathVariable long paymentId, @RequestBody UpdatePaymentRequest request) {
+      @PathVariable long userId,
+      @PathVariable long paymentId,
+      @RequestBody UpdatePaymentRequest request) {
     request.validate();
     var payment = resolvePaymentFromRequest(request);
 
     var savedPayment = userService.updatePayment(userId, paymentId, payment);
 
-    var obfuscated = obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
+    var obfuscated =
+        obfuscatePaymentInformation(Set.of(savedPayment.getPayment())).stream().findFirst().get();
     savedPayment.setPayment(obfuscated);
     return new EntityResponse<>(savedPayment);
   }
 
   @Authorized
   @DeleteMapping("/{userId}/payments/{paymentId}")
-  public Response deletePayment(
-          @PathVariable long userId, @PathVariable long paymentId) {
+  public Response deletePayment(@PathVariable long userId, @PathVariable long paymentId) {
 
     userService.deletePayment(userId, paymentId);
 
@@ -201,8 +211,7 @@ public class UserController {
                 PaymentCard cardPayment = (PaymentCard) p;
                 cardPayment.setCcv("");
                 var currentNumber = cardPayment.getCardNumber();
-                if (currentNumber.length() <= 4)
-                  return cardPayment;
+                if (currentNumber.length() <= 4) return cardPayment;
                 cardPayment.setCardNumber(
                     "************" + currentNumber.substring(currentNumber.length() - 4));
                 return cardPayment;
