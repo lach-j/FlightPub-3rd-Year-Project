@@ -69,9 +69,13 @@ public class AuthController {
     // Validate the request
     loginRequest.validate();
 
+    try {
     // Attempt to reset the password using the provided token
     authenticationService.resetPassword(loginRequest.getToken(), loginRequest.getPassword());
-
+    } catch (EntityNotFoundException ex) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new StatusResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()));
+    }
     // Send success response
     return ResponseEntity.ok(
         new StatusResponse(HttpStatus.OK).message("The password was reset successfully"));
