@@ -15,7 +15,6 @@ import { endpoints } from '../../constants/endpoints';
 import { Booking } from '../../models/Booking';
 import { FlightListAccordian } from '../../components/FlightListAccordian';
 import moment from 'moment';
-import { number } from 'yup';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
 
 export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
@@ -50,6 +49,22 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
           a.flights.reduce((a, b) => a + b.prices[0].price, 0);
     }
     return () => 1;
+  };
+
+  const getTotalCost = (booking: Booking) => {
+    let total = 0;
+    booking.passengers.forEach((passenger) => {
+      console.log(passenger.ticketClass?.classCode);
+      booking.flights.forEach((flight) => {
+        console.log(flight.prices);
+        let price = flight.prices.find(
+          (p) => p.ticketClass.classCode === passenger.ticketClass?.classCode
+        );
+        console.log(price);
+        total += price?.price || 0;
+      });
+    });
+    return total;
   };
 
   return (
@@ -92,7 +107,7 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                   <Text mt='4'>
                     <Text fontWeight='bold'>Total Cost:</Text>
                     {' $'}
-                    {booking.flights.reduce((a, b) => a + b.prices[0].price, 0)}
+                    {getTotalCost(booking)}
                   </Text>
                 </Box>
                 {booking?.payment?.type && (

@@ -18,8 +18,9 @@ public class Price {
   @Column(name = "FlightId")
   @JsonIgnore @Id private Long flightId;
 
-  @Column(name = "ClassCode")
-  @Id private String classCode;
+  @ManyToOne
+  @JoinColumn(name = "ClassCode")
+  @Id private TicketClass ticketClass;
 
   @JsonBackReference
   @MapsId("flightId")

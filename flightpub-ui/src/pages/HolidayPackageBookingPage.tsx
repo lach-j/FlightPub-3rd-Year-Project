@@ -46,7 +46,7 @@ import { Airline, Flight } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 import { routes } from '../constants/routes';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { Passenger } from '../models/Passenger';
+import { Passenger, PassengerDTO } from '../models/Passenger';
 import { SavedPaymentType } from '../models/SavedPaymentTypes';
 import * as yup from 'yup';
 import { ObjectShape } from 'yup/lib/object';
@@ -79,7 +79,7 @@ export interface DirectDebitDetails {
 
 export interface HolidayPackageBookingQuery {
   holidayPackageId: number;
-  passengers: Passenger[];
+  passengers: PassengerDTO[];
   flightIds: number[];
   payment: {
     type: string;
@@ -117,7 +117,7 @@ export const HolidayPackageBookingPage = () => {
   const toast = useToast();
 
   const [paymentType, setPaymentType] = useState<SavedPaymentType | undefined>();
-  const [passengerList, setPassengerList] = useState<Passenger[]>([]);
+  const [passengerList, setPassengerList] = useState<PassengerDTO[]>([]);
 
   const [billingForm, setBillingForm] = useState<BillingDetails>({
     firstName: '',
@@ -472,7 +472,7 @@ export const HolidayPackageBookingPage = () => {
     }
   };
   const updateBookingInfo = () => {
-    let passengersList: Passenger[] = [];
+    let passengersList: PassengerDTO[] = [];
 
     for (var i = 0; i < passengerCount; i++) {
       passengersList.push({
@@ -781,7 +781,7 @@ export const HolidayPackageBookingPage = () => {
 
             <h1>Selected Passengers: </h1>
             <div>
-              {bookingRequest.passengers.map((entry: Passenger) => (
+              {bookingRequest.passengers.map((entry: PassengerDTO) => (
                 <div>{entry.firstName}</div>
               ))}
             </div>

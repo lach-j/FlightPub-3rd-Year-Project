@@ -37,7 +37,7 @@ import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { UserContext } from '../services/UserContext';
-import { Passenger } from '../models/Passenger';
+import { ClassCode, Passenger, PassengerDTO } from '../models/Passenger';
 
 export const PassengerDetailsPage = ({
   cartState
@@ -50,6 +50,7 @@ export const PassengerDetailsPage = ({
   const [passengerCount, setPassengerCount] = useState<number>(1);
 
   const [firstNames, setFirstNames] = useState<string[]>(['']);
+  const [ticketClasses, setTicketClass] = useState<ClassCode[]>([ClassCode.Business]);
   const [lastNames, setLastNames] = useState<string[]>(['']);
   const [emails, setEmails] = useState<string[]>(['']);
   const [confEmails, setConfEmails] = useState<string[]>(['']);
@@ -152,6 +153,10 @@ export const PassengerDetailsPage = ({
       let tempConfEmails = [...confEmails];
       tempConfEmails[0] = user.email;
       setConfEmails(tempConfEmails);
+
+      let tempTicketClasses = [...ticketClasses];
+      tempTicketClasses[0] = ClassCode.Business;
+      setTicketClass(tempTicketClasses);
     } else {
       toast({
         title: 'Error!',
@@ -164,30 +169,37 @@ export const PassengerDetailsPage = ({
     }
   };
 
-  const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    switch (event.target.name) {
-      case 'fname':
-        let tempFNames = [...firstNames];
-        tempFNames[index] = event.target.value;
-        setFirstNames(tempFNames);
-        break;
-      case 'lname':
-        let tempLNames = [...lastNames];
-        tempLNames[index] = event.target.value;
-        setLastNames(tempLNames);
-        break;
-      case 'email':
-        let tempEmails = [...emails];
-        tempEmails[index] = event.target.value;
-        setEmails(tempEmails);
-        break;
-      case 'confemail':
-        let tempConfEmails = [...confEmails];
-        tempConfEmails[index] = event.target.value;
-        setConfEmails(tempConfEmails);
-        break;
-    }
-  };
+  const handleChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      switch (event.target.name) {
+        case 'fname':
+          let tempFNames = [...firstNames];
+          tempFNames[index] = event.target.value;
+          setFirstNames(tempFNames);
+          break;
+        case 'lname':
+          let tempLNames = [...lastNames];
+          tempLNames[index] = event.target.value;
+          setLastNames(tempLNames);
+          break;
+        case 'email':
+          let tempEmails = [...emails];
+          tempEmails[index] = event.target.value;
+          setEmails(tempEmails);
+          break;
+        case 'confemail':
+          let tempConfEmails = [...confEmails];
+          tempConfEmails[index] = event.target.value;
+          setConfEmails(tempConfEmails);
+          break;
+
+        case 'ticketClass':
+          let tempTicketClasses = [...ticketClasses];
+          tempTicketClasses[0] = ClassCode[event.target.value as keyof typeof ClassCode];
+          setTicketClass(tempTicketClasses);
+          break;
+      }
+    };
 
   const renderStopOver = (flight: Flight) => {
     if (flight?.stopOverLocation) {
@@ -269,7 +281,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select>
+              <Select value={ticketClasses[0]} name='ticketClass' onChange={handleChange(0)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}
@@ -313,7 +325,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select>
+              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(0)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}
@@ -325,7 +337,6 @@ export const PassengerDetailsPage = ({
               name={i.toString()}
               onClick={(e) => {
                 let index = Number(e.currentTarget.getAttribute('id'));
-                console.log(index);
                 handleRemovePassenger(index);
                 setPassengerCount(passengerCount - 1);
               }}
@@ -425,13 +436,14 @@ export const PassengerDetailsPage = ({
           colorScheme='red'
           onClick={async () => {
             if (await submitEvent()) {
-              let passengers: Passenger[] = [];
+              let passengers: PassengerDTO[] = [];
 
               for (var i = 0; i < passengerCount; i++) {
                 passengers.push({
                   firstName: firstNames[i],
                   lastName: lastNames[i],
-                  email: emails[i]
+                  email: emails[i],
+                  ticketClass: ticketClasses[i]
                 });
               }
 
