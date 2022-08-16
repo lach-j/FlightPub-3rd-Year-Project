@@ -1,6 +1,6 @@
 export interface CovidDestination {
-    covidCode: string;
-    covidStartDate: string;
+    id: number;
+    CovidStartDate: string;
     covidEndDate: string;
     locationCode: string;
 }

@@ -27,24 +27,22 @@ import { convertMinsToHM, formatDateTime } from '../../utility/formatting';
 import { airlines } from '../../data/airline';
 import { Airport, findNearestAirport } from '../../utility/geolocation';
 import {flights} from "../../data/flights";
+import {int} from "framer-motion/types/render/dom/value-types/type-int";
+import {FlightCancel} from "../../models/FlightCancel";
 
 export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-  //recommended : contains data table of cheapest flights based on user location
-  const [recommended, setRecommended] = useState<Flight[]>([]);
 
-  //userLocation: Uses geoLocation to store users current position
-  const [userLocation, setUserLocation] = useState<any>();
 
-  //airport: User's nearest airport for reccomendations
-  const [airport, setAirport] = useState<Airport | undefined>();
-
-  const { state } = useLocation();
+  const [swapLists, setSwapLists] = useState(true);
 
   const [results, setResults] = useState<Flight[]>([]);
+  const [canceledResults, setCanceledResults] = useState<Flight[]>([]);
+  const [idFilter, setIdFilter] = useState('');
 
-  const [idFilter, setIdFilter] = useState<number>();
+  const { httpGet: httpGetFlights } = useApi(endpoints.flightSearch);
+  const { httpGet: httpGetCanceledFlights } = useApi(endpoints.getCanceled);
 
-  const { httpGet } = useApi(endpoints.flightSearch);
+  const { httpPost } = useApi(endpoints.airlineUpdate);
 
   const getMinPrice = (prices: Price[]) => Math.min(...prices.map((p) => p.price));
   const getMaxPrice = (prices: Price[]) => Math.max(...prices.map((p) => p.price));
@@ -58,25 +56,19 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
 
   // retrieves list of airlines
   useEffect(() => {
-    httpGet('').then(setResults);
+    httpGetFlights('').then(setResults);
+    httpGetCanceledFlights('').then(setCanceledResults);
   }, []);
 
 
 
-  //Filters resultdata based on stored filter criteria
-  const filterResults = (result: Flight) => {
-    if (idFilter && result.id !== idFilter) return false;
-
-    return true;
-  };
-
-  //filtering by duration
-  const filterByID = (val: number) => {
-    setIdFilter(val);
-  };
 
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
+    {
+      accessor: 'flightNumber',
+      Header: 'Flight Number'
+    },
     {
       accessor: 'airlineCode',
       Header: 'Airline',
@@ -121,16 +113,29 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
 
   return (
     <>
-      <Heading mb='1em'>Cancel Flight</Heading>
-      <Input placeholder='Flight id' size='md' onChange={(val) => filterByID} />
+      <HStack gap={'5em'}>
+        <Heading mb='1em'>Cancel Flight</Heading>
+        <Button onClick={() => {setSwapLists(!swapLists)}}>
+          Swap lists
+        </Button>
+      </HStack>
+
+      <Input placeholder='Flight Number (is case sensitive)' size='md' onChange={event => setIdFilter(event.target.value)} />
       <Center>
-        <ResultsTable
-          columns={columns}
-          data={results}
-          // data={flights.filter(filterResults)}
-          // data={recommended.filter(filterResults)}
-          keyAccessor='id'
-        ></ResultsTable>
+        {swapLists ? (
+            <ResultsTable
+                columns={columns}
+                data={results.filter(f => f.flightNumber.includes(idFilter) || idFilter === '')}
+                keyAccessor='id'
+            ></ResultsTable>
+        ) : (
+            <ResultsTable
+                columns={columns}
+                data={canceledResults.filter(f => f.flightNumber.includes(idFilter) || idFilter === '')}
+                keyAccessor='id'
+            ></ResultsTable>
+        )}
+
       </Center>
     </>
   );

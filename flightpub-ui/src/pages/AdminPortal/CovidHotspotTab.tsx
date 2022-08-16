@@ -35,17 +35,24 @@ import {Destination} from '../../models/Destination';
 import {ApiError, useApi} from '../../services/ApiService';
 import {CovidDestination} from "../../models/CovidDestination";
 import {ColumnDefinition, Flight} from "../../models";
-import {ResultsTable} from "../../components/CancelFlightsTable";
+import {DataTable} from "../../components/DataTable";
+import {ResultsTable} from "../../components/CovidTable";
 
-//container for flexidate information, contains date and flex-date range
+
 interface FlexiDate {
     date: string;
+    flex?: number;
 }
 
 //container for search query
 interface SearchQuery {
-    locationCode?: string;
-    covidDuration: FlexiDate;
+    departureDate: FlexiDate;
+    departureCode?: string;
+    destinationCode?: string;
+    tickets?: Map<string, number>;
+    returnFlight?: boolean;
+    searchTags?: Array<string>;
+    multiLeg?: boolean;
 }
 
 const handleDiscardChanges = () => {
@@ -53,15 +60,14 @@ const handleDiscardChanges = () => {
     window.location.reload();
 };
 
-const handleSaveChanges = (e: SyntheticEvent) => {
-    // TODO : actually make an entry
-};
 
 export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean) => void }) => {
     const toast = useToast();
     const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
     const [destination, setDestination] = useState<CovidDestination[]>([]);
-    const [iDFilter,setIDFilter] = useState("");
+
+    const [chosenLocation, setChosenLocation] = useState<Destination>()
+    const [iDFilter, setIDFilter] = useState("");
     // todo list, make this object, make table, fill table (copy flights)
     const {httpPost} = useApi(endpoints.covidUpdate);
     const {httpGet} = useApi(endpoints.getCovid);
@@ -72,45 +78,34 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
         return new Date(date).toISOString().split('T')[0];
     };
 
-    //authRequest : stores search query request
-    const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-        covidDuration: {date: formatDate(new Date())}
-    });
-
-    //Handles update of search query input, updating value(s)
-    const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
-        setSearchQuery({...searchQuery, [field]: value});
-    };
-
     // sets covid destination information on-load
     useEffect(() => {
         httpGet('').then(setDestination);
     }, []);
 
-    //filtering by duration
-    const filterById = (val: string) => {
-        setIDFilter(val);
+    //authRequest : stores search query request
+    const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+        departureDate: { date: formatDate(new Date()) },
+    });
+
+    //Handles update of search query input, updating value(s)
+    const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
+        setSearchQuery({ ...searchQuery, [field]: value });
     };
 
-    //Filters resultdata based on stored filter criteria
-    const filterResults = (result: CovidDestination) => {
-        if (result.covidCode.includes(iDFilter)) return false;
-
-        return true;
-    };
 
     const columns: ColumnDefinition<any>[] = [
         {
-            accessor: 'covidCode',
+            accessor: 'id',
             Header: 'Id',
         },
         {
             accessor: 'covidStartDate',
-            Header: 'StartDate'
+            Header: 'Start Date'
         },
         {
             accessor: 'covidEndDate',
-            Header: 'EndDate'
+            Header: 'End Date'
         },
         {
             accessor: 'locationCode',
@@ -118,9 +113,9 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
         }
     ];
 
-    function handleSearch(e: FormEvent<HTMLFormElement>) {
+    function handleSaveChanges(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        httpPost('', searchQuery)
+        httpPost('', {locationCode: chosenLocation, covidEndDate: returnDate,})
             .then((response) => {
                 toast({
                     title: 'Booking Confirmed',
@@ -135,10 +130,10 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
             .finally(() => onClose());
     };
 
-    function handleCovidDestination(e: FormEvent<HTMLFormElement>) {
-        // e.preventDefault();
-        //
-        // httpPost(endpoints.admin, destination)
+    function handleCovidDestination(e: SyntheticEvent) {
+        e.preventDefault();
+
+        httpPost(endpoints.getCovid, destination)
         //     .then(() => {
         //
         //     }).finally( () => {})
@@ -150,7 +145,7 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
             <Heading mb='1em'>Covid Hotspot</Heading>
             <Center>
                 <HStack gap={'5em'}>
-                    <form>
+                    <form onSubmit={handleSaveChanges}>
                         <VStack gap='2em'>
                             <Box>
                                 {/* Departure location input */}
@@ -158,9 +153,12 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
                                     <FormLabel>Covid Location</FormLabel>
                                     <AutoComplete
                                         openOnFocus
-                                        onChange={(value) => handleSearchQueryUpdate('locationCode', value)}
+                                        onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
                                     >
-                                        <AutoCompleteInput variant='filled'/>
+                                        <AutoCompleteInput
+                                            onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                                            variant='filled'
+                                        />
                                         <AutoCompleteList>
                                             {airports.map(({code, city}) => (
                                                 <AutoCompleteItem key={code} value={code} align='center'>
@@ -176,9 +174,13 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
                                     <FormLabel>Restriction Duration</FormLabel>
                                     <DatePicker
                                         dateFormat='dd/MM/yyyy'
-                                        minDate={new Date(searchQuery.covidDuration.date) || new Date()}
-                                        selected={returnDate}
-                                        onChange={(date: Date) => setReturnDate(date)}
+                                        minDate={new Date()}
+                                        selected={new Date(searchQuery.departureDate.date)}
+                                        onChange={(date: Date) =>
+                                            handleSearchQueryUpdate('departureDate', {
+                                                ...searchQuery?.departureDate,
+                                                date: formatDate(date)
+                                            })}
                                     />
                                 </FormControl>
                             </Box>
@@ -186,7 +188,7 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
                                 <Button colorScheme={'gray'} onClick={handleDiscardChanges}>
                                     Clear
                                 </Button>
-                                <Button colorScheme={'blue'} onClick={handleSaveChanges}>
+                                <Button colorScheme={'blue'} type='submit'>
                                     Confirm
                                 </Button>
                             </Box>
@@ -200,16 +202,11 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
 
                                 <ResultsTable
                                     columns={columns}
-                                    data={destination.filter(filterResults)}
+                                    data={destination}
                                     keyAccessor='id'
-                                ></ResultsTable>
+                                />
                             </Center>
 
-                            <Box>
-                                <Button colorScheme={'blue'} onClick={handleSaveChanges}>
-                                    Confirm
-                                </Button>
-                            </Box>
                         </VStack>
                     </form>
                 </HStack>

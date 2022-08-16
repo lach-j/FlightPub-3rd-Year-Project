@@ -19,5 +19,7 @@ export const endpoints = {
   createHolidayPackage: '/holidayPackages/createHolidayPackage',
   holidayPackages: '/holidayPackages',
   wishlist: '/wishlist',
-  getCovid: '/getCovid'
+  getCovid: '/getCovid',
+  getUsers: '/getUsers',
+  getCanceled: '/getCanceledFlights',
 };

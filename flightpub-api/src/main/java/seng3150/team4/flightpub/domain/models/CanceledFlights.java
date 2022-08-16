@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -18,17 +19,14 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class CanceledFlights {
+public class CanceledFlights implements IEntity, Serializable {
     @Column(name = "Id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
+    private long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-//    either (name = "FlightId", referencedColumnName = "Id")
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "FlightId")
     private Flight flights;
 
-    @Column(name = "Canceled")
-    private boolean Canceled;
 }

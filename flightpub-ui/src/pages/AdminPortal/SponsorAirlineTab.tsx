@@ -14,7 +14,7 @@ import {
     VStack,
     Center,
 } from '@chakra-ui/react';
-import React, {SyntheticEvent, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import { CustomEditible } from '../../components/CustomEditable';
 import { routes } from '../../constants/routes';
 import { useNavigate } from 'react-router-dom';
@@ -23,8 +23,11 @@ import {airlines} from "../../data/airline";
 import DatePicker from "react-datepicker";
 import {endpoints} from "../../constants/endpoints";
 import * as api from "../../services/ApiService";
-import {ApiError} from "../../services/ApiService";
+import {ApiError, useApi} from "../../services/ApiService";
 import {request} from "http";
+import {ResultsTable} from "../../components/CovidTable";
+import {ColumnDefinition} from "../../models";
+import {SponsoredAirline} from "../../models/SponsoredAirline";
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -63,11 +66,38 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
     //Formats from JavaScript Date type to string
     const [iDFilter,setIDFilter] = useState("");
 
+    const {httpGet} = useApi(endpoints.getCovid);
+    const [sponsoredAirline, setSponsoredAirline] = useState<SponsoredAirline>()
     const formatDate = (date: Date) => {
         return new Date(date).toISOString().split('T')[0];
     };
 
 
+
+    // sets covid destination information on-load
+    useEffect(() => {
+        httpGet('').then(setSponsoredAirline);
+    }, []);
+
+
+    const columns: ColumnDefinition<any>[] = [
+        {
+            accessor: 'id',
+            Header: 'Id',
+        },
+        {
+            accessor: 'sponsoredStartDate',
+            Header: 'Start Date'
+        },
+        {
+            accessor: 'sponsoredEndDate',
+            Header: 'End Date'
+        },
+        {
+            accessor: 'airlineCode',
+            Header: 'Airline'
+        }
+    ];
 
 
     //authRequest : stores search query request
@@ -150,39 +180,14 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                     </form>
                     <form>
                         <VStack gap='2em'>
-                            <Box >
-                                {/* Sponsored Airline input */}
-                                <FormControl isRequired>
-                                    <FormLabel>Choose Airline</FormLabel>
-                                    <AutoComplete
-                                        openOnFocus
-                                        onChange={(value) =>
-                                            handleSearchQueryUpdate('airlineName', value)
-                                        }
-                                    >
-                                        <AutoCompleteInput variant='filled' />
-                                        <AutoCompleteList>
-                                            {airlines.map(({ airlineName}) => (
-                                                <AutoCompleteItem
-                                                    key={airlineName}
-                                                    value={airlineName}
-                                                    align='center'
-                                                >
-                                                    <Text ml='4'>{airlineName}</Text>
-                                                </AutoCompleteItem>
-                                            ))}
-                                        </AutoCompleteList>
-                                    </AutoComplete>
-                                </FormControl>
-                            </Box>
-                            <Box>
-                                <Button colorScheme={'blue'}
+                            <Center flex='1'>
 
-                                        onClick={handleSponsorshipUpdate}
-                                >
-                                    Confirm
-                                </Button>
-                            </Box>
+                                <ResultsTable
+                                    columns={columns}
+                                    data={[]}
+                                    keyAccessor='id'
+                                ></ResultsTable>
+                            </Center>
                         </VStack>
                     </form>
 

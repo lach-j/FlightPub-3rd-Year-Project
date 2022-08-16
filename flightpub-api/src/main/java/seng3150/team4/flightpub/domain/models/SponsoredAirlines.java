@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,9 +17,11 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class SponsoredAirlines {
-    @Column(name = "SponsoredCode")
-    @Id private String SponsoredCode;
+public class SponsoredAirlines implements IEntity, Serializable {
+    @Column(name = "Id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column(name = "SponsoredStartDate")
     private LocalDateTime CovidStartDate;

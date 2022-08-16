@@ -28,6 +28,8 @@ public class AdminController {
     private final ICovidRepository destinationRepository;
     private final ISponsorRepository airlineRepository;
     private final ICanceledRepository flightRepository;
+    private final IUserRepository userRepository;
+    private final IFlightRepository compareRepository;
 
 
     @PostMapping(path = "/getCovid")
@@ -40,6 +42,32 @@ public class AdminController {
         return new EntityCollectionResponse<CovidDestinations>(locations);
     }
 
+    @PostMapping(path = "/getUsers")
+    public Response getUsers() {
+        var users = new ArrayList<User>() {};
+
+        // Convert Iterable to List
+        userRepository.findAll().forEach(users::add);
+
+        return new EntityCollectionResponse<User>(users);
+    }
+
+    @PostMapping(path = "/getCanceledFlights")
+    public Response getCanceledFlights() {
+        var cannedflights = new ArrayList<CanceledFlights>() {};
+        var flights = new ArrayList<Flight>(){};
+        // Convert Iterable to List
+        flightRepository.findAll().forEach(cannedflights::add);
+        compareRepository.findAll().forEach(flights::add);
+
+//        return new EntityCollectionResponse<Flight>(flights.retainAll(cannedflights));
+        return new EntityCollectionResponse<CanceledFlights>(cannedflights);
+
+
+
+    }
+
+
     @PostMapping(path = "/covidUpdate")
     public CovidDestinations updateCovid(CovidDestinations destination) {
         CovidDestinations savedDestination  = destinationRepository.save(destination);
@@ -48,6 +76,8 @@ public class AdminController {
 
     @PostMapping(path = "/airlineUpdate")
     public SponsoredAirlines updateAirline(SponsoredAirlines airline) {
+//        todo get todays date and
+
         SponsoredAirlines savedAirline = airlineRepository.save(airline);
         return savedAirline;
     }

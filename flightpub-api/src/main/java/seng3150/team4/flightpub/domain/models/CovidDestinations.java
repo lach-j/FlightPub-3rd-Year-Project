@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -17,10 +18,12 @@ import java.util.Set;
 @Setter
 @ToString
 
-public class CovidDestinations implements IEntity {
+public class CovidDestinations implements IEntity, Serializable {
 
-    @Column(name = "CovidCode")
-    @Id private String CovidCode;
+    @Column(name = "Id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column(name = "CovidStartDate")
     private LocalDateTime CovidStartDate;
