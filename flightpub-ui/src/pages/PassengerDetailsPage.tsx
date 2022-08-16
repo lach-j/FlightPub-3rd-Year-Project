@@ -19,7 +19,9 @@ import {
   VStack,
   Input,
   Select,
-  Button
+  Button,
+  UnorderedList,
+  ListItem
 } from '@chakra-ui/react';
 
 import React, {
@@ -120,21 +122,21 @@ export const PassengerDetailsPage = ({
     }
 
     if (!success)
-      toast({
-        title: 'Error!',
-        description: generateErrorMsg(errorArray, index),
+    toast({
+        title: 'Incorrectly filled for Passenger ' + index,
+        description: (
+            <UnorderedList>
+                {errorArray.map(e => (
+                    <ListItem>{e}</ListItem>
+                ))}
+            </UnorderedList>
+        ),
         status: 'error',
         duration: 9000,
         isClosable: true,
         position: 'top'
       });
     return success;
-  };
-
-  const generateErrorMsg = (array: string[], index: number) => {
-    let errorMsg = 'Incorrectly filled for Passenger ' + index + ':';
-    array.forEach((error) => (errorMsg = errorMsg + ' - ' + error));
-    return errorMsg;
   };
 
   const handleCurrentUser = () => {
