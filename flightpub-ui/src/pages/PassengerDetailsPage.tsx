@@ -37,7 +37,8 @@ import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { UserContext } from '../services/UserContext';
-import { Passenger } from '../models/Passenger';
+import { ClassCode, Passenger, PassengerDTO } from '../models/Passenger';
+import { FlightListAccordian } from '../components/FlightListAccordian';
 
 export const PassengerDetailsPage = ({
   cartState
@@ -50,6 +51,7 @@ export const PassengerDetailsPage = ({
   const [passengerCount, setPassengerCount] = useState<number>(1);
 
   const [firstNames, setFirstNames] = useState<string[]>(['']);
+  const [ticketClasses, setTicketClass] = useState<ClassCode[]>([ClassCode.Business]);
   const [lastNames, setLastNames] = useState<string[]>(['']);
   const [emails, setEmails] = useState<string[]>(['']);
   const [confEmails, setConfEmails] = useState<string[]>(['']);
@@ -152,6 +154,10 @@ export const PassengerDetailsPage = ({
       let tempConfEmails = [...confEmails];
       tempConfEmails[0] = user.email;
       setConfEmails(tempConfEmails);
+
+      let tempTicketClasses = [...ticketClasses];
+      tempTicketClasses[0] = ClassCode.Business;
+      setTicketClass(tempTicketClasses);
     } else {
       toast({
         title: 'Error!',
@@ -164,30 +170,37 @@ export const PassengerDetailsPage = ({
     }
   };
 
-  const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    switch (event.target.name) {
-      case 'fname':
-        let tempFNames = [...firstNames];
-        tempFNames[index] = event.target.value;
-        setFirstNames(tempFNames);
-        break;
-      case 'lname':
-        let tempLNames = [...lastNames];
-        tempLNames[index] = event.target.value;
-        setLastNames(tempLNames);
-        break;
-      case 'email':
-        let tempEmails = [...emails];
-        tempEmails[index] = event.target.value;
-        setEmails(tempEmails);
-        break;
-      case 'confemail':
-        let tempConfEmails = [...confEmails];
-        tempConfEmails[index] = event.target.value;
-        setConfEmails(tempConfEmails);
-        break;
-    }
-  };
+  const handleChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      switch (event.target.name) {
+        case 'fname':
+          let tempFNames = [...firstNames];
+          tempFNames[index] = event.target.value;
+          setFirstNames(tempFNames);
+          break;
+        case 'lname':
+          let tempLNames = [...lastNames];
+          tempLNames[index] = event.target.value;
+          setLastNames(tempLNames);
+          break;
+        case 'email':
+          let tempEmails = [...emails];
+          tempEmails[index] = event.target.value;
+          setEmails(tempEmails);
+          break;
+        case 'confemail':
+          let tempConfEmails = [...confEmails];
+          tempConfEmails[index] = event.target.value;
+          setConfEmails(tempConfEmails);
+          break;
+
+        case 'ticketClass':
+          let tempTicketClasses = [...ticketClasses];
+          tempTicketClasses[0] = ClassCode[event.target.value as keyof typeof ClassCode];
+          setTicketClass(tempTicketClasses);
+          break;
+      }
+    };
 
   const renderStopOver = (flight: Flight) => {
     if (flight?.stopOverLocation) {
@@ -269,7 +282,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select>
+              <Select value={ticketClasses[0]} name='ticketClass' onChange={handleChange(0)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}
@@ -313,7 +326,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select>
+              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(0)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}
@@ -325,7 +338,6 @@ export const PassengerDetailsPage = ({
               name={i.toString()}
               onClick={(e) => {
                 let index = Number(e.currentTarget.getAttribute('id'));
-                console.log(index);
                 handleRemovePassenger(index);
                 setPassengerCount(passengerCount - 1);
               }}
@@ -347,57 +359,7 @@ export const PassengerDetailsPage = ({
           Finalise Booking
         </Heading>
         <Text>Flights:</Text>
-        <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {cart.map((flight) => (
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex='1' textAlign='left'>
-                    <Flex width='full' justifyContent='space-between'>
-                      <HStack>
-                        <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
-                        <HiOutlineArrowNarrowRight />
-                        <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
-                      </HStack>
-                      <Text>{`$${flight.prices[0].price}`}</Text>
-                      <Text>{flight.airlineCode}</Text>
-                    </Flex>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Flex w='full' justifyContent='space-between' alignItems='center'>
-                  <Stat textAlign='left' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.departureTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
-                    <StatHelpText>DEPARTURE</StatHelpText>
-                  </Stat>
-                  <HiOutlineArrowNarrowRight />
-                  {renderStopOver(flight)}
-                  <HiOutlineArrowNarrowRight />
-                  <Stat textAlign='right' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.arrivalTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
-                    <StatHelpText>ARRIVAL</StatHelpText>
-                  </Stat>
-                </Flex>
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <FlightListAccordian flights={cart} />
       </Flex>
     );
   };
@@ -425,13 +387,14 @@ export const PassengerDetailsPage = ({
           colorScheme='red'
           onClick={async () => {
             if (await submitEvent()) {
-              let passengers: Passenger[] = [];
+              let passengers: PassengerDTO[] = [];
 
               for (var i = 0; i < passengerCount; i++) {
                 passengers.push({
                   firstName: firstNames[i],
                   lastName: lastNames[i],
-                  email: emails[i]
+                  email: emails[i],
+                  ticketClass: ticketClasses[i]
                 });
               }
 

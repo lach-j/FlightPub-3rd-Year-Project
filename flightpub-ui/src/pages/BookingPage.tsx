@@ -383,7 +383,7 @@ export const BookingPage = ({
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
             <HStack w='full'>
-              <FormControl flex={1} isInvalid={true}>
+              <FormControl flex={1}>
                 <FormLabel>First Name</FormLabel>
                 <Input onChange={handleBillingChange('firstName')} />
               </FormControl>
