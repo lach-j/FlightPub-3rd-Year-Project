@@ -20,7 +20,7 @@ import { SavedPaymentComponent } from './SavedPaymentComponent';
 export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { httpGet } = useApi(endpoints.bookings);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [sortFunction, setSortFunction] = useState<string>('');
+  const [sortFunction, setSortFunction] = useState<string>('bookedDesc');
 
   useEffect(() => {
     httpGet('').then((bookings) => {
@@ -39,14 +39,10 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
           moment(a.dateBooked).isBefore(moment(b.dateBooked)) ? -1 : 1;
 
       case 'priceAsc':
-        return (a: Booking, b: Booking) =>
-          a.flights.reduce((a, b) => a + b.prices[0].price, 0) -
-          b.flights.reduce((a, b) => a + b.prices[0].price, 0);
+        return (a: Booking, b: Booking) => getTotalCost(a) - getTotalCost(b);
 
       case 'priceDesc':
-        return (a: Booking, b: Booking) =>
-          b.flights.reduce((a, b) => a + b.prices[0].price, 0) -
-          a.flights.reduce((a, b) => a + b.prices[0].price, 0);
+        return (a: Booking, b: Booking) => getTotalCost(b) - getTotalCost(a);
     }
     return () => 1;
   };
@@ -71,7 +67,11 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
     <>
       <Heading mb='1em'>Booking History</Heading>
       <Box mb='4'>
-        <Select onChange={(e) => setSortFunction(e.target.value)} w='fit-content'>
+        <Select
+          value={sortFunction}
+          onChange={(e) => setSortFunction(e.target.value)}
+          w='fit-content'
+        >
           <option value='bookedDesc'>Newest</option>
           <option value='bookedAsc'>Oldest</option>
           <option value='priceAsc'>Cheapest</option>
