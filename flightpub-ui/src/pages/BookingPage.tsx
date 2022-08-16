@@ -12,6 +12,7 @@ import {
   Heading,
   HStack,
   Input,
+  ListItem,
   Modal,
   ModalOverlay,
   Select,
@@ -24,7 +25,8 @@ import {
   Text,
   useDisclosure,
   useToast,
-  VStack
+  VStack,
+  UnorderedList
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
 import React, {
@@ -268,8 +270,14 @@ export const BookingPage = ({
 
     if (!success) 
     toast({
-      title: 'Error!',
-      description: generateErrorMsg(errorArray, formName),
+      title: formName + " filled out incorrectly:",
+      description: (
+        <UnorderedList>
+          {errorArray.map((e) => (
+            <ListItem>{e}</ListItem>
+          ))}
+        </UnorderedList>
+      ),
       status: 'error',
       duration: 9000,
       isClosable: true,
