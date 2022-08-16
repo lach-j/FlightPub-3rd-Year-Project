@@ -57,27 +57,27 @@ import * as yup from 'yup';
 import { ObjectShape } from 'yup/lib/object';
 
 export interface BillingDetails {
-  firstName: string,
-  lastName: string,
-  company: string,
-  addressLine1: string,
-  addressLine2: string,
-  city: string,
-  postCode: string,
-  state: string,
+  firstName: string;
+  lastName: string;
+  company: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  postCode: string;
+  state: string;
 }
 
 export interface CardDetails {
-  cardNumber: string,
-  cardholder: string,
-  expiryDate: string,
-  ccv: string,
+  cardNumber: string;
+  cardholder: string;
+  expiryDate: string;
+  ccv: string;
 }
 
 export interface DirectDebitDetails {
-  bsb: string,
-  accountNumber: string,
-  accountName: string,
+  bsb: string;
+  accountNumber: string;
+  accountName: string;
 }
 
 export const BookingPage = ({
@@ -96,29 +96,29 @@ export const BookingPage = ({
     flightIds: [],
     passengers: []
   });
-  
+
   const [billingForm, setBillingForm] = useState<BillingDetails>({
-    firstName: "",
-    lastName: "",
-    company: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    postCode: "",
-    state: "",
+    firstName: '',
+    lastName: '',
+    company: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    postCode: '',
+    state: ''
   });
   const [cardForm, setCardForm] = useState<CardDetails>({
-    cardNumber: "",
-    cardholder: "",
-    expiryDate: "",
-    ccv: "",
+    cardNumber: '',
+    cardholder: '',
+    expiryDate: '',
+    ccv: ''
   });
   const [directDebitForm, setDirectDebitForm] = useState<DirectDebitDetails>({
-    bsb: "",
-    accountNumber: "",
-    accountName: "",
+    bsb: '',
+    accountNumber: '',
+    accountName: ''
   });
-  const [payPalEmail, setPayPalEmail] = useState<string>("");
+  const [payPalEmail, setPayPalEmail] = useState<string>('');
 
   const toast = useToast();
   const { httpPost } = useApi(endpoints.book);
@@ -129,65 +129,52 @@ export const BookingPage = ({
   const { state } = useLocation();
 
   const billingDetailsSchema = yup.object().shape({
-    firstName: yup
-      .string()
-      .required("First name is required"),
-    lastName: yup
-      .string()
-      .required("Last name is required"),
-    company: yup
-      .string(),
-    addressLine1: yup
-      .string()
-      .required("Address line  is required"),
-    addressLine2: yup
-      .string(),
-    city: yup
-      .string()
-      .required("City is required"),
+    firstName: yup.string().required('First name is required'),
+    lastName: yup.string().required('Last name is required'),
+    company: yup.string(),
+    addressLine1: yup.string().required('Address line  is required'),
+    addressLine2: yup.string(),
+    city: yup.string().required('City is required'),
     postCode: yup
       .string()
-      .matches(/^\d{4}$/, "Postcode must be 4 digits")
-      .required("Postcode is required"),
-    state: yup
-      .string()
-      .required("State is required"),
+      .matches(/^\d{4}$/, 'Postcode must be 4 digits')
+      .required('Postcode is required'),
+    state: yup.string().required('State is required')
   });
 
   const cardDetailsSchema = yup.object().shape({
     cardNumber: yup
       .string()
-      .matches(/^\d{16}$/, "Card number must be 16 digits")
-      .required("Card number is required"),
-    cardholder: yup
-      .string()
-      .required("Card holder name is required"),
+      .matches(/^\d{16}$/, 'Card number must be 16 digits')
+      .required('Card number is required'),
+    cardholder: yup.string().required('Card holder name is required'),
     expiryDate: yup
       .string()
-      .matches(/^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/, "Expiry date must be valid and follow format DD/YY")
-      .required("Expiry date is required"),
+      .matches(
+        /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/,
+        'Expiry date must be valid and follow format DD/YY'
+      )
+      .required('Expiry date is required'),
     ccv: yup
       .string()
-      .matches(/^\d{3}$/, "CCV must be 3 digits")
-      .required("CCV is required"),
+      .matches(/^\d{3}$/, 'CCV must be 3 digits')
+      .required('CCV is required')
   });
 
   const directDebitDetailsSchema = yup.object().shape({
     bsb: yup
       .string()
-      .matches(/^\d{6}$/, "BSB must be 6 digits")
-      .required("BSB is required"),
+      .matches(/^\d{6}$/, 'BSB must be 6 digits')
+      .required('BSB is required'),
     accountNumber: yup
       .string()
-      .matches(/^\d{12}$/, "Account number must be 12 digits")
-      .required("Account number is required"),
-    accountName: yup
-      .string()
-      .required("Account name is required"),
+      .matches(/^\d{12}$/, 'Account number must be 12 digits')
+      .required('Account number is required'),
+    accountName: yup.string().required('Account name is required')
   });
 
   const paypalSchema = yup.object().shape({
-    email: yup.string().email('Must be a valid email').required("Email is required"),
+    email: yup.string().email('Must be a valid email').required('Email is required')
   });
 
   const submitEvent = async () => {
@@ -202,42 +189,48 @@ export const BookingPage = ({
         addressLine2: billingForm.addressLine2,
         city: billingForm.city,
         postCode: billingForm.postCode,
-        state: billingForm.state,
-      }
+        state: billingForm.state
+      };
 
-      if (!(await validateSchema(billingDetailsSchema, billingDetails, "Billing details"))){
+      if (!(await validateSchema(billingDetailsSchema, billingDetails, 'Billing details'))) {
         success = false;
       }
 
       var paymentDetails;
 
-      switch(paymentType?.toString()){
+      switch (paymentType?.toString()) {
         case 'CARD':
           paymentDetails = {
             cardNumber: cardForm.cardNumber,
             cardholder: cardForm.cardholder,
             expiryDate: cardForm.expiryDate,
-            ccv: cardForm.ccv,
-          }
-          if (!(await validateSchema(cardDetailsSchema, paymentDetails, "Card details"))){
+            ccv: cardForm.ccv
+          };
+          if (!(await validateSchema(cardDetailsSchema, paymentDetails, 'Card details'))) {
             success = false;
           }
           break;
         case 'DIRECT_DEBIT':
           paymentDetails = {
-           bsb: directDebitForm.bsb,
-           accountNumber: directDebitForm.accountNumber,
-           accountName: directDebitForm.accountName,
-          }
-          if (!(await validateSchema(directDebitDetailsSchema, paymentDetails, "Direct debit details"))){
+            bsb: directDebitForm.bsb,
+            accountNumber: directDebitForm.accountNumber,
+            accountName: directDebitForm.accountName
+          };
+          if (
+            !(await validateSchema(
+              directDebitDetailsSchema,
+              paymentDetails,
+              'Direct debit details'
+            ))
+          ) {
             success = false;
           }
           break;
         case 'PAYPAL':
           paymentDetails = {
-            email: payPalEmail,
-          }
-          if (!(await validateSchema(paypalSchema, paymentDetails, "Paypal email"))){
+            email: payPalEmail
+          };
+          if (!(await validateSchema(paypalSchema, paymentDetails, 'Paypal email'))) {
             success = false;
           }
           break;
@@ -254,17 +247,21 @@ export const BookingPage = ({
       });
     }
     return success;
-  }
+  };
 
-  const validateSchema = async (schema: yup.ObjectSchema<ObjectShape, any>, value: any, formName: string) => {
+  const validateSchema = async (
+    schema: yup.ObjectSchema<ObjectShape, any>,
+    value: any,
+    formName: string
+  ) => {
     let success = true;
     let errorArray: string[] = [];
     try {
       await schema.validate(value, { abortEarly: false });
     } catch (e) {
       if (e instanceof yup.ValidationError) {
-          success = false;
-          errorArray = e.errors;
+        success = false;
+        errorArray = e.errors;
       }
     }
 
@@ -285,30 +282,24 @@ export const BookingPage = ({
     });
 
     return await schema.isValid(value);
-  }
+  };
 
-  const generateErrorMsg = (array: string[], formName: string) => {
-    let errorMsg = formName + ' filled out incorrectly: ';
-    array.forEach(error => errorMsg = errorMsg + " - " + error);
-    return errorMsg;
-  }
+  const handleBillingChange =
+    (fieldValue: keyof BillingDetails) => (e: ChangeEvent<HTMLInputElement>) => {
+      setBillingForm((billingForm) => ({ ...billingForm, [fieldValue]: e.target.value }));
+    };
 
-  const handleBillingChange = (fieldValue: keyof BillingDetails) => (e: ChangeEvent<HTMLInputElement>) => {
-      setBillingForm(billingForm => ({...billingForm, [fieldValue]: e.target.value}));
-    }
-
-  const handleCardChange = (field: string,  value: any) => {
-      setCardForm(cardForm => ({...cardForm, [field]: value}));
-    }
+  const handleCardChange = (field: string, value: any) => {
+    setCardForm((cardForm) => ({ ...cardForm, [field]: value }));
+  };
 
   const handleDirectDebitChange = (field: string, value: any) => {
-    setDirectDebitForm(directDebitForm => ({...directDebitForm, [field]: value}));
-  }
+    setDirectDebitForm((directDebitForm) => ({ ...directDebitForm, [field]: value }));
+  };
 
   const handlePayPalChange = (value: any) => {
-    if (typeof value == 'string')
-      setPayPalEmail(value);
-  }
+    if (typeof value == 'string') setPayPalEmail(value);
+  };
 
   const handleBooking = () => {
     onOpen();
@@ -343,7 +334,7 @@ export const BookingPage = ({
 
   const onPaymentFieldChange = (field: string, value: any) => {
     setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, [field]: value } }));
-    switch(paymentType?.toString()){
+    switch (paymentType?.toString()) {
       case 'CARD':
         handleCardChange(field, value);
         break;
@@ -357,6 +348,10 @@ export const BookingPage = ({
   };
 
   useEffect(() => {
+    if (!state || !(state as { passengers: Passenger[] })?.passengers) {
+      navigate(routes.home);
+      return;
+    }
     const { passengers } = state as { passengers: Passenger[] };
     setBookingRequest({
       ...bookingRequest,
@@ -371,8 +366,8 @@ export const BookingPage = ({
   }, [paymentType]);
 
   if (!user) {
-    navigate(routes.login, {state: {redirectUrl: routes.home}})
-  } 
+    navigate(routes.login, { state: { redirectUrl: routes.home } });
+  }
 
   return (
     <Flex justifyContent='center' p='5em'>
@@ -392,33 +387,33 @@ export const BookingPage = ({
             <HStack w='full'>
               <FormControl flex={1}>
                 <FormLabel>First Name</FormLabel>
-                <Input onChange={handleBillingChange('firstName')}/>
+                <Input onChange={handleBillingChange('firstName')} />
               </FormControl>
               <FormControl flex={1}>
                 <FormLabel>Last Name</FormLabel>
-                <Input onChange={handleBillingChange('lastName')}/>
+                <Input onChange={handleBillingChange('lastName')} />
               </FormControl>
             </HStack>
             <FormControl>
               <FormLabel>Company (optional)</FormLabel>
-              <Input onChange={handleBillingChange('company')}/>
+              <Input onChange={handleBillingChange('company')} />
             </FormControl>
             <FormControl>
               <FormLabel>Address line 1</FormLabel>
-              <Input onChange={handleBillingChange('addressLine1')}/>
+              <Input onChange={handleBillingChange('addressLine1')} />
             </FormControl>
             <FormControl>
               <FormLabel>Address line 2</FormLabel>
-              <Input onChange={handleBillingChange('addressLine2')}/>
+              <Input onChange={handleBillingChange('addressLine2')} />
             </FormControl>
             <HStack w='full'>
               <FormControl flex={2}>
                 <FormLabel>City</FormLabel>
-                <Input onChange={handleBillingChange('city')}/>
+                <Input onChange={handleBillingChange('city')} />
               </FormControl>
               <FormControl flex={1}>
                 <FormLabel>Postcode</FormLabel>
-                <Input onChange={handleBillingChange('postCode')}/>
+                <Input onChange={handleBillingChange('postCode')} />
               </FormControl>
             </HStack>
             <HStack w='full'>
@@ -432,7 +427,7 @@ export const BookingPage = ({
               </FormControl>
               <FormControl flex={1}>
                 <FormLabel>State</FormLabel>
-                <Input onChange={handleBillingChange('state')}/>
+                <Input onChange={handleBillingChange('state')} />
               </FormControl>
             </HStack>
           </VStack>
@@ -465,11 +460,12 @@ export const BookingPage = ({
             <Switch mt='2em'>Save payment for future transactions?</Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
-            <Button onClick={async () => {
-              if(await submitEvent())
-                handleBooking();
-              }} 
-              colorScheme='red'>
+            <Button
+              onClick={async () => {
+                if (await submitEvent()) handleBooking();
+              }}
+              colorScheme='red'
+            >
               Book Now
             </Button>
             <Button as={NavLink} to={routes.search} colorScheme='gray'>
