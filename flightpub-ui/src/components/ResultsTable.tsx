@@ -16,7 +16,6 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[];
@@ -101,7 +100,10 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   type='button'
                   colorScheme='red'
                   onClick={() => {
-                    if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
+                    if (
+                      [...cart.filter((cartItem) => cartItem.id === (result?.flight || result).id)]
+                        .length > 0
+                    ) {
                       toast({
                         title: 'Error!',
                         description: 'Flight already in cart!.',
