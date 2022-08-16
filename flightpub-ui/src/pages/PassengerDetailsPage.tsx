@@ -63,6 +63,18 @@ export const PassengerDetailsPage = ({
 
   const { user, setUser } = useContext(UserContext);
 
+  useEffect(() => {
+    if (cart.length <= 0) {
+      toast({
+        title: 'No Items In Cart',
+        description: 'You must have at least 1 flight in your cart to checkout.',
+        status: 'error',
+        position: 'top'
+      });
+      navigate(routes.home);
+    }
+  }, [cart]);
+
   const passengerSchema = yup.object().shape({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),

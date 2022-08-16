@@ -126,8 +126,6 @@ export const BookingPage = ({
 
   const { state } = useLocation();
 
-  const [errorPaths, setErrorPaths] = useState([]);
-
   const billingDetailsSchema = yup.object().shape({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
@@ -348,6 +346,10 @@ export const BookingPage = ({
   };
 
   useEffect(() => {
+    if (!state || !(state as { passengers: Passenger[] })?.passengers) {
+      navigate(routes.home);
+      return;
+    }
     const { passengers } = state as { passengers: Passenger[] };
     setBookingRequest({
       ...bookingRequest,
