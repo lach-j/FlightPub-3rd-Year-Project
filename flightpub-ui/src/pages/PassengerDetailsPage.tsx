@@ -38,6 +38,7 @@ import { useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { UserContext } from '../services/UserContext';
 import { ClassCode, Passenger, PassengerDTO } from '../models/Passenger';
+import { FlightListAccordian } from '../components/FlightListAccordian';
 
 export const PassengerDetailsPage = ({
   cartState
@@ -358,57 +359,7 @@ export const PassengerDetailsPage = ({
           Finalise Booking
         </Heading>
         <Text>Flights:</Text>
-        <Accordion mb='1em' allowToggle={true} maxW='full' w='full'>
-          {cart.map((flight) => (
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex='1' textAlign='left'>
-                    <Flex width='full' justifyContent='space-between'>
-                      <HStack>
-                        <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
-                        <HiOutlineArrowNarrowRight />
-                        <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
-                      </HStack>
-                      <Text>{`$${flight.prices[0].price}`}</Text>
-                      <Text>{flight.airlineCode}</Text>
-                    </Flex>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Flex w='full' justifyContent='space-between' alignItems='center'>
-                  <Stat textAlign='left' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.departureTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.departureLocation.destinationCode}</StatNumber>
-                    <StatHelpText>DEPARTURE</StatHelpText>
-                  </Stat>
-                  <HiOutlineArrowNarrowRight />
-                  {renderStopOver(flight)}
-                  <HiOutlineArrowNarrowRight />
-                  <Stat textAlign='right' flex='none'>
-                    <StatLabel>
-                      {new Date(flight?.arrivalTime).toLocaleString('en-AU', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        hour12: false
-                      })}
-                    </StatLabel>
-                    <StatNumber>{flight?.arrivalLocation.destinationCode}</StatNumber>
-                    <StatHelpText>ARRIVAL</StatHelpText>
-                  </Stat>
-                </Flex>
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <FlightListAccordian flights={cart} />
       </Flex>
     );
   };
