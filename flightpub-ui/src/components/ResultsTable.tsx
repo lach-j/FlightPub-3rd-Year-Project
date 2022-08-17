@@ -16,12 +16,10 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
-
 
 type ResultsTableProps = {
-  columns: ColumnDefinition<any>[],
-  data: any[],
+  columns: ColumnDefinition<any>[];
+  data: any[];
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
@@ -102,24 +100,27 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   type='button'
                   colorScheme='red'
                   onClick={() => {
-                    if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
+                    if (
+                      [...cart.filter((cartItem) => cartItem.id === (result?.flight || result).id)]
+                        .length > 0
+                    ) {
                       toast({
-                          title: 'Error!',
-                          description: 'Flight already in cart!.',
-                          status: 'error',
-                          duration: 9000,
-                          isClosable: true,
-                          position: 'top'
+                        title: 'Error!',
+                        description: 'Flight already in cart!.',
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
                       });
                     } else {
-                      setCart((cart) => [...cart, result]);
+                      setCart((cart) => [...cart, result?.flight || result]);
                       toast({
-                          title: 'Success!',
-                          description: 'Flight added to cart successfully.',
-                          status: 'success',
-                          duration: 9000,
-                          isClosable: true,
-                          position: 'top'
+                        title: 'Success!',
+                        description: 'Flight added to cart successfully.',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
                       });
                     }
                   }}

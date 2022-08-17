@@ -36,7 +36,11 @@ const flightColumns: ColumnDefinition<any>[] = [
   }
 ];
 
-export const MapPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>] }) => {
+export const MapPage = ({
+  cartState
+}: {
+  cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
+}) => {
   useEffect(() => {
     document.title = 'FlightPub - Map Search';
   });
@@ -197,33 +201,38 @@ export const MapPage = ({ cartState }: { cartState: [Flight[], Dispatch<SetState
                         {/* flight airline */}
                         <Text fontSize='sm'>{flight.airlineCode}</Text>
                         {/* book flight button on Map UI element */}
-                        <Button colorScheme='red' 
-                        size='sm' 
-                        onClick={() => {
-                          if (result){
-                            if ([...cart.filter((cartItem) => cartItem.id === result?.id)].length > 0) {
-                              toast({
+                        <Button
+                          colorScheme='red'
+                          size='sm'
+                          onClick={() => {
+                            if (result) {
+                              if (
+                                [...cart.filter((cartItem) => cartItem.id === result?.id)].length >
+                                0
+                              ) {
+                                toast({
                                   title: 'Error!',
                                   description: 'Flight already in cart!.',
                                   status: 'error',
                                   duration: 9000,
                                   isClosable: true,
                                   position: 'top'
-                              });
-                            } else {
-                              let r: Flight = result;
-                              setCart((cart) => [...cart, r]);
-                              toast({
+                                });
+                              } else {
+                                let r: Flight = result;
+                                setCart((cart) => [...cart, r]);
+                                toast({
                                   title: 'Success!',
                                   description: 'Flight added to cart successfully.',
                                   status: 'success',
                                   duration: 9000,
                                   isClosable: true,
                                   position: 'top'
-                              });
+                                });
+                              }
                             }
-                          }
-                        }}>
+                          }}
+                        >
                           Add to Cart
                         </Button>
                       </Box>

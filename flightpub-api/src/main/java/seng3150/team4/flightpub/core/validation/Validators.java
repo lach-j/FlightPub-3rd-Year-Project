@@ -25,7 +25,10 @@ public class Validators {
 
   public static List<String> passwordValidator(String password) {
     // TODO: implement password validation
-    return new ArrayList<String>() {};
+    if (Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$").matcher(password).matches())
+      return new ArrayList<String>() {};
+
+    return List.of("The password must be 8 characters, contain at least one of each of the following - UPPERCASE character, lowercase character, digit.");
   }
 
   /**

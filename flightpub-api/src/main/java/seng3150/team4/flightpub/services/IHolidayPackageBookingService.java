@@ -13,4 +13,6 @@ public interface IHolidayPackageBookingService {
     HolidayPackageBooking makeHolidayPackageBooking(long holidayPackageId, long userId, Payment payment, Booking booking);
 
     void deleteHolidayPackageBooking(HolidayPackageBooking booking);
+
+    List<HolidayPackageBooking> getPackageBookingsByUserId(long userId);
 }

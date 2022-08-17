@@ -21,24 +21,21 @@ import {
   AvatarBadge,
   AvatarGroup,
   useBreakpointValue,
-  Input,
   Checkbox,
   HStack,
   Box,
-  useModal,
   ModalContent,
   Button,
   ModalBody,
   ModalCloseButton,
   ModalFooter,
   ModalHeader,
-  List,
   ListItem,
   OrderedList,
   Text
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { GoKebabVertical } from 'react-icons/go';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routes } from '../../constants/routes';
@@ -158,6 +155,8 @@ export const SessionListComponent = () => {
     return menuItemList;
   };
 
+  const isUserAdmin = user?.role === UserRole.ADMINISTRATOR || user?.role === UserRole.TRAVEL_AGENT;
+
   const maxAvatars = useBreakpointValue({ md: 4, sm: 1, base: 1 });
 
   return (
@@ -239,7 +238,18 @@ export const SessionListComponent = () => {
                   );
                   return (
                     <ListItem>
-                      {airport?.city}, {airport?.country}
+                      <Text>
+                        {airport?.city}, {airport?.country}
+                      </Text>
+                      <div>
+                        {isUserAdmin ? (
+                          <Button as={NavLink} to={routes.holidayPackages.base} colorScheme='gray'>
+                            Create Package
+                          </Button>
+                        ) : (
+                          <span></span>
+                        )}
+                      </div>
                     </ListItem>
                   );
                 })}

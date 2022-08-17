@@ -9,18 +9,21 @@ import {
   VStack
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
-import { Booking } from '../../models/Booking';
-import { FlightListAccordian } from '../../components/FlightListAccordian';
 import moment from 'moment';
 import { SavedPaymentComponent } from './SavedPaymentComponent';
+import { HolidayPackageBooking } from '../../models/HolidayPackageBooking';
+import { HolidayCard } from '../../components/HolidayCard';
 
-export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-  const { httpGet } = useApi(endpoints.bookings);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [sortFunction, setSortFunction] = useState<string>('bookedDesc');
+export const HolidayBookingHistoryTab = ({
+  setIsLoading
+}: {
+  setIsLoading: (value: boolean) => void;
+}) => {
+  const { httpGet } = useApi(endpoints.packageBookings);
+  const [bookings, setBookings] = useState<HolidayPackageBooking[]>([]);
+  const [sortFunction, setSortFunction] = useState<string>('');
 
   useEffect(() => {
     httpGet('').then((bookings) => {
@@ -31,47 +34,31 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const getSortMethod = () => {
     switch (sortFunction) {
       case 'bookedDesc':
-        return (a: Booking, b: Booking) =>
+        return (a: HolidayPackageBooking, b: HolidayPackageBooking) =>
           moment(a.dateBooked).isBefore(moment(b.dateBooked)) ? 1 : -1;
 
       case 'bookedAsc':
-        return (a: Booking, b: Booking) =>
+        return (a: HolidayPackageBooking, b: HolidayPackageBooking) =>
           moment(a.dateBooked).isBefore(moment(b.dateBooked)) ? -1 : 1;
 
       case 'priceAsc':
-        return (a: Booking, b: Booking) => getTotalCost(a) - getTotalCost(b);
+        return (a: HolidayPackageBooking, b: HolidayPackageBooking) =>
+          a.booking.flights.reduce((a, b) => a + b.prices[0].price, 0) -
+          b.booking.flights.reduce((a, b) => a + b.prices[0].price, 0);
 
       case 'priceDesc':
-        return (a: Booking, b: Booking) => getTotalCost(b) - getTotalCost(a);
+        return (a: HolidayPackageBooking, b: HolidayPackageBooking) =>
+          b.booking.flights.reduce((a, b) => a + b.prices[0].price, 0) -
+          a.booking.flights.reduce((a, b) => a + b.prices[0].price, 0);
     }
     return () => 1;
   };
 
-  const getTotalCost = (booking: Booking) => {
-    let total = 0;
-    booking.passengers.forEach((passenger) => {
-      console.log(passenger.ticketClass?.classCode);
-      booking.flights.forEach((flight) => {
-        console.log(flight.prices);
-        let price = flight.prices.find(
-          (p) => p.ticketClass.classCode === passenger.ticketClass?.classCode
-        );
-        console.log(price);
-        total += price?.price || 0;
-      });
-    });
-    return total;
-  };
-
   return (
     <>
-      <Heading mb='1em'>Booking History</Heading>
+      <Heading mb='1em'>Holiday Booking History</Heading>
       <Box mb='4'>
-        <Select
-          value={sortFunction}
-          onChange={(e) => setSortFunction(e.target.value)}
-          w='fit-content'
-        >
+        <Select onChange={(e) => setSortFunction(e.target.value)} w='fit-content'>
           <option value='bookedDesc'>Newest</option>
           <option value='bookedAsc'>Oldest</option>
           <option value='priceAsc'>Cheapest</option>
@@ -91,30 +78,31 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                 <Text>Booked: {moment(date).format('DD/MM/yyy HH:mm')}</Text>
                 <Text>Reference Number: {booking.id}</Text>
               </HStack>
-              <Text mb='2'>Flights:</Text>
-              <FlightListAccordian flights={booking.flights} />
+              <VStack>
+                <HolidayCard data={booking.holidayPackage} showBookButton={false}></HolidayCard>
+              </VStack>
               <HStack alignItems='baseline' justifyContent='space-between'>
                 <Box>
-                  <Text mt='4' mb='2'>
+                  <Text mt='2' mb='2'>
                     Passengers:
                   </Text>
                   <OrderedList>
-                    {booking.passengers?.map((p) => (
-                      <ListItem>
-                        <HStack>
-                          <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
-                          <Text decoration='underline' title={p.ticketClass.details}>
-                            [{p.ticketClass.classCode}]
-                          </Text>
-                        </HStack>
-                      </ListItem>
+                    {booking.booking.passengers?.map((p) => (
+                      <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
                     ))}
                   </OrderedList>
-
                   <Text mt='4'>
-                    <Text fontWeight='bold'>Total Cost:</Text>
+                    <Text fontWeight='bold'>Total Flight Cost:</Text>
                     {' $'}
-                    {getTotalCost(booking)}
+                    {booking.holidayPackage.flights.reduce((a, b) => a + b.prices[0].price, 0)}
+                  </Text>
+                  <Text mt='2'>
+                    <Text fontWeight='bold'>Total Cost (inc. Package):</Text>
+                    {' $'}
+                    {booking.holidayPackage.flights.reduce(
+                      (a, b) => a + b.prices[0].price,
+                      booking.holidayPackage?.price
+                    )}
                   </Text>
                 </Box>
                 {booking?.payment?.type && (

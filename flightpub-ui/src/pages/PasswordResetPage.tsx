@@ -9,8 +9,10 @@ import {
   Heading,
   Input,
   Link,
+  ListItem,
   Spinner,
   Stack,
+  UnorderedList,
   useToast
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useEffect, useState } from 'react';
@@ -19,6 +21,18 @@ import { ApiError } from '../services/ApiService';
 import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
 import { routes } from '../constants/routes';
 import { endpoints } from '../constants/endpoints';
+import * as yup from 'yup';
+
+const userDetailsSchema = yup.object().shape({
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters long.')
+    .matches(
+      /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+      'Password must contain at least one uppercase, one lowercase and 1 numeric character.'
+    )
+    .required('Password is a required field')
+});
 
 function useQuery() {
   const { search } = useLocation();
@@ -68,8 +82,10 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
   };
 
   //Password reset handler
-  const handleReset = (e: SyntheticEvent) => {
+  const handleReset = async (e: SyntheticEvent) => {
     e.preventDefault(); //prevents stand HTML form submission protocol
+    if (!(await dataIsValid())) return;
+
     setLoading(true);
 
     //if form fields are empty
@@ -98,6 +114,16 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
             //if not all fields filled
             setAuthError(true);
             setErrMessage('All fields are mandatory');
+          } else if (err.statusCode === 401) {
+            toast({
+              title: 'Invalid Token',
+              description:
+                'This link is invalid or has expired, please request a new reset link and try again.',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+              position: 'top'
+            });
           } else {
             //for all other errors
             toast({
@@ -115,6 +141,32 @@ export const PasswordResetPage = ({ redirectPath }: { redirectPath?: string }) =
     }, 1000);
     setAuthError(false); //reset authError boolean on page reload
   };
+
+  const dataIsValid = async () => {
+    if (await userDetailsSchema.isValid(resetRequest)) return true;
+
+    try {
+      await userDetailsSchema.validate(resetRequest, { abortEarly: false });
+    } catch (e) {
+      if (e instanceof yup.ValidationError) {
+        toast({
+          title: 'Invalid Details',
+          description: (
+            <UnorderedList>
+              {e.errors.map((e) => (
+                <ListItem>{e}</ListItem>
+              ))}
+            </UnorderedList>
+          ),
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top'
+        });
+      }
+    }
+  };
+
   //Handles update of reset password input, updating value(s)
   const handleResetDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setResetRequest({

@@ -44,4 +44,13 @@ public class HolidayPackageBookingService implements IHolidayPackageBookingServi
     public void deleteHolidayPackageBooking(HolidayPackageBooking holidayPackageBooking) {
         holidayPackageBookingRepository.delete(holidayPackageBooking);
     }
+    @Override
+    public List<HolidayPackageBooking> getPackageBookingsByUserId(long userId) {
+        var bookings = holidayPackageBookingRepository.findByUserId(userId);
+        if (bookings.isEmpty())
+            throw new EntityNotFoundException(
+                    String.format("No bookings for user with id %s found", userId));
+
+        return bookings;
+    }
 }

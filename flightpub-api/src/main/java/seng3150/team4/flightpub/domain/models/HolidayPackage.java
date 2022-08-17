@@ -18,7 +18,7 @@ public class HolidayPackage implements IEntity {
 
     @Column(name = "Id")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "isPopular")
@@ -48,8 +48,4 @@ public class HolidayPackage implements IEntity {
             inverseJoinColumns = {@JoinColumn(name = "FlightId")})
     private Set<Flight> flights = new HashSet<>();
 
-    @JsonManagedReference
-    @OneToMany
-    @JoinColumn(name = "HolidayPackageId", referencedColumnName = "Id")
-    private Set<HolidayPackageBooking> holidayPackageBookings;
 }
