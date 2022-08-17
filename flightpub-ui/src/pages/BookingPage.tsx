@@ -180,7 +180,7 @@ export const BookingPage = ({
   const submitEvent = async () => {
     let success = true;
     let pType = paymentType?.toString();
-    if (pType) {
+    if (pType && bookingRequest?.payment) {
       let billingDetails = {
         firstName: billingForm.firstName,
         lastName: billingForm.lastName,
@@ -361,13 +361,29 @@ export const BookingPage = ({
   }, [state]);
 
   useEffect(() => {
-    if (paymentType)
-      setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, type: paymentType } }));
+    if (paymentType && paymentType !== SavedPaymentType.SAVED)
+      setBookingRequest((br: any) => ({ ...br, payment: { type: paymentType } }));
   }, [paymentType]);
 
   if (!user) {
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   }
+
+  const getTotalCost = () => {
+    const booking: { passengers: [{ ticketClass: string }]; flights: Flight[] } = {
+      passengers: bookingRequest.passengers,
+      flights: cart
+    };
+
+    let total = 0;
+    booking.passengers.forEach((passenger) => {
+      booking.flights.forEach((flight) => {
+        let price = flight.prices.find((p) => p.ticketClass.classCode === passenger.ticketClass);
+        total += price?.price || 0;
+      });
+    });
+    return total;
+  };
 
   return (
     <Flex justifyContent='center' p='5em'>
@@ -377,10 +393,7 @@ export const BookingPage = ({
         </Heading>
         <Text>Flights:</Text>
         <FlightListAccordian flights={cart} />
-        <Text mb='4em'>{`Subtotal: $${cart.reduce(
-          (partialSum, a) => partialSum + a.prices[0].price,
-          0
-        )}`}</Text>
+        <Text mb='4em'>{`Subtotal: $${getTotalCost()}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
@@ -453,11 +466,27 @@ export const BookingPage = ({
               </Select>
             </FormControl>
             {paymentType && (
-              <PaymentDetailsForm onFieldChange={onPaymentFieldChange} paymentType={paymentType} />
+              <PaymentDetailsForm
+                savedPaymentSelected={(p) => {
+                  setBookingRequest((br: any) => ({
+                    ...br,
+                    payment: p ? { ...p, type: p.type } : undefined
+                  }));
+                }}
+                onFieldChange={onPaymentFieldChange}
+                paymentType={paymentType}
+              />
             )}
           </VStack>
-          {paymentType !== SavedPaymentType.SAVED && (
-            <Switch mt='2em'>Save payment for future transactions?</Switch>
+          {paymentType && paymentType !== SavedPaymentType.SAVED && (
+            <Switch
+              mt='2em'
+              onChange={(e) => {
+                setBookingRequest((br: any) => ({ ...br, savePayment: e.target.checked }));
+              }}
+            >
+              Save payment for future transactions?
+            </Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
             <Button

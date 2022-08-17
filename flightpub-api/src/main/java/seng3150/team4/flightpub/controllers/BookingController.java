@@ -13,11 +13,13 @@ import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.models.Passenger;
+import seng3150.team4.flightpub.domain.models.SavedPayment;
 import seng3150.team4.flightpub.domain.repositories.ITicketClassRepository;
 import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IBookingService;
 import seng3150.team4.flightpub.services.IPassengerService;
+import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.services.PaymentService;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class BookingController {
   private final PaymentService paymentService;
   private final CurrentUserContext currentUserContext;
   private final ITicketClassRepository ticketClassRepository;
+  private final IUserService userService;
 
   @Authorized
   @PostMapping(path = "/book")
@@ -42,6 +45,13 @@ public class BookingController {
     bookingRequest.validate();
 
     var payment = paymentService.addPayment(bookingRequest.getPayment());
+
+    if (bookingRequest.isSavePayment()) {
+      var savedPayment = new SavedPayment();
+      savedPayment.setNickname(String.format("%s-%d", payment.getType().toString(), payment.getId()));
+      savedPayment.setPayment(payment);
+      userService.addNewPayment(userId, savedPayment);
+    }
 
     var savedBooking = bookingService.makeBooking(bookingRequest.getFlightIds(), userId, payment);
 

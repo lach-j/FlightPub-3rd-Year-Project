@@ -1,17 +1,28 @@
-import { VStack, HStack, FormControl, FormLabel, Input, Button, Select } from '@chakra-ui/react';
-import React, { HTMLInputTypeAttribute, useContext, useEffect, useState } from 'react';
+import {
+  VStack,
+  HStack,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  Select,
+  Text
+} from '@chakra-ui/react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BiLinkExternal } from 'react-icons/bi';
 import { endpoints } from '../constants/endpoints';
-import { SavedPayment, SavedPaymentType } from '../models/SavedPaymentTypes';
+import { PaymentType, SavedPayment, SavedPaymentType } from '../models/SavedPaymentTypes';
 import { useApi } from '../services/ApiService';
 import { UserContext } from '../services/UserContext';
 
 export const PaymentDetailsForm = ({
   paymentType,
-  onFieldChange
+  onFieldChange,
+  savedPaymentSelected
 }: {
   paymentType: SavedPaymentType;
   onFieldChange?: (field: string, value: any) => void;
+  savedPaymentSelected?: (payment: PaymentType | undefined) => void;
 }) => {
   const { user, setUser } = useContext(UserContext);
   const { httpGet } = useApi(endpoints.users);
@@ -26,6 +37,25 @@ export const PaymentDetailsForm = ({
   const handleChanges = (fieldValue: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     onFieldChange && onFieldChange(fieldValue, e.target.value);
   };
+
+  const handleSavedPaymentSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const payment = savedPayments.find((p) => p.payment.id?.toString() === e.target.value);
+    if (!payment) return;
+
+    savedPaymentSelected && savedPaymentSelected(payment.payment);
+  };
+
+  useEffect(() => {
+    if (paymentType !== SavedPaymentType.SAVED) return;
+
+    const payment = savedPayments?.[0];
+    if (!payment) {
+      savedPaymentSelected && savedPaymentSelected(undefined);
+      return;
+    }
+
+    savedPaymentSelected && savedPaymentSelected(payment.payment);
+  }, [paymentType]);
 
   //switch statement defines flow based on payment type
   switch (paymentType) {
@@ -86,12 +116,14 @@ export const PaymentDetailsForm = ({
       );
     //If user payment type is 'saved'
     case SavedPaymentType.SAVED:
-      return (
-        <Select>
+      return savedPayments && savedPayments.length > 0 ? (
+        <Select onChange={handleSavedPaymentSelected}>
           {savedPayments.map((s) => (
-            <option value={s.nickname}>{s.nickname}</option>
+            <option value={s.id}>{s.nickname}</option>
           ))}
         </Select>
+      ) : (
+        <Text>You have no saved payments.</Text>
       );
   }
 };

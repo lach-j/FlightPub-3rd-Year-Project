@@ -98,7 +98,6 @@ export const HolidayPackageBookingPage = () => {
   };
 
   useEffect(() => {
-    console.log(packageId);
     getPackage()
       .then(setHolidayPackage)
       .catch((err: ApiError) => {
@@ -339,7 +338,6 @@ export const HolidayPackageBookingPage = () => {
           isClosable: true,
           position: 'top'
         });
-        console.log(bookingRequest);
         navigate(routes.home);
       })
       .catch((err: ApiError) => {
@@ -746,7 +744,6 @@ export const HolidayPackageBookingPage = () => {
               name={i.toString()}
               onClick={(e) => {
                 let index = Number(e.currentTarget.getAttribute('id'));
-                console.log(index);
                 handleRemovePassenger(index);
                 setPassengerCount(passengerCount - 1);
               }}

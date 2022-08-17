@@ -89,6 +89,11 @@ export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
     }, 1000);
     setAuthError(false);
   };
+
+  useEffect(() => {
+    if (user) redirectUser();
+  }, [user]);
+
   //Handles update of login input, updating value(s)
   const handleLoginDetailsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthRequest({ ...authRequest, [event.target.name]: event.target.value });
