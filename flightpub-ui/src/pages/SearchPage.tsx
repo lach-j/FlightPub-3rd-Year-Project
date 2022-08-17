@@ -22,6 +22,7 @@ import {
   Spinner,
   StackDivider,
   Table,
+  TableContainer,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -77,32 +78,29 @@ interface SearchQuery {
 }
 
 export const SearchPage = () => {
-	const navigate = useNavigate(); //enables react programmatic navigation
-	const [flexEnabled, setFlexEnabled] = useState(false); //state for tracking whether user has selected flexdate option
-	const [multiLegEnabled, setMultiLegEnabled] = useState(false); //state for tracking whether multi-leg flights are desired
-	const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
-	const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
-	const toast = useToast();
-	const historyJson = localStorage.getItem("searchHistory")
-	const history = historyJson == null ? [] : JSON.parse(historyJson)
-	const items = history.map((searchQuery: SearchQuery, index: number) => {
-		function viewDetails() {
-			setSearchQuery(searchQuery)
-		}
-		return (
-			<Tr key={index}>
-				<Td width='100%'>
-					{searchQuery.departureCode}
-					-
-					{searchQuery.destinationCode}
-				</Td>
-				<Td>
-					<Button onClick={viewDetails}>Recall Search</Button>
-				</Td>
-			</Tr>
-		)
-	})
-
+  const navigate = useNavigate(); //enables react programmatic navigation
+  const [flexEnabled, setFlexEnabled] = useState(false); //state for tracking whether user has selected flexdate option
+  const [multiLegEnabled, setMultiLegEnabled] = useState(false); //state for tracking whether multi-leg flights are desired
+  const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
+  const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
+  const toast = useToast();
+  const historyJson = localStorage.getItem('searchHistory');
+  const history = historyJson == null ? [] : JSON.parse(historyJson);
+  const items = history.map((searchQuery: SearchQuery, index: number) => {
+    function viewDetails() {
+      setSearchQuery(searchQuery);
+    }
+    return (
+      <Tr key={index}>
+        <Td width='100%'>
+          {searchQuery.departureCode}-{searchQuery.destinationCode}
+        </Td>
+        <Td>
+          <Button onClick={viewDetails}>Recall Search</Button>
+        </Td>
+      </Tr>
+    );
+  });
 
   useEffect(() => {
     document.title = 'FlightPub - Search';
@@ -144,12 +142,12 @@ export const SearchPage = () => {
   //Handles search event for search form
   function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); //prevents stand HTML form submission protocol
-    const historyJson = localStorage.getItem("searchHistory")
-		const history = historyJson == null ? [] : JSON.parse(historyJson)
-		history.unshift(searchQuery)
-		const recentHistory = history.slice(0, 5)
-		const newJson = JSON.stringify(recentHistory)
-		localStorage.setItem("searchHistory", newJson)
+    const historyJson = localStorage.getItem('searchHistory');
+    const history = historyJson == null ? [] : JSON.parse(historyJson);
+    history.unshift(searchQuery);
+    const recentHistory = history.slice(0, 5);
+    const newJson = JSON.stringify(recentHistory);
+    localStorage.setItem('searchHistory', newJson);
     onOpen();
     //gets flight in formation from search query
     httpGet('', searchQuery)
@@ -236,80 +234,85 @@ export const SearchPage = () => {
     return null;
   }
 
+  return (
+    <Box p='2em'>
+      <Center>
+        <form onSubmit={handleSearch}>
+          <FormControl as='fieldset'>
+            <FormLabel as='legend' fontSize='2xl'>
+              Search for a flight
+            </FormLabel>
+            <VStack gap='2em'>
+              <HStack
+                alignItems='flex-start'
+                divider={<StackDivider borderColor='gray.200' />}
+                gap='3em'
+              >
+                <VStack
+                  divider={<StackDivider borderColor='gray.200' />}
+                  spacing={2}
+                  align='stretch'
+                >
+                  {/* Departure location input */}
+                  <Box>
+                    <FormControl isRequired>
+                      <FormLabel>Departure Location</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        suggestWhenEmpty
+                        onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
+                      >
+                        <AutoCompleteInput
+                          onInput={(event: any) =>
+                            handleSearchQueryUpdate('departureCode', event.target.value)
+                          }
+                          value={searchQuery.departureCode}
+                          defaultValue={searchQuery.departureCode}
+                          variant='filled'
+                          placeholder={
+                            airport ? airport?.city + ' / ' + airport?.code : 'City / CODE'
+                          }
+                        />
+                        <AutoCompleteList>
+                          {airports.map(({ code, city }) => (
+                            <AutoCompleteItem key={code} value={code} align='center'>
+                              <Text ml='4'>{city}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
 
-	return (
-		<Box p='2em'>
-			<Center>
-				<form onSubmit={handleSearch}>
-					<FormControl as='fieldset'>
-						<FormLabel as='legend' fontSize='2xl'>
-							Search for a flight
-						</FormLabel>
-						<VStack gap='2em'>
-							<HStack
-								alignItems='flex-start'
-								divider={<StackDivider borderColor='gray.200' />}
-								gap='3em'
-							>
-								<VStack
-									divider={<StackDivider borderColor='gray.200' />}
-									spacing={2}
-									align='stretch'
-								>
-									{/* Departure location input */}
-									<Box>
-										<FormControl isRequired>
-											<FormLabel>Departure Location</FormLabel>
-											<AutoComplete
-												openOnFocus
-												suggestWhenEmpty
-												onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
-											>
-												<AutoCompleteInput
-													onInput={(event: any) => handleSearchQueryUpdate('departureCode', event.target.value)}
-													value={searchQuery.departureCode}
-													defaultValue={searchQuery.departureCode}
-													variant='filled'
-													placeholder={airport ? (airport?.city + " / " + airport?.code) : ("City / CODE")}
-												/>
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem key={code} value={code} align='center'>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
-
-									{/* Arrival location input */}
-									<Box>
-										<FormControl>
-											<FormLabel>Arrival Location</FormLabel>
-											<AutoComplete
-												openOnFocus
-												suggestWhenEmpty
-												// emptyState={true}
-												onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
-											>
-												<AutoCompleteInput
-													onInput={(event: any) => handleSearchQueryUpdate('destinationCode', event.target.value)}
-													value={searchQuery.destinationCode}
-													defaultValue={searchQuery.destinationCode}
-													// onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
-													variant='filled'
-												/>
-												<AutoCompleteList>
-													{airports.map(({ code, city }) => (
-														<AutoCompleteItem key={code} value={code} align='center'>
-															<Text ml='4'>{city}</Text>
-														</AutoCompleteItem>
-													))}
-												</AutoCompleteList>
-											</AutoComplete>
-										</FormControl>
-									</Box>
+                  {/* Arrival location input */}
+                  <Box>
+                    <FormControl>
+                      <FormLabel>Arrival Location</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        suggestWhenEmpty
+                        // emptyState={true}
+                        onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
+                      >
+                        <AutoCompleteInput
+                          onInput={(event: any) =>
+                            handleSearchQueryUpdate('destinationCode', event.target.value)
+                          }
+                          value={searchQuery.destinationCode}
+                          defaultValue={searchQuery.destinationCode}
+                          // onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                          variant='filled'
+                        />
+                        <AutoCompleteList>
+                          {airports.map(({ code, city }) => (
+                            <AutoCompleteItem key={code} value={code} align='center'>
+                              <Text ml='4'>{city}</Text>
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                  </Box>
 
                   {/* Multi-leg flight checkbox */}
                   <Box>
@@ -356,60 +359,59 @@ export const SearchPage = () => {
                                 </Tr>
                               </Thead>
 
-
-															{/* Dropdown for ticket type */}
-															<Tbody>
-																{ticketOptions.map((option) => (
-																	<Tr key={option.key}>
-																		<Td>{option.label}</Td>
-																		<Td>
-																			<NumberInput
-																				w='5em'
-																				onChange={(value) =>
-																					handleTicketUpdate(
-																						value ? parseInt(value) : 0,
-																						option.key
-																					)
-																				}
-																				defaultValue={0}
-																				min={0}
-																				allowMouseWheel
-																			>
-																				<NumberInputField />
-																				<NumberInputStepper>
-																					<NumberIncrementStepper />
-																					<NumberDecrementStepper />
-																				</NumberInputStepper>
-																			</NumberInput>
-																		</Td>
-																	</Tr>
-																))}
-															</Tbody>
-														</Table>
-													</AccordionPanel>
-												</AccordionItem>
-											</Accordion>
-										</FormControl>
-									</Box>
-									<Box>
-										{/* Handles type of flight (return or one-way) */}
-										<FormControl isRequired>
-											<FormLabel htmlFor='flightType'>Type </FormLabel>
-											<Select
-												value={searchQuery.returnFlight ?'return':'one-way'}
-												onChange={(e) =>
-													handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
-												}
-												name='flightType'
-												id='flightType'
-												placeholder='Select flight Type'
-												maxW={240}
-											>
-												<option value='one-way'>One-way</option>
-												<option value='return'>Round trip</option>
-											</Select>
-										</FormControl>
-									</Box>
+                              {/* Dropdown for ticket type */}
+                              <Tbody>
+                                {ticketOptions.map((option) => (
+                                  <Tr key={option.key}>
+                                    <Td>{option.label}</Td>
+                                    <Td>
+                                      <NumberInput
+                                        w='5em'
+                                        onChange={(value) =>
+                                          handleTicketUpdate(
+                                            value ? parseInt(value) : 0,
+                                            option.key
+                                          )
+                                        }
+                                        defaultValue={0}
+                                        min={0}
+                                        allowMouseWheel
+                                      >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                          <NumberIncrementStepper />
+                                          <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                      </NumberInput>
+                                    </Td>
+                                  </Tr>
+                                ))}
+                              </Tbody>
+                            </Table>
+                          </AccordionPanel>
+                        </AccordionItem>
+                      </Accordion>
+                    </FormControl>
+                  </Box>
+                  <Box>
+                    {/* Handles type of flight (return or one-way) */}
+                    <FormControl isRequired>
+                      <FormLabel htmlFor='flightType'>Type </FormLabel>
+                      <Select
+                        value={searchQuery.returnFlight ? 'return' : 'one-way'}
+                        onChange={(e) =>
+                          handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
+                        }
+                        name='flightType'
+                        id='flightType'
+                        placeholder='Select flight Type'
+                        maxW={240}
+                      >
+                        <option value='one-way'>One-way</option>
+                        <option value='return'>Round trip</option>
+                      </Select>
+                    </FormControl>
+                  </Box>
 
                   {/* Divider for the two columns */}
                 </VStack>
@@ -557,29 +559,26 @@ export const SearchPage = () => {
                 </VStack>
               </HStack>
 
-							{/* Submission button */}
-							<Box>
-								<Button type='submit' colorScheme='red'>
-									Search
-								</Button>
-							</Box>
-							<FormLabel as='legend' fontSize='1xl'>
-							Previously Searched Flights
-							</FormLabel>
-							<TableContainer width="100%">
-								<Table>
-									{items}
-								</Table>
-							</TableContainer>
-						</VStack>
-					</FormControl>
-				</form>
-			</Center >
-			<Modal isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
-			</Modal>
-		</Box >
-	);
-
+              {/* Submission button */}
+              <Box>
+                <Button type='submit' colorScheme='red'>
+                  Search
+                </Button>
+              </Box>
+              <FormLabel as='legend' fontSize='1xl'>
+                Previously Searched Flights
+              </FormLabel>
+              <TableContainer width='100%'>
+                <Table>{items}</Table>
+              </TableContainer>
+            </VStack>
+          </FormControl>
+        </form>
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <Spinner style={{ position: 'absolute', top: '50vh', left: '50vw' }} />
+      </Modal>
+    </Box>
+  );
 };
