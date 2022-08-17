@@ -27,6 +27,11 @@ public class Passenger implements IEntity {
     @Column(name = "Email")
     private String email;
 
+    @JoinColumn(name = "ClassCode")
+    @ManyToOne()
+    private TicketClass ticketClass;
+
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "BookingId")
