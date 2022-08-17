@@ -465,8 +465,15 @@ export const BookingPage = ({
               />
             )}
           </VStack>
-          {paymentType !== SavedPaymentType.SAVED && (
-            <Switch mt='2em'>Save payment for future transactions?</Switch>
+          {paymentType && paymentType !== SavedPaymentType.SAVED && (
+            <Switch
+              mt='2em'
+              onChange={(e) => {
+                setBookingRequest((br: any) => ({ ...br, savePayment: e.target.checked }));
+              }}
+            >
+              Save payment for future transactions?
+            </Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
             <Button
