@@ -8,6 +8,7 @@ export const airports: Airport[] = [
     city: 'Atlanta',
     country: 'United States',
     code: 'ATL',
+
     tags: ['holiday', 'family-friendly', 'sports', 'united states', 'u.s.']
   },
   {
@@ -17,6 +18,7 @@ export const airports: Airport[] = [
     city: 'Chicago',
     country: 'United States',
     code: 'ORD',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'united states', 'u.s.']
   },
   {
@@ -26,6 +28,7 @@ export const airports: Airport[] = [
     city: 'London',
     country: 'United Kingdom',
     code: 'LHR',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'romantic', 'europe', 'u.k.', 'england']
   },
   {
@@ -35,7 +38,9 @@ export const airports: Airport[] = [
     city: 'Paris',
     country: 'France',
     code: 'CDG',
+
     tags: ['holiday', 'family-friendly', 'romantic', 'france']
+
   },
   {
     coordinates: [-118.408075, 33.942536],
@@ -44,6 +49,7 @@ export const airports: Airport[] = [
     city: 'Los Angeles',
     country: 'United States',
     code: 'LAX',
+
     tags: ['beach', 'holiday', 'family-friendly', 'sports', 'united states', 'u.s.', 'surfing']
   },
   {
@@ -53,6 +59,7 @@ export const airports: Airport[] = [
     city: 'New York',
     country: 'United States',
     code: 'JFK',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'united states', 'u.s.']
   },
   {
@@ -62,6 +69,7 @@ export const airports: Airport[] = [
     city: 'Amsterdam',
     country: 'Netherlands',
     code: 'AMS',
+
     tags: ['snow', 'holiday', 'romantic', 'europe', 'experimentation']
   },
   {
@@ -71,7 +79,9 @@ export const airports: Airport[] = [
     city: 'Singapore',
     country: 'Singapore',
     code: 'SIN',
+
     tags: ['holiday', 'asia']
+
   },
   {
     coordinates: [-80.290556, 25.79325],
@@ -80,7 +90,9 @@ export const airports: Airport[] = [
     city: 'Miami',
     country: 'United States',
     code: 'MIA',
+
     tags: ['beach', 'holiday', 'sports', 'united states', 'u.s.', 'surfing']
+
   },
   {
     coordinates: [11.786086, 48.353783],
@@ -89,6 +101,7 @@ export const airports: Airport[] = [
     city: 'Munich',
     country: 'Germany',
     code: 'MUC',
+
     tags: ['snow', 'holiday', 'germany', 'europe']
   },
   {
@@ -98,6 +111,7 @@ export const airports: Airport[] = [
     city: 'Hong Kong',
     country: 'Hong Kong',
     code: 'HKG',
+
     tags: ['holiday', 'asia']
   },
   {
@@ -107,6 +121,7 @@ export const airports: Airport[] = [
     city: 'Dubai',
     country: 'United Arab Emirates',
     code: 'DXB',
+
     tags: ['holiday', 'romantic', 'uae']
   },
   {
@@ -116,6 +131,7 @@ export const airports: Airport[] = [
     city: 'London',
     country: 'United Kingdom',
     code: 'LGW',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'romantic', 'europe', 'u.k.', 'england']
   },
   {
@@ -125,6 +141,7 @@ export const airports: Airport[] = [
     city: 'Rome',
     country: 'Italy',
     code: 'FCO',
+
     tags: ['holiday', 'family-friendly', 'romantic', 'italy']
   },
   {
@@ -134,6 +151,7 @@ export const airports: Airport[] = [
     city: 'Madrid',
     country: 'Spain',
     code: 'MAD',
+
     tags: ['holiday', 'sports', 'romantic', 'spain']
   },
   {
@@ -143,6 +161,7 @@ export const airports: Airport[] = [
     city: 'Bangkok',
     country: 'Thailand',
     code: 'BKK',
+
     tags: ['beach', 'holiday', 'asia']
   },
   {
@@ -152,6 +171,7 @@ export const airports: Airport[] = [
     city: 'Toronto',
     country: 'Canada',
     code: 'YYZ',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'canada']
   },
   {
@@ -161,6 +181,7 @@ export const airports: Airport[] = [
     city: 'Vienna',
     country: 'Austria',
     code: 'VIE',
+
     tags: ['snow', 'holiday', 'family-friendly', 'sports', 'europe', 'austria']
   },
   {
@@ -170,6 +191,7 @@ export const airports: Airport[] = [
     city: 'Tokyo',
     country: 'Japan',
     code: 'NRT',
+
     tags: ['snow', 'holiday', 'family-friendly', 'asia', 'japan']
   },
   {
@@ -179,6 +201,7 @@ export const airports: Airport[] = [
     city: 'Kuala Lumpur',
     country: 'Malaysia',
     code: 'KUL',
+
     tags: ['holiday', 'asia', 'malaysia']
   },
   {
@@ -188,6 +211,7 @@ export const airports: Airport[] = [
     city: 'San Francisco',
     country: 'United States',
     code: 'SFO',
+
     tags: ['holiday', 'family-friendly', 'sports', 'united states', 'u.s.']
   },
   {
@@ -197,6 +221,7 @@ export const airports: Airport[] = [
     city: 'Sydney',
     country: 'Australia',
     code: 'SYD',
+
     tags: ['beach', 'holiday', 'family-friendly', 'sports', 'romantic', 'australia', 'surfing']
   },
   {
@@ -206,6 +231,7 @@ export const airports: Airport[] = [
     city: 'Paris',
     country: 'France',
     code: 'ORY',
+
     tags: ['holiday', 'family-friendly', 'sports', 'europe', 'france']
   },
   {
@@ -215,6 +241,7 @@ export const airports: Airport[] = [
     city: 'Doha',
     country: 'Qatar',
     code: 'DOH',
+
     tags: ['asia', 'holiday']
   },
   {
@@ -224,6 +251,7 @@ export const airports: Airport[] = [
     city: 'Johannesburg',
     country: 'South Africa',
     code: 'JNB',
+
     tags: ['africa', 'holiday']
   },
   {
@@ -233,6 +261,7 @@ export const airports: Airport[] = [
     city: 'Helsinki',
     country: 'Finland',
     code: 'HEL',
+
     tags: ['snow', 'holiday', 'europe']
   },
   {
@@ -242,6 +271,7 @@ export const airports: Airport[] = [
     city: 'New York',
     country: 'United States',
     code: 'LGA',
+
     tags: ['holiday', 'family-friendly', 'sports', 'u.s.', 'united states']
   },
   {
@@ -251,6 +281,7 @@ export const airports: Airport[] = [
     city: 'Brisbane',
     country: 'Australia',
     code: 'BNE',
+
     tags: ['beach', 'snow', 'holiday', 'family-friendly', 'sports', 'romantic', 'australia']
   },
   {
@@ -260,6 +291,7 @@ export const airports: Airport[] = [
     city: 'Melbourne',
     country: 'Australia',
     code: 'MEL',
+
     tags: ['beach', 'holiday', 'family-friendly', 'sports', 'romantic', 'australia', 'surfing']
   },
   {
@@ -269,6 +301,7 @@ export const airports: Airport[] = [
     city: 'Honolulu',
     country: 'United States',
     code: 'HNL',
+
     tags: ['beach', 'holiday', 'family-friendly', 'u.s.', 'united states', 'surfing']
   },
   {
@@ -278,6 +311,7 @@ export const airports: Airport[] = [
     city: 'Rio De Janeiro',
     country: 'Brazil',
     code: 'GIG',
+
     tags: ['beach', 'holiday', 'romantic', 'brazil', 'surfing']
   },
   {
@@ -287,6 +321,7 @@ export const airports: Airport[] = [
     city: 'Perth',
     country: 'Australia',
     code: 'PER',
+
     tags: ['beach', 'holiday', 'family-friendly', 'sports', 'australia', 'surfing']
   },
   {
@@ -296,6 +331,7 @@ export const airports: Airport[] = [
     city: 'Cairns',
     country: 'Australia',
     code: 'CNS',
+
     tags: ['beach', 'holiday', 'family-friendly', 'australia', 'surfing']
   },
   {
@@ -305,6 +341,7 @@ export const airports: Airport[] = [
     city: 'Adelaide',
     country: 'Australia',
     code: 'ADL',
+
     tags: ['beach', 'holiday', 'family-friendly', 'sports', 'australia', 'surfing']
   },
   {
@@ -314,6 +351,7 @@ export const airports: Airport[] = [
     city: 'Darwin',
     country: 'Australia',
     code: 'DRW',
+
     tags: ['beach', 'holiday', 'family-friendly', 'australia', 'surfing']
   },
   {
@@ -323,6 +361,7 @@ export const airports: Airport[] = [
     city: 'Coolangatta',
     country: 'Australia',
     code: 'OOL',
+
     tags: ['beach', 'holiday', 'family-friendly', 'surfing', 'australia']
   },
   {
@@ -332,6 +371,7 @@ export const airports: Airport[] = [
     city: 'Canberra',
     country: 'Australia',
     code: 'CBR',
+
     tags: ['holiday', 'family-friendly', 'sports', 'australia']
   },
   {
@@ -341,6 +381,7 @@ export const airports: Airport[] = [
     city: 'Hobart',
     country: 'Australia',
     code: 'HBA',
+
     tags: ['holiday', 'family-friendly', 'romantic', 'australia']
   }
 ];
