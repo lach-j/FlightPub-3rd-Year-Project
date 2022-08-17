@@ -176,9 +176,10 @@ export const BookingPage = ({
   });
 
   const submitEvent = async () => {
+    console.log(bookingRequest?.payment);
     let success = true;
     let pType = paymentType?.toString();
-    if (pType) {
+    if (pType && bookingRequest?.payment) {
       let billingDetails = {
         firstName: billingForm.firstName,
         lastName: billingForm.lastName,
@@ -359,8 +360,8 @@ export const BookingPage = ({
   }, [state]);
 
   useEffect(() => {
-    if (paymentType)
-      setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, type: paymentType } }));
+    if (paymentType && paymentType !== SavedPaymentType.SAVED)
+      setBookingRequest((br: any) => ({ ...br, payment: { type: paymentType } }));
   }, [paymentType]);
 
   if (!user) {
@@ -451,7 +452,17 @@ export const BookingPage = ({
               </Select>
             </FormControl>
             {paymentType && (
-              <PaymentDetailsForm onFieldChange={onPaymentFieldChange} paymentType={paymentType} />
+              <PaymentDetailsForm
+                savedPaymentSelected={(p) => {
+                  console.log(p);
+                  setBookingRequest((br: any) => ({
+                    ...br,
+                    payment: p ? { ...p, type: p.type } : undefined
+                  }));
+                }}
+                onFieldChange={onPaymentFieldChange}
+                paymentType={paymentType}
+              />
             )}
           </VStack>
           {paymentType !== SavedPaymentType.SAVED && (
