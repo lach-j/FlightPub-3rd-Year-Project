@@ -50,13 +50,10 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const getTotalCost = (booking: Booking) => {
     let total = 0;
     booking.passengers.forEach((passenger) => {
-      console.log(passenger.ticketClass?.classCode);
       booking.flights.forEach((flight) => {
-        console.log(flight.prices);
         let price = flight.prices.find(
           (p) => p.ticketClass.classCode === passenger.ticketClass?.classCode
         );
-        console.log(price);
         total += price?.price || 0;
       });
     });

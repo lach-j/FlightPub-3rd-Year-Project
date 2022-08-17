@@ -1,4 +1,8 @@
-export type PaymentType = DirectDebitPayment | CardPayment | PaypalPayment | Saved;
+import { number } from 'yup';
+
+export type PaymentType = (DirectDebitPayment | CardPayment | PaypalPayment | Saved) & {
+  id?: number;
+};
 
 interface DirectDebitPayment extends Payment {
   type: SavedPaymentType.DIRECT_DEBIT;

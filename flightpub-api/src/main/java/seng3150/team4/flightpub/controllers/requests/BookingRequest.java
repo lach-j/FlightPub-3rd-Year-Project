@@ -21,6 +21,8 @@ public class BookingRequest extends Validatable {
 
   private Payment payment;
 
+  private boolean savePayment;
+
   @Override
   protected ValidationResult getErrors() {
     return new ValidationResult();

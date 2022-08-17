@@ -328,7 +328,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(0)}>
+              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(i)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}
