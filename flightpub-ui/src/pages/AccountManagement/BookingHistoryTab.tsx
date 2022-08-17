@@ -100,7 +100,14 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                   </Text>
                   <OrderedList>
                     {booking.passengers?.map((p) => (
-                      <ListItem>{`${p.firstName} ${p.lastName} - ${p.email}`}</ListItem>
+                      <ListItem>
+                        <HStack>
+                          <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
+                          <Text decoration='underline' title={p.ticketClass.details}>
+                            [{p.ticketClass.classCode}]
+                          </Text>
+                        </HStack>
+                      </ListItem>
                     ))}
                   </OrderedList>
 
