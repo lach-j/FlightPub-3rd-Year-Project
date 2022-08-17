@@ -22,6 +22,7 @@ import {
 	Spinner,
 	StackDivider,
 	Table,
+	TableContainer,
 	Tag,
 	TagCloseButton,
 	TagLabel,
@@ -97,7 +98,7 @@ export const SearchPage = () => {
 					{searchQuery.destinationCode}
 				</Td>
 				<Td>
-					<Button onClick={viewDetails}>View Details</Button>
+					<Button onClick={viewDetails}>Recall Search</Button>
 				</Td>
 			</Tr>
 		)
@@ -143,6 +144,12 @@ export const SearchPage = () => {
 	//Handles search event for search form
 	function handleSearch(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault(); //prevents stand HTML form submission protocol
+		const historyJson = localStorage.getItem("searchHistory")
+		const history = historyJson == null ? [] : JSON.parse(historyJson)
+		history.unshift(searchQuery)
+		const recentHistory = history.slice(0, 5)
+		const newJson = JSON.stringify(recentHistory)
+		localStorage.setItem("searchHistory", newJson)
 		onOpen();
 		//gets flight in formation from search query
 		httpGet('', searchQuery)
@@ -249,6 +256,7 @@ export const SearchPage = () => {
 												onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
 											>
 												<AutoCompleteInput
+													onInput={(event: any) => handleSearchQueryUpdate('departureCode', event.target.value)}
 													value={searchQuery.departureCode}
 													defaultValue={searchQuery.departureCode}
 													variant='filled'
@@ -276,6 +284,7 @@ export const SearchPage = () => {
 												onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
 											>
 												<AutoCompleteInput
+													onInput={(event: any) => handleSearchQueryUpdate('destinationCode', event.target.value)}
 													value={searchQuery.destinationCode}
 													defaultValue={searchQuery.destinationCode}
 													// onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
@@ -546,6 +555,9 @@ export const SearchPage = () => {
 									Search
 								</Button>
 							</Box>
+							<FormLabel as='legend' fontSize='1xl'>
+							Previously Searched Flights
+							</FormLabel>
 							<TableContainer width="100%">
 								<Table>
 									{items}
