@@ -26,7 +26,8 @@ import {
   useDisclosure,
   useToast,
   VStack,
-  UnorderedList
+  UnorderedList,
+  OrderedList
 } from '@chakra-ui/react';
 import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
 import React, {
@@ -47,7 +48,7 @@ import { routes } from '../constants/routes';
 import { Booking } from '../models/Booking';
 import { Flight } from '../models/Flight';
 import { endpoints } from '../constants/endpoints';
-import { Passenger } from '../models/Passenger';
+import { Passenger, PassengerDTO } from '../models/Passenger';
 import { PaymentType, SavedPaymentType } from '../models/SavedPaymentTypes';
 import { UserContext } from '../services/UserContext';
 import { FlightListAccordian } from '../components/FlightListAccordian';
@@ -265,21 +266,21 @@ export const BookingPage = ({
       }
     }
 
-    if (!success) 
-    toast({
-      title: formName + " filled out incorrectly:",
-      description: (
-        <UnorderedList>
-          {errorArray.map((e) => (
-            <ListItem>{e}</ListItem>
-          ))}
-        </UnorderedList>
-      ),
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-      position: 'top'
-    });
+    if (!success)
+      toast({
+        title: formName + ' filled out incorrectly:',
+        description: (
+          <UnorderedList>
+            {errorArray.map((e) => (
+              <ListItem>{e}</ListItem>
+            ))}
+          </UnorderedList>
+        ),
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+        position: 'top'
+      });
 
     return await schema.isValid(value);
   };
@@ -369,6 +370,8 @@ export const BookingPage = ({
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   }
 
+  console.table(bookingRequest);
+
   const getTotalCost = () => {
     const booking: { passengers: [{ ticketClass: string }]; flights: Flight[] } = {
       passengers: bookingRequest.passengers,
@@ -393,7 +396,24 @@ export const BookingPage = ({
         </Heading>
         <Text>Flights:</Text>
         <FlightListAccordian flights={cart} />
-        <Text mb='4em'>{`Subtotal: $${getTotalCost()}`}</Text>
+        <Text mt='4' mb='2'>
+          Passengers:
+        </Text>
+        <OrderedList mb='3'>
+          {bookingRequest.passengers?.map((p: PassengerDTO) => (
+            <ListItem>
+              <HStack>
+                <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
+                <Text decoration='underline'>[{p.ticketClass}]</Text>
+              </HStack>
+            </ListItem>
+          ))}
+        </OrderedList>
+        <Text
+          fontSize='xl'
+          textDecoration='underline'
+          mb='4em'
+        >{`Subtotal: $${getTotalCost()}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>

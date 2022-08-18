@@ -53,7 +53,7 @@ export const PassengerDetailsPage = ({
   const [passengerCount, setPassengerCount] = useState<number>(1);
 
   const [firstNames, setFirstNames] = useState<string[]>(['']);
-  const [ticketClasses, setTicketClass] = useState<ClassCode[]>([ClassCode.Business]);
+  const [ticketClasses, setTicketClass] = useState<string[]>(['BUS']);
   const [lastNames, setLastNames] = useState<string[]>(['']);
   const [emails, setEmails] = useState<string[]>(['']);
   const [confEmails, setConfEmails] = useState<string[]>(['']);
@@ -122,14 +122,14 @@ export const PassengerDetailsPage = ({
     }
 
     if (!success)
-    toast({
+      toast({
         title: 'Incorrectly filled for Passenger ' + index,
         description: (
-            <UnorderedList>
-                {errorArray.map(e => (
-                    <ListItem>{e}</ListItem>
-                ))}
-            </UnorderedList>
+          <UnorderedList>
+            {errorArray.map((e) => (
+              <ListItem>{e}</ListItem>
+            ))}
+          </UnorderedList>
         ),
         status: 'error',
         duration: 9000,
@@ -198,7 +198,7 @@ export const PassengerDetailsPage = ({
 
         case 'ticketClass':
           let tempTicketClasses = [...ticketClasses];
-          tempTicketClasses[0] = ClassCode[event.target.value as keyof typeof ClassCode];
+          tempTicketClasses[index] = event.target.value;
           setTicketClass(tempTicketClasses);
           break;
       }
@@ -246,6 +246,7 @@ export const PassengerDetailsPage = ({
     lastNames.push('');
     emails.push('');
     confEmails.push('');
+    ticketClasses.push('BUS');
   };
 
   const handleRemovePassenger = (index: number) => {

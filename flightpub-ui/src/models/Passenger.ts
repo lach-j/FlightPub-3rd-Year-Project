@@ -2,7 +2,7 @@ export interface PassengerDTO {
   firstName: string;
   lastName: string;
   email: string;
-  ticketClass?: ClassCode;
+  ticketClass?: string;
 }
 
 export interface Passenger {
