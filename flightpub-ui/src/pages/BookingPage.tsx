@@ -87,6 +87,18 @@ export const BookingPage = ({
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) => {
   useEffect(() => {
+    if (cartState[0].length <= 0) {
+      toast({
+        title: 'No Items In Cart',
+        description: 'You must have at least 1 flight in your cart to checkout.',
+        status: 'error',
+        position: 'top'
+      });
+      navigate(routes.home);
+    }
+  }, [cartState[0]]);
+
+  useEffect(() => {
     document.title = 'FlightPub - Bookings';
   });
   // SavedPayment takes DirectDebit, Card, Paypal and Saved payment types
