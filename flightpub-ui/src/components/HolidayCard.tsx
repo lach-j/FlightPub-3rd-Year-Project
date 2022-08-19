@@ -72,30 +72,14 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
   ];
 
   return (
-    <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px'>
+    <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px' rounded={'lg'}>
       <HStack spacing={5}>
-        <Box
-          bg={useColorModeValue('white', 'gray.800')}
-          maxW='md'
-          borderWidth='1px'
-          border='1px'
-          boxShadow='2xl'
-          borderColor='grey.200'
-          rounded='lg'
-          shadow='lg'
-          position='relative'
-        >
+        <Box bg={useColorModeValue('white', 'gray.800')} maxW='md' position='relative'>
           {data.isPopular && (
             <Circle size='10px' position='absolute' top={2} right={2} bg='red.200' />
           )}
 
-          <Image
-            src={data.imageURL}
-            alt={`Picture of ${data.packageName}`}
-            htmlHeight={600}
-            htmlWidth={400}
-            roundedTop='lg'
-          />
+          <Image src={data.imageURL} alt={`Picture of ${data.packageName}`} roundedTop='lg' />
 
           <Box p='4'>
             <Wrap spacing='5px'>
@@ -121,10 +105,10 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
               })}*/}
             </Wrap>
-            <Flex mt='1' justifyContent='space-between' alignContent='center'>
+            <Flex justifyContent='space-between' alignContent='center'>
               <Box
                 fontSize='2xl'
-                minW='500px'
+                maxW='500px'
                 fontWeight='semibold'
                 as='h4'
                 lineHeight='tight'
@@ -133,11 +117,11 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
                 {data.packageName}
               </Box>
             </Flex>
-            <Flex mt='1' justifyContent='space-between' alignContent='center'>
+            <Flex justifyContent='space-between' alignContent='center'>
               <Box
                 color={useColorModeValue('gray.500', 'white')}
                 fontSize='xl'
-                minW='500px'
+                maxW='500px'
                 fontWeight='semibold'
                 as='h2'
                 lineHeight='tight'
@@ -147,7 +131,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
               </Box>
             </Flex>
 
-            <HStack spacing='15px'>
+            <HStack spacing='5px'>
               <Box fontSize='xl' color={useColorModeValue('gray.500', 'white')}>
                 {data.packageNights} nights
               </Box>
@@ -192,7 +176,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
             overflow='hidden'
           >
             <Box pl={5}>
-              <Stack spacing={4} minW={500}>
+              <Stack spacing={3} maxW={500}>
                 <Heading fontSize='3xl' fontFamily='heading'>
                   {data.packageTagline}
                 </Heading>

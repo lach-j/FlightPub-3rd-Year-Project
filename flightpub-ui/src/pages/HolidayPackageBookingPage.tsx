@@ -759,8 +759,8 @@ export const HolidayPackageBookingPage = () => {
   };
 
   return (
-    <Flex justifyContent='center' p='5em'>
-      <Flex justifyContent='center' direction='column' w='50em'>
+    <Flex justifyContent='center' p='2em'>
+      <Flex justifyContent='center' direction='column' w='60em'>
         <Center>
           <Box>
             {holidayPackage ? (
@@ -768,23 +768,10 @@ export const HolidayPackageBookingPage = () => {
             ) : (
               <h1>Nothing here, please check back later!</h1>
             )}
-            <Text>HolidayPackageId: {bookingRequest?.holidayPackageId}</Text>
-            <h1>Selected Flights: </h1>
-            <div>
-              {bookingRequest.flightIds.map((entry: any) => (
-                <div>{entry}</div>
-              ))}
-            </div>
-
-            <h1>Selected Passengers: </h1>
-            <div>
-              {bookingRequest.passengers.map((entry: PassengerDTO) => (
-                <div>{entry.firstName}</div>
-              ))}
-            </div>
           </Box>
         </Center>
-        <Box boxShadow='dark-lg' p='6' rounded='md' bg='white'>
+        <br />
+        <Box p='6' rounded='md'>
           {renderPackageInfo()}
           {renderPassengerForms()}
           <Button

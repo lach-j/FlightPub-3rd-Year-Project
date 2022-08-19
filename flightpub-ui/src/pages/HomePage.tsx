@@ -10,6 +10,8 @@ import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { HolidayPackage } from '../models/HolidayCardProps';
+import { HolidayCardSmall } from '../components/HolidayCardSmall';
 
 export function HomePage({
   cartState
@@ -27,12 +29,14 @@ export function HomePage({
 
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
+  const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([]);
 
   //airlines : list of all airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
   const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
+  const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
 
   //takes price and returns cheapest price value as a string
   const getMinPriceString = (prices: Price[]) => {
@@ -79,6 +83,7 @@ export function HomePage({
   useEffect(() => {
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
+    httpGetHolidayPackages('/getByDeparture/' + airport.code).then(setHolidayPackageList);
   }, [airport]);
 
   return (
@@ -128,6 +133,24 @@ export function HomePage({
           </VStack>
         </VStack>
       </Center>
+      <VStack align={'center'}>
+        <Heading as='h1' size='lg'>
+          Recommended Holiday Packages
+        </Heading>
+        <Box overflowX='auto' maxWidth={'100%'}>
+          <HStack spacing={1} align='center'>
+            {holidayPackageList.length !== 0 ? (
+              holidayPackageList.map((value) => (
+                <Box>
+                  <HolidayCardSmall data={value} showBookButton={true}></HolidayCardSmall>
+                </Box>
+              ))
+            ) : (
+              <h1>No holiday packages have been created yet.</h1>
+            )}
+          </HStack>
+        </Box>
+      </VStack>
     </Grid>
   );
 }

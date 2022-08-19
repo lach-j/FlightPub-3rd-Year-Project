@@ -9,9 +9,11 @@ import {
   FormLabel,
   Grid,
   Heading,
+  HStack,
   Input,
   Stack,
   StackDivider,
+  Switch,
   Text,
   useToast,
   VStack
@@ -22,8 +24,6 @@ import { endpoints } from '../constants/endpoints';
 import { Airline, Flight } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 
-import { NavLink } from 'react-router-dom';
-import { routes } from '../constants/routes';
 import { HolidayCard } from '../components/HolidayCard';
 import { HolidayPackage } from '../models/HolidayCardProps';
 import {
@@ -54,8 +54,8 @@ export function HolidayPackagesPage() {
   useEffect(() => {
     document.title = 'FlightPub - Holiday Packages';
   });
-
   const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([]);
+  const [localHolidayPackageList, setLocalHolidayPackageList] = useState<HolidayPackage[]>([]);
   const [currentFlight, setCurrentFlight] = useState(0);
 
   const [holidayPackage, setHolidayPackage] = useState<CreateHolidayPackageQuery>({
@@ -96,6 +96,9 @@ export function HolidayPackagesPage() {
       [event.target.name]: event.target.checked
     });
   };
+  const handleToggleChange = (e: {
+    target: { checked: boolean | ((prevState: boolean) => boolean) };
+  }) => setLocalOnly(e.target.checked);
 
   const handleCreateQueryUpdate = (field: keyof CreateHolidayPackageQuery, value: any) => {
     setHolidayPackage({ ...holidayPackage, [field]: value });
@@ -151,6 +154,7 @@ export function HolidayPackagesPage() {
 
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
+  const [localOnly, setLocalOnly] = useState(false);
 
   //airlines : list of all airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
@@ -171,6 +175,7 @@ export function HolidayPackagesPage() {
   useEffect(() => {
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
+    httpGetHolidayPackages('/getByDeparture/' + airport.code).then(setLocalHolidayPackageList);
   }, [airport]);
 
   useEffect(() => {
@@ -186,10 +191,21 @@ export function HolidayPackagesPage() {
       </Center>
       <Center>
         <VStack spacing={2} align='center' divider={<StackDivider borderColor='white' />}>
-          <Heading paddingTop="10px" as='h1' size='lg'>
-            Holiday Packages and Deals from {airport?.city}
+          <Heading paddingTop='10px' as='h1' size='lg'>
+            Holiday Packages and Deals
           </Heading>
-
+          <div>
+            {airport ? (
+              <HStack>
+                <Heading as='h1' size='md' noOfLines={1} fontStyle={'bold'}>
+                  Only show packages from {airport?.city}:
+                </Heading>
+                <Switch name='localOnly' checked={localOnly} onChange={handleToggleChange} />
+              </HStack>
+            ) : (
+              <div></div>
+            )}
+          </div>
           {userHasPrivileges ? (
             <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
               <form onSubmit={handlePackageCreation}>
@@ -292,7 +308,7 @@ export function HolidayPackagesPage() {
                       </FormControl>
                       <Box>
                         <FormControl>
-                          <FormLabel>Arrival Location:</FormLabel>
+                          <FormLabel>Departure Location:</FormLabel>
                           <AutoComplete
                             openOnFocus
                             suggestWhenEmpty
@@ -324,21 +340,15 @@ export function HolidayPackagesPage() {
           ) : (
             <span></span>
           )}
-
           <VStack>
-            {holidayPackageList.length !== 0 ? (
-              holidayPackageList.map((value) => (
-                <HolidayCard data={value} showBookButton={true}></HolidayCard>
-              ))
-            ) : (
-              <h1>Nothing here, please check back later!</h1>
-            )}
+            {localOnly
+              ? localHolidayPackageList.map((value) => (
+                  <HolidayCard data={value} showBookButton={true}></HolidayCard>
+                ))
+              : holidayPackageList.map((value) => (
+                  <HolidayCard data={value} showBookButton={true}></HolidayCard>
+                ))}
           </VStack>
-          <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
-              Search For a Flight
-            </Button>
-          </Box>
         </VStack>
       </Center>
     </Grid>
