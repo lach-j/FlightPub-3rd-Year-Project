@@ -181,17 +181,12 @@ export function HolidayPackagesPage() {
 
   return (
     <Grid>
+      <Center backgroundColor='#112147' width='100%' mx='auto'>
+        <img src={logo} alt='Logo' width='400px' />
+      </Center>
       <Center>
         <VStack spacing={2} align='center' divider={<StackDivider borderColor='white' />}>
-          <Center backgroundColor='gray.600' maxW='1000px' mx='auto'>
-            <img src={logo} alt='Logo' width='1000px' />
-          </Center>
-          <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
-              Search For a Flight
-            </Button>
-          </Box>
-          <Heading as='h1' size='lg'>
+          <Heading paddingTop="10px" as='h1' size='lg'>
             Holiday Packages and Deals from {airport?.city}
           </Heading>
 
@@ -339,6 +334,11 @@ export function HolidayPackagesPage() {
               <h1>Nothing here, please check back later!</h1>
             )}
           </VStack>
+          <Box>
+            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
+              Search For a Flight
+            </Button>
+          </Box>
         </VStack>
       </Center>
     </Grid>
