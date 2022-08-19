@@ -1,5 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +18,8 @@ public class HolidayPackage implements IEntity {
 
     @Column(name = "Id")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "isPopular")
     private Boolean isPopular;
@@ -46,4 +47,5 @@ public class HolidayPackage implements IEntity {
             joinColumns = {@JoinColumn(name = "HolidayPackageId")},
             inverseJoinColumns = {@JoinColumn(name = "FlightId")})
     private Set<Flight> flights = new HashSet<>();
+
 }

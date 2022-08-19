@@ -14,9 +14,11 @@ export const endpoints = {
   flightUpdate: '/flightUpdate',
   bookHolidayPackage: '/bookHolidayPackage',
   bookings: '/bookings',
-  createHolidayPackage: '/holidayPackages/createHolidayPackage',
+  createHolidayPackage: '/holidayPackages/holiday-packages',
   holidayPackages: '/holidayPackages',
   wishlist: '/wishlist',
   covid: '/admin/covid',
-  getCanceled: '/admin/cancelled-flights'
+  getCanceled: '/admin/cancelled-flights',
+  packageBookings: '/packageBookings',
+  wishlist: '/wishlist'
 };

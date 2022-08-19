@@ -9,8 +9,11 @@ import {
   HStack,
   Input,
   Link,
+  ListItem,
   Stack,
-  useToast
+  UnorderedList,
+  useToast,
+  Text
 } from '@chakra-ui/react';
 import React, { SyntheticEvent, useState, useEffect } from 'react';
 import { useApi } from '../services/ApiService';
@@ -20,6 +23,21 @@ import { routes } from '../constants/routes';
 import { User } from '../models/User';
 import { endpoints } from '../constants/endpoints';
 import { FaArrowRight } from 'react-icons/fa';
+import * as yup from 'yup';
+
+const userDetailsSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is a required field'),
+  lastName: yup.string().required('Last Name is a required field'),
+  email: yup.string().email('Invalid email').required('Email is a required field'),
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters long.')
+    .matches(
+      /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+      'Password must contain at least one uppercase, one lowercase and 1 numeric character.'
+    )
+    .required('Password is a required field')
+});
 
 export const RegisterPage = () => {
   useEffect(() => {
@@ -47,8 +65,11 @@ export const RegisterPage = () => {
   };
 
   //Handles registration event for registration form
-  const handleRegister = (e: SyntheticEvent) => {
+  const handleRegister = async (e: SyntheticEvent) => {
     e.preventDefault();
+
+    if (!(await dataIsValid())) return;
+
     setLoading(true);
     setTimeout(() => {
       httpPost('', registerRequest) //posts registration request
@@ -68,6 +89,20 @@ export const RegisterPage = () => {
           //if an error occurs in registration process
           if (err.statusCode === 401) {
             setAuthError(true);
+          } else if (err.statusCode === 409) {
+            toast({
+              title: 'User Already Exists',
+              description: (
+                <Text>
+                  An account with this username already exists, if you cannot access your account
+                  try <Link href={routes.forgotPassword}>reseting your password</Link>.
+                </Text>
+              ),
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+              position: 'top'
+            });
           } else {
             toast({
               title: 'Error.',
@@ -91,6 +126,32 @@ export const RegisterPage = () => {
       [event.target.name]: event.target.value
     });
   };
+
+  const dataIsValid = async () => {
+    if (await userDetailsSchema.isValid(registerRequest)) return true;
+
+    try {
+      await userDetailsSchema.validate(registerRequest, { abortEarly: false });
+    } catch (e) {
+      if (e instanceof yup.ValidationError) {
+        toast({
+          title: 'Invalid Details',
+          description: (
+            <UnorderedList>
+              {e.errors.map((e) => (
+                <ListItem>{e}</ListItem>
+              ))}
+            </UnorderedList>
+          ),
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top'
+        });
+      }
+    }
+  };
+
   return (
     <Center w='full' h='full' p='5'>
       <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>

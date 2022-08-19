@@ -22,6 +22,7 @@ import {
   Spinner,
   StackDivider,
   Table,
+  TableContainer,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -83,6 +84,23 @@ export const SearchPage = () => {
   const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
   const [searchTags, setSearchTags] = useState<Array<string>>([]); //user input search tags
   const toast = useToast();
+  const historyJson = localStorage.getItem('searchHistory');
+  const history = historyJson == null ? [] : JSON.parse(historyJson);
+  const items = history.map((searchQuery: SearchQuery, index: number) => {
+    function viewDetails() {
+      setSearchQuery(searchQuery);
+    }
+    return (
+      <Tr key={index}>
+        <Td width='100%'>
+          {searchQuery.departureCode}-{searchQuery.destinationCode}
+        </Td>
+        <Td>
+          <Button onClick={viewDetails}>Recall Search</Button>
+        </Td>
+      </Tr>
+    );
+  });
 
   useEffect(() => {
     document.title = 'FlightPub - Search';
@@ -118,23 +136,39 @@ export const SearchPage = () => {
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(getPosition);
-    handleSearchQueryUpdate('departureCode', airport?.code);
+    // handleSearchQueryUpdate('departureCode', airport?.code);
   }, [airport]);
 
   //Handles search event for search form
   function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); //prevents stand HTML form submission protocol
+    const historyJson = localStorage.getItem('searchHistory');
+    const history = historyJson == null ? [] : JSON.parse(historyJson);
+    history.unshift(searchQuery);
+    const recentHistory = history.slice(0, 5);
+    const newJson = JSON.stringify(recentHistory);
+    localStorage.setItem('searchHistory', newJson);
     onOpen();
     //gets flight in formation from search query
     httpGet('', searchQuery)
-      .then((results) =>
+      .then((results) => {
+        if (results.length == 0) {
+          toast({
+            title: 'No Results',
+            description:
+              'Your search returned no results, try changing your criteria to widen your search.',
+            status: 'info',
+            isClosable: true
+          });
+          return;
+        }
         navigate(routes.searchResults, {
           state: {
             query: searchQuery,
             results
           }
-        })
-      )
+        });
+      })
       .catch((err: ApiError) => {
         //error handling
         toast({
@@ -166,7 +200,6 @@ export const SearchPage = () => {
     { key: 'PME', label: 'Premium Economy' }
   ];
 
-  //TODO: something is going wrong here, the searchTags array is fine, but is not updating the searchQuery properly
   //update the search tags, and prevent duplicate tags
   function handleTagUpdate(value: string) {
     if (searchTags.includes(value)) {
@@ -181,7 +214,7 @@ export const SearchPage = () => {
       return;
     }
     setSearchTags((searchTags) => [...searchTags, value]);
-    handleSearchQueryUpdate('searchTags', searchTags);
+    handleSearchQueryUpdate('searchTags', searchTags.push(value));
   }
 
   //props for the tag message which displays when no tags are selected
@@ -230,6 +263,11 @@ export const SearchPage = () => {
                         onChange={(value) => handleSearchQueryUpdate('departureCode', value)}
                       >
                         <AutoCompleteInput
+                          onInput={(event: any) =>
+                            handleSearchQueryUpdate('departureCode', event.target.value)
+                          }
+                          value={searchQuery.departureCode}
+                          defaultValue={searchQuery.departureCode}
                           variant='filled'
                           placeholder={
                             airport ? airport?.city + ' / ' + airport?.code : 'City / CODE'
@@ -253,11 +291,16 @@ export const SearchPage = () => {
                       <AutoComplete
                         openOnFocus
                         suggestWhenEmpty
-                        emptyState={true}
+                        // emptyState={true}
                         onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
                       >
                         <AutoCompleteInput
-                          onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                          onInput={(event: any) =>
+                            handleSearchQueryUpdate('destinationCode', event.target.value)
+                          }
+                          value={searchQuery.destinationCode}
+                          defaultValue={searchQuery.destinationCode}
+                          // onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
                           variant='filled'
                         />
                         <AutoCompleteList>
@@ -355,6 +398,7 @@ export const SearchPage = () => {
                     <FormControl isRequired>
                       <FormLabel htmlFor='flightType'>Type </FormLabel>
                       <Select
+                        value={searchQuery.returnFlight ? 'return' : 'one-way'}
                         onChange={(e) =>
                           handleSearchQueryUpdate('returnFlight', e.target.value === 'return')
                         }
@@ -385,16 +429,16 @@ export const SearchPage = () => {
                           <AutoComplete
                             openOnFocus
                             suggestWhenEmpty
-                            // onChange={(e) => {
-                            // 	handleTagUpdate(e.target.value);
-                            // }}
-                            onChange={(value: string) => handleTagUpdate(value)}
+                            onChange={(value: string) => {
+                              handleTagUpdate(value);
+                              handleSearchQueryUpdate('searchTags', [...searchTags]);
+                            }}
                           >
                             <AutoCompleteInput variant='filled' placeholder='Surfing' />
                             <AutoCompleteList>
-                              {tags.map(({ label }) => (
-                                <AutoCompleteItem key={label} value={label} align='center'>
-                                  <Text ml='4'>{label}</Text>
+                              {tags.map(({ value }) => (
+                                <AutoCompleteItem key={value} value={value} align='center'>
+                                  <Text ml='4'>{value}</Text>
                                 </AutoCompleteItem>
                               ))}
                             </AutoCompleteList>
@@ -404,7 +448,7 @@ export const SearchPage = () => {
                     </Box>
                     <label>Selected Tags</label>
                     <Box width='15rem'>
-                      <TagMessage length={searchTags.length} />
+                      <TagMessage length={searchTags?.length} />
                       {searchTags.map((item) => (
                         <Tag
                           size='md'
@@ -415,9 +459,12 @@ export const SearchPage = () => {
                         >
                           <TagLabel>{item}</TagLabel>
                           <TagCloseButton
-                            onClick={() =>
-                              setSearchTags(searchTags.filter((value) => value !== item))
-                            }
+                            onClick={() => {
+                              setSearchTags(searchTags.filter((value) => value !== item));
+                              handleSearchQueryUpdate('searchTags', [
+                                ...searchTags.filter((value) => value !== item)
+                              ]);
+                            }}
                           />
                         </Tag>
                       ))}
@@ -518,6 +565,12 @@ export const SearchPage = () => {
                   Search
                 </Button>
               </Box>
+              <FormLabel as='legend' fontSize='1xl'>
+                Previously Searched Flights
+              </FormLabel>
+              <TableContainer width='100%'>
+                <Table>{items}</Table>
+              </TableContainer>
             </VStack>
           </FormControl>
         </form>

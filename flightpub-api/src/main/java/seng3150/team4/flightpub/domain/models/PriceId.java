@@ -16,19 +16,19 @@ public class PriceId implements Serializable {
 
   private Long flightId;
 
-  private String classCode;
+  private String ticketClass;
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
     PriceId entity = (PriceId) o;
-    return Objects.equals(this.classCode, entity.classCode)
+    return Objects.equals(this.ticketClass, entity.ticketClass)
         && Objects.equals(this.flightId, entity.flightId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(classCode, flightId);
+    return Objects.hash(ticketClass, flightId);
   }
 }

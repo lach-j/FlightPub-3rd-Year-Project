@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, VStack } from '@chakra-ui/react';
+import { Box, Button, Center, Grid, Heading, StackDivider, VStack, HStack } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
+import plane from '../HomePageStockShot.jpg';
 import { useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
 import { Airline, ColumnDefinition, Flight, Price } from '../models';
@@ -9,6 +10,8 @@ import { convertMinsToHM, formatDateTime } from '../utility/formatting';
 import { ResultsTable } from '../components/ResultsTable';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { HolidayPackage } from '../models/HolidayCardProps';
+import { HolidayCardSmall } from '../components/HolidayCardSmall';
 
 export function HomePage({
   cartState
@@ -26,12 +29,14 @@ export function HomePage({
 
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
+  const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([]);
 
   //airlines : list of all airlines from models/Airline
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
   const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
+  const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
 
   //takes price and returns cheapest price value as a string
   const getMinPriceString = (prices: Price[]) => {
@@ -78,33 +83,74 @@ export function HomePage({
   useEffect(() => {
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
+    httpGetHolidayPackages('/getByDeparture/' + airport.code).then(setHolidayPackageList);
   }, [airport]);
 
   return (
     <Grid>
       <Center>
-        <VStack spacing={2} align='center' divider={<StackDivider borderColor='white' />}>
-          <Center backgroundColor='gray.600' maxW='1000px' mx='auto'>
-            <img src={logo} alt='Logo' width='1000px' />
-          </Center>
-          <Box>
-            <Button as={NavLink} to={routes.search} colorScheme='red' width='500px'>
-              Search For a Flight
-            </Button>
-          </Box>
-          <Heading as='h1' size='lg'>
-            Cheapest flights from {airport?.city}
-          </Heading>
-          <Center>
-            <ResultsTable
-              columns={columns}
-              data={recommended}
-              keyAccessor='id'
-              cartState={cartState}
-            ></ResultsTable>
-          </Center>
+        <VStack spacing={6} align='centre' width='100%'>
+          <VStack spacing={0}>
+            <Center backgroundColor='#112147' width='100%' mx='auto'>
+              <img src={logo} alt='Logo' width='400px' />
+            </Center>
+            <HStack width='full' spacing={0} bgColor='#112147'>
+              <img src={plane} width='62%' />
+              <VStack w='38%'>
+                <Box bgColor='#112147' color='white' h='100%' p='40px' fontSize='1.5em'>
+                  <h1>
+                    <b>Welcome to FlightPub!</b>
+                  </h1>{' '}
+                  <br />
+                  <p>
+                    Our wide range of luxurious getaways will surely entice you to plan your next
+                    trip away from the daily grind. With regular holiday offerings and an advanced
+                    map search system, we strive to take the guess work out of booking flights. Safe
+                    travels! Your journey awaits!
+                  </p>
+                </Box>
+                `
+                <Box>
+                  <Button as={NavLink} to={routes.search} colorScheme='red' width='300px'>
+                    Search For a Flight
+                  </Button>
+                </Box>
+              </VStack>
+            </HStack>
+          </VStack>
+          <VStack spacing={6} align='center' divider={<StackDivider borderColor='white' />}>
+            <Heading as='h1' size='lg'>
+              Cheapest flights from {airport?.city ?? 'your location'}
+            </Heading>
+            <Center>
+              <ResultsTable
+                columns={columns}
+                data={recommended}
+                keyAccessor='id'
+                cartState={cartState}
+              ></ResultsTable>
+            </Center>
+          </VStack>
         </VStack>
       </Center>
+      <VStack align={'center'}>
+        <Heading as='h1' size='lg'>
+          Recommended Holiday Packages
+        </Heading>
+        <Box overflowX='auto' maxWidth={'100%'}>
+          <HStack spacing={1} align='center'>
+            {holidayPackageList.length !== 0 ? (
+              holidayPackageList.map((value) => (
+                <Box>
+                  <HolidayCardSmall data={value} showBookButton={true}></HolidayCardSmall>
+                </Box>
+              ))
+            ) : (
+              <h1>No holiday packages have been created yet.</h1>
+            )}
+          </HStack>
+        </Box>
+      </VStack>
     </Grid>
   );
 }

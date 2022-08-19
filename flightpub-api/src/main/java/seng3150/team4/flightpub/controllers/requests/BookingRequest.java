@@ -17,9 +17,11 @@ public class BookingRequest extends Validatable {
 
   private Set<Long> flightIds;
 
-  private Set<Passenger> passengers;
+  private Set<PassengerDTO> passengers;
 
   private Payment payment;
+
+  private boolean savePayment;
 
   @Override
   protected ValidationResult getErrors() {

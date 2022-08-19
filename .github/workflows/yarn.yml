@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/cache@v2
         with:
-          node-version: "16.14.0"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
-      - run: yarn install --frozen-lockfile
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
         working-directory: ./flightpub-ui
-      - run: yarn build
+      - name: Build
+        run: yarn build
         working-directory: ./flightpub-ui

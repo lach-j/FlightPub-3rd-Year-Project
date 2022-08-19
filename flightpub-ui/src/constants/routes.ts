@@ -13,7 +13,10 @@ export const routes = {
   admin: '/admin',
   holidayPackages: {
     base: '/holidays',
-    holidayBooking: '/holidays/book',
+    book: {
+      base: '/holidays/book',
+      id: '/holidays/book/:packageId'
+    }
   },
   passengerDetails: '/passengerDetails',
   travelAgents: {

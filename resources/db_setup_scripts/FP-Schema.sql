@@ -22,7 +22,7 @@ CREATE TABLE `Airlines` (
   PRIMARY KEY (`AirlineCode`),
   KEY `AirlinesCountryCode3_FK` (`CountryCode3`),
   CONSTRAINT `AirlinesCountryCode3_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`CountryCode3`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `PlaneType` (
   `PlaneCode` varchar(20) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `PlaneType` (
   `NumPremiumEconomy` int NOT NULL,
   `Economy` int NOT NULL,
   PRIMARY KEY (`PlaneCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Destinations` (
   `DestinationCode` char(3) NOT NULL,
@@ -41,13 +41,13 @@ CREATE TABLE `Destinations` (
   PRIMARY KEY (`DestinationCode`),
   KEY `DestinationCountryCode_FK` (`CountryCode3`),
   CONSTRAINT `DestinationCountryCode_FK` FOREIGN KEY (`CountryCode3`) REFERENCES `Country` (`CountryCode3`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `TicketClass` (
   `ClassCode` char(3) NOT NULL,
   `Details` varchar(20) NOT NULL,
   PRIMARY KEY (`ClassCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Availability` (
   `FlightId` BIGINT NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `Availability` (
   PRIMARY KEY (`FlightId`, `ClassCode`),
   KEY `AvailabilityClassCode_FK` (`ClassCode`),
   CONSTRAINT `AvailabilityClassCode_FK` FOREIGN KEY (`ClassCode`) REFERENCES `TicketClass` (`ClassCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Distances` (
   `DestinationCode1` char(3) NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `Distances` (
   KEY `DestinationCode2_FK` (`DestinationCode2`),
   CONSTRAINT `DestinationCode2_FK` FOREIGN KEY (`DestinationCode2`) REFERENCES `Destinations` (`DestinationCode`),
   CONSTRAINT `DestinationCode1_FK` FOREIGN KEY (`DestinationCode1`) REFERENCES `Destinations` (`DestinationCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Price` (
   `FlightId` BIGINT NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE `Price` (
   KEY `PriceClassCode_FK` (`ClassCode`),
   KEY `PriceFlightId_FK` (`FlightId`),
   CONSTRAINT `PriceClassCode_FK` FOREIGN KEY (`ClassCode`) REFERENCES `TicketClass` (`ClassCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `Flights` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,

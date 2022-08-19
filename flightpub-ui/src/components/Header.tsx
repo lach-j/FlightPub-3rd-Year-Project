@@ -67,6 +67,9 @@ export default function Header({
           <Button as={NavLink} to={routes.search}>
             Search
           </Button>
+          <Button as={NavLink} to={routes.holidayPackages.base}>
+            Holidays
+          </Button>
           <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} />
           <Menu>
             <MenuButton as={IconButton} icon={<FaUser />}>

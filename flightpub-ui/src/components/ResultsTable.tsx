@@ -102,7 +102,10 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   type='button'
                   colorScheme='red'
                   onClick={() => {
-                    if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
+                    if (
+                      [...cart.filter((cartItem) => cartItem.id === (result?.flight || result).id)]
+                        .length > 0
+                    ) {
                       toast({
                         title: 'Error!',
                         description: 'Flight already in cart!.',
@@ -112,7 +115,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                         position: 'top'
                       });
                     } else {
-                      setCart((cart) => [...cart, result]);
+                      setCart((cart) => [...cart, result?.flight || result]);
                       toast({
                         title: 'Success!',
                         description: 'Flight added to cart successfully.',

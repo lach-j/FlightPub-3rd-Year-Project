@@ -4,7 +4,7 @@ import { PaymentType } from './SavedPaymentTypes';
 import { User } from './User';
 
 export interface Booking {
-  id: number;
+  id?: number;
   dateBooked: Date;
   user: User;
   flights: Flight[];

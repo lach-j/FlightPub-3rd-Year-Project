@@ -15,6 +15,7 @@ import { SavedPaymentsTab } from './SavedPaymentsTab';
 import { MyDetailsTab } from './MyDetailsTab';
 import { ChangePasswordTab } from './ChangePasswordTab';
 import { BookingHistoryTab } from './BookingHistoryTab';
+import { HolidayBookingHistoryTab } from './HolidayBookingHistoryTab';
 
 export const AccountPage = () => {
   const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();
@@ -32,6 +33,7 @@ export const AccountPage = () => {
             <Tab>Change Password</Tab>
             <Tab>Saved Payments</Tab>
             <Tab>Booking History</Tab>
+            <Tab>Holiday Booking History</Tab>
           </TabList>
 
           <TabPanels mt='1em'>
@@ -46,6 +48,9 @@ export const AccountPage = () => {
             </TabPanel>
             <TabPanel>
               <BookingHistoryTab setIsLoading={handleLoading} />
+            </TabPanel>
+            <TabPanel>
+              <HolidayBookingHistoryTab setIsLoading={handleLoading} />
             </TabPanel>
           </TabPanels>
         </Tabs>

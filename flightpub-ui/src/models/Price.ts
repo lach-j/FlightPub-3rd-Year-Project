@@ -1,5 +1,7 @@
+import { TicketClass } from './Passenger';
+
 export interface Price {
-  classCode: string;
+  ticketClass: TicketClass;
   price: number;
   priceLeg1?: number;
   priceLeg2?: number;

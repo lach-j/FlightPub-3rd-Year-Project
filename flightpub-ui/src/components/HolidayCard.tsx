@@ -12,22 +12,29 @@ import {
   Button,
   HStack,
   Show,
-  Spacer
+  Spacer,
+  Wrap,
+  WrapItem
 } from '@chakra-ui/react';
 
-import {Dispatch, ReactElement, SetStateAction} from 'react';
+import React, { ReactElement } from 'react';
 import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
-import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
-import {ColumnDefinition, Flight} from "../models";
+import { FeatureBadgeProps, HolidayPackage } from '../models/HolidayCardProps';
+import { FlightListAccordian } from './FlightListAccordian';
+import { NavLink } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { airports } from '../data/airports';
 
 interface FeatureProps {
   text: string;
   iconBg: string;
   icon?: ReactElement;
 }
+
 type HolidayCardPropsObj = {
-  data: HolidayPackage
-}
+  data: HolidayPackage;
+  showBookButton: boolean;
+};
 
 const FeatureBadge = ({ tagName, tagColor }: FeatureBadgeProps) => {
   return (
@@ -50,47 +57,81 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
   );
 };
 
-export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
+export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButton }) => {
+  const colorOptions = [
+    'cyan',
+    'orange',
+    'yellow',
+    'green',
+    'teal',
+    'cyan',
+    'blue',
+    'purple',
+    'pink',
+    'darkblue'
+  ];
+
   return (
-    <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px'>
+    <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px' rounded={'lg'}>
       <HStack spacing={5}>
-        <Box
-          bg={useColorModeValue('white', 'gray.800')}
-          maxW='md'
-          borderWidth='1px'
-          border='1px'
-          boxShadow='2xl'
-          borderColor='gray.200'
-          rounded='lg'
-          shadow='lg'
-          position='relative'
-        >
+        <Box bg={useColorModeValue('white', 'gray.800')} maxW='md' position='relative'>
           {data.isPopular && (
             <Circle size='10px' position='absolute' top={2} right={2} bg='red.200' />
           )}
 
-          <Image src={data.imageURL} alt={`Picture of ${data.packageName}`} htmlHeight={600} htmlWidth={400} roundedTop='lg' />
+          <Image src={data.imageURL} alt={`Picture of ${data.packageName}`} roundedTop='lg' />
 
           <Box p='4'>
-            <HStack alignItems='baseline' spacing='1'>
-              {data.isPopular && <FeatureBadge tagName='popular' tagColor='red' />}
+            <Wrap spacing='5px'>
+              {data.isPopular && (
+                <WrapItem>
+                  <FeatureBadge tagName='popular' tagColor='red' />
+                </WrapItem>
+              )}
+              {airports
+                .find((airport) => airport.code === data.arrivalLocation)
+                ?.tags.map((value) => {
+                  return (
+                    <WrapItem>
+                      <FeatureBadge
+                        tagName={value}
+                        tagColor={colorOptions[Math.floor(Math.random() * colorOptions.length)]}
+                      />
+                    </WrapItem>
+                  );
+                })}
 
-{/*              {Object.values(data.tags).map((value) => {
+              {/*              {Object.values(data.tags).map((value) => {
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
               })}*/}
-            </HStack>
-            <Flex mt='1' justifyContent='space-between' alignContent='center'>
-              <Box fontSize='2xl'  minW='500px' fontWeight='semibold' as='h4' lineHeight='tight' isTruncated>
+            </Wrap>
+            <Flex justifyContent='space-between' alignContent='center'>
+              <Box
+                fontSize='2xl'
+                maxW='500px'
+                fontWeight='semibold'
+                as='h4'
+                lineHeight='tight'
+                isTruncated
+              >
                 {data.packageName}
               </Box>
             </Flex>
-            <Flex mt='1' justifyContent='space-between' alignContent='center'>
-              <Box  color={useColorModeValue('gray.500', 'white')} fontSize='xl'  minW='500px' fontWeight='semibold' as='h2' lineHeight='tight' isTruncated>
+            <Flex justifyContent='space-between' alignContent='center'>
+              <Box
+                color={useColorModeValue('gray.500', 'white')}
+                fontSize='xl'
+                maxW='500px'
+                fontWeight='semibold'
+                as='h2'
+                lineHeight='tight'
+                isTruncated
+              >
                 {data.accommodation}
               </Box>
             </Flex>
 
-            <HStack spacing='15px'>
+            <HStack spacing='5px'>
               <Box fontSize='xl' color={useColorModeValue('gray.500', 'white')}>
                 {data.packageNights} nights
               </Box>
@@ -110,9 +151,18 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
           <Flex justifyContent='space-between' alignContent='end'>
             <Spacer />
             <Show below='md'>
-              <Button colorScheme='red' w='100%'>
-                View Package
-              </Button>
+              {showBookButton ? (
+                <Button
+                  colorScheme='red'
+                  w='100%'
+                  as={NavLink}
+                  to={`${routes.holidayPackages.book.base}/${data.id}`}
+                >
+                  Book Package
+                </Button>
+              ) : (
+                <span></span>
+              )}
             </Show>
           </Flex>
         </Box>
@@ -126,7 +176,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
             overflow='hidden'
           >
             <Box pl={5}>
-              <Stack spacing={4} minW={500}>
+              <Stack spacing={3} maxW={500}>
                 <Heading fontSize='3xl' fontFamily='heading'>
                   {data.packageTagline}
                 </Heading>
@@ -148,9 +198,20 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data }) => {
                   iconBg={useColorModeValue('yellow.100', 'yellow.900')}
                   text='All Expenses Paid'
                 />
-                <Button colorScheme='red' size='md'>
-                  View Package
-                </Button>
+                <Text>Flights:</Text>
+                <FlightListAccordian flights={data.flights} />
+                {showBookButton ? (
+                  <Button
+                    colorScheme='red'
+                    size='md'
+                    as={NavLink}
+                    to={`${routes.holidayPackages.book.base}/${data.id}`}
+                  >
+                    Book Package
+                  </Button>
+                ) : (
+                  <span></span>
+                )}
               </Stack>
             </Box>
           </Box>
