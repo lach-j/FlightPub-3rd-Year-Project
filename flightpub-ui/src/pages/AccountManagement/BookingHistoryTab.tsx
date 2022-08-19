@@ -52,7 +52,7 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
     booking.passengers.forEach((passenger) => {
       booking.flights.forEach((flight) => {
         let price = flight.prices.find(
-          (p) => p.ticketClass.classCode === passenger.ticketClass?.classCode
+          (p) => p.ticketClass?.classCode === passenger.ticketClass?.classCode
         );
         total += price?.price || 0;
       });
@@ -100,8 +100,8 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                       <ListItem>
                         <HStack>
                           <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
-                          <Text decoration='underline' title={p.ticketClass.details}>
-                            [{p.ticketClass.classCode}]
+                          <Text decoration='underline' title={p.ticketClass?.details}>
+                            [{p.ticketClass?.classCode}]
                           </Text>
                         </HStack>
                       </ListItem>

@@ -165,7 +165,7 @@ export function SearchResultsPage({
     const { results, query } = state as { query: any; results: Flight[] };
     setResults(results);
     setQuery(query);
-    setFilterTags(query?.searchTags);
+    setFilterTags(query?.searchTags || []);
     GenerateSearchResults(results);
     const flightTimes = results.map((r) => r.duration);
     const maxDuration = Math.max(...flightTimes);
@@ -211,6 +211,7 @@ export function SearchResultsPage({
 
   //Filters resultdata based on stored filter criteria
   const filterResults = (result: SearchResult) => {
+    console.log(filterTags);
     if (
       result.flight.prices.filter((p) => p.price < minPrice).length > 0 ||
       result.flight.prices.filter((p) => p.price > maxPrice).length > 0
@@ -222,7 +223,7 @@ export function SearchResultsPage({
     if (result.flight.duration > durationFilter) return false;
 
     if (
-      filterTags !== null &&
+      (!filterTags || filterTags === []) &&
       filterTags?.filter((value) => result?.tags?.includes(value)).length === 0
     ) {
       return false;

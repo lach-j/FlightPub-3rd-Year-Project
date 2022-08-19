@@ -19,6 +19,5 @@ export const endpoints = {
   wishlist: '/wishlist',
   covid: '/admin/covid',
   getCanceled: '/admin/cancelled-flights',
-  packageBookings: '/packageBookings',
-  wishlist: '/wishlist'
+  packageBookings: '/packageBookings'
 };

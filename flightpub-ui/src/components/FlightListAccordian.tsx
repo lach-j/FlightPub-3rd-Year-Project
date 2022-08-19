@@ -110,8 +110,8 @@ export const FlightListAccordian = ({ flights }: { flights: Flight[] }) => {
                   {flight.prices.map((price) => {
                     return (
                       <HStack>
-                        <Text title={price.ticketClass.details} fontWeight='bold'>
-                          {price.ticketClass.classCode}:
+                        <Text title={price.ticketClass?.details} fontWeight='bold'>
+                          {price.ticketClass?.classCode}:
                         </Text>
                         <Text>${price.price}</Text>
                       </HStack>
