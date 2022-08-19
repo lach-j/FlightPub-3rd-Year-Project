@@ -22,4 +22,7 @@ export const endpoints = {
   getCovid: '/getCovid',
   getUsers: '/getUsers',
   getCanceled: '/getCanceledFlights',
+  deleteCancel: '/deleteCancelFlight',
+  deleteCovid: '/deleteCovidDestination',
+  deleteSponsored: '/deleteSponsoredAirline',
 };

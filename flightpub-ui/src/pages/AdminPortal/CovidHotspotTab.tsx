@@ -66,7 +66,9 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
     const [returnDate, setReturnDate] = useState(new Date()); // Return date, not currently used in request (visual only)
     const [destination, setDestination] = useState<CovidDestination[]>([]);
 
-    const [chosenLocation, setChosenLocation] = useState<Destination>()
+
+
+    const [chosenLocation, setChosenLocation] = useState<string>()
     const [iDFilter, setIDFilter] = useState("");
     // todo list, make this object, make table, fill table (copy flights)
     const {httpPost} = useApi(endpoints.covidUpdate);
@@ -113,9 +115,18 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
         }
     ];
 
-    function handleSaveChanges(e: FormEvent<HTMLFormElement>) {
+
+
+    function handleSaveChanges(this: any, e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        httpPost('', {locationCode: chosenLocation, covidEndDate: returnDate,})
+        onOpen();
+
+
+        const current = new Date();
+
+
+
+        httpPost('', {locationCode: chosenLocation, covidEndDate: returnDate, covidStartDate: current})
             .then((response) => {
                 toast({
                     title: 'Booking Confirmed',
@@ -130,14 +141,8 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
             .finally(() => onClose());
     };
 
-    function handleCovidDestination(e: SyntheticEvent) {
-        e.preventDefault();
 
-        httpPost(endpoints.getCovid, destination)
-        //     .then(() => {
-        //
-        //     }).finally( () => {})
-    }
+
 
 
     return (
@@ -153,10 +158,11 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
                                     <FormLabel>Covid Location</FormLabel>
                                     <AutoComplete
                                         openOnFocus
-                                        onChange={(value) => handleSearchQueryUpdate('destinationCode', value)}
+                                        suggestWhenEmpty
+                                        onChange={(e)=> setChosenLocation(e.target.value)}
                                     >
                                         <AutoCompleteInput
-                                            onBlur={() => handleSearchQueryUpdate('destinationCode', undefined)}
+                                            onBlur={(e)=> setChosenLocation(e.target.value)}
                                             variant='filled'
                                         />
                                         <AutoCompleteList>
@@ -176,11 +182,7 @@ export const CovidHotspotTab = ({setIsLoading}: { setIsLoading: (value: boolean)
                                         dateFormat='dd/MM/yyyy'
                                         minDate={new Date()}
                                         selected={new Date(searchQuery.departureDate.date)}
-                                        onChange={(date: Date) =>
-                                            handleSearchQueryUpdate('departureDate', {
-                                                ...searchQuery?.departureDate,
-                                                date: formatDate(date)
-                                            })}
+                                        onChange={(date: Date) => setReturnDate(date)}
                                     />
                                 </FormControl>
                             </Box>

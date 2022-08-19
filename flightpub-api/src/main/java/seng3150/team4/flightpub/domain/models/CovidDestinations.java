@@ -1,5 +1,7 @@
 package seng3150.team4.flightpub.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +33,8 @@ public class CovidDestinations implements IEntity, Serializable {
     @Column(name = "CovidEndDate")
     private LocalDateTime CovidEndDate;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LocationCode")
     private Set<Destination> destinations;
 }

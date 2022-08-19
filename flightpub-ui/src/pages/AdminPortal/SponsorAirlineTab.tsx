@@ -131,12 +131,17 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                                     <FormLabel>Choose Airline</FormLabel>
                                     <AutoComplete
                                         openOnFocus
+                                        suggestWhenEmpty
+                                        emptyState={true}
                                         onChange={(value) =>
                                             handleSearchQueryUpdate('airlineName', value)
                                         }
                                     >
 
-                                        <AutoCompleteInput variant='filled' />
+                                        <AutoCompleteInput
+                                            variant='filled'
+                                            onBlur={() => handleSearchQueryUpdate('airlineName', undefined)}
+                                        />
                                         <AutoCompleteList>
                                             {airlines.map(({ airlineName}) => (
                                                 <AutoCompleteItem
@@ -158,7 +163,10 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                                         dateFormat='dd/MM/yyyy'
                                         minDate={new Date(searchQuery.departureDate.date) || new Date()}
                                         selected={covidDate}
-                                        onChange={(date: Date) => setCovidDate(date)}
+                                        onChange={(date: Date) => handleSearchQueryUpdate('departureDate', {
+                                            ...searchQuery?.departureDate,
+                                            date: formatDate(date)
+                                        })}
                                     />
                                 </FormControl>
                             </Box>

@@ -12,6 +12,7 @@ type ResultsTableProps = {
     data: any[],
     sortable?: boolean;
     keyAccessor: string;
+    type: string;
 
 }
 
@@ -21,11 +22,16 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                                                               children,
                                                               sortable = false,
                                                               keyAccessor,
+    type,
                                                           }) => {
     const toast = useToast();
     const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
     const [descending, setDescending] = useState<boolean>(false);
-    const { httpPost } = useApi(endpoints.flightUpdate);
+    const { httpPost: httpCreateCancel } = useApi(endpoints.flightUpdate);
+    const { httpDelete: httpDeleteCancel} = useApi(endpoints.deleteCancel)
+    const { httpDelete: httpDeleteCovid} = useApi(endpoints.deleteCovid)
+    const { httpDelete: httpDeleteSponsored} = useApi(endpoints.deleteSponsored)
+
     //authRequest : stores registration request with email, password, firstName, lastName parameters
     const [flightCancelation, setflightCancelation] = useState<FlightCancel>();
     const [selectedFlight, setSelectedFlight] = useState<Flight>()
@@ -86,37 +92,72 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
 
                             <Td>
                                 {/*TODO put conditional render here for delete and restore*/}
+                                {/*cancel+uncancel,covid+uncovid,sponsor+unsponsor*/}
 
-                                <Button type='button'
-                                        colorScheme='red'
-                                        onClick={() => {
-                                            httpPost('', {flightId:result})
-                                                .then((authResponse) => {
-                                                    toast({
-                                                        title: 'Flight Canceled',
-                                                        description:
-                                                            'The flight was successfully canceled',
-                                                        status: 'success',
-                                                        duration: 9000,
-                                                        isClosable: true,
-                                                        position: 'top'
+                                {type === "cancel" ? (
+                                    <Button type='button'
+                                            colorScheme='red'
+                                            onClick={() => {
+                                                httpCreateCancel('', {flightId:result})
+                                                    .then((authResponse) => {
+                                                        toast({
+                                                            title: 'Flight Canceled',
+                                                            description:
+                                                                'The flight was successfully canceled',
+                                                            status: 'success',
+                                                            duration: 9000,
+                                                            isClosable: true,
+                                                            position: 'top'
+                                                        });
+                                                        //    refresh here
+                                                    })
+                                                    .catch((err: ApiError) => {
+                                                        //if an error occurs in registration process
+                                                        toast({
+                                                            title: 'Error.',
+                                                            description: err.message,
+                                                            status: 'error',
+                                                            duration: 9000,
+                                                            isClosable: true,
+                                                            position: 'top'
+                                                        });
                                                     });
-                                                    //    refresh here
-                                                })
-                                                .catch((err: ApiError) => {
-                                                    //if an error occurs in registration process
-                                                    toast({
-                                                        title: 'Error.',
-                                                        description: err.message,
-                                                        status: 'error',
-                                                        duration: 9000,
-                                                        isClosable: true,
-                                                        position: 'top'
+                                            }}>
+                                        Cancel flight
+                                    </Button>
+                                ): (
+                                    <Button type='button'
+                                            colorScheme='red'
+                                            onClick={() => {
+                                                httpDeleteCancel('')// {flightId:result} TODO not sure how this works
+                                                    .then((authResponse) => {
+                                                        toast({
+                                                            title: 'Flight Canceled',
+                                                            description:
+                                                                'The flight was successfully canceled',
+                                                            status: 'success',
+                                                            duration: 9000,
+                                                            isClosable: true,
+                                                            position: 'top'
+                                                        });
+                                                        //    refresh here
+                                                    })
+                                                    .catch((err: ApiError) => {
+                                                        //if an error occurs in registration process
+                                                        toast({
+                                                            title: 'Error.',
+                                                            description: err.message,
+                                                            status: 'error',
+                                                            duration: 9000,
+                                                            isClosable: true,
+                                                            position: 'top'
+                                                        });
                                                     });
-                                                });
-                                        }}>
-                                    Cancel flight
-                                </Button>
+                                            }}>
+                                        UnCancel flight
+                                    </Button>
+                                )}
+
                             </Td>
                         </Tr>;
                     }

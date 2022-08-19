@@ -108,29 +108,28 @@ CREATE TABLE `Flights` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `CovidDestinations` (
-  `CovidCode` char(3) NOT NULL,
-  `CovidStartDate` datetime Default(NULL),
-  `CovidEndDate` datetime Default(NULL),
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `CovidStartDate` datetime NOT NULL,
+  `CovidEndDate` datetime NOT NULL,
   `LocationCode` char(3) NOT NULL,
-  PRIMARY KEY (`CovidCode`),
+  PRIMARY KEY (`Id`),
   KEY `CovidDestinationCode_FK` (`LocationCode`),
   CONSTRAINT `CovidDestinationCode_FK` FOREIGN KEY (`LocationCode`) REFERENCES `Destinations` (`DestinationCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `SponsoredAirlines` (
-  `SponsoredCode` char(2) NOT NULL,
-  `SponsoredStartDate` datetime Default(NULL),
-  `SponsoredEndDate` datetime Default(NULL),
-  `AirCode` char(2) NOT NULL,
-  PRIMARY KEY (`SponsoredCode`),
-  KEY `SponsoredAirlinesCode_FK` (`AirCode`),
-  CONSTRAINT `SponsoredAirlinesCode_FK` FOREIGN KEY (`AirCode`) REFERENCES `Airlines` (`AirlineCode`)
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `SponsoredStartDate` datetime NOT NULL,
+  `SponsoredEndDate` datetime NOT NULL,
+  `AirlineCode` char(2) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `SponsoredAirlinesCode_FK` (`AirlineCode`),
+  CONSTRAINT `SponsoredAirlinesCode_FK` FOREIGN KEY (`AirlineCode`) REFERENCES `Airlines` (`AirlineCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `CanceledFlights` (
-  `Id` BIGINT NOT NULL,
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
   `FlightId` BIGINT NOT NULL,
-  `Canceled` Boolean NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `FlightId_FK` (`FlightId`),
   CONSTRAINT `FlightId_FK` FOREIGN KEY (`FlightId`) REFERENCES `Flights` (`Id`)

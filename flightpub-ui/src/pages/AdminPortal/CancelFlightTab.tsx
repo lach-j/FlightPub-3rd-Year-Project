@@ -127,12 +127,14 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
                 columns={columns}
                 data={results.filter(f => f.flightNumber.includes(idFilter) || idFilter === '')}
                 keyAccessor='id'
+                type="cancel"
             ></ResultsTable>
         ) : (
             <ResultsTable
                 columns={columns}
                 data={canceledResults.filter(f => f.flightNumber.includes(idFilter) || idFilter === '')}
                 keyAccessor='id'
+                type="unCancel"
             ></ResultsTable>
         )}
 
