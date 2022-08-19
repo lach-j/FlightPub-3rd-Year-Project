@@ -7,52 +7,53 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SearchStrategy used for Known Search
- */
+/** SearchStrategy used for Known Search */
 public class KnownSearchStrategy extends SearchStrategy {
 
-	public KnownSearchStrategy(FlightQueryRequest flightQuery) {
-		super(flightQuery);
-	}
+  public KnownSearchStrategy(FlightQueryRequest flightQuery) {
+    super(flightQuery);
+  }
 
-	@Override
-	public List<Flight> search() {
-		// Create list of predicates to query by
-		List<Predicate> predicates = new ArrayList<>();
+  @Override
+  public List<Flight> search() {
+    // Create list of predicates to query by
+    List<Predicate> predicates = new ArrayList<>();
 
-		// If the departure date is included then only include flights included in the flexible range
-		// For exact search this is a required field
-		if (flightQuery.getDepartureDate() != null) {
-			predicates.add(
-							cb.greaterThan(
-											flight.get("departureTime"), flightQuery.getDepartureDate().getMinDateTime()));
-			predicates.add(
-							cb.lessThan(
-											flight.get("departureTime"), flightQuery.getDepartureDate().getMaxDateTime()));
-		}
+    // Filter out cancelled flights
+    predicates.add(cb.equal(flight.get("cancelled"), flightQuery.isCancelled()));
 
-		// If the departure location is included in the request, add to query
-		// For exact search this is a required field
-		if (flightQuery.getDepartureCode() != null)
-			predicates.add(
-							cb.equal(
-											flight.get("departureLocation").get("destinationCode"),
-											flightQuery.getDepartureCode()));
+    // If the departure date is included then only include flights included in the flexible range
+    // For exact search this is a required field
+    if (flightQuery.getDepartureDate() != null) {
+      predicates.add(
+          cb.greaterThan(
+              flight.get("departureTime"), flightQuery.getDepartureDate().getMinDateTime()));
+      predicates.add(
+          cb.lessThan(
+              flight.get("departureTime"), flightQuery.getDepartureDate().getMaxDateTime()));
+    }
 
-		// If the destination location is included in the request, add to query
-		if (flightQuery.getDestinationCode() != null)
-			predicates.add(
-							cb.equal(
-											flight.get("arrivalLocation").get("destinationCode"),
-											flightQuery.getDestinationCode()));
+    // If the departure location is included in the request, add to query
+    // For exact search this is a required field
+    if (flightQuery.getDepartureCode() != null)
+      predicates.add(
+          cb.equal(
+              flight.get("departureLocation").get("destinationCode"),
+              flightQuery.getDepartureCode()));
 
-		// TODO: add WHERE clauses for ticket type/quantity
+    // If the destination location is included in the request, add to query
+    if (flightQuery.getDestinationCode() != null)
+      predicates.add(
+          cb.equal(
+              flight.get("arrivalLocation").get("destinationCode"),
+              flightQuery.getDestinationCode()));
 
-		// Add where clause where all predicates are required (AND operation)
-		query.where(cb.and(predicates.toArray(new Predicate[0])));
+    // TODO: add WHERE clauses for ticket type/quantity
 
-		// return list of flights matching query
-		return getResults();
-	}
+    // Add where clause where all predicates are required (AND operation)
+    query.where(cb.and(predicates.toArray(new Predicate[0])));
+
+    // return list of flights matching query
+    return getResults();
+  }
 }

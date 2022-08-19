@@ -14,4 +14,5 @@ export interface Flight {
   departureTimeStopOver: string;
   prices: Price[];
   duration: number;
+  cancelled?: boolean;
 }

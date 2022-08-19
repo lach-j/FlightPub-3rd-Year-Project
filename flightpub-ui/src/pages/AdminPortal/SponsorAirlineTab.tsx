@@ -36,6 +36,7 @@ import { ApiError, useApi } from '../../services/ApiService';
 import { request } from 'http';
 import { ColumnDefinition } from '../../models';
 import { SponsoredAirline } from '../../models/SponsoredAirline';
+import { DataTable } from '../../components/DataTable';
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -171,7 +172,9 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
           </form>
           <form>
             <VStack gap='2em'>
-              <Center flex='1'></Center>
+              <Center flex='1'>
+                <DataTable columns={columns} data={[]} keyAccessor='id'></DataTable>
+              </Center>
             </VStack>
           </form>
         </HStack>

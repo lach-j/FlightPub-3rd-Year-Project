@@ -14,32 +14,8 @@ public class AdminService {
     private final IFlightRepository flightRepository;
     private final IDestinationRepository destinationRepository;
     private final IAirlineRepository airlineRepository;
-    private final ICanceledRepository canceledRepository;
     private final ICovidRepository covidRepository;
     private final ISponsorRepository sponsorRepository;
-
-    Airline SponsorAirline(Airline airline) {
-        return airlineRepository.save(airline);
-    }
-
-    Destination MarkCovid(Destination destination) {
-        return destinationRepository.save(destination);
-    }
-
-    Flight CancelFlight(Flight flight) {
-        return flightRepository.save(flight);
-    }
-
-
-    public CanceledFlights getCanceledFlightById(long id) {
-        // If the user does not exist that throw an exception
-        var canceledFlight = canceledRepository.findById(id);
-        if (canceledFlight.isEmpty())
-            throw new EntityNotFoundException(String.format("Canceled Flight with id %s was not found", id));
-        // Otherwise, return the user
-        return canceledFlight.get();
-    }
-
 
     public SponsoredAirlines getSponsoredAirlineById(long id) {
         // If the user does not exist that throw an exception

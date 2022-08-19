@@ -55,6 +55,9 @@ public class Flight implements IEntity, Serializable {
   @JoinColumn(name = "StopOverCode")
   private Destination stopOverLocation;
 
+  @Column(name = "Cancelled")
+  private boolean cancelled;
+
   @JsonManagedReference
   @OneToMany
   @JoinColumn(name = "FlightId", referencedColumnName = "Id")

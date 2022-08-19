@@ -22,6 +22,7 @@ public class FlightQueryRequest extends Validatable {
   private String destinationCode;
   private Map<String, Integer> tickets;
   private Boolean returnFlight;
+  private boolean cancelled = false;
 
   private int page;
 

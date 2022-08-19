@@ -24,20 +24,12 @@ public class AdminController {
 
     private final ICovidRepository covidRepository;
     private final ISponsorRepository airlineRepository;
-    private final ICanceledRepository flightRepository;
     private final IDestinationRepository destinationRepository;
-
 
     @GetMapping(path = "/covid")
     public Response getCovidLocations() {
         return new EntityCollectionResponse<>(covidRepository.findAll());
     }
-
-    @GetMapping(path = "/canceled-flights")
-    public Response getCanceledFlights() {
-        return new EntityCollectionResponse<>(flightRepository.findAll());
-    }
-
 
     @PostMapping(path = "/covid")
     public EntityResponse<CovidDestination> updateCovid(@RequestBody AddCovidRequest covidRequest) {
@@ -64,22 +56,7 @@ public class AdminController {
     public SponsoredAirlines updateAirline(SponsoredAirlines airline) {
 //        todo get todays date and
 
-        SponsoredAirlines savedAirline = airlineRepository.save(airline);
-        return savedAirline;
-    }
-
-    @PostMapping(path = "/flightUpdate")
-    public CanceledFlights cancelFlight(CanceledFlights flight) {
-        CanceledFlights canceledFlight = flightRepository.save(flight);
-        return canceledFlight;
-    }
-
-    @Authorized
-    @DeleteMapping("/deleteCancelFlight")
-    public StatusResponse deleteCanceledFlight(@PathVariable Long id) {
-        var canceledFlight = flightRepository.getById(id);
-        flightRepository.delete(canceledFlight);
-        return new StatusResponse(HttpStatus.OK);
+        return airlineRepository.save(airline);
     }
 
     @Authorized
