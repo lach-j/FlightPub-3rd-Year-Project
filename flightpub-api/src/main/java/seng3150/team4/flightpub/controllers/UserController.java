@@ -12,6 +12,7 @@ import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.security.Authorized;
+import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.services.PaymentService;
 import seng3150.team4.flightpub.utility.PasswordHash;

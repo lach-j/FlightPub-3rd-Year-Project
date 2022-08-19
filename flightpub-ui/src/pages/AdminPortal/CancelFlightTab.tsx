@@ -9,16 +9,15 @@ import { airlines } from '../../data/airline';
 import _ from 'lodash';
 
 export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-  const [swapLists, setSwapLists] = useState(true);
+  const [cancelledView, setSwapLists] = useState(true);
 
   const [results, setResults] = useState<Flight[]>([]);
   const [canceledResults, setCanceledResults] = useState<Flight[]>([]);
   const [idFilter, setIdFilter] = useState('');
 
-  const { httpGet: httpGetFlights } = useApi(endpoints.flightSearch);
-  const { httpGet: httpGetCanceledFlights } = useApi(endpoints.flights);
+  const { httpGet } = useApi(endpoints.flightSearch);
 
-  const { httpPost } = useApi(endpoints.airlineUpdate);
+  const { httpPost } = useApi(endpoints.flights);
 
   const toast = useToast();
 
@@ -38,14 +37,13 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   const debouncedChangeHandler = useCallback(_.debounce(changeHandler, 500), []);
 
   const loadFlights = () => {
-    httpGetFlights('').then(setResults);
-    httpGetCanceledFlights('').then(setCanceledResults);
+    httpGet('', { cancelled: cancelledView }).then((res) => setResults(res));
   };
 
   // retrieves list of airlines
   useEffect(() => {
     loadFlights();
-  }, [idFilter]);
+  }, [idFilter, cancelledView]);
 
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
@@ -101,96 +99,55 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
         <Heading mb='1em'>Cancel Flight</Heading>
         <Button
           onClick={() => {
-            setSwapLists(!swapLists);
+            setSwapLists(!cancelledView);
           }}
         >
-          Swap lists
+          See {!cancelledView ? 'Cancelled' : 'Active'} Flights
         </Button>
       </HStack>
 
       <Input placeholder='Flight Number' size='md' onChange={debouncedChangeHandler} />
       <Center>
-        {swapLists ? (
-          <DataTable
-            columns={columns}
-            data={results.filter(
-              (f) => f.flightNumber.toLowerCase().includes(idFilter) || idFilter === ''
-            )}
-            keyAccessor='id'
-            sortable
-            extraRow={(data: Flight) => (
-              <Button
-                type='button'
-                colorScheme='red'
-                onClick={() => {
-                  httpPost(`/${data.id}/cancel`, { cancel: false })
-                    .then((authResponse) => {
-                      toast({
-                        title: 'Flight Canceled',
-                        description: 'The flight was successfully canceled',
-                        status: 'success',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                      });
-                    })
-                    .catch((err: ApiError) => {
-                      toast({
-                        title: 'Error.',
-                        description: err.message,
-                        status: 'error',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                      });
+        <DataTable
+          columns={columns}
+          data={results.filter(
+            (f) => f.flightNumber.toLowerCase().includes(idFilter) || idFilter === ''
+          )}
+          keyAccessor='id'
+          sortable
+          extraRow={(data: Flight) => (
+            <Button
+              type='button'
+              colorScheme={!cancelledView ? 'red' : 'green'}
+              onClick={() => {
+                httpPost(`/${data.id}/cancel`, { cancelled: !cancelledView })
+                  .then((authResponse) => {
+                    toast({
+                      title: `Flight ${!cancelledView ? 'Canceled' : 'Restored'}`,
+                      description: 'The flight was successfully updated',
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                      position: 'top'
                     });
-                }}
-              >
-                Cancel flight
-              </Button>
-            )}
-          ></DataTable>
-        ) : (
-          <DataTable
-            columns={columns}
-            data={canceledResults.filter(
-              (f) => f.flightNumber.toLowerCase().includes(idFilter) || idFilter === ''
-            )}
-            keyAccessor='id'
-            sortable
-            extraRow={(data: Flight) => (
-              <Button
-                type='button'
-                colorScheme='red'
-                onClick={() => {
-                  httpPost(`/${data.id}/cancel`, { cancel: true })
-                    .then((authResponse) => {
-                      toast({
-                        title: 'Flight Canceled',
-                        description: 'The flight was successfully canceled',
-                        status: 'success',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                      });
-                    })
-                    .catch((err: ApiError) => {
-                      toast({
-                        title: 'Error.',
-                        description: err.message,
-                        status: 'error',
-                        duration: 9000,
-                        isClosable: true,
-                        position: 'top'
-                      });
+                    loadFlights();
+                  })
+                  .catch((err: ApiError) => {
+                    toast({
+                      title: 'Error.',
+                      description: err.message,
+                      status: 'error',
+                      duration: 9000,
+                      isClosable: true,
+                      position: 'top'
                     });
-                }}
-              >
-                Cancel flight
-              </Button>
-            )}
-          ></DataTable>
-        )}
+                  });
+              }}
+            >
+              {!cancelledView ? 'Cancel' : 'Restore'}
+            </Button>
+          )}
+        ></DataTable>
       </Center>
     </>
   );
