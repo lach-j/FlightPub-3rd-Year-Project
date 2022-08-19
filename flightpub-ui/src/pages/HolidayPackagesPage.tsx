@@ -338,7 +338,7 @@ export function HolidayPackagesPage() {
               </form>
             </Box>
           ) : (
-            <span></span>
+            <div></div>
           )}
           <VStack>
             {localOnly
