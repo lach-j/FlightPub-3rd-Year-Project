@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useContext} from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import {
   Box,
   Button,
@@ -22,12 +22,12 @@ import {
   Text,
   useToast
 } from '@chakra-ui/react';
-import {NavLink, useLocation, useNavigate} from 'react-router-dom';
-import {FaShoppingCart, FaUser, ImMap} from 'react-icons/all';
-import {routes} from '../constants/routes';
-import {Flight} from '../models';
-import {UserContext} from '../services/UserContext';
-import {UserRole} from '../models/User';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
+import { routes } from '../constants/routes';
+import { Flight } from '../models';
+import { UserContext } from '../services/UserContext';
+import { UserRole } from '../models/User';
 
 export default function Header({
   cartState
@@ -49,12 +49,12 @@ export default function Header({
   };
 
   const handleCheckout = () => {
-    if(user) {
+    if (user) {
       navigate(routes.passengerDetails);
     } else {
-      navigate(routes.login, {state: {redirectUrl: routes.passengerDetails}});
+      navigate(routes.login, { state: { redirectUrl: routes.passengerDetails } });
     }
-  }
+  };
 
   return (
     <Box minH='75' h='75' bg='black'>
@@ -66,10 +66,6 @@ export default function Header({
           </Button>
           <Button as={NavLink} to={routes.search}>
             Search
-          </Button>
-          {/*TODO remove this admin portal*/}
-          <Button as={NavLink} to={routes.admin}>
-            Admin Portal
           </Button>
           <IconButton aria-label='map-view' as={NavLink} to={routes.map} icon={<ImMap />} />
           <Menu>
@@ -88,9 +84,9 @@ export default function Header({
                       Travel Agent Portal
                     </MenuItem>
                   ) : user?.role === UserRole.ADMINISTRATOR ? (
-                      <MenuItem as={NavLink} to={routes.admin}>
-                        Admin Portal
-                      </MenuItem>
+                    <MenuItem as={NavLink} to={routes.admin}>
+                      Admin Portal
+                    </MenuItem>
                   ) : (
                     <MenuItem as={NavLink} to={routes.wishlist.base}>
                       My Wishlist

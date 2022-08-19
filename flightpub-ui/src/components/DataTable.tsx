@@ -4,21 +4,24 @@ import React, { useState } from 'react';
 import { ColumnDefinition } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
-type DataTableProps = {
-  columns: ColumnDefinition<any>[];
-  data: any[];
+type DataTableProps<T> = {
+  columns: ColumnDefinition<T>[];
+  data: T[];
   sortable?: boolean;
   keyAccessor: string;
+  extraRow?: (item: T) => React.ReactNode;
 };
 
-export let DataTable: React.FC<DataTableProps>;
-DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
-  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
+export let DataTable: React.FC<DataTableProps<any>>;
+DataTable = ({ columns, data, children, sortable = false, keyAccessor, extraRow }) => {
+  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>(
+    columns.find((c) => c.accessor === keyAccessor) || { accessor: '', Header: '' }
+  );
   const [descending, setDescending] = useState<boolean>(false);
 
   const sortFunc = (a: any, b: any): number => {
-    let o1 = _.get(a, sortingColumn?.accessor);
-    let o2 = _.get(b, sortingColumn?.accessor);
+    let o1 = _.get(a, sortingColumn.accessor);
+    let o2 = _.get(b, sortingColumn.accessor);
 
     if (sortingColumn?.sortValue) {
       o1 = sortingColumn.sortValue(o1, descending);
@@ -71,7 +74,7 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
                     : _.get(result, column.accessor)}
                 </Td>
               ))}
-              {children}
+              {extraRow && <Td>{extraRow(result)}</Td>}
             </Tr>
           );
         })}

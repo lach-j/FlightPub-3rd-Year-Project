@@ -1,7 +1,5 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,8 +7,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 /** models the Airlines table in the database */
 @Entity
@@ -27,6 +23,6 @@ public class CanceledFlights implements IEntity, Serializable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FlightId")
-    private Flight flights;
+    private Flight flight;
 
 }

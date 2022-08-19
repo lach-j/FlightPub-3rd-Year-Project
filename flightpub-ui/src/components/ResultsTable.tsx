@@ -16,12 +16,10 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ColumnDefinition, Flight } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
-
 
 type ResultsTableProps = {
-  columns: ColumnDefinition<any>[],
-  data: any[],
+  columns: ColumnDefinition<any>[];
+  data: any[];
   sortable?: boolean;
   keyAccessor: string;
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
@@ -37,7 +35,9 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
 }) => {
   const toast = useToast();
   const [cart, setCart] = cartState;
-  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
+  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>(
+    columns.find((c) => c.accessor === keyAccessor) || { accessor: '', Header: '' }
+  );
   const [descending, setDescending] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -104,22 +104,22 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   onClick={() => {
                     if ([...cart.filter((cartItem) => cartItem.id === result.id)].length > 0) {
                       toast({
-                          title: 'Error!',
-                          description: 'Flight already in cart!.',
-                          status: 'error',
-                          duration: 9000,
-                          isClosable: true,
-                          position: 'top'
+                        title: 'Error!',
+                        description: 'Flight already in cart!.',
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
                       });
                     } else {
                       setCart((cart) => [...cart, result]);
                       toast({
-                          title: 'Success!',
-                          description: 'Flight added to cart successfully.',
-                          status: 'success',
-                          duration: 9000,
-                          isClosable: true,
-                          position: 'top'
+                        title: 'Success!',
+                        description: 'Flight added to cart successfully.',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                        position: 'top'
                       });
                     }
                   }}

@@ -11,7 +11,6 @@ export const endpoints = {
   airlines: '/airlines',
   recommended: '/flights/recommended',
   book: '/book',
-  covidUpdate: '/covidUpdate',
   airlineUpdate: '/airlineUpdate',
   flightUpdate: '/flightUpdate',
   bookHolidayPackage: '/bookHolidayPackage',
@@ -19,10 +18,6 @@ export const endpoints = {
   createHolidayPackage: '/holidayPackages/createHolidayPackage',
   holidayPackages: '/holidayPackages',
   wishlist: '/wishlist',
-  getCovid: '/getCovid',
-  getUsers: '/getUsers',
-  getCanceled: '/getCanceledFlights',
-  deleteCancel: '/deleteCancelFlight',
-  deleteCovid: '/deleteCovidDestination',
-  deleteSponsored: '/deleteSponsoredAirline',
+  covid: '/admin/covid',
+  getCanceled: '/admin/cancelled-flights'
 };

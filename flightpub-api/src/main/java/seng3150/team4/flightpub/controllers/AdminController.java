@@ -1,83 +1,63 @@
 package seng3150.team4.flightpub.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import seng3150.team4.flightpub.controllers.requests.BookingRequest;
+import seng3150.team4.flightpub.controllers.requests.AddCovidRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.domain.models.*;
-import seng3150.team4.flightpub.domain.models.Airline;
 import seng3150.team4.flightpub.domain.repositories.*;
-import seng3150.team4.flightpub.services.AdminService;
-import seng3150.team4.flightpub.services.IAuthenticationService;
-import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 @RestController
 @RequiredArgsConstructor
 @Authorized(allowedRoles = { UserRole.ADMINISTRATOR })
-
+@RequestMapping("/admin")
 public class AdminController {
 
-    private final ICovidRepository destinationRepository;
+    private final ICovidRepository covidRepository;
     private final ISponsorRepository airlineRepository;
     private final ICanceledRepository flightRepository;
-    private final IUserRepository userRepository;
-    private final IFlightRepository compareRepository;
+    private final IDestinationRepository destinationRepository;
 
 
-    @PostMapping(path = "/getCovid")
+    @GetMapping(path = "/covid")
     public Response getCovidLocations() {
-        var locations = new ArrayList<CovidDestinations>() {};
-
-        // Convert Iterable to List
-        destinationRepository.findAll().forEach(locations::add);
-
-        return new EntityCollectionResponse<CovidDestinations>(locations);
+        return new EntityCollectionResponse<>(covidRepository.findAll());
     }
 
-    @PostMapping(path = "/getUsers")
-    public Response getUsers() {
-        var users = new ArrayList<User>() {};
-
-        // Convert Iterable to List
-        userRepository.findAll().forEach(users::add);
-
-        return new EntityCollectionResponse<User>(users);
-    }
-
-    @PostMapping(path = "/getCanceledFlights")
+    @GetMapping(path = "/canceled-flights")
     public Response getCanceledFlights() {
-        var cannedflights = new ArrayList<CanceledFlights>() {};
-        var flights = new ArrayList<Flight>(){};
-        // Convert Iterable to List
-        flightRepository.findAll().forEach(cannedflights::add);
-        compareRepository.findAll().forEach(flights::add);
-
-//        return new EntityCollectionResponse<Flight>(flights.retainAll(cannedflights));
-        return new EntityCollectionResponse<CanceledFlights>(cannedflights);
+        return new EntityCollectionResponse<>(flightRepository.findAll());
     }
 
 
-    @PostMapping(path = "/covidUpdate")
-    public CovidDestinations updateCovid(String destination, LocalDateTime covidEndDate, LocalDateTime covidStartDate) {
-//        CovidDestinations newDestination = new CovidDestinations();
-//        newDestination.setCovidEndDate(covidEndDate);
-//        newDestination.setCovidStartDate(covidStartDate);
-//        newDestination.setDestinations(destination);
-//        CovidDestinations savedDestination  = destinationRepository.save(newDestination);
-//        return savedDestination; commented out so that it compiles TODO this bit needs fixing
-        return new CovidDestinations();
+    @PostMapping(path = "/covid")
+    public EntityResponse<CovidDestination> updateCovid(@RequestBody AddCovidRequest covidRequest) {
+        covidRequest.validate();
+
+
+        var covidListing = new CovidDestination();
+        covidListing.setCovidStartDate(LocalDate.now(ZoneOffset.UTC));
+        covidListing.setCovidEndDate(covidRequest.getRestrictionDuration());
+
+        var destination = destinationRepository.findById(covidRequest.getLocationCode());
+
+        if (destination.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Destination %s was not found.", covidRequest.getLocationCode()));
+        }
+
+        covidListing.setDestination(destination.get());
+
+        var savedListing = covidRepository.save(covidListing);
+        return new EntityResponse<>(savedListing);
     }
 
     @PostMapping(path = "/airlineUpdate")
@@ -103,10 +83,10 @@ public class AdminController {
     }
 
     @Authorized
-    @DeleteMapping("/deleteCovidDestination")
-    public StatusResponse deleteCovidDestination(@PathVariable Long id) {
-        var covidDestination = destinationRepository.getById(id);
-        destinationRepository.delete(covidDestination);
+    @DeleteMapping("/covid/{entityId}")
+    public StatusResponse deleteCovidDestination(@PathVariable Long entityId) {
+        var covidDestination = covidRepository.getById(entityId);
+        covidRepository.delete(covidDestination);
         return new StatusResponse(HttpStatus.OK);
     }
 
