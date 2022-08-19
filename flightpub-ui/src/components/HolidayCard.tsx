@@ -12,7 +12,9 @@ import {
   Button,
   HStack,
   Show,
-  Spacer
+  Spacer,
+  Wrap,
+  WrapItem
 } from '@chakra-ui/react';
 
 import React, { ReactElement } from 'react';
@@ -21,6 +23,7 @@ import { FeatureBadgeProps, HolidayPackage } from '../models/HolidayCardProps';
 import { FlightListAccordian } from './FlightListAccordian';
 import { NavLink } from 'react-router-dom';
 import { routes } from '../constants/routes';
+import { airports } from '../data/airports';
 
 interface FeatureProps {
   text: string;
@@ -55,6 +58,19 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
 };
 
 export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButton }) => {
+  const colorOptions = [
+    'cyan',
+    'orange',
+    'yellow',
+    'green',
+    'teal',
+    'cyan',
+    'blue',
+    'purple',
+    'pink',
+    'darkblue'
+  ];
+
   return (
     <Flex p={5} w='full' alignItems='center' justifyContent='center' border='1px'>
       <HStack spacing={5}>
@@ -64,7 +80,7 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
           borderWidth='1px'
           border='1px'
           boxShadow='2xl'
-          borderColor='gray.200'
+          borderColor='grey.200'
           rounded='lg'
           shadow='lg'
           position='relative'
@@ -82,13 +98,29 @@ export const HolidayCard: React.FC<HolidayCardPropsObj> = ({ data, showBookButto
           />
 
           <Box p='4'>
-            <HStack alignItems='baseline' spacing='1'>
-              {data.isPopular && <FeatureBadge tagName='popular' tagColor='red' />}
+            <Wrap spacing='5px'>
+              {data.isPopular && (
+                <WrapItem>
+                  <FeatureBadge tagName='popular' tagColor='red' />
+                </WrapItem>
+              )}
+              {airports
+                .find((airport) => airport.code === data.arrivalLocation)
+                ?.tags.map((value) => {
+                  return (
+                    <WrapItem>
+                      <FeatureBadge
+                        tagName={value}
+                        tagColor={colorOptions[Math.floor(Math.random() * colorOptions.length)]}
+                      />
+                    </WrapItem>
+                  );
+                })}
 
               {/*              {Object.values(data.tags).map((value) => {
                 return <FeatureBadge tagName={value.tagName} tagColor={value.tagColor} />;
               })}*/}
-            </HStack>
+            </Wrap>
             <Flex mt='1' justifyContent='space-between' alignContent='center'>
               <Box
                 fontSize='2xl'
