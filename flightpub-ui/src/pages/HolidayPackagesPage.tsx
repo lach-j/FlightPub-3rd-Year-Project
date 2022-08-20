@@ -90,6 +90,9 @@ export function HolidayPackagesPage() {
     setCurrentFlight(parseInt(event.target.value));
   };
   const addFlightToList = () => {
+    if (currentFlight === 0) {
+      return;
+    }
     setHolidayPackage({
       ...holidayPackage,
       flightIds: [...holidayPackage.flightIds, currentFlight]
