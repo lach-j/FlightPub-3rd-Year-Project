@@ -1,4 +1,4 @@
-import { Flight } from './Flight';
+import {Flight} from './Flight';
 
 export interface HolidayCardProps {
   isPopular: boolean;

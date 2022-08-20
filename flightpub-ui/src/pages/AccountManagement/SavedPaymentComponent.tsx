@@ -1,21 +1,21 @@
 import {
-  Badge,
-  Box,
-  Flex,
-  HStack,
-  Icon,
-  IconButton,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  Text,
-  VStack
+    Badge,
+    Box,
+    Flex,
+    HStack,
+    Icon,
+    IconButton,
+    Stat,
+    StatHelpText,
+    StatLabel,
+    Text,
+    VStack
 } from '@chakra-ui/react';
-import { AiFillBank, AiFillCreditCard, BiTrash, ImPaypal } from 'react-icons/all';
-import { EditIcon } from '@chakra-ui/icons';
+import {AiFillBank, AiFillCreditCard, BiTrash, ImPaypal} from 'react-icons/all';
+import {EditIcon} from '@chakra-ui/icons';
 import React from 'react';
-import { SavedPayment } from '../../models';
-import { SavedPaymentType } from '../../models/SavedPaymentTypes';
+import {SavedPayment} from '../../models';
+import {SavedPaymentType} from '../../models/SavedPaymentTypes';
 
 export const SavedPaymentComponent = ({
   payment,

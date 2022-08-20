@@ -1,29 +1,18 @@
-import {
-  Button,
-  Heading,
-  VStack,
-  Box,
-  HStack,
-  Input,
-  Text,
-  Flex,
-  Avatar,
-  useToast,
-  Link
-} from '@chakra-ui/react';
-import React, { Children, useContext, useEffect, useRef, useState } from 'react';
-import { FaPaperPlane } from 'react-icons/fa';
+import {Avatar, Box, Button, Flex, Heading, HStack, Input, Link, Text, useToast, VStack} from '@chakra-ui/react';
+import React, {Children, useContext, useEffect, useRef, useState} from 'react';
+import {FaPaperPlane} from 'react-icons/fa';
 import Message from '../../models/Message';
-import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
-import { useMessaging } from '../../services/MessagingService';
+import {MessagingSession, SessionStatus} from '../../models/MessagingSession';
+import {useMessaging} from '../../services/MessagingService';
 import * as _ from 'lodash';
-import { useNavigate, useParams } from 'react-router-dom';
-import { User } from '../../models';
-import { UserContext } from '../../services/UserContext';
+import {useNavigate, useParams} from 'react-router-dom';
+import {User} from '../../models';
+import {UserContext} from '../../services/UserContext';
 import moment from 'moment';
 import * as uuid from 'uuid';
-import { ApiError } from '../../services/ApiService';
-import { routes } from '../../constants/routes';
+import {ApiError} from '../../services/ApiService';
+import {routes} from '../../constants/routes';
+
 export const TravelAgentMessagingPage = () => {
   const { sessionId } = useParams();
   const [sessionData, setSessionData] = useState<MessagingSession>();

@@ -11,18 +11,17 @@ import {
   Link,
   ListItem,
   Stack,
+  Text,
   UnorderedList,
-  useToast,
-  Text
+  useToast
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useState, useEffect } from 'react';
-import { useApi } from '../services/ApiService';
-import { ApiError } from '../services/ApiService';
-import { Link as RouteLink, NavLink, useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { User } from '../models/User';
-import { endpoints } from '../constants/endpoints';
-import { FaArrowRight } from 'react-icons/fa';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
+import {ApiError, useApi} from '../services/ApiService';
+import {Link as RouteLink, NavLink, useNavigate} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {User} from '../models/User';
+import {endpoints} from '../constants/endpoints';
+import {FaArrowRight} from 'react-icons/fa';
 import * as yup from 'yup';
 
 const userDetailsSchema = yup.object().shape({

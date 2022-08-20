@@ -16,6 +16,8 @@ public interface IUserService {
 
   User getUserByEmail(String email);
 
+  User getUserByEmailSecure(String email);
+
   User getUserById(long userId);
 
   User getUserByIdSecure(long userId);

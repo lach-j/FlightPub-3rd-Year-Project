@@ -1,17 +1,17 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, VStack, HStack } from '@chakra-ui/react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Box, Button, Center, Grid, Heading, HStack, StackDivider, VStack} from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import plane from '../HomePageStockShot.jpg';
-import { useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airline, ColumnDefinition, Flight, Price } from '../models';
-import { Airport, findNearestAirport } from '../utility/geolocation';
-import { convertMinsToHM, formatDateTime } from '../utility/formatting';
-import { ResultsTable } from '../components/ResultsTable';
-import { NavLink } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { HolidayPackage } from '../models/HolidayCardProps';
-import { HolidayCardSmall } from '../components/HolidayCardSmall';
+import {useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Airline, ColumnDefinition, Flight, Price} from '../models';
+import {Airport, findNearestAirport} from '../utility/geolocation';
+import {convertMinsToHM, formatDateTime} from '../utility/formatting';
+import {ResultsTable} from '../components/ResultsTable';
+import {NavLink} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {HolidayPackage} from '../models/HolidayCardProps';
+import {HolidayCardSmall} from '../components/HolidayCardSmall';
 
 export function HomePage({
   cartState
@@ -31,10 +31,6 @@ export function HomePage({
   const [airport, setAirport] = useState<Airport | undefined>();
   const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([]);
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
   const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
 
@@ -46,10 +42,9 @@ export function HomePage({
     return `$${minPrice}`;
   };
 
-  //Gets users current position and retrieves list of airlines
+  //Gets users current position
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
   }, []);
 
   //Takes user location and finds nearest airport on load
@@ -62,9 +57,8 @@ export function HomePage({
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
     {
-      accessor: 'airlineCode',
-      Header: 'Airline',
-      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName || value
+      accessor: 'airline.airlineName',
+      Header: 'Airline'
     },
     { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
     { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },

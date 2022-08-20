@@ -17,7 +17,6 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  SimpleGrid,
   Stack,
   StackDivider,
   Switch,
@@ -28,7 +27,7 @@ import {
 import logo from '../FlightPubLogo.png';
 import { ApiError, useApi } from '../services/ApiService';
 import { endpoints } from '../constants/endpoints';
-import { Airline, Flight } from '../models';
+import { Flight } from '../models';
 import { Airport, findNearestAirport } from '../utility/geolocation';
 
 import { HolidayCard } from '../components/HolidayCard';
@@ -166,10 +165,6 @@ export function HolidayPackagesPage() {
   const [airport, setAirport] = useState<Airport | undefined>();
   const [localOnly, setLocalOnly] = useState(false);
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
   const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
   const { httpPost: httpPostHolidayPackage } = useApi(endpoints.createHolidayPackage);
@@ -190,7 +185,6 @@ export function HolidayPackagesPage() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
     httpGetHolidayPackages('/getAll').then(setHolidayPackageList);
   }, []);
 

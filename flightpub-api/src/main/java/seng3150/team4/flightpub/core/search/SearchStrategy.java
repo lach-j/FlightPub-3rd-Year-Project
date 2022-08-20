@@ -15,7 +15,7 @@ import static seng3150.team4.flightpub.utility.Utilities.getValueOrDefault;
 public abstract class SearchStrategy {
 
   // Using criteria query for complex queries
-  private EntityManager em;
+  protected EntityManager em;
   protected CriteriaBuilder cb;
   protected CriteriaQuery<Flight> query;
   protected Root<Flight> flight;

@@ -1,10 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
   Button,
   Flex,
   FormControl,
@@ -15,47 +9,30 @@ import {
   ListItem,
   Modal,
   ModalOverlay,
+  OrderedList,
   Select,
   Spinner,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   Switch,
   Text,
+  UnorderedList,
   useDisclosure,
   useToast,
-  VStack,
-  UnorderedList,
-  OrderedList
+  VStack
 } from '@chakra-ui/react';
-import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import React, {
-  Dispatch,
-  SetStateAction,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useContext,
-  ChangeEvent
-} from 'react';
-import { useApi } from '../services/ApiService';
-import { ApiError } from '../services/ApiService';
-import { countries } from '../data/countries';
-import { SavedPayment } from '../models';
-import { useNavigate, NavLink, useLocation } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { Booking } from '../models/Booking';
-import { Flight } from '../models/Flight';
-import { endpoints } from '../constants/endpoints';
-import { Passenger, PassengerDTO } from '../models/Passenger';
-import { PaymentType, SavedPaymentType } from '../models/SavedPaymentTypes';
-import { UserContext } from '../services/UserContext';
-import { FlightListAccordian } from '../components/FlightListAccordian';
-import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
-import { TypeOf } from 'yup';
+import React, {ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
+import {ApiError, useApi} from '../services/ApiService';
+import {countries} from '../data/countries';
+import {NavLink, useLocation, useNavigate} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {Flight} from '../models/Flight';
+import {endpoints} from '../constants/endpoints';
+import {Passenger, PassengerDTO} from '../models/Passenger';
+import {SavedPaymentType} from '../models/SavedPaymentTypes';
+import {UserContext} from '../services/UserContext';
+import {FlightListAccordian} from '../components/FlightListAccordian';
+import {PaymentDetailsForm} from '../components/PaymentDetailsForm';
 import * as yup from 'yup';
-import { ObjectShape } from 'yup/lib/object';
+import {ObjectShape} from 'yup/lib/object';
 
 export interface BillingDetails {
   firstName: string;
@@ -381,8 +358,6 @@ export const BookingPage = ({
   if (!user) {
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   }
-
-  console.table(bookingRequest);
 
   const getTotalCost = () => {
     const booking: { passengers: [{ ticketClass: string }]; flights: Flight[] } = {
