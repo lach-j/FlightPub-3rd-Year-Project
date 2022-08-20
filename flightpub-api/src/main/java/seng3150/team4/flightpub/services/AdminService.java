@@ -17,7 +17,7 @@ public class AdminService {
     private final ICovidRepository covidRepository;
     private final ISponsorRepository sponsorRepository;
 
-    public SponsoredAirlines getSponsoredAirlineById(long id) {
+    public SponsoredAirline getSponsoredAirlineById(long id) {
         // If the user does not exist that throw an exception
         var sponsoredAirlines = sponsorRepository.findById(id);
         if (sponsoredAirlines.isEmpty())

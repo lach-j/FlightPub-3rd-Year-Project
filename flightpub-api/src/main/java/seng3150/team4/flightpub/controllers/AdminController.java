@@ -53,7 +53,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/airlineUpdate")
-    public SponsoredAirlines updateAirline(SponsoredAirlines airline) {
+    public SponsoredAirline updateAirline(SponsoredAirline airline) {
 //        todo get todays date and
 
         return airlineRepository.save(airline);

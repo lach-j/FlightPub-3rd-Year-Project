@@ -13,7 +13,7 @@ public interface IAdminService {
 
     Flight getCanceledFlightById(long id);
 
-    SponsoredAirlines getSponsoredAirlineById(long id);
+    SponsoredAirline getSponsoredAirlineById(long id);
 
     CovidDestination getCovidLocationById(long id);
 

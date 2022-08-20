@@ -1,6 +1,8 @@
+import { Airline } from './Airline';
+
 export interface SponsoredAirline {
-    id: number;
-    sponsoredStartDate: string;
-    sponsoredEndDate: string;
-    airlineCode: string;
+  id: number;
+  startDate: string;
+  endDate: string;
+  airline: Airline;
 }

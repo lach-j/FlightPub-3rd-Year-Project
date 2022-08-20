@@ -7,28 +7,29 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 /** models the Airlines table in the database */
 @Entity
-@Table(name = "SponsoredAirlines")
+@Table(name = "SponsoredAirline")
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-public class SponsoredAirlines implements IEntity, Serializable {
+public class SponsoredAirline implements IEntity, Serializable {
     @Column(name = "Id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "SponsoredStartDate")
-    private LocalDateTime CovidStartDate;
+    @Column(name = "StartDate")
+    private LocalDate startDate;
 
-    @Column(name = "SponsoredEndDate")
-    private String CovidEndDate;
+    @Column(name = "EndDate")
+    private LocalDate endDate;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private Set<Airline> airlines;
+    @OneToOne
+    @JoinColumn(name = "AirlineCode")
+    private Airline airline;
 }

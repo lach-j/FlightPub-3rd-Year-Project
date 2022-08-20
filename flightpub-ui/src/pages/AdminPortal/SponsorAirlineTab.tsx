@@ -1,11 +1,30 @@
-import {Box, Button, Center, FormControl, FormLabel, Heading, HStack, Text, useToast, VStack} from '@chakra-ui/react';
-import React, {useEffect, useState} from 'react';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
-import {airlines} from '../../data/airline';
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Text,
+  useToast,
+  VStack
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
+import { airlines } from '../../data/airline';
 import DatePicker from 'react-datepicker';
-import {ColumnDefinition} from '../../models';
-import {SponsoredAirline} from '../../models/SponsoredAirline';
-import {DataTable} from '../../components/DataTable';
+import { ColumnDefinition } from '../../models';
+import { DataTable } from '../../components/DataTable';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { SponsoredAirline } from '../../models/SponsoredAirline';
+import moment from 'moment';
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -23,31 +42,18 @@ interface SearchQuery {
   airlineName?: string;
 }
 
-const handleDiscardChanges = () => {
-  // TODO : replace this with real refresh logic
-  window.location.reload();
-};
-
-const handleSaveChanges = () => {
-  // TODO : actually make an entry
-};
-
 export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const toast = useToast();
-  const [covidDate, setCovidDate] = useState(new Date()); // Return date, not currently used in request (visual only)
-  //Formats from JavaScript Date type to string
-  const [iDFilter, setIDFilter] = useState('');
+  const [selectedAirline, setSelectedAirline] = useState('');
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [sponsoredListings, setSponsoredListings] = useState<SponsoredAirline[]>([]);
 
-  // const {httpGet} = useApi(endpoints.getCovid);
-  const [sponsoredAirline, setSponsoredAirline] = useState<SponsoredAirline>();
+  const { httpPost, httpGet } = useApi(endpoints.airlines);
+
   const formatDate = (date: Date) => {
     return new Date(date).toISOString().split('T')[0];
   };
-
-  // sets covid destination information on-load
-  useEffect(() => {
-    // httpGet('').then(setSponsoredAirline);
-  }, []);
 
   const columns: ColumnDefinition<any>[] = [
     {
@@ -55,31 +61,37 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
       Header: 'Id'
     },
     {
-      accessor: 'sponsoredStartDate',
+      accessor: 'startDate',
       Header: 'Start Date'
     },
     {
-      accessor: 'sponsoredEndDate',
+      accessor: 'endDate',
       Header: 'End Date'
     },
     {
-      accessor: 'airlineCode',
+      accessor: 'airline.airlineCode',
       Header: 'Airline'
     }
   ];
 
-  //authRequest : stores search query request
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    departureDate: { date: formatDate(new Date()) }
-  });
+  const loadSponsored = () => {
+    httpGet('/sponsored').then(setSponsoredListings);
+  };
+
+  useEffect(() => {
+    loadSponsored();
+  }, []);
 
   const handleSponsorshipUpdate = () => {
     setIsLoading(true);
-  };
-
-  //Handles update of search query input, updating value(s)
-  const handleSearchQueryUpdate = (field: keyof SearchQuery, value: any) => {
-    setSearchQuery({ ...searchQuery, [field]: value });
+    httpPost(`/${selectedAirline}/sponsor`, {
+      startDate: formatDate(endDate),
+      endDate: formatDate(endDate)
+    })
+      .then(() => loadSponsored())
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -97,15 +109,16 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                     openOnFocus
                     suggestWhenEmpty
                     emptyState={true}
-                    onChange={(value) => handleSearchQueryUpdate('airlineName', value)}
+                    onChange={(value) => setSelectedAirline(value.split('-')[1])}
                   >
-                    <AutoCompleteInput
-                      variant='filled'
-                      onBlur={() => handleSearchQueryUpdate('airlineName', undefined)}
-                    />
+                    <AutoCompleteInput variant='filled' />
                     <AutoCompleteList>
-                      {airlines.map(({ airlineName }) => (
-                        <AutoCompleteItem key={airlineName} value={airlineName} align='center'>
+                      {airlines.map(({ airlineName, airlineCode }) => (
+                        <AutoCompleteItem
+                          key={`${airlineName}-${airlineCode}`}
+                          value={`${airlineName}-${airlineCode}`}
+                          align='center'
+                        >
                           <Text ml='4'>{airlineName}</Text>
                         </AutoCompleteItem>
                       ))}
@@ -115,24 +128,29 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
               </Box>
               <Box>
                 <FormControl isRequired>
-                  <FormLabel>Sponsorship Duration</FormLabel>
+                  <FormLabel>Start Date</FormLabel>
                   <DatePicker
                     dateFormat='dd/MM/yyyy'
-                    minDate={new Date(searchQuery.departureDate.date) || new Date()}
-                    selected={covidDate}
-                    onChange={(date: Date) =>
-                      handleSearchQueryUpdate('departureDate', {
-                        ...searchQuery?.departureDate,
-                        date: formatDate(date)
-                      })
-                    }
+                    selected={startDate}
+                    onChange={(date: Date) => {
+                      setStartDate(date);
+                      if (moment(date).isAfter(endDate)) setEndDate(date);
+                    }}
                   />
                 </FormControl>
               </Box>
               <Box>
-                <Button colorScheme={'gray'} onClick={handleDiscardChanges}>
-                  Clear
-                </Button>
+                <FormControl isRequired>
+                  <FormLabel>End Date</FormLabel>
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    minDate={startDate || new Date()}
+                    selected={endDate}
+                    onChange={(date: Date) => setEndDate(date)}
+                  />
+                </FormControl>
+              </Box>
+              <Box>
                 <Button colorScheme={'blue'} onClick={handleSponsorshipUpdate}>
                   Confirm
                 </Button>
@@ -142,7 +160,12 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
           <form>
             <VStack gap='2em'>
               <Center flex='1'>
-                <DataTable columns={columns} data={[]} keyAccessor='id'></DataTable>
+                <DataTable
+                  sortable
+                  columns={columns}
+                  data={sponsoredListings}
+                  keyAccessor='id'
+                ></DataTable>
               </Center>
             </VStack>
           </form>
