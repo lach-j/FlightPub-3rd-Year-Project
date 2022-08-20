@@ -1,20 +1,20 @@
 import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay,
-    Button,
-    Divider,
-    FormControl,
-    FormLabel,
-    Heading,
-    HStack,
-    Select,
-    useDisclosure,
-    useToast,
-    VStack
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  Divider,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Select,
+  useDisclosure,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
 import React, {useContext, useEffect, useState} from 'react';
 import {CustomEditible} from '../../components/CustomEditable';

@@ -1,40 +1,35 @@
-import React, { SyntheticEvent, useContext, useEffect, useState } from 'react';
+import React, {SyntheticEvent, useContext, useEffect, useState} from 'react';
 import {
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-  StackDivider,
-  Switch,
-  Text,
-  useToast,
-  VStack
+    Box,
+    Button,
+    Center,
+    Checkbox,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Grid,
+    Heading,
+    HStack,
+    Input,
+    Stack,
+    StackDivider,
+    Switch,
+    Text,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
-import { ApiError, useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airline, Flight } from '../models';
-import { Airport, findNearestAirport } from '../utility/geolocation';
+import {ApiError, useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Flight} from '../models';
+import {Airport, findNearestAirport} from '../utility/geolocation';
 
-import { HolidayCard } from '../components/HolidayCard';
-import { HolidayPackage } from '../models/HolidayCardProps';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
-import { airports } from '../data/airports';
-import { UserContext } from '../services/UserContext';
-import { UserRole } from '../models/User';
+import {HolidayCard} from '../components/HolidayCard';
+import {HolidayPackage} from '../models/HolidayCardProps';
+import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import {airports} from '../data/airports';
+import {UserContext} from '../services/UserContext';
+import {UserRole} from '../models/User';
 
 interface CreateHolidayPackageQuery {
   isPopular: boolean;
