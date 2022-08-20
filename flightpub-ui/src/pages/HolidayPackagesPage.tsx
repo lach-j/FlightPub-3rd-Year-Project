@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Checkbox,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -11,6 +12,12 @@ import {
   Heading,
   HStack,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  SimpleGrid,
   Stack,
   StackDivider,
   Switch,
@@ -207,133 +214,162 @@ export function HolidayPackagesPage() {
             )}
           </div>
           {userHasPrivileges ? (
-            <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' w='md'>
+            <Box border='2px' borderColor='gray.200' p='10' borderRadius='2xl' width={'2xl'}>
               <form onSubmit={handlePackageCreation}>
-                <Stack spacing='12'>
-                  <Box>
+                <Stack spacing='20px'>
+                  <Center>
                     <Heading>Create Holiday Package</Heading>
-                  </Box>
-                  <Box>
-                    <Stack spacing='3'>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>isPopular</FormLabel>
-                        <Checkbox
-                          name='isPopular'
-                          checked={holidayPackage.isPopular}
-                          onChange={handleIsPopularChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>imageURL</FormLabel>
-                        <Input
-                          name='imageURL'
-                          value={holidayPackage.imageURL}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>Package Name</FormLabel>
-                        <Input
-                          name='packageName'
-                          value={holidayPackage.packageName}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>Description</FormLabel>
-                        <Input
-                          name='packageDescription'
-                          value={holidayPackage.packageDescription}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>Package Tagline</FormLabel>
-                        <Input
-                          name='packageTagline'
-                          value={holidayPackage.packageTagline}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>No. of nights</FormLabel>
-                        <Input
-                          name='packageNights'
-                          type='number'
-                          value={holidayPackage.packageNights}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>location</FormLabel>
-                        <Input
-                          name='location'
-                          value={holidayPackage.location}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>Accommodation</FormLabel>
-                        <Input
-                          name='accommodation'
-                          value={holidayPackage.accommodation}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
-                      <FormControl isDisabled={loading}>
-                        <FormLabel>Price</FormLabel>
-                        <Input
-                          type='number'
-                          name='price'
-                          value={holidayPackage.price}
-                          onChange={handleHolidayPackageChange}
-                        />
-                      </FormControl>
+                  </Center>
+                  <FormControl isDisabled={loading}>
+                    <FormLabel>Flag as Popular</FormLabel>
+                    <Switch
+                      name='isPopular'
+                      colorScheme='red'
+                      checked={holidayPackage.isPopular}
+                      onChange={handleIsPopularChange}
+                    />
+                  </FormControl>
+                  <FormControl isDisabled={loading}>
+                    <FormLabel>imageURL:</FormLabel>
+                    <Input
+                      name='imageURL'
+                      value={holidayPackage.imageURL}
+                      onChange={handleHolidayPackageChange}
+                    />
+                  </FormControl>
+
+                  <HStack>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Package Name:</FormLabel>
+                      <Input
+                        name='packageName'
+                        value={holidayPackage.packageName}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                  </HStack>
+                  <HStack>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Description:</FormLabel>
+                      <Input
+                        name='packageDescription'
+                        value={holidayPackage.packageDescription}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                  </HStack>
+                  <HStack>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Package Tagline:</FormLabel>
+                      <Input
+                        name='packageTagline'
+                        value={holidayPackage.packageTagline}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                  </HStack>
+                  <HStack>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Accommodation:</FormLabel>
+                      <Input
+                        name='accommodation'
+                        value={holidayPackage.accommodation}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Location:</FormLabel>
+                      <Input
+                        name='location'
+                        value={holidayPackage.location}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                  </HStack>
+                  <HStack>
+                    <FormControl>
+                      <FormLabel>Departure Location:</FormLabel>
+                      <AutoComplete
+                        openOnFocus
+                        suggestWhenEmpty
+                        onChange={(value) => handleCreateQueryUpdate('arrivalLocation', value)}
+                      >
+                        <AutoCompleteInput placeholder='Search...' variant='filled' />
+                        <AutoCompleteList>
+                          {airports.map(({ code, city }) => (
+                            <AutoCompleteItem
+                              key={city}
+                              value={code}
+                              label={`${city} - ${code}`}
+                              align='center'
+                            ></AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </AutoComplete>
+                    </FormControl>
+                    <FormControl isDisabled={loading}>
+                      <FormLabel>Price</FormLabel>
+                      <Input
+                        type='number'
+                        name='price'
+                        maxW={'120px'}
+                        value={holidayPackage.price}
+                        onChange={handleHolidayPackageChange}
+                      />
+                    </FormControl>
+                  </HStack>
+                  <Flex>
+                    <Box>
                       <FormControl isDisabled={loading}>
                         <FormLabel>Flight Ids:</FormLabel>
-                        <Input
-                          type='number'
-                          name='flight'
-                          placeholder='Input a flightID'
-                          value={currentFlight}
-                          onChange={handleFlightInputUpdate}
-                        />
-                        <Input type='button' onClick={addFlightToList} value='Add'></Input>
-                        <h1>Selected Flights: </h1>
-                        <div>
-                          {holidayPackage.flightIds.map((entry) => (
-                            <div>{entry}</div>
-                          ))}
-                        </div>
+                        <HStack>
+                          <Input
+                            type='number'
+                            name='flight'
+                            value={currentFlight}
+                            onChange={handleFlightInputUpdate}
+                          />
+                          <Input type='button' onClick={addFlightToList} value='Add'></Input>
+                        </HStack>
                       </FormControl>
-                      <Box>
-                        <FormControl>
-                          <FormLabel>Departure Location:</FormLabel>
-                          <AutoComplete
-                            openOnFocus
-                            suggestWhenEmpty
-                            onChange={(value) => handleCreateQueryUpdate('arrivalLocation', value)}
-                          >
-                            <AutoCompleteInput placeholder='Search...' variant='filled' />
-                            <AutoCompleteList>
-                              {airports.map(({ code, city }) => (
-                                <AutoCompleteItem key={code} value={code} align='center'>
-                                  <Text ml='4'>{city}</Text>
-                                </AutoCompleteItem>
-                              ))}
-                            </AutoCompleteList>
-                          </AutoComplete>
-                        </FormControl>
-                      </Box>
+                    </Box>
+                    <Box>
+                      <FormControl isDisabled={loading}>
+                        <FormLabel>No. of nights:</FormLabel>
+                        <NumberInput
+                          allowMouseWheel={true}
+                          name='packageNights'
+                          value={holidayPackage.packageNights}
+                          size='md'
+                          min={1}
+                          maxW={'125px'}
+                          onChange={(value) => handleCreateQueryUpdate('packageNights', value)}
+                        >
+                          <NumberInputField />
+                          <NumberInputStepper>
+                            <NumberIncrementStepper />
+                            <NumberDecrementStepper />
+                          </NumberInputStepper>
+                        </NumberInput>
+                      </FormControl>
+                    </Box>
+                  </Flex>
+                  <HStack>
+                    <Text fontWeight={'bold'}>Selected Flights: </Text>
+                    {holidayPackage.flightIds.map((entry) => (
+                      <div>{entry},</div>
+                    ))}
+                  </HStack>
 
-                      {/* Error message popup */}
-                      <FormErrorMessage>Values provided are incorrect</FormErrorMessage>
-                    </Stack>
-                  </Box>
+                  {/* Error message popup */}
+                  <FormErrorMessage>Values provided are incorrect</FormErrorMessage>
                   {/* Form submission button */}
-                  <Button type='submit' isLoading={loading} colorScheme='red'>
-                    Create Holiday Package
-                  </Button>
+
+                  <Center>
+                    <Button type='submit' isLoading={loading} colorScheme='red'>
+                      Create Holiday Package
+                    </Button>
+                  </Center>
                 </Stack>
               </form>
             </Box>
