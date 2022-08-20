@@ -140,7 +140,7 @@ export function HomePage({
         <Box overflowX='auto' maxWidth={'100%'}>
           <HStack spacing={1} align='center'>
             {holidayPackageList.length !== 0 ? (
-              holidayPackageList.map((value) => (
+              holidayPackageList.slice(0, 3).map((value) => (
                 <Box>
                   <HolidayCardSmall data={value} showBookButton={true}></HolidayCardSmall>
                 </Box>
