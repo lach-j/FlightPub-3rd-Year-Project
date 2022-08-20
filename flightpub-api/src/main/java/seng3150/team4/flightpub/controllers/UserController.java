@@ -12,6 +12,7 @@ import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 import seng3150.team4.flightpub.domain.models.*;
 import seng3150.team4.flightpub.security.Authorized;
+import seng3150.team4.flightpub.security.CurrentUserContext;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.services.PaymentService;
 import seng3150.team4.flightpub.utility.PasswordHash;
@@ -30,6 +31,7 @@ public class UserController {
   // Inject dependencies
   private final IUserService userService;
   private final PaymentService paymentService;
+  private final CurrentUserContext currentUserContext;
 
   @PostMapping
   public ResponseEntity<? extends Response> registerUser(
@@ -53,8 +55,16 @@ public class UserController {
 
   @Authorized
   @GetMapping("/{userId}")
-  public EntityResponse<User> getUserById(@PathVariable Long userId) {
-    var user = userService.getUserByIdSecure(userId);
+  public EntityResponse<User> getUserById(@PathVariable String userId) {
+
+    User user = null;
+
+    try {
+      user = userService.getUserByIdSecure(Long.parseLong(userId));
+    } catch (NumberFormatException e) {
+      user = userService.getUserByEmailSecure(userId);
+    }
+
     return new EntityResponse<>(user);
   }
 
@@ -71,6 +81,9 @@ public class UserController {
     if (!isNullOrEmpty(request.getFirstName())) user.setFirstName(request.getFirstName());
 
     if (!isNullOrEmpty(request.getLastName())) user.setLastName(request.getLastName());
+
+    if (!isNullOrEmpty(request.getRole()) && currentUserContext.getCurrentUserRole() == UserRole.ADMINISTRATOR)
+      user.setRole(request.getRole());
 
     return new EntityResponse<>(userService.updateUser(user));
   }

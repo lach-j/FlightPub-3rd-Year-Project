@@ -17,4 +17,8 @@ public interface IFlightService {
   List<Flight> getCheapestFlights(String destination);
 
   List<Flight> getFlightByIds(String ids);
+
+  Flight getFlightById(long id);
+
+  Flight setFlightCancelled(long id, boolean setCancelled);
 }

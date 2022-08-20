@@ -1,7 +1,7 @@
-import React, { useState, createContext, useEffect } from 'react';
-import { endpoints } from '../constants/endpoints';
-import { User } from '../models';
-import { useApi } from './ApiService';
+import React, {createContext, useEffect, useState} from 'react';
+import {endpoints} from '../constants/endpoints';
+import {User} from '../models';
+import {useApi} from './ApiService';
 
 type UserContextType = {
   user: User | null;

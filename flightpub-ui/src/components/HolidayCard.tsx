@@ -1,29 +1,29 @@
 import {
-  Flex,
-  Circle,
-  Box,
-  Image,
-  Badge,
-  useColorModeValue,
-  Icon,
-  Stack,
-  Text,
-  Heading,
-  Button,
-  HStack,
-  Show,
-  Spacer,
-  Wrap,
-  WrapItem
+    Badge,
+    Box,
+    Button,
+    Circle,
+    Flex,
+    Heading,
+    HStack,
+    Icon,
+    Image,
+    Show,
+    Spacer,
+    Stack,
+    Text,
+    useColorModeValue,
+    Wrap,
+    WrapItem
 } from '@chakra-ui/react';
 
-import React, { ReactElement } from 'react';
-import { ImAirplane, GiNightSky, ImCheckmark2 } from 'react-icons/all';
-import { FeatureBadgeProps, HolidayPackage } from '../models/HolidayCardProps';
-import { FlightListAccordian } from './FlightListAccordian';
-import { NavLink } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { airports } from '../data/airports';
+import React, {ReactElement} from 'react';
+import {GiNightSky, ImAirplane, ImCheckmark2} from 'react-icons/all';
+import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
+import {FlightListAccordian} from './FlightListAccordian';
+import {NavLink} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {airports} from '../data/airports';
 
 interface FeatureProps {
   text: string;

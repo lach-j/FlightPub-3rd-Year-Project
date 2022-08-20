@@ -1,33 +1,33 @@
-import React, { Dispatch, SetStateAction, useContext } from 'react';
+import React, {Dispatch, SetStateAction, useContext} from 'react';
 import {
-  Box,
-  Button,
-  Circle,
-  Divider,
-  Flex,
-  HStack,
-  IconButton,
-  Image,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Text,
-  useToast
+    Box,
+    Button,
+    Circle,
+    Divider,
+    Flex,
+    HStack,
+    IconButton,
+    Image,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverHeader,
+    PopoverTrigger,
+    Text,
+    useToast
 } from '@chakra-ui/react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaUser, ImMap } from 'react-icons/all';
-import { routes } from '../constants/routes';
-import { Flight } from '../models';
-import { UserContext } from '../services/UserContext';
-import { UserRole } from '../models/User';
+import {NavLink, useLocation, useNavigate} from 'react-router-dom';
+import {FaShoppingCart, FaUser, ImMap} from 'react-icons/all';
+import {routes} from '../constants/routes';
+import {Flight} from '../models';
+import {UserContext} from '../services/UserContext';
+import {UserRole} from '../models/User';
 
 export default function Header({
   cartState
