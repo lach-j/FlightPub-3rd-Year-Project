@@ -20,7 +20,7 @@ import {
 import DatePicker from 'react-datepicker';
 import { Airline, ColumnDefinition } from '../../models';
 import { DataTable } from '../../components/DataTable';
-import { useApi } from '../../services/ApiService';
+import { ApiError, useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
 import { SponsoredAirline } from '../../models/SponsoredAirline';
 import moment from 'moment';
@@ -47,10 +47,9 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const [selectedAirline, setSelectedAirline] = useState('');
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const [sponsoredListings, setSponsoredListings] = useState<SponsoredAirline[]>([]);
   const [airlines, setAirlines] = useState<Airline[]>([]);
 
-  const { httpPost, httpGet } = useApi(endpoints.airlines);
+  const { httpPost, httpGet, httpDelete } = useApi(endpoints.airlines);
 
   const formatDate = (date: Date) => {
     return new Date(date).toISOString().split('T')[0];
@@ -76,7 +75,6 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
   ];
 
   const loadSponsored = () => {
-    httpGet('/sponsored').then(setSponsoredListings);
     httpGet('').then(setAirlines);
   };
 
@@ -96,11 +94,33 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
       });
   };
 
-  console.log(
-    airlines
-      .filter((a) => a?.sponsorships?.length || 0 > 0)
-      .map((a) => ({ ...a.sponsorships, airlineCode: a.airlineCode }))
-  );
+  const handleRemoveCovid = (listingId: number) => {
+    setIsLoading(true);
+    httpDelete(`/${listingId}/sponsor`)
+      .then((authResponse) => {
+        toast({
+          title: 'Sponsorship Removed',
+          description: 'The sponsorship was removed succesfully.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        });
+        loadSponsored();
+      })
+      .catch((err: ApiError) => {
+        //if an error occurs in registration process
+        toast({
+          title: 'Error.',
+          description: err.message,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top'
+        });
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   const sponsoredResults: {
     startDate: string;
@@ -191,6 +211,16 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                   columns={columns}
                   data={sponsoredResults}
                   keyAccessor='id'
+                  extraRow={({ id }: { id: number }) => (
+                    <Button
+                      colorScheme='red'
+                      onClick={() => {
+                        handleRemoveCovid(id);
+                      }}
+                    >
+                      Revoke Sponsorship
+                    </Button>
+                  )}
                 ></DataTable>
               </Center>
             </VStack>

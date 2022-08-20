@@ -1,11 +1,13 @@
 package seng3150.team4.flightpub.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import seng3150.team4.flightpub.controllers.requests.SponsorAirlineRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
+import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 import seng3150.team4.flightpub.domain.models.Airline;
 import seng3150.team4.flightpub.domain.models.SponsoredAirline;
 import seng3150.team4.flightpub.domain.models.UserRole;
@@ -65,5 +67,20 @@ public class AirlineController {
     sponsorListing.setEndDate(request.getEndDate());
 
     return new EntityResponse<>(sponsorRepository.save(sponsorListing));
+  }
+
+  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
+  @DeleteMapping("/{sponsorId}/sponsor")
+  public Response deleteAirlineSponsorship(
+          @PathVariable Long sponsorId) {
+    var listing = sponsorRepository.findById(sponsorId);
+
+    if (listing.isEmpty())
+      throw new EntityNotFoundException(
+              String.format("Sponsorship with id %d was not found", sponsorId));
+
+    sponsorRepository.delete(listing.get());
+
+    return new StatusResponse(HttpStatus.OK);
   }
 }
