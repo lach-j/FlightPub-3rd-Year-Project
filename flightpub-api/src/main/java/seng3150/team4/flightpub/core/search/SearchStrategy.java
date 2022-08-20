@@ -1,6 +1,7 @@
 package seng3150.team4.flightpub.core.search;
 
 import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
+import seng3150.team4.flightpub.domain.models.CovidDestination;
 import seng3150.team4.flightpub.domain.models.Flight;
 
 import javax.persistence.EntityManager;
@@ -15,7 +16,7 @@ import static seng3150.team4.flightpub.utility.Utilities.getValueOrDefault;
 public abstract class SearchStrategy {
 
   // Using criteria query for complex queries
-  private EntityManager em;
+  protected EntityManager em;
   protected CriteriaBuilder cb;
   protected CriteriaQuery<Flight> query;
   protected Root<Flight> flight;

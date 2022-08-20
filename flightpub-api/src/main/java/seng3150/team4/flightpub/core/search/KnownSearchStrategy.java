@@ -1,9 +1,14 @@
 package seng3150.team4.flightpub.core.search;
 
 import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
+import seng3150.team4.flightpub.domain.models.CovidDestination;
 import seng3150.team4.flightpub.domain.models.Flight;
 
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +21,7 @@ public class KnownSearchStrategy extends SearchStrategy {
 
   @Override
   public List<Flight> search() {
+
     // Create list of predicates to query by
     List<Predicate> predicates = new ArrayList<>();
 
@@ -48,6 +54,17 @@ public class KnownSearchStrategy extends SearchStrategy {
               flight.get("arrivalLocation").get("destinationCode"),
               flightQuery.getDestinationCode()));
 
+    Subquery<Integer> subQuery = query.subquery(Integer.class);
+    Root<CovidDestination> covid = subQuery.from(CovidDestination.class);
+
+    subQuery
+        .select(cb.literal(1))
+        .where(
+            cb.equal(
+                covid.get("destination").get("destinationCode"),
+                flight.get("arrivalLocation").get("destinationCode")),
+            cb.greaterThan(covid.get("covidEndDate"), LocalDate.now(ZoneOffset.UTC)));
+    predicates.add(cb.not(cb.exists(subQuery)));
     // TODO: add WHERE clauses for ticket type/quantity
 
     // Add where clause where all predicates are required (AND operation)

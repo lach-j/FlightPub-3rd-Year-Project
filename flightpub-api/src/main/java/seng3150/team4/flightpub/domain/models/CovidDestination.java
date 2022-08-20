@@ -25,10 +25,10 @@ public class CovidDestination implements IEntity, Serializable {
     private long id;
 
     @Column(name = "CovidStartDate")
-    private LocalDate CovidStartDate;
+    private LocalDate covidStartDate;
 
     @Column(name = "CovidEndDate")
-    private LocalDate CovidEndDate;
+    private LocalDate covidEndDate;
 
     @JsonManagedReference
     @OneToOne
