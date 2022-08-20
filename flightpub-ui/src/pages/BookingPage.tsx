@@ -1,23 +1,23 @@
 import {
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    HStack,
-    Input,
-    ListItem,
-    Modal,
-    ModalOverlay,
-    OrderedList,
-    Select,
-    Spinner,
-    Switch,
-    Text,
-    UnorderedList,
-    useDisclosure,
-    useToast,
-    VStack
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  ListItem,
+  Modal,
+  ModalOverlay,
+  OrderedList,
+  Select,
+  Spinner,
+  Switch,
+  Text,
+  UnorderedList,
+  useDisclosure,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
 import React, {ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
 import {ApiError, useApi} from '../services/ApiService';
@@ -358,8 +358,6 @@ export const BookingPage = ({
   if (!user) {
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   }
-
-  console.table(bookingRequest);
 
   const getTotalCost = () => {
     const booking: { passengers: [{ ticketClass: string }]; flights: Flight[] } = {

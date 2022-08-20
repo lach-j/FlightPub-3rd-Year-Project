@@ -1,28 +1,28 @@
 import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  useToast
+    Box,
+    Button,
+    Flex,
+    Heading,
+    Icon,
+    Stat,
+    StatHelpText,
+    StatLabel,
+    StatNumber,
+    Text,
+    useToast
 } from '@chakra-ui/react';
-import Map, { GeolocateControl, GeolocateControlRef, Marker, Popup } from 'react-map-gl';
+import Map, {GeolocateControl, GeolocateControlRef, Marker, Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MdLocalAirport } from 'react-icons/all';
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ColumnDefinition, DestinationCount, Flight, Price } from '../models';
-import { useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airport, findNearestAirport } from '../utility/geolocation';
-import { airports } from '../data/airports';
-import { formatDateTime, getMinMaxPriceString } from '../utility/formatting';
-import { DataTable } from '../components/DataTable';
+import {MdLocalAirport} from 'react-icons/all';
+import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {ColumnDefinition, DestinationCount, Flight, Price} from '../models';
+import {useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Airport, findNearestAirport} from '../utility/geolocation';
+import {airports} from '../data/airports';
+import {formatDateTime, getMinMaxPriceString} from '../utility/formatting';
+import {DataTable} from '../components/DataTable';
 
 //Defines DataTable columns for flight table
 const flightColumns: ColumnDefinition<any>[] = [
