@@ -1,38 +1,45 @@
 import {
-    Box,
-    Center,
-    FormControl,
-    FormLabel,
-    HStack,
-    RangeSlider,
-    RangeSliderFilledTrack,
-    RangeSliderThumb,
-    RangeSliderTrack,
-    Select,
-    Slider,
-    SliderFilledTrack,
-    SliderThumb,
-    SliderTrack,
-    StackDivider,
-    Tag,
-    TagCloseButton,
-    TagLabel,
-    Text,
-    useToast,
-    VStack
+  Badge,
+  Box,
+  Center,
+  FormControl,
+  FormLabel,
+  HStack,
+  RangeSlider,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+  RangeSliderTrack,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  StackDivider,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Text,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
-import {useLocation} from 'react-router-dom';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
+import { useLocation } from 'react-router-dom';
 
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import {useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {Airline, ColumnDefinition, Flight, Price} from '../models';
-import {airports} from '../data/airports';
-import {ResultsTable} from '../components/ResultsTable';
-import {SearchResult} from '../models/SearchResult';
-import {tags} from '../data/tags';
+import { useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { Airline, ColumnDefinition, Flight, Price } from '../models';
+import { airports } from '../data/airports';
+import { ResultsTable } from '../components/ResultsTable';
+import { SearchResult } from '../models/SearchResult';
+import { tags } from '../data/tags';
+import moment from 'moment';
 
 //Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string =>
@@ -97,12 +104,27 @@ export function SearchResultsPage({
 
   const [searchResultsWithTags, setSearchResultsWithTags] = useState<SearchResult[]>([]);
 
+  const isSponsored = (airline: Airline) => {
+    return (
+      ((airline?.sponsorships?.length || 0 > 0) &&
+        airline?.sponsorships?.filter(
+          (s) => moment(s.endDate).isAfter(new Date()) && moment(s.startDate).isBefore(new Date())
+        )?.length) ||
+      0 > 0
+    );
+  };
+
   //DataTable column definitions
   const columns: ColumnDefinition<any>[] = [
     {
-      accessor: 'flight.airlineCode',
+      accessor: 'flight.airline',
       Header: 'Airline',
-      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName
+      transform: (airline: Airline) => (
+        <>
+          {airline.airlineName}{' '}
+          {isSponsored(airline) && <Badge colorScheme={'yellow'}>SPONSORED</Badge>}
+        </>
+      )
     },
     {
       accessor: 'flight.departureLocation.airport',
@@ -190,6 +212,12 @@ export function SearchResultsPage({
     setSearchResultsWithTags(sr);
   }
 
+  useEffect(() => {
+    if (!results) return;
+    setMinPrice(Math.min(...results.map((f) => f.prices.map((p) => p.price)).flat()));
+    setMaxPrice(Math.max(...results.map((f) => f.prices.map((p) => p.price)).flat()));
+  }, [results]);
+
   // filtering by price
   const filterByPrice = (val: number[]) => {
     setMinPrice(val[0]);
@@ -206,14 +234,13 @@ export function SearchResultsPage({
 
   //Filters resultdata based on stored filter criteria
   const filterResults = (result: SearchResult) => {
-    console.log(filterTags);
     if (
-      result.flight.prices.filter((p) => p.price < minPrice).length > 0 ||
-      result.flight.prices.filter((p) => p.price > maxPrice).length > 0
+      Math.max(...result.flight.prices.map((p) => p.price).flat()) > maxPrice ||
+      Math.min(...result.flight.prices.map((p) => p.price).flat()) < minPrice
     )
       return false;
 
-    if (airlineFilter && airlineFilter !== result.flight.airlineCode) return false;
+    if (airlineFilter && airlineFilter !== result.flight.airline.airlineCode) return false;
 
     if (result.flight.duration > durationFilter) return false;
 
@@ -261,6 +288,8 @@ export function SearchResultsPage({
     setFilterTags((searchTags) => [...searchTags, value]);
   }
 
+  console.log(searchResultsWithTags.length);
+
   return (
     <Box p='1em'>
       <HStack
@@ -279,9 +308,9 @@ export function SearchResultsPage({
               <RangeSlider
                 aria-label={['min', 'max']}
                 onChangeEnd={(val) => filterByPrice(val)}
-                min={0}
-                max={10000}
-                defaultValue={[0, 10000]}
+                min={Math.min(...results.map((f) => f.prices.map((p) => p.price)).flat())}
+                max={Math.max(...results.map((f) => f.prices.map((p) => p.price)).flat())}
+                defaultValue={[0, 100000]}
               >
                 <RangeSliderTrack>
                   <RangeSliderFilledTrack />
@@ -314,7 +343,7 @@ export function SearchResultsPage({
               <Select placeholder='No Filter' onChange={filterByAirline}>
                 {airlines
                   .filter((airline) =>
-                    results.map((a) => a.airlineCode).includes(airline.airlineCode)
+                    results.map((a) => a.airline.airlineCode).includes(airline.airlineCode)
                   )
                   .map((airline) => (
                     <option value={airline.airlineCode}>{airline.airlineName}</option>

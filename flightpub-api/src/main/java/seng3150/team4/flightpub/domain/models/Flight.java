@@ -1,7 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,11 +21,13 @@ public class Flight implements IEntity, Serializable {
 
   @Column(name = "Id")
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long Id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-  @Column(name = "AirlineCode")
-  private String airlineCode;
+  @ManyToOne
+  @JoinColumn(name = "AirlineCode")
+  private Airline airline;
+
   @Column(name = "FlightNumber")
   private String flightNumber;
   @Column(name = "DepartureTime")
@@ -62,6 +63,4 @@ public class Flight implements IEntity, Serializable {
   @OneToMany
   @JoinColumn(name = "FlightId", referencedColumnName = "Id")
   private Set<Price> prices;
-
-
 }

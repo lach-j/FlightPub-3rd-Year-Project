@@ -1,9 +1,10 @@
-import {Destination} from './Destination';
-import {Price} from './Price';
+import { Airline } from './Airline';
+import { Destination } from './Destination';
+import { Price } from './Price';
 
 export interface Flight {
   id: number;
-  airlineCode: string;
+  airline: Airline;
   flightNumber: string;
   departureTime: string;
   departureLocation: Destination;

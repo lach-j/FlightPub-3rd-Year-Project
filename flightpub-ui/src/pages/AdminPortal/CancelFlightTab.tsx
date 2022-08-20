@@ -1,11 +1,11 @@
-import {Button, Center, Heading, HStack, Input, useToast} from '@chakra-ui/react';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ColumnDefinition, Flight, Price} from '../../models';
-import {ApiError, useApi} from '../../services/ApiService';
-import {endpoints} from '../../constants/endpoints';
-import {DataTable} from '../../components/DataTable';
-import {convertMinsToHM, formatDateTime} from '../../utility/formatting';
-import {airlines} from '../../data/airline';
+import { Button, Center, Heading, HStack, Input, useToast } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ColumnDefinition, Flight, Price } from '../../models';
+import { ApiError, useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { DataTable } from '../../components/DataTable';
+import { convertMinsToHM, formatDateTime } from '../../utility/formatting';
+import { airlines } from '../../data/airline';
 import _ from 'lodash';
 
 export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {

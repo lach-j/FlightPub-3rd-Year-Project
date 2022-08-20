@@ -1,35 +1,40 @@
-import React, {SyntheticEvent, useContext, useEffect, useState} from 'react';
+import React, { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import {
-    Box,
-    Button,
-    Center,
-    Checkbox,
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Grid,
-    Heading,
-    HStack,
-    Input,
-    Stack,
-    StackDivider,
-    Switch,
-    Text,
-    useToast,
-    VStack
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Grid,
+  Heading,
+  HStack,
+  Input,
+  Stack,
+  StackDivider,
+  Switch,
+  Text,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
-import {ApiError, useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {Airline, Flight} from '../models';
-import {Airport, findNearestAirport} from '../utility/geolocation';
+import { ApiError, useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { Airline, Flight } from '../models';
+import { Airport, findNearestAirport } from '../utility/geolocation';
 
-import {HolidayCard} from '../components/HolidayCard';
-import {HolidayPackage} from '../models/HolidayCardProps';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
-import {airports} from '../data/airports';
-import {UserContext} from '../services/UserContext';
-import {UserRole} from '../models/User';
+import { HolidayCard } from '../components/HolidayCard';
+import { HolidayPackage } from '../models/HolidayCardProps';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
+import { airports } from '../data/airports';
+import { UserContext } from '../services/UserContext';
+import { UserRole } from '../models/User';
 
 interface CreateHolidayPackageQuery {
   isPopular: boolean;
@@ -151,10 +156,6 @@ export function HolidayPackagesPage() {
   const [airport, setAirport] = useState<Airport | undefined>();
   const [localOnly, setLocalOnly] = useState(false);
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
   const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
   const { httpPost: httpPostHolidayPackage } = useApi(endpoints.createHolidayPackage);
@@ -175,7 +176,6 @@ export function HolidayPackagesPage() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
     httpGetHolidayPackages('/getAll').then(setHolidayPackageList);
   }, []);
 

@@ -1,7 +1,6 @@
 package seng3150.team4.flightpub.core.search;
 
 import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
-import seng3150.team4.flightpub.domain.models.CovidDestination;
 import seng3150.team4.flightpub.domain.models.Flight;
 
 import javax.persistence.EntityManager;

@@ -17,14 +17,14 @@ import {
   AutoCompleteItem,
   AutoCompleteList
 } from '@choc-ui/chakra-autocomplete';
-import { airlines } from '../../data/airline';
 import DatePicker from 'react-datepicker';
-import { ColumnDefinition } from '../../models';
+import { Airline, ColumnDefinition } from '../../models';
 import { DataTable } from '../../components/DataTable';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
 import { SponsoredAirline } from '../../models/SponsoredAirline';
 import moment from 'moment';
+import { transform } from 'lodash';
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {
@@ -48,6 +48,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [sponsoredListings, setSponsoredListings] = useState<SponsoredAirline[]>([]);
+  const [airlines, setAirlines] = useState<Airline[]>([]);
 
   const { httpPost, httpGet } = useApi(endpoints.airlines);
 
@@ -55,7 +56,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
     return new Date(date).toISOString().split('T')[0];
   };
 
-  const columns: ColumnDefinition<any>[] = [
+  const columns: ColumnDefinition<SponsoredAirline>[] = [
     {
       accessor: 'id',
       Header: 'Id'
@@ -69,13 +70,14 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
       Header: 'End Date'
     },
     {
-      accessor: 'airline.airlineCode',
+      accessor: 'airline.airlineName',
       Header: 'Airline'
     }
   ];
 
   const loadSponsored = () => {
     httpGet('/sponsored').then(setSponsoredListings);
+    httpGet('').then(setAirlines);
   };
 
   useEffect(() => {
@@ -93,6 +95,30 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
         setIsLoading(false);
       });
   };
+
+  console.log(
+    airlines
+      .filter((a) => a?.sponsorships?.length || 0 > 0)
+      .map((a) => ({ ...a.sponsorships, airlineCode: a.airlineCode }))
+  );
+
+  const sponsoredResults: {
+    startDate: string;
+    endDate: string;
+    id: number;
+    airline: { airlineCode: string; airlineName: string };
+  }[] = [];
+
+  airlines
+    .filter((a) => a?.sponsorships?.length || 0 > 0)
+    .forEach((a) =>
+      a.sponsorships?.forEach((s) =>
+        sponsoredResults.push({
+          ...s,
+          airline: { airlineCode: a.airlineCode, airlineName: a.airlineName }
+        })
+      )
+    );
 
   return (
     <>
@@ -163,7 +189,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                 <DataTable
                   sortable
                   columns={columns}
-                  data={sponsoredListings}
+                  data={sponsoredResults}
                   keyAccessor='id'
                 ></DataTable>
               </Center>
