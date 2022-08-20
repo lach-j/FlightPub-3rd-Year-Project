@@ -90,6 +90,7 @@ export const SearchPage = () => {
     function viewDetails() {
       setSearchQuery(searchQuery);
     }
+
     return (
       <Tr key={index}>
         <Td width='100%'>
@@ -275,9 +276,12 @@ export const SearchPage = () => {
                         />
                         <AutoCompleteList>
                           {airports.map(({ code, city }) => (
-                            <AutoCompleteItem key={code} value={code} align='center'>
-                              <Text ml='4'>{city}</Text>
-                            </AutoCompleteItem>
+                            <AutoCompleteItem
+                              key={city}
+                              value={code}
+                              label={`${city} - ${code}`}
+                              align='center'
+                            ></AutoCompleteItem>
                           ))}
                         </AutoCompleteList>
                       </AutoComplete>
@@ -305,9 +309,12 @@ export const SearchPage = () => {
                         />
                         <AutoCompleteList>
                           {airports.map(({ code, city }) => (
-                            <AutoCompleteItem key={code} value={code} align='center'>
-                              <Text ml='4'>{city}</Text>
-                            </AutoCompleteItem>
+                            <AutoCompleteItem
+                              key={city}
+                              value={code}
+                              label={`${city} - ${code}`}
+                              align='center'
+                            ></AutoCompleteItem>
                           ))}
                         </AutoCompleteList>
                       </AutoComplete>
