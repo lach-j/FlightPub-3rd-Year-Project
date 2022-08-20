@@ -105,7 +105,35 @@ CREATE TABLE `Flights` (
   CONSTRAINT `FlightsDepartureCode_FK` FOREIGN KEY (`DepartureCode`) REFERENCES `Destinations` (`DestinationCode`),
   CONSTRAINT `FlightsDestinationCode_FK` FOREIGN KEY (`DestinationCode`) REFERENCES `Destinations` (`DestinationCode`),
   CONSTRAINT `FlightsStopOverCode_FK` FOREIGN KEY (`StopOverCode`) REFERENCES `Destinations` (`DestinationCode`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `CovidDestinations` (
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `CovidStartDate` datetime NOT NULL,
+  `CovidEndDate` datetime NOT NULL,
+  `LocationCode` char(3) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `CovidDestinationCode_FK` (`LocationCode`),
+  CONSTRAINT `CovidDestinationCode_FK` FOREIGN KEY (`LocationCode`) REFERENCES `Destinations` (`DestinationCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `SponsoredAirlines` (
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `SponsoredStartDate` datetime NOT NULL,
+  `SponsoredEndDate` datetime NOT NULL,
+  `AirlineCode` char(2) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `SponsoredAirlinesCode_FK` (`AirlineCode`),
+  CONSTRAINT `SponsoredAirlinesCode_FK` FOREIGN KEY (`AirlineCode`) REFERENCES `Airlines` (`AirlineCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `CanceledFlights` (
+  `Id` BIGINT NOT NULL AUTO_INCREMENT,
+  `FlightId` BIGINT NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FlightId_FK` (`FlightId`),
+  CONSTRAINT `FlightId_FK` FOREIGN KEY (`FlightId`) REFERENCES `Flights` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `FPUser` (
   `Id` BIGINT NOT NULL AUTO_INCREMENT,

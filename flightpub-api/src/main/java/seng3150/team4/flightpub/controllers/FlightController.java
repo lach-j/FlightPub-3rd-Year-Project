@@ -3,13 +3,15 @@ package seng3150.team4.flightpub.controllers;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import seng3150.team4.flightpub.controllers.requests.CancelFlightRequest;
 import seng3150.team4.flightpub.controllers.requests.FlightQueryRequest;
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
+import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
+import seng3150.team4.flightpub.domain.models.Flight;
+import seng3150.team4.flightpub.domain.models.UserRole;
+import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.services.IFlightService;
 
 @RestController
@@ -53,10 +55,14 @@ public class FlightController {
     return new EntityCollectionResponse<>(cheapest);
   }
 
-  @GetMapping("/fetchById/{ids}")
-  public Response getFlightById(@PathVariable String ids) {
-    ids = ids;
+  @GetMapping("/{id}")
+  public EntityResponse<Flight> getFlightById(@PathVariable Long id) {
+    return new EntityResponse<>(flightService.getFlightById(id));
+  }
 
-    return new EntityCollectionResponse<>(flightService.getFlightByIds(ids));
+  @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
+  @PostMapping("/{id}/cancel")
+  public EntityResponse<Flight> cancelFlight(@PathVariable Long id, @RequestBody CancelFlightRequest request) {
+    return new EntityResponse<>(flightService.setFlightCancelled(id, request.getCancelled()));
   }
 }

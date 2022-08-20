@@ -6,6 +6,7 @@ import lombok.Setter;
 import seng3150.team4.flightpub.core.validation.Validatable;
 import seng3150.team4.flightpub.core.validation.ValidationError;
 import seng3150.team4.flightpub.core.validation.ValidationResult;
+import seng3150.team4.flightpub.domain.models.UserRole;
 
 import static seng3150.team4.flightpub.core.validation.Validators.emailValidator;
 import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
@@ -18,6 +19,7 @@ public class UpdateUserRequest extends Validatable {
     private String firstName;
     private String lastName;
     private String email;
+    private UserRole role;
 
     @Override
     protected ValidationResult getErrors() {
