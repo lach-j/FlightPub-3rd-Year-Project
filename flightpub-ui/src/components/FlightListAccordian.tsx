@@ -1,21 +1,22 @@
 import {
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel,
-    Box,
-    Flex,
-    HStack,
-    Stat,
-    StatHelpText,
-    StatLabel,
-    StatNumber,
-    Text,
-    VStack
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
+  VStack
 } from '@chakra-ui/react';
-import {HiOutlineArrowNarrowRight} from 'react-icons/hi';
-import {Flight} from '../models';
+import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
+import { Flight } from '../models';
 
 export const FlightListAccordian = ({ flights }: { flights: Flight[] }) => {
   const renderStopOver = (flight: Flight) => {
@@ -65,6 +66,7 @@ export const FlightListAccordian = ({ flights }: { flights: Flight[] }) => {
               <AccordionButton>
                 <Box flex='1' textAlign='left'>
                   <Flex width='full' justifyContent='space-between'>
+                    {flight?.cancelled && <Badge colorScheme='red'>CANCELLED</Badge>}
                     <HStack>
                       <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
                       <HiOutlineArrowNarrowRight />

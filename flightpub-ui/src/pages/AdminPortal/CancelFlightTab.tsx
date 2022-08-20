@@ -1,23 +1,34 @@
-import {Button, Center, Heading, HStack, Input, useToast} from '@chakra-ui/react';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ColumnDefinition, Flight, Price} from '../../models';
-import {ApiError, useApi} from '../../services/ApiService';
-import {endpoints} from '../../constants/endpoints';
-import {DataTable} from '../../components/DataTable';
-import {convertMinsToHM, formatDateTime} from '../../utility/formatting';
-import {airlines} from '../../data/airline';
+import {
+  Button,
+  Center,
+  Heading,
+  HStack,
+  IconButton,
+  Input,
+  useToast,
+  Text
+} from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ColumnDefinition, Flight, Price } from '../../models';
+import { ApiError, useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { DataTable } from '../../components/DataTable';
+import { convertMinsToHM, formatDateTime } from '../../utility/formatting';
+import { airlines } from '../../data/airline';
 import _ from 'lodash';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
-  const [cancelledView, setSwapLists] = useState(true);
+  const [cancelledView, setSwapLists] = useState(false);
 
   const [results, setResults] = useState<Flight[]>([]);
-  const [canceledResults, setCanceledResults] = useState<Flight[]>([]);
   const [idFilter, setIdFilter] = useState('');
 
   const { httpGet } = useApi(endpoints.flightSearch);
 
   const { httpPost } = useApi(endpoints.flights);
+
+  const [page, setPage] = useState<number>(0);
 
   const toast = useToast();
 
@@ -37,13 +48,19 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   const debouncedChangeHandler = useCallback(_.debounce(changeHandler, 500), []);
 
   const loadFlights = () => {
-    httpGet('', { cancelled: cancelledView }).then((res) => setResults(res));
+    httpGet('', { cancelled: cancelledView, flightNumber: idFilter, page }).then((res) =>
+      setResults(res)
+    );
   };
 
   // retrieves list of airlines
   useEffect(() => {
     loadFlights();
-  }, [idFilter, cancelledView]);
+  }, [idFilter, cancelledView, page]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [idFilter]);
 
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
@@ -52,9 +69,8 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
       Header: 'Flight Number'
     },
     {
-      accessor: 'airlineCode',
-      Header: 'Airline',
-      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName
+      accessor: 'airline.airlineName',
+      Header: 'Airline'
     },
     {
       accessor: 'departureLocation.airport',
@@ -95,7 +111,7 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
 
   return (
     <>
-      <HStack gap={'5em'}>
+      <HStack gap={'5em'} justify='space-between'>
         <Heading mb='1em'>Cancel Flight</Heading>
         <Button
           onClick={() => {
@@ -104,6 +120,19 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
         >
           See {!cancelledView ? 'Cancelled' : 'Active'} Flights
         </Button>
+        <HStack>
+          <IconButton
+            aria-label='previous-page'
+            onClick={() => setPage((page) => Math.max(page - 1, 0))}
+            icon={<FaArrowLeft />}
+          />
+          <Text>{page + 1}</Text>
+          <IconButton
+            aria-label='next-page'
+            onClick={() => setPage((page) => page + 1)}
+            icon={<FaArrowRight />}
+          />
+        </HStack>
       </HStack>
 
       <Input placeholder='Flight Number' size='md' onChange={debouncedChangeHandler} />
