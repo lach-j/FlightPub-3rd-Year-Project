@@ -1,22 +1,22 @@
 import {
-  Flex,
-  Circle,
-  Box,
-  Image,
-  Badge,
-  useColorModeValue,
-  Button,
-  HStack,
-  Spacer,
-  Wrap,
-  WrapItem
+    Badge,
+    Box,
+    Button,
+    Circle,
+    Flex,
+    HStack,
+    Image,
+    Spacer,
+    useColorModeValue,
+    Wrap,
+    WrapItem
 } from '@chakra-ui/react';
 
-import React, { ReactElement } from 'react';
-import { FeatureBadgeProps, HolidayPackage } from '../models/HolidayCardProps';
-import { NavLink } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { airports } from '../data/airports';
+import React from 'react';
+import {FeatureBadgeProps, HolidayPackage} from '../models/HolidayCardProps';
+import {NavLink} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {airports} from '../data/airports';
 
 type HolidayCardPropsObj = {
   data: HolidayPackage;

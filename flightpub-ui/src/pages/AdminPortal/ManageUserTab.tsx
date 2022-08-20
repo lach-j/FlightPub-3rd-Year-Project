@@ -1,10 +1,9 @@
-import { Button, Heading, HStack, useToast, Input, Box, Text } from '@chakra-ui/react';
-import { useState } from 'react';
-import { User } from '../../models';
-import { ApiError, useApi } from '../../services/ApiService';
-import _ from 'lodash';
-import { UserDetailsForm } from '../AccountManagement/MyDetailsTab';
-import { endpoints } from '../../constants/endpoints';
+import {Box, Button, Heading, HStack, Input, Text, useToast} from '@chakra-ui/react';
+import {useState} from 'react';
+import {User} from '../../models';
+import {ApiError, useApi} from '../../services/ApiService';
+import {UserDetailsForm} from '../AccountManagement/MyDetailsTab';
+import {endpoints} from '../../constants/endpoints';
 
 export const ManageUserTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const [user, setUser] = useState<User | undefined>();

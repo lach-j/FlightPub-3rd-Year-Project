@@ -1,42 +1,11 @@
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Text,
-  useDisclosure,
-  useToast,
-  VStack,
-  Center
-} from '@chakra-ui/react';
-import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { CustomEditible } from '../../components/CustomEditable';
-import { routes } from '../../constants/routes';
-import { useNavigate } from 'react-router-dom';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
-import { airlines } from '../../data/airline';
+import {Box, Button, Center, FormControl, FormLabel, Heading, HStack, Text, useToast, VStack} from '@chakra-ui/react';
+import React, {useEffect, useState} from 'react';
+import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import {airlines} from '../../data/airline';
 import DatePicker from 'react-datepicker';
-import { endpoints } from '../../constants/endpoints';
-import * as api from '../../services/ApiService';
-import { ApiError, useApi } from '../../services/ApiService';
-import { request } from 'http';
-import { ColumnDefinition } from '../../models';
-import { SponsoredAirline } from '../../models/SponsoredAirline';
-import { DataTable } from '../../components/DataTable';
+import {ColumnDefinition} from '../../models';
+import {SponsoredAirline} from '../../models/SponsoredAirline';
+import {DataTable} from '../../components/DataTable';
 
 //container for flexidate information, contains date and flex-date range
 interface FlexiDate {

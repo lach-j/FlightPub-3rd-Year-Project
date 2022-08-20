@@ -1,33 +1,32 @@
 import {
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  useDisclosure,
-  useToast,
-  VStack,
-  Text
+    Button,
+    Checkbox,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    HStack,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
+    useDisclosure,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
-import { BiLinkExternal, BiPlus } from 'react-icons/all';
-import React, { useContext, useEffect, useState } from 'react';
-import { SavedPayment } from '../../models';
-import { SavedPaymentComponent } from './SavedPaymentComponent';
-import { useApi } from '../../services/ApiService';
-import { endpoints } from '../../constants/endpoints';
-import { PaymentType, SavedPaymentType } from '../../models/SavedPaymentTypes';
-import { UserContext } from '../../services/UserContext';
-import { string } from 'yup';
+import {BiLinkExternal, BiPlus} from 'react-icons/all';
+import React, {useContext, useEffect, useState} from 'react';
+import {SavedPayment} from '../../models';
+import {SavedPaymentComponent} from './SavedPaymentComponent';
+import {useApi} from '../../services/ApiService';
+import {endpoints} from '../../constants/endpoints';
+import {PaymentType, SavedPaymentType} from '../../models/SavedPaymentTypes';
+import {UserContext} from '../../services/UserContext';
 
 type SavedPaymentQuery = PaymentType & {
   nickname: string;

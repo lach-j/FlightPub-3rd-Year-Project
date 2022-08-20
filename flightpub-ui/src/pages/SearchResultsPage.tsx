@@ -1,43 +1,38 @@
 import {
-  Box,
-  Center,
-  HStack,
-  RangeSlider,
-  RangeSliderFilledTrack,
-  RangeSliderThumb,
-  RangeSliderTrack,
-  Select,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  StackDivider,
-  Text,
-  useToast,
-  VStack,
-  FormControl,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  FormLabel
+    Box,
+    Center,
+    FormControl,
+    FormLabel,
+    HStack,
+    RangeSlider,
+    RangeSliderFilledTrack,
+    RangeSliderThumb,
+    RangeSliderTrack,
+    Select,
+    Slider,
+    SliderFilledTrack,
+    SliderThumb,
+    SliderTrack,
+    StackDivider,
+    Tag,
+    TagCloseButton,
+    TagLabel,
+    Text,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
-import { useLocation } from 'react-router-dom';
+import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import {useLocation} from 'react-router-dom';
 
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 
-import { useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airline, ColumnDefinition, Flight, Price } from '../models';
-import { airports } from '../data/airports';
-import { ResultsTable } from '../components/ResultsTable';
-import { SearchResult } from '../models/SearchResult';
-import { tags } from '../data/tags';
+import {useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Airline, ColumnDefinition, Flight, Price} from '../models';
+import {airports} from '../data/airports';
+import {ResultsTable} from '../components/ResultsTable';
+import {SearchResult} from '../models/SearchResult';
+import {tags} from '../data/tags';
 
 //Takes date-time input and formats to user-friendly display type
 const formatDateTime = (value: string): string =>

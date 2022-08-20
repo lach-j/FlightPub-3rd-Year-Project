@@ -1,5 +1,3 @@
-import { number } from 'yup';
-
 export type PaymentType = (DirectDebitPayment | CardPayment | PaypalPayment | Saved) & {
   id?: number;
 };

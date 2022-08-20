@@ -1,6 +1,6 @@
 import Message from './Message';
-import { User } from './User';
-import { Wishlist } from './Wishlist';
+import {User} from './User';
+import {Wishlist} from './Wishlist';
 
 export interface MessagingSession {
   id: number;

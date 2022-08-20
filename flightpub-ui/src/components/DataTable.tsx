@@ -1,8 +1,8 @@
-import { HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr} from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, { useState } from 'react';
-import { ColumnDefinition } from '../models';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import React, {useState} from 'react';
+import {ColumnDefinition} from '../models';
+import {TriangleDownIcon, TriangleUpIcon} from '@chakra-ui/icons';
 
 type DataTableProps<T> = {
   columns: ColumnDefinition<T>[];

@@ -1,30 +1,25 @@
 import {
-  Box,
-  Button,
-  Center,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Text,
-  useDisclosure,
-  useToast,
-  VStack
+    Box,
+    Button,
+    Center,
+    FormControl,
+    FormLabel,
+    Heading,
+    HStack,
+    Text,
+    useDisclosure,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
-import React, { FormEvent, useEffect, useState } from 'react';
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList
-} from '@choc-ui/chakra-autocomplete';
-import { airports } from '../../data/airports';
+import React, {useEffect, useState} from 'react';
+import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import {airports} from '../../data/airports';
 import DatePicker from 'react-datepicker';
-import { endpoints } from '../../constants/endpoints';
-import { ApiError, useApi } from '../../services/ApiService';
-import { CovidDestination } from '../../models/CovidDestination';
-import { ColumnDefinition, Flight } from '../../models';
-import { DataTable } from '../../components/DataTable';
+import {endpoints} from '../../constants/endpoints';
+import {ApiError, useApi} from '../../services/ApiService';
+import {CovidDestination} from '../../models/CovidDestination';
+import {ColumnDefinition} from '../../models';
+import {DataTable} from '../../components/DataTable';
 
 export const CovidHotspotTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const toast = useToast();

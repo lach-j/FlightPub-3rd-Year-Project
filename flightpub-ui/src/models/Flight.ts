@@ -1,5 +1,5 @@
-import { Destination } from './Destination';
-import { Price } from './Price';
+import {Destination} from './Destination';
+import {Price} from './Price';
 
 export interface Flight {
   id: number;

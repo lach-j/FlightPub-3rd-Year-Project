@@ -1,20 +1,11 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  ListItem,
-  OrderedList,
-  Select,
-  Text,
-  VStack
-} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { useApi } from '../../services/ApiService';
-import { endpoints } from '../../constants/endpoints';
+import {Box, Heading, HStack, ListItem, OrderedList, Select, Text, VStack} from '@chakra-ui/react';
+import React, {useEffect, useState} from 'react';
+import {useApi} from '../../services/ApiService';
+import {endpoints} from '../../constants/endpoints';
 import moment from 'moment';
-import { SavedPaymentComponent } from './SavedPaymentComponent';
-import { HolidayPackageBooking } from '../../models/HolidayPackageBooking';
-import { HolidayCard } from '../../components/HolidayCard';
+import {SavedPaymentComponent} from './SavedPaymentComponent';
+import {HolidayPackageBooking} from '../../models/HolidayPackageBooking';
+import {HolidayCard} from '../../components/HolidayCard';
 
 export const HolidayBookingHistoryTab = ({
   setIsLoading

@@ -1,21 +1,11 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  ListItem,
-  OrderedList,
-  Select,
-  Text,
-  VStack
-} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
-import { useApi } from '../../services/ApiService';
-import { endpoints } from '../../constants/endpoints';
-import { Booking } from '../../models/Booking';
-import { FlightListAccordian } from '../../components/FlightListAccordian';
+import {Box, Heading, HStack, ListItem, OrderedList, Select, Text, VStack} from '@chakra-ui/react';
+import React, {useEffect, useState} from 'react';
+import {useApi} from '../../services/ApiService';
+import {endpoints} from '../../constants/endpoints';
+import {Booking} from '../../models/Booking';
+import {FlightListAccordian} from '../../components/FlightListAccordian';
 import moment from 'moment';
-import { SavedPaymentComponent } from './SavedPaymentComponent';
+import {SavedPaymentComponent} from './SavedPaymentComponent';
 
 export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { httpGet } = useApi(endpoints.bookings);

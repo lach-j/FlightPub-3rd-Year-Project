@@ -1,26 +1,25 @@
 import {
-  Box,
-  Button,
-  Center,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  Heading,
-  Input,
-  Link,
-  ListItem,
-  Spinner,
-  Stack,
-  UnorderedList,
-  useToast
+    Box,
+    Button,
+    Center,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Grid,
+    Heading,
+    Input,
+    Link,
+    ListItem,
+    Spinner,
+    Stack,
+    UnorderedList,
+    useToast
 } from '@chakra-ui/react';
-import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { useApi } from '../services/ApiService';
-import { ApiError } from '../services/ApiService';
-import { Link as RouteLink, useLocation, useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { endpoints } from '../constants/endpoints';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
+import {ApiError, useApi} from '../services/ApiService';
+import {Link as RouteLink, useLocation, useNavigate} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {endpoints} from '../constants/endpoints';
 import * as yup from 'yup';
 
 const userDetailsSchema = yup.object().shape({
