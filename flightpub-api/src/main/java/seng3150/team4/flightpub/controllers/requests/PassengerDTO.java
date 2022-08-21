@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PassengerDTO {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String ticketClass;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String ticketClass;
 }

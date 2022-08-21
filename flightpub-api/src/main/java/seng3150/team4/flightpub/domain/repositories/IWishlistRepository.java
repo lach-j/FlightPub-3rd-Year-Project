@@ -9,6 +9,6 @@ import java.util.Set;
 
 public interface IWishlistRepository extends CrudRepository<Wishlist, Long> {
 
-    @Query("SELECT w from Wishlist w join w.user u WHERE u = ?1")
-    Set<Wishlist> getWishlistsForUser(User user);
+  @Query("SELECT w from Wishlist w join w.user u WHERE u = ?1")
+  Set<Wishlist> getWishlistsForUser(User user);
 }

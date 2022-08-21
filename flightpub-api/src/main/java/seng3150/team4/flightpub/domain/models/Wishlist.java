@@ -17,24 +17,22 @@ import java.util.Set;
 @Setter
 public class Wishlist implements IEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "Id")
+  private Long id;
 
-    @Column(name = "DateCreated")
-    private LocalDateTime dateCreated;
+  @Column(name = "DateCreated")
+  private LocalDateTime dateCreated;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "UserId", referencedColumnName = "Id")
-    private User user;
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "UserId", referencedColumnName = "Id")
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "DepartureDestinationCode", referencedColumnName = "DestinationCode")
-    private Destination departureLocation;
+  @ManyToOne
+  @JoinColumn(name = "DepartureDestinationCode", referencedColumnName = "DestinationCode")
+  private Destination departureLocation;
 
-    @JsonManagedReference
-    @OneToMany
-    private Set<WishlistItem> wishlistItems;
+  @JsonManagedReference @OneToMany private Set<WishlistItem> wishlistItems;
 }

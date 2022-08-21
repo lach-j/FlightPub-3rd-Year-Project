@@ -22,9 +22,10 @@ public interface IFlightRepository extends JpaRepository<Flight, Long> {
   List<DestinationCount> getDepartureCounts();
 
   // Get the top 3 flights departing from the provided destination and order by cheapest flight
-  @Query("select f from Flight f " +
-          "inner join f.prices pr " +
-          "where f.departureLocation.destinationCode=?1 " +
-          "order by pr.price")
+  @Query(
+      "select f from Flight f "
+          + "inner join f.prices pr "
+          + "where f.departureLocation.destinationCode=?1 "
+          + "order by pr.price")
   List<Flight> getCheapestFlightsFromDest(String destination, Pageable pageable);
 }

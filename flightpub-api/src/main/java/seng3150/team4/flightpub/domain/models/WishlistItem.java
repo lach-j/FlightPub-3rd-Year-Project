@@ -15,20 +15,20 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class WishlistItem {
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long Id;
 
-    @JoinColumn(name = "DestinationCode")
-    @ManyToOne
-    private Destination destination;
+  @JoinColumn(name = "DestinationCode")
+  @ManyToOne
+  private Destination destination;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "WishlistId")
-    private Wishlist wishlist;
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "WishlistId")
+  private Wishlist wishlist;
 
-    @Column(name = "ItemRank")
-    private int destinationRank;
+  @Column(name = "ItemRank")
+  private int destinationRank;
 }

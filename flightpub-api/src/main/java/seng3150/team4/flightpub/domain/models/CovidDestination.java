@@ -19,19 +19,19 @@ import java.time.LocalDate;
 @ToString
 public class CovidDestination implements IEntity, Serializable {
 
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "CovidStartDate")
-    private LocalDate covidStartDate;
+  @Column(name = "CovidStartDate")
+  private LocalDate covidStartDate;
 
-    @Column(name = "CovidEndDate")
-    private LocalDate covidEndDate;
+  @Column(name = "CovidEndDate")
+  private LocalDate covidEndDate;
 
-    @JsonManagedReference
-    @OneToOne
-    @JoinColumn(name = "DestinationCode")
-    private Destination destination;
+  @JsonManagedReference
+  @OneToOne
+  @JoinColumn(name = "DestinationCode")
+  private Destination destination;
 }

@@ -1,13 +1,12 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 /** models the Airlines table in the database */
@@ -19,7 +18,8 @@ import java.util.Set;
 @ToString
 public class Airline implements IEntity {
   @Column(name = "AirlineCode")
-  @Id private String airlineCode;
+  @Id
+  private String airlineCode;
 
   @Column(name = "AirlineName")
   private String airlineName;

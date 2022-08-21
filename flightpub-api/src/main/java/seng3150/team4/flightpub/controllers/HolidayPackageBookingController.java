@@ -10,7 +10,6 @@ import seng3150.team4.flightpub.controllers.requests.HolidayPackageBookingReques
 import seng3150.team4.flightpub.controllers.responses.EntityCollectionResponse;
 import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
-import seng3150.team4.flightpub.domain.models.Booking;
 import seng3150.team4.flightpub.domain.models.HolidayPackageBooking;
 import seng3150.team4.flightpub.domain.models.Passenger;
 import seng3150.team4.flightpub.security.Authorized;
@@ -20,51 +19,54 @@ import seng3150.team4.flightpub.services.IHolidayPackageBookingService;
 import seng3150.team4.flightpub.services.IPassengerService;
 import seng3150.team4.flightpub.services.PaymentService;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequiredArgsConstructor
 public class HolidayPackageBookingController {
 
-    private final IHolidayPackageBookingService holidayPackageBookingService;
-    private final IBookingService bookingService;
-    private final IPassengerService passengerService;
-    private final PaymentService paymentService;
-    private final CurrentUserContext currentUserContext;
+  private final IHolidayPackageBookingService holidayPackageBookingService;
+  private final IBookingService bookingService;
+  private final IPassengerService passengerService;
+  private final PaymentService paymentService;
+  private final CurrentUserContext currentUserContext;
 
-    @Authorized
-    @PostMapping(path = "/bookHolidayPackage")
-    public ResponseEntity<? extends Response> makeBooking(
-            @RequestBody HolidayPackageBookingRequest holidayPackageBookingRequest) {
+  @Authorized
+  @PostMapping(path = "/bookHolidayPackage")
+  public ResponseEntity<? extends Response> makeBooking(
+      @RequestBody HolidayPackageBookingRequest holidayPackageBookingRequest) {
 
-        var userId = currentUserContext.getCurrentUserId();
+    var userId = currentUserContext.getCurrentUserId();
 
-        holidayPackageBookingRequest.validate();
+    holidayPackageBookingRequest.validate();
 
-        var payment = paymentService.addPayment(holidayPackageBookingRequest.getPayment());
+    var payment = paymentService.addPayment(holidayPackageBookingRequest.getPayment());
 
-        var savedFlightBooking =
-                bookingService.makeBooking(holidayPackageBookingRequest.getFlightIds(), userId, payment);
+    var savedFlightBooking =
+        bookingService.makeBooking(holidayPackageBookingRequest.getFlightIds(), userId, payment);
 
-        var passengers = holidayPackageBookingRequest.getPassengers();
+    var passengers = holidayPackageBookingRequest.getPassengers();
 
-        for(Passenger p: passengers) {
-            passengerService.addPassenger(p, savedFlightBooking);
-        }
-
-        var holidayPackageSavedBooking =
-                holidayPackageBookingService.makeHolidayPackageBooking(holidayPackageBookingRequest.getHolidayPackageId(), userId, payment, savedFlightBooking);
-
-        return ResponseEntity.ok().body(new EntityResponse<>(holidayPackageSavedBooking));
+    for (Passenger p : passengers) {
+      passengerService.addPassenger(p, savedFlightBooking);
     }
-    @Authorized
-    @GetMapping("/packageBookings")
-    public EntityCollectionResponse<HolidayPackageBooking> getAllHolidayPackageBookingForUser() {
 
-        var userId = currentUserContext.getCurrentUserId();
+    var holidayPackageSavedBooking =
+        holidayPackageBookingService.makeHolidayPackageBooking(
+            holidayPackageBookingRequest.getHolidayPackageId(),
+            userId,
+            payment,
+            savedFlightBooking);
 
-        var bookings = holidayPackageBookingService.getPackageBookingsByUserId(userId);
+    return ResponseEntity.ok().body(new EntityResponse<>(holidayPackageSavedBooking));
+  }
 
-        return new EntityCollectionResponse<>(bookings);
-    }
+  @Authorized
+  @GetMapping("/packageBookings")
+  public EntityCollectionResponse<HolidayPackageBooking> getAllHolidayPackageBookingForUser() {
+
+    var userId = currentUserContext.getCurrentUserId();
+
+    var bookings = holidayPackageBookingService.getPackageBookingsByUserId(userId);
+
+    return new EntityCollectionResponse<>(bookings);
+  }
 }

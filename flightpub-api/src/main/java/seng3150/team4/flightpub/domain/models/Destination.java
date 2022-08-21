@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 /** Models the Destination table in the database. */
 @Entity
@@ -18,12 +17,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-
 public class Destination implements IEntity {
   @Column(name = "DestinationCode", columnDefinition = "CHAR(3)")
-  @Id private String destinationCode;
+  @Id
+  private String destinationCode;
+
   @Column(name = "Airport")
   private String airport;
+
   @Column(name = "CountryCode3")
   private String countryCode;
 }

@@ -21,7 +21,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class ResetToken implements IEntity {
   @Column(name = "Token")
-  @Id String token;
+  @Id
+  String token;
 
   @Column(name = "UserId")
   long userId;

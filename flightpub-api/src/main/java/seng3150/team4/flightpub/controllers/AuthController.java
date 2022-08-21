@@ -17,7 +17,6 @@ import seng3150.team4.flightpub.controllers.responses.EntityResponse;
 import seng3150.team4.flightpub.controllers.responses.Response;
 import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 import seng3150.team4.flightpub.controllers.responses.TokenResponse;
-import seng3150.team4.flightpub.domain.models.User;
 import seng3150.team4.flightpub.security.Authorized;
 import seng3150.team4.flightpub.services.IAuthenticationService;
 import seng3150.team4.flightpub.services.IUserService;
@@ -70,8 +69,8 @@ public class AuthController {
     loginRequest.validate();
 
     try {
-    // Attempt to reset the password using the provided token
-    authenticationService.resetPassword(loginRequest.getToken(), loginRequest.getPassword());
+      // Attempt to reset the password using the provided token
+      authenticationService.resetPassword(loginRequest.getToken(), loginRequest.getPassword());
     } catch (EntityNotFoundException ex) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(new StatusResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()));
@@ -84,7 +83,7 @@ public class AuthController {
   @Authorized
   @PostMapping(path = "/reset/{userId}")
   public ResponseEntity<? extends Response> resetPasswordFromAccount(
-          @RequestBody ResetPasswordInternalRequest request, @PathVariable long userId) {
+      @RequestBody ResetPasswordInternalRequest request, @PathVariable long userId) {
     request.validate();
     var user = userService.getUserByIdSecure(userId);
     try {
@@ -93,7 +92,8 @@ public class AuthController {
     } catch (Exception e) {
       LOG.warn("Hash failed");
     }
-    return ResponseEntity.internalServerError().body(new StatusResponse(HttpStatus.OK).message("Hash failed"));
+    return ResponseEntity.internalServerError()
+        .body(new StatusResponse(HttpStatus.OK).message("Hash failed"));
   }
 
   @PostMapping(path = "/forgot")

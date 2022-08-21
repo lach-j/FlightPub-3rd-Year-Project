@@ -16,11 +16,14 @@ import java.math.BigDecimal;
 @Setter
 public class Price {
   @Column(name = "FlightId")
-  @JsonIgnore @Id private Long flightId;
+  @JsonIgnore
+  @Id
+  private Long flightId;
 
   @ManyToOne
   @JoinColumn(name = "ClassCode")
-  @Id private TicketClass ticketClass;
+  @Id
+  private TicketClass ticketClass;
 
   @JsonBackReference
   @MapsId("flightId")

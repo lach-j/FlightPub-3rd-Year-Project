@@ -15,35 +15,34 @@ import java.util.Set;
 @Setter
 @Table(name = "MessagingSession")
 public class MessagingSession implements IEntity {
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
 
-    @Column(name = "Status")
-    private SessionStatus status;
+  @Column(name = "Status")
+  private SessionStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "WishlistId")
-    private Wishlist wishlist;
+  @OneToOne
+  @JoinColumn(name = "WishlistId")
+  private Wishlist wishlist;
 
-    @JsonManagedReference
-    @ManyToMany
-    @JoinTable(name="MessagingSession_FPUser",
-            joinColumns=@JoinColumn(name="SessionId"),
-            inverseJoinColumns=@JoinColumn(name="UserId")
-    )
-    private Set<User> users;
+  @JsonManagedReference
+  @ManyToMany
+  @JoinTable(
+      name = "MessagingSession_FPUser",
+      joinColumns = @JoinColumn(name = "SessionId"),
+      inverseJoinColumns = @JoinColumn(name = "UserId"))
+  private Set<User> users;
 
-    @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "SessionId", referencedColumnName = "Id")
-    private List<Message> messages;
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "SessionId", referencedColumnName = "Id")
+  private List<Message> messages;
 
-    public enum SessionStatus {
-        TRIAGE,
-        IN_PROGRESS,
-        RESOLVED
-    }
-
+  public enum SessionStatus {
+    TRIAGE,
+    IN_PROGRESS,
+    RESOLVED
+  }
 }

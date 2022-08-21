@@ -17,15 +17,15 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "PaymentId")
 public class PaymentCard extends Payment {
 
-    @Column(name = "CardNumber")
-    private String cardNumber;
+  @Column(name = "CardNumber")
+  private String cardNumber;
 
-    @Column(name = "ExpiryDate")
-    private String expiryDate;
+  @Column(name = "ExpiryDate")
+  private String expiryDate;
 
-    @Column(name = "Cardholder")
-    private String cardholder;
+  @Column(name = "Cardholder")
+  private String cardholder;
 
-    @Column(name = "CCV")
-    private String ccv;
+  @Column(name = "CCV")
+  private String ccv;
 }

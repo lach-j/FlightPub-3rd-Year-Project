@@ -36,7 +36,8 @@ public class SecurityFilter implements HandlerInterceptor {
 
     HandlerMethod handlerMethod = (HandlerMethod) handler;
 
-    Authorized classAnnotation = ((HandlerMethod) handler).getBeanType().getDeclaredAnnotation(Authorized.class);
+    Authorized classAnnotation =
+        ((HandlerMethod) handler).getBeanType().getDeclaredAnnotation(Authorized.class);
     Authorized authAnnotation = handlerMethod.getMethod().getAnnotation(Authorized.class);
 
     if (authAnnotation == null && classAnnotation == null) {
@@ -66,22 +67,18 @@ public class SecurityFilter implements HandlerInterceptor {
       currentUserContext.setCurrentUserRole(
           userRole); // set the user role if present, otherwise make them a standard user
 
-      var allowedRoles = authAnnotation != null ? authAnnotation.allowedRoles() : classAnnotation.allowedRoles();
+      var allowedRoles =
+          authAnnotation != null ? authAnnotation.allowedRoles() : classAnnotation.allowedRoles();
 
       if (Arrays.stream(allowedRoles).noneMatch(r -> r == userRole))
         throw new ResponseStatusException(
             HttpStatus.FORBIDDEN,
             String.format(
                 "The user does have a valid role. Allowed roles are: %s",
-                Arrays.stream(allowedRoles)
-                    .map(Enum::name)
-                    .collect(Collectors.joining(", "))));
+                Arrays.stream(allowedRoles).map(Enum::name).collect(Collectors.joining(", "))));
       if (logResult)
         LOG.info(
-            "User with id {} approved to access restricted path \"{}\" [{}]",
-            userId,
-            path,
-            method);
+            "User with id {} approved to access restricted path \"{}\" [{}]", userId, path, method);
     } catch (JWTVerificationException exception) {
       if (logResult)
         LOG.info(

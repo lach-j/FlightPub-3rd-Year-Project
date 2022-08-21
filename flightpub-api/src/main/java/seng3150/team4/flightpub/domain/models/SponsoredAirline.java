@@ -1,6 +1,6 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,19 +18,19 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class SponsoredAirline implements IEntity, Serializable {
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
 
-    @Column(name = "StartDate")
-    private LocalDate startDate;
+  @Column(name = "StartDate")
+  private LocalDate startDate;
 
-    @Column(name = "EndDate")
-    private LocalDate endDate;
+  @Column(name = "EndDate")
+  private LocalDate endDate;
 
-    @JsonBackReference
-    @OneToOne
-    @JoinColumn(name = "AirlineCode")
-    private Airline airline;
+  @JsonBackReference
+  @OneToOne
+  @JoinColumn(name = "AirlineCode")
+  private Airline airline;
 }

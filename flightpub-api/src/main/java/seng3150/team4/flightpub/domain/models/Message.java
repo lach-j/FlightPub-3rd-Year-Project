@@ -15,24 +15,23 @@ import java.time.LocalDateTime;
 @Table(name = "Message")
 public class Message implements IEntity {
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "SessionId", nullable = false)
-    private MessagingSession session;
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "SessionId", nullable = false)
+  private MessagingSession session;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "Id")
+  private long id;
 
-    @Column(name = "dateSent")
-    private LocalDateTime dateSent;
+  @Column(name = "dateSent")
+  private LocalDateTime dateSent;
 
-    @Column(name = "Content")
-    private String content;
+  @Column(name = "Content")
+  private String content;
 
-    @JoinColumn(name = "UserId")
-    @ManyToOne
-    User user;
-
+  @JoinColumn(name = "UserId")
+  @ManyToOne
+  User user;
 }

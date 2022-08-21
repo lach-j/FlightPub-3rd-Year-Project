@@ -17,6 +17,6 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "PaymentId")
 public class PaymentPaypal extends Payment {
 
-    @Column(name = "Email")
-    private String email;
+  @Column(name = "Email")
+  private String email;
 }

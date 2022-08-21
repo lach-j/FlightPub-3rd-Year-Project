@@ -15,34 +15,34 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @Setter
 @NoArgsConstructor
 public class PassengerRequest extends Validatable {
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
+  private String email;
+  private String password;
+  private String firstName;
+  private String lastName;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var validationResult = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var validationResult = new ValidationResult();
 
-        // Ensure email was provided and is a valid email
-        var emailErrors = new ValidationError("email");
-        if (isNullOrEmpty(email)) {
-            emailErrors.addError(ErrorConstants.REQUIRED);
-        } else {
-            emailErrors.addErrors(emailValidator(email));
-        }
-        validationResult.addError(emailErrors);
-        
-        // Ensure firstName was provided
-        if (isNullOrEmpty(firstName)) {
-            validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
-        }
-
-        // Ensure firstName was provided
-        if (isNullOrEmpty(lastName)) {
-            validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
-        }
-
-        return validationResult;
+    // Ensure email was provided and is a valid email
+    var emailErrors = new ValidationError("email");
+    if (isNullOrEmpty(email)) {
+      emailErrors.addError(ErrorConstants.REQUIRED);
+    } else {
+      emailErrors.addErrors(emailValidator(email));
     }
+    validationResult.addError(emailErrors);
+
+    // Ensure firstName was provided
+    if (isNullOrEmpty(firstName)) {
+      validationResult.addError(new ValidationError("firstName").addError(ErrorConstants.REQUIRED));
+    }
+
+    // Ensure firstName was provided
+    if (isNullOrEmpty(lastName)) {
+      validationResult.addError(new ValidationError("lastName").addError(ErrorConstants.REQUIRED));
+    }
+
+    return validationResult;
+  }
 }

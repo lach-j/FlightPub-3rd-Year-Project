@@ -22,7 +22,6 @@ import seng3150.team4.flightpub.services.IPassengerService;
 import seng3150.team4.flightpub.services.IUserService;
 import seng3150.team4.flightpub.services.PaymentService;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 @RestController
@@ -48,7 +47,8 @@ public class BookingController {
 
     if (bookingRequest.isSavePayment()) {
       var savedPayment = new SavedPayment();
-      savedPayment.setNickname(String.format("%s-%d", payment.getType().toString(), payment.getId()));
+      savedPayment.setNickname(
+          String.format("%s-%d", payment.getType().toString(), payment.getId()));
       savedPayment.setPayment(payment);
       userService.addNewPayment(userId, savedPayment);
     }
@@ -71,7 +71,8 @@ public class BookingController {
       passengerSet.add(passengerService.addPassenger(newPassenger, savedBooking));
     }
 
-    // Add the new passengers so that the record does not have to be queried again in order to return the results.
+    // Add the new passengers so that the record does not have to be queried again in order to
+    // return the results.
     // Otherwise, the passenger list would be null.
     savedBooking.setPassengers(passengerSet);
 

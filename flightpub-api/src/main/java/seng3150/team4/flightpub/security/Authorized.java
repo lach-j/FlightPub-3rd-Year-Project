@@ -7,15 +7,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * Annotation to apply authorization to endpoint methods.
  *
- * allowedRoles - UserRoles that are allowed access to the endpoint.
+ * <p>allowedRoles - UserRoles that are allowed access to the endpoint.
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorized {
-  UserRole[] allowedRoles() default {UserRole.STANDARD_USER, UserRole.TRAVEL_AGENT, UserRole.ADMINISTRATOR};
+  UserRole[] allowedRoles() default {
+    UserRole.STANDARD_USER, UserRole.TRAVEL_AGENT, UserRole.ADMINISTRATOR
+  };
+
   boolean logResolution() default true;
 }

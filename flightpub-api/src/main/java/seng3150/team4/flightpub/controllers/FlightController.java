@@ -62,7 +62,8 @@ public class FlightController {
 
   @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
   @PostMapping("/{id}/cancel")
-  public EntityResponse<Flight> cancelFlight(@PathVariable Long id, @RequestBody CancelFlightRequest request) {
+  public EntityResponse<Flight> cancelFlight(
+      @PathVariable Long id, @RequestBody CancelFlightRequest request) {
     return new EntityResponse<>(flightService.setFlightCancelled(id, request.getCancelled()));
   }
 }

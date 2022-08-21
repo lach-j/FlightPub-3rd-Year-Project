@@ -1,37 +1,46 @@
 package seng3150.team4.flightpub.controllers.requests;
 
 import seng3150.team4.flightpub.domain.models.Payment;
-import seng3150.team4.flightpub.domain.models.SavedPayment;
 
 public interface IPaymentRequest {
 
-    Payment.PaymentType getType();
-    void setType(Payment.PaymentType type);
+  Payment.PaymentType getType();
 
-    String getNickname();
-    void setNickname(String nickname);
+  void setType(Payment.PaymentType type);
 
-    String getBsb();
-    void setBsb(String bsb);
+  String getNickname();
 
-    String getAccountName();
-    void setAccountName(String accountName);
+  void setNickname(String nickname);
 
-    String getAccountNumber() ;
-    void setAccountNumber(String accountNumber);
+  String getBsb();
 
-    String getCardNumber();
-    void setCardNumber(String cardNumber);
+  void setBsb(String bsb);
 
-    String getExpiryDate();
-    void setExpiryDate(String expiryDate);
+  String getAccountName();
 
-    String getCardholder();
-    void setCardholder(String cardholder);
+  void setAccountName(String accountName);
 
-    String getCcv();
-    void setCcv(String ccv);
+  String getAccountNumber();
 
-    String getEmail() ;
-    void setEmail(String email);
+  void setAccountNumber(String accountNumber);
+
+  String getCardNumber();
+
+  void setCardNumber(String cardNumber);
+
+  String getExpiryDate();
+
+  void setExpiryDate(String expiryDate);
+
+  String getCardholder();
+
+  void setCardholder(String cardholder);
+
+  String getCcv();
+
+  void setCcv(String ccv);
+
+  String getEmail();
+
+  void setEmail(String email);
 }
