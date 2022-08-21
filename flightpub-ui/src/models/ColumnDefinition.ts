@@ -4,6 +4,7 @@ import React from 'react';
 export interface ColumnDefinition<T> {
   accessor: string;
   Header: string;
+  databaseMapping?: string;
   transform?: (value: any) => React.ReactNode;
   sortValue?: (value: any, descending: boolean) => any;
 }

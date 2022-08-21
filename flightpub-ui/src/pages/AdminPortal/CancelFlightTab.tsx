@@ -14,7 +14,6 @@ import { ApiError, useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
 import { DataTable } from '../../components/DataTable';
 import { convertMinsToHM, formatDateTime } from '../../utility/formatting';
-import { airlines } from '../../data/airline';
 import _ from 'lodash';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
@@ -29,6 +28,9 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   const { httpPost } = useApi(endpoints.flights);
 
   const [page, setPage] = useState<number>(0);
+
+  const [orderBy, setOrderBy] = useState('');
+  const [descending, setDescending] = useState(false);
 
   const toast = useToast();
 
@@ -48,15 +50,19 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
   const debouncedChangeHandler = useCallback(_.debounce(changeHandler, 500), []);
 
   const loadFlights = () => {
-    httpGet('', { cancelled: cancelledView, flightNumber: idFilter, page }).then((res) =>
-      setResults(res)
-    );
+    httpGet('', {
+      cancelled: cancelledView,
+      flightNumber: idFilter,
+      page,
+      orderBy,
+      descending
+    }).then((res) => setResults(res));
   };
 
   // retrieves list of airlines
   useEffect(() => {
     loadFlights();
-  }, [idFilter, cancelledView, page]);
+  }, [idFilter, cancelledView, page, orderBy, descending]);
 
   useEffect(() => {
     setPage(0);
@@ -144,6 +150,10 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
           )}
           keyAccessor='id'
           sortable
+          sortingColumnChanged={(columnDef, descending) => {
+            setOrderBy(columnDef?.databaseMapping || columnDef.accessor.split('.')[0]);
+            setDescending(descending);
+          }}
           extraRow={(data: Flight) => (
             <Button
               type='button'
