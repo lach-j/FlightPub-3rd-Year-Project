@@ -1,39 +1,44 @@
 import {
-    Badge,
-    Box,
-    Center,
-    FormControl,
-    FormLabel,
-    HStack,
-    RangeSlider,
-    RangeSliderFilledTrack,
-    RangeSliderThumb,
-    RangeSliderTrack,
-    Select,
-    Slider,
-    SliderFilledTrack,
-    SliderThumb,
-    SliderTrack,
-    StackDivider,
-    Tag,
-    TagCloseButton,
-    TagLabel,
-    Text,
-    useToast,
-    VStack
+  Badge,
+  Box,
+  Center,
+  FormControl,
+  FormLabel,
+  HStack,
+  RangeSlider,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+  RangeSliderTrack,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  StackDivider,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Text,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
-import {useLocation} from 'react-router-dom';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
+import { useLocation } from 'react-router-dom';
 
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import {useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {Airline, ColumnDefinition, Flight, Price} from '../models';
-import {airports} from '../data/airports';
-import {ResultsTable} from '../components/ResultsTable';
-import {SearchResult} from '../models/SearchResult';
-import {tags} from '../data/tags';
+import { useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { Airline, ColumnDefinition, Flight, Price } from '../models';
+import { airports } from '../data/airports';
+import { ResultsTable } from '../components/ResultsTable';
+import { SearchResult } from '../models/SearchResult';
+import { tags } from '../data/tags';
 import moment from 'moment';
 
 //Takes date-time input and formats to user-friendly display type
@@ -239,10 +244,8 @@ export function SearchResultsPage({
 
     if (result.flight.duration > durationFilter) return false;
 
-    if (
-      (!filterTags || filterTags === []) &&
-      filterTags?.filter((value) => result?.tags?.includes(value)).length === 0
-    ) {
+    if (!filterTags || filterTags.length === 0) return true;
+    else if (filterTags?.filter((value) => result?.tags?.includes(value)).length === 0) {
       return false;
     }
 

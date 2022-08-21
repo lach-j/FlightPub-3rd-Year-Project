@@ -95,7 +95,7 @@ CREATE TABLE `Flights` (
   `PlaneCode` varchar(20) NOT NULL,
   `Duration` int NOT NULL,
   `DurationSecondLeg` int DEFAULT NULL,
-  `Cancelled` BIT DEFAULT 0
+  `Cancelled` BIT DEFAULT 0,
   PRIMARY KEY (`Id`),
   KEY `FlightsDepartureCode_FK` (`DepartureCode`),
   KEY `FlightsStopOverCode_FK` (`StopOverCode`),
@@ -143,7 +143,7 @@ CREATE TABLE `FPUser` (
   `LastName` VARCHAR(255),
   `Password` VARCHAR(255),
   `Role` INT,
-  `Deleted` BIT,
+  `Deleted` BIT DEFAULT 0,
   PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 

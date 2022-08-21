@@ -77,7 +77,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
       });
   };
 
-  const handleRemoveCovid = (listingId: number) => {
+  const handleRemoveSponsorship = (listingId: number) => {
     setIsLoading(true);
     httpDelete(`/${listingId}/sponsor`)
       .then((authResponse) => {
@@ -198,7 +198,7 @@ export const SponsorAirlineTab = ({ setIsLoading }: { setIsLoading: (value: bool
                     <Button
                       colorScheme='red'
                       onClick={() => {
-                        handleRemoveCovid(id);
+                        handleRemoveSponsorship(id);
                       }}
                     >
                       Revoke Sponsorship
