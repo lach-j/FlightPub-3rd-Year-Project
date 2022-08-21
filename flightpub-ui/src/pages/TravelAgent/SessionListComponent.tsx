@@ -1,50 +1,50 @@
 import {
-    Avatar,
-    AvatarBadge,
-    AvatarGroup,
-    Badge,
-    Box,
-    Button,
-    Checkbox,
-    Flex,
-    HStack,
-    IconButton,
-    ListItem,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    OrderedList,
-    Spinner,
-    Table,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr,
-    useBreakpointValue,
-    useDisclosure,
-    useToast
+  Avatar,
+  AvatarBadge,
+  AvatarGroup,
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  HStack,
+  IconButton,
+  ListItem,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  OrderedList,
+  Spinner,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useBreakpointValue,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import moment from 'moment';
-import React, {useContext, useEffect, useState} from 'react';
-import {GoKebabVertical} from 'react-icons/go';
-import {NavLink, useNavigate} from 'react-router-dom';
-import {routes} from '../../constants/routes';
-import {airports} from '../../data/airports';
-import {MessagingSession, SessionStatus} from '../../models/MessagingSession';
-import {UserRole} from '../../models/User';
-import {Wishlist} from '../../models/Wishlist';
-import {useMessaging} from '../../services/MessagingService';
-import {UserContext} from '../../services/UserContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { GoKebabVertical } from 'react-icons/go';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
+import { airports } from '../../data/airports';
+import { MessagingSession, SessionStatus } from '../../models/MessagingSession';
+import { UserRole } from '../../models/User';
+import { Wishlist } from '../../models/Wishlist';
+import { useMessaging } from '../../services/MessagingService';
+import { UserContext } from '../../services/UserContext';
 
 export const SessionListComponent = () => {
   const [sessions, setSessions] = useState<MessagingSession[]>([]);

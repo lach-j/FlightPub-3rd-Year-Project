@@ -1,57 +1,57 @@
 import {
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel,
-    Box,
-    Button,
-    Center,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    HStack,
-    Input,
-    Modal,
-    ModalOverlay,
-    Select,
-    Spinner,
-    Stat,
-    StatHelpText,
-    StatLabel,
-    StatNumber,
-    Switch,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr,
-    useDisclosure,
-    useToast,
-    VStack
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Center,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Modal,
+  ModalOverlay,
+  Select,
+  Spinner,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Switch,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
 
-import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
-import {BsFillPlusCircleFill, HiOutlineArrowNarrowRight} from 'react-icons/all';
-import {UserContext} from '../services/UserContext';
-import {HolidayCard} from '../components/HolidayCard';
-import {HolidayPackage} from '../models/HolidayCardProps';
-import {ApiError, useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {Flight} from '../models';
-import {Airport, findNearestAirport} from '../utility/geolocation';
-import {routes} from '../constants/routes';
-import {NavLink, useNavigate, useParams} from 'react-router-dom';
-import {PassengerDTO} from '../models/Passenger';
-import {SavedPaymentType} from '../models/SavedPaymentTypes';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { BsFillPlusCircleFill, HiOutlineArrowNarrowRight } from 'react-icons/all';
+import { UserContext } from '../services/UserContext';
+import { HolidayCard } from '../components/HolidayCard';
+import { HolidayPackage } from '../models/HolidayCardProps';
+import { ApiError, useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { Flight } from '../models';
+import { Airport, findNearestAirport } from '../utility/geolocation';
+import { routes } from '../constants/routes';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { PassengerDTO } from '../models/Passenger';
+import { SavedPaymentType } from '../models/SavedPaymentTypes';
 import * as yup from 'yup';
-import {ObjectShape} from 'yup/lib/object';
-import {countries} from '../data/countries';
-import {PaymentDetailsForm} from '../components/PaymentDetailsForm';
+import { ObjectShape } from 'yup/lib/object';
+import { countries } from '../data/countries';
+import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
 
 export interface BillingDetails {
   firstName: string;

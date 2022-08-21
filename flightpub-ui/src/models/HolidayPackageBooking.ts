@@ -1,7 +1,7 @@
-import {HolidayPackage} from './HolidayCardProps';
-import {User} from './User';
-import {Booking} from './Booking';
-import {PaymentType} from './SavedPaymentTypes';
+import { HolidayPackage } from './HolidayCardProps';
+import { User } from './User';
+import { Booking } from './Booking';
+import { PaymentType } from './SavedPaymentTypes';
 
 export interface HolidayPackageBooking {
   id: number;

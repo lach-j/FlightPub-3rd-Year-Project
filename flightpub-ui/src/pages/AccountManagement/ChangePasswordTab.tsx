@@ -1,8 +1,17 @@
-import {Button, FormControl, FormLabel, Heading, HStack, Input, useToast, VStack} from '@chakra-ui/react';
-import React, {useContext, useState} from 'react';
-import {endpoints} from '../../constants/endpoints';
-import {ApiError, useApi} from '../../services/ApiService';
-import {UserContext} from '../../services/UserContext';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  useToast,
+  VStack
+} from '@chakra-ui/react';
+import React, { useContext, useState } from 'react';
+import { endpoints } from '../../constants/endpoints';
+import { ApiError, useApi } from '../../services/ApiService';
+import { UserContext } from '../../services/UserContext';
 
 export const ChangePasswordTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const toast = useToast();

@@ -1,5 +1,4 @@
 export const tags = [
-
   { label: 'Beach', value: 'beach' },
   { label: 'Snow', value: 'snow' },
   { label: 'Holiday', value: 'holiday' },
@@ -26,4 +25,3 @@ export const tags = [
   { label: 'Africa', value: 'africa' },
   { label: 'Brazil', value: 'brazil' }
 ];
-

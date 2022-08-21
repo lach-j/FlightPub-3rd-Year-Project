@@ -1,13 +1,29 @@
-import {DragDropContext, Draggable, Droppable, DropResult} from 'react-beautiful-dnd';
-import {useEffect, useState} from 'react';
-import {Box, Button, FormControl, FormLabel, Heading, HStack, Input, Text, useToast, VStack} from '@chakra-ui/react';
-import {Airport, findNearestAirport} from '../../utility/geolocation';
-import {airports} from '../../data/airports';
-import {useApi} from '../../services/ApiService';
-import {endpoints} from '../../constants/endpoints';
-import {useNavigate} from 'react-router-dom';
-import {routes} from '../../constants/routes';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  useToast,
+  VStack
+} from '@chakra-ui/react';
+import { Airport, findNearestAirport } from '../../utility/geolocation';
+import { airports } from '../../data/airports';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
 
 // fake data generator
 const getItems = (count: number, offset: number = 0) =>

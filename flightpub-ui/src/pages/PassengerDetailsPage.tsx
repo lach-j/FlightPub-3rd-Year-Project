@@ -1,32 +1,32 @@
 import {
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    HStack,
-    Input,
-    ListItem,
-    Select,
-    Stat,
-    StatHelpText,
-    StatLabel,
-    StatNumber,
-    Text,
-    UnorderedList,
-    useToast,
-    VStack
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  ListItem,
+  Select,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
+  UnorderedList,
+  useToast,
+  VStack
 } from '@chakra-ui/react';
 
-import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
-import {Flight} from '../models/Flight';
-import {useNavigate} from 'react-router-dom';
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Flight } from '../models/Flight';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import {BsFillPlusCircleFill} from 'react-icons/all';
-import {routes} from '../constants/routes';
-import {UserContext} from '../services/UserContext';
-import {ClassCode, PassengerDTO} from '../models/Passenger';
-import {FlightListAccordian} from '../components/FlightListAccordian';
+import { BsFillPlusCircleFill } from 'react-icons/all';
+import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
+import { ClassCode, PassengerDTO } from '../models/Passenger';
+import { FlightListAccordian } from '../components/FlightListAccordian';
 
 export const PassengerDetailsPage = ({
   cartState

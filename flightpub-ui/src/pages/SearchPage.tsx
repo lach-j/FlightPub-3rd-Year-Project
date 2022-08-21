@@ -37,18 +37,23 @@ import {
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, {FormEvent, useEffect, useState} from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
-import {SearchIcon} from '@chakra-ui/icons';
-import {useNavigate} from 'react-router-dom';
-import {routes} from '../constants/routes';
-import {ApiError, useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {airports} from '../data/airports';
-import {Airport, findNearestAirport} from '../utility/geolocation';
-import {tags} from '../data/tags';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
+import { SearchIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { ApiError, useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { airports } from '../data/airports';
+import { Airport, findNearestAirport } from '../utility/geolocation';
+import { tags } from '../data/tags';
 
 export interface Item {
   label: string;

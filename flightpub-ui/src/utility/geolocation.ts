@@ -1,4 +1,4 @@
-import {airports} from '../data/airports';
+import { airports } from '../data/airports';
 
 export type Position = [number, number];
 

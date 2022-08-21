@@ -1,4 +1,4 @@
-import {SponsoredAirline} from './SponsoredAirline';
+import { SponsoredAirline } from './SponsoredAirline';
 
 export interface Airline {
   airlineCode: string;

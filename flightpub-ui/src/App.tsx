@@ -1,30 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    AccountPage,
-    AdminPage,
-    BookingPage,
-    ForgotPasswordPage,
-    HolidayPackagesPage,
-    HomePage,
-    LoginPage,
-    MapPage,
-    PassengerDetailsPage,
-    PasswordResetPage,
-    RegisterPage,
-    SearchPage,
-    SearchResultsPage,
-    SessionListComponent,
-    TravelAgentMessagingPage,
-    WishlistCreatorPage,
-    WishlistMainScreen,
+  AccountPage,
+  AdminPage,
+  BookingPage,
+  ForgotPasswordPage,
+  HolidayPackagesPage,
+  HomePage,
+  LoginPage,
+  MapPage,
+  PassengerDetailsPage,
+  PasswordResetPage,
+  RegisterPage,
+  SearchPage,
+  SearchResultsPage,
+  SessionListComponent,
+  TravelAgentMessagingPage,
+  WishlistCreatorPage,
+  WishlistMainScreen
 } from './pages';
-import {Route, Routes, useLocation} from 'react-router-dom';
-import {routes} from './constants/routes';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { routes } from './constants/routes';
 import Header from './components/Header';
-import {Box, Flex} from '@chakra-ui/react';
-import {Flight} from './models';
-import {UserProvider} from './services/UserContext';
-import {HolidayPackageBookingPage} from './pages/HolidayPackageBookingPage';
+import { Box, Flex } from '@chakra-ui/react';
+import { Flight } from './models';
+import { UserProvider } from './services/UserContext';
+import { HolidayPackageBookingPage } from './pages/HolidayPackageBookingPage';
 
 const noNavbar = [routes.login, routes.register, routes.forgotPassword, routes.resetPassword];
 
@@ -85,7 +85,7 @@ const App = () => {
               path={routes.passengerDetails}
               element={<PassengerDetailsPage cartState={cartState} />}
             />
-            <Route path={routes.admin} element={<AdminPage/>} />
+            <Route path={routes.admin} element={<AdminPage />} />
             <Route path='*' element={<h1>Page Not Found</h1>} />
           </Routes>
         </Box>

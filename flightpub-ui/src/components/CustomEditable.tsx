@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {FormControl, FormLabel, HStack, IconButton, Input, Text} from '@chakra-ui/react';
-import {CheckIcon, CloseIcon, EditIcon} from '@chakra-ui/icons';
+import React, { useState } from 'react';
+import { FormControl, FormLabel, HStack, IconButton, Input, Text } from '@chakra-ui/react';
+import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 
 export const CustomEditible = ({
   value,

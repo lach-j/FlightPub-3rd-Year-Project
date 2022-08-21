@@ -1,4 +1,4 @@
-import {Destination} from './Destination';
+import { Destination } from './Destination';
 
 export interface CovidDestination {
   id: number;

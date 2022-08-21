@@ -1,12 +1,28 @@
-import {Box, Button, Center, FormControl, FormLabel, Heading, HStack, Text, useToast, VStack} from '@chakra-ui/react';
-import {useEffect, useState} from 'react';
-import {AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList} from '@choc-ui/chakra-autocomplete';
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
+  Text,
+  useToast,
+  VStack
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList
+} from '@choc-ui/chakra-autocomplete';
 import DatePicker from 'react-datepicker';
-import {Airline, ColumnDefinition} from '../../models';
-import {DataTable} from '../../components/DataTable';
-import {ApiError, useApi} from '../../services/ApiService';
-import {endpoints} from '../../constants/endpoints';
-import {SponsoredAirline} from '../../models/SponsoredAirline';
+import { Airline, ColumnDefinition } from '../../models';
+import { DataTable } from '../../components/DataTable';
+import { ApiError, useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { SponsoredAirline } from '../../models/SponsoredAirline';
 import moment from 'moment';
 
 //container for flexidate information, contains date and flex-date range

@@ -1,4 +1,4 @@
-import {Price} from '../models';
+import { Price } from '../models';
 //returns pricerange of flights as string
 export const getMinMaxPriceString = (prices: Price[]) => {
   if (!prices) return '';

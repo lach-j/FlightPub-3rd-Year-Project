@@ -1,4 +1,4 @@
-import {Airport} from '../utility/geolocation';
+import { Airport } from '../utility/geolocation';
 //Airport infomration including geolocation for map page
 export const airports: Airport[] = [
   {
@@ -40,7 +40,6 @@ export const airports: Airport[] = [
     code: 'CDG',
 
     tags: ['holiday', 'family-friendly', 'romantic', 'france']
-
   },
   {
     coordinates: [-118.408075, 33.942536],
@@ -81,7 +80,6 @@ export const airports: Airport[] = [
     code: 'SIN',
 
     tags: ['holiday', 'asia']
-
   },
   {
     coordinates: [-80.290556, 25.79325],
@@ -92,7 +90,6 @@ export const airports: Airport[] = [
     code: 'MIA',
 
     tags: ['beach', 'holiday', 'sports', 'united states', 'u.s.', 'surfing']
-
   },
   {
     coordinates: [11.786086, 48.353783],
