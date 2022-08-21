@@ -177,7 +177,7 @@ export function SearchResultsPage({
     const { results, query } = state as { query: any; results: Flight[] };
     setResults(results);
     setQuery(query);
-    setFilterTags(query?.searchTags || []);
+    setFilterTags(query?.searchTags);
     GenerateSearchResults(results);
     const flightTimes = results.map((r) => r.duration);
     const maxDuration = Math.max(...flightTimes);
@@ -240,7 +240,7 @@ export function SearchResultsPage({
     if (result.flight.duration > durationFilter) return false;
 
     if (
-      (!filterTags || filterTags === []) &&
+      filterTags?.length !== 0 &&
       filterTags?.filter((value) => result?.tags?.includes(value)).length === 0
     ) {
       return false;
