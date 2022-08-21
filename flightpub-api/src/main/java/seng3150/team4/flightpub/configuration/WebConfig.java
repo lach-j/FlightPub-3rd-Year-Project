@@ -24,6 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     return new SecurityFilter(jwtHelper, currentUserContext);
   }
 
+  // Add the security interceptor to all incoming requests
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(getSecurityFilter()).addPathPatterns("/**");

@@ -22,7 +22,7 @@ import java.time.ZoneOffset;
 
 @RestController
 @RequiredArgsConstructor
-@Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
+@Authorized(allowedRoles = {UserRole.ADMINISTRATOR}) // All endpoints are restricted to admins only
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -56,26 +56,10 @@ public class AdminController {
     return new EntityResponse<>(savedListing);
   }
 
-  @PostMapping(path = "/airlineUpdate")
-  public SponsoredAirline updateAirline(SponsoredAirline airline) {
-    //        todo get todays date and
-
-    return airlineRepository.save(airline);
-  }
-
-  @Authorized
   @DeleteMapping("/covid/{entityId}")
   public StatusResponse deleteCovidDestination(@PathVariable Long entityId) {
     var covidDestination = covidRepository.getById(entityId);
     covidRepository.delete(covidDestination);
-    return new StatusResponse(HttpStatus.OK);
-  }
-
-  @Authorized
-  @DeleteMapping("/deleteSponsoredAirline")
-  public StatusResponse deleteSponsoredAirline(@PathVariable Long id) {
-    var sponsoredAirline = airlineRepository.getById(id);
-    airlineRepository.delete(sponsoredAirline);
     return new StatusResponse(HttpStatus.OK);
   }
 }

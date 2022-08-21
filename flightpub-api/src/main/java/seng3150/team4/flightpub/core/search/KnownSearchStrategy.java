@@ -62,6 +62,7 @@ public class KnownSearchStrategy extends SearchStrategy {
     Subquery<Integer> subQuery = query.subquery(Integer.class);
     Root<CovidDestination> covid = subQuery.from(CovidDestination.class);
 
+    // Subquery here is used to check if the flight destination is covid listed.
     subQuery
         .select(cb.literal(1))
         .where(
@@ -69,6 +70,8 @@ public class KnownSearchStrategy extends SearchStrategy {
                 covid.get("destination").get("destinationCode"),
                 flight.get("arrivalLocation").get("destinationCode")),
             cb.greaterThan(covid.get("covidEndDate"), LocalDate.now(ZoneOffset.UTC)));
+
+    // Filter out flights with covid destinations
     predicates.add(cb.not(cb.exists(subQuery)));
     // TODO: add WHERE clauses for ticket type/quantity
 

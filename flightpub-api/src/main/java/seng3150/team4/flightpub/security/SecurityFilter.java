@@ -28,6 +28,10 @@ public class SecurityFilter implements HandlerInterceptor {
     this.currentUserContext = currentUserContext;
   }
 
+  /**
+   * Process all incoming requests and ensure that if the endpoint is secured, the request contains
+   * valid credentials and roles.
+   */
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -36,10 +40,13 @@ public class SecurityFilter implements HandlerInterceptor {
 
     HandlerMethod handlerMethod = (HandlerMethod) handler;
 
+    // Pull the @Authorized annotation off the class and method
     Authorized classAnnotation =
         ((HandlerMethod) handler).getBeanType().getDeclaredAnnotation(Authorized.class);
     Authorized authAnnotation = handlerMethod.getMethod().getAnnotation(Authorized.class);
 
+
+    // If there is no authorized annotation on the endpoints then allow the user past.
     if (authAnnotation == null && classAnnotation == null) {
       return true;
     }
@@ -55,21 +62,29 @@ public class SecurityFilter implements HandlerInterceptor {
 
     var method = request.getMethod();
 
+    // Pull the token from the cookies, if there is no token on the cookies then resolve the token from the "Authorization" header
     String token = resolveTokenFromCookies(ifNullDefault(request.getCookies(), new Cookie[] {}));
     var authHeader = request.getHeader("Authorization");
     token = ifNullDefault(token, resolveTokenFromHeaders(authHeader));
 
     try {
+      // verify that the token is valid
       var jwt = jwtHelperService.verifyToken(ifNullDefault(token, ""));
+
+      // Pull the user id and user role off the JWT and store them in the CurrentUserContext request scoped component
+      // to allow other services to access the users role.
       var userId = jwt.getClaim("id").asLong();
       var userRole = UserRole.valueOf(jwt.getClaim("role").asInt()).orElse(UserRole.STANDARD_USER);
       currentUserContext.setCurrentUserId(userId);
       currentUserContext.setCurrentUserRole(
           userRole); // set the user role if present, otherwise make them a standard user
 
+      // Pull the roles that allowed to access the endpoint from the @Authorized annotation.
+      // Here method level roles take priority over class level roles.
       var allowedRoles =
           authAnnotation != null ? authAnnotation.allowedRoles() : classAnnotation.allowedRoles();
 
+      // If the user does not have a valid role then return a 403 FORBIDDEN response.
       if (Arrays.stream(allowedRoles).noneMatch(r -> r == userRole))
         throw new ResponseStatusException(
             HttpStatus.FORBIDDEN,
@@ -86,6 +101,8 @@ public class SecurityFilter implements HandlerInterceptor {
             request.getRemoteAddr() + ":" + request.getRemotePort(),
             path,
             method);
+
+      // Return 401 UNAUTHORIZED response if user does not have valid authorization.
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "The provided token is invalid or has expired");
     }

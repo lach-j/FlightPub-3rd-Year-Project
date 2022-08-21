@@ -10,7 +10,6 @@ export const endpoints = {
   airlines: '/airlines',
   recommended: '/flights/recommended',
   book: '/book',
-  airlineUpdate: '/airlineUpdate',
   flightUpdate: '/flightUpdate',
   bookHolidayPackage: '/bookHolidayPackage',
   bookings: '/bookings',

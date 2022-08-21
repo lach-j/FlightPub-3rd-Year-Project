@@ -20,6 +20,9 @@ public class PassengerService implements IPassengerService {
   private final IPassengerRepository passengerRepository;
   private final IEmailSenderService emailSenderService;
 
+  /**
+   * Links the passenger to the provided booking and sends the passenger a confirmation email.
+   */
   @Override
   public Passenger addPassenger(Passenger passenger, Booking booking) {
     passenger.setBooking(booking);
@@ -58,6 +61,7 @@ public class PassengerService implements IPassengerService {
     int x = 1;
 
     if (!flights.isEmpty()) {
+      // Builds a html string of flight data to be added to the confirmation email.
       for (Flight f : flights) {
         String depLoc = f.getDepartureLocation().getAirport();
         String depTime = f.getDepartureTime().format(DateTimeFormatter.ISO_DATE_TIME);

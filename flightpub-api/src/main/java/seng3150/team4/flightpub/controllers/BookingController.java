@@ -45,8 +45,11 @@ public class BookingController {
 
     var payment = paymentService.addPayment(bookingRequest.getPayment());
 
+    // If the "Save payment" toggle is selected, add the bookings payment to the users saved payments.
     if (bookingRequest.isSavePayment()) {
       var savedPayment = new SavedPayment();
+
+      // Default nickname is PAYMENTTYPE-ID
       savedPayment.setNickname(
           String.format("%s-%d", payment.getType().toString(), payment.getId()));
       savedPayment.setPayment(payment);

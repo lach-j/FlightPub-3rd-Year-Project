@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation to apply authorization to endpoint methods.
  *
- * <p>allowedRoles - UserRoles that are allowed access to the endpoint.
+ * allowedRoles - UserRoles that are allowed access to the endpoint (defaults to all roles).
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

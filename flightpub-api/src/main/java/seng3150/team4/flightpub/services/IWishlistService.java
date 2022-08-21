@@ -10,5 +10,8 @@ public interface IWishlistService {
 
   Wishlist getWishlistById(long wishlistId);
 
+  /**
+   * Creates a new wishlist for the current user with the provided destinations ensuring their rankings stay the same.
+   */
   Wishlist createWishlist(String departureCode, List<String> destinationCodes);
 }
