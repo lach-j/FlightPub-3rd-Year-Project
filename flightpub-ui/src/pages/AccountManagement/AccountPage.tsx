@@ -1,21 +1,21 @@
 import {
-    Box,
-    Flex,
-    Modal,
-    ModalOverlay,
-    Spinner,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    useDisclosure
+  Box,
+  Flex,
+  Modal,
+  ModalOverlay,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure
 } from '@chakra-ui/react';
-import {SavedPaymentsTab} from './SavedPaymentsTab';
-import {MyDetailsTab} from './MyDetailsTab';
-import {ChangePasswordTab} from './ChangePasswordTab';
-import {BookingHistoryTab} from './BookingHistoryTab';
-import {HolidayBookingHistoryTab} from './HolidayBookingHistoryTab';
+import { SavedPaymentsTab } from './SavedPaymentsTab';
+import { MyDetailsTab } from './MyDetailsTab';
+import { ChangePasswordTab } from './ChangePasswordTab';
+import { BookingHistoryTab } from './BookingHistoryTab';
+import { HolidayBookingHistoryTab } from './HolidayBookingHistoryTab';
 
 export const AccountPage = () => {
   const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure();

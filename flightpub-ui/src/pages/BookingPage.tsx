@@ -19,20 +19,27 @@ import {
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, {ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
-import {ApiError, useApi} from '../services/ApiService';
-import {countries} from '../data/countries';
-import {NavLink, useLocation, useNavigate} from 'react-router-dom';
-import {routes} from '../constants/routes';
-import {Flight} from '../models/Flight';
-import {endpoints} from '../constants/endpoints';
-import {Passenger, PassengerDTO} from '../models/Passenger';
-import {SavedPaymentType} from '../models/SavedPaymentTypes';
-import {UserContext} from '../services/UserContext';
-import {FlightListAccordian} from '../components/FlightListAccordian';
-import {PaymentDetailsForm} from '../components/PaymentDetailsForm';
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
+import { ApiError, useApi } from '../services/ApiService';
+import { countries } from '../data/countries';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { Flight } from '../models/Flight';
+import { endpoints } from '../constants/endpoints';
+import { Passenger, PassengerDTO } from '../models/Passenger';
+import { SavedPaymentType } from '../models/SavedPaymentTypes';
+import { UserContext } from '../services/UserContext';
+import { FlightListAccordian } from '../components/FlightListAccordian';
+import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
 import * as yup from 'yup';
-import {ObjectShape} from 'yup/lib/object';
+import { ObjectShape } from 'yup/lib/object';
 
 export interface BillingDetails {
   firstName: string;

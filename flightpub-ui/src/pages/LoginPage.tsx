@@ -12,14 +12,14 @@ import {
   Stack,
   useToast
 } from '@chakra-ui/react';
-import React, {SyntheticEvent, useContext, useEffect, useState} from 'react';
-import {ApiError, useApi} from '../services/ApiService';
-import {Link as RouteLink, NavLink, useLocation, useNavigate} from 'react-router-dom';
-import {endpoints} from '../constants/endpoints';
-import {routes} from '../constants/routes';
-import {UserContext} from '../services/UserContext';
-import {User} from '../models';
-import {FaArrowRight} from 'react-icons/fa';
+import React, { SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { ApiError, useApi } from '../services/ApiService';
+import { Link as RouteLink, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { endpoints } from '../constants/endpoints';
+import { routes } from '../constants/routes';
+import { UserContext } from '../services/UserContext';
+import { User } from '../models';
+import { FaArrowRight } from 'react-icons/fa';
 
 export const LoginPage = ({ redirectPath }: { redirectPath?: string }) => {
   const [loading, setLoading] = useState(false);

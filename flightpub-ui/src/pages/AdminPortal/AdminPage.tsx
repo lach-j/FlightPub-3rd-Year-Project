@@ -1,26 +1,26 @@
 import {
-    Box,
-    Flex,
-    Modal,
-    ModalOverlay,
-    Spinner,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    useDisclosure,
-    useToast
+  Box,
+  Flex,
+  Modal,
+  ModalOverlay,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
-import {useContext, useEffect} from 'react';
-import {CancelFlightTab} from '../AdminPortal/CancelFlightTab';
-import {SponsorAirlineTab} from '../AdminPortal/SponsorAirlineTab';
-import {CovidHotspotTab} from '../AdminPortal/CovidHotspotTab';
-import {ManageUserTab} from '../AdminPortal/ManageUserTab';
-import {UserContext} from '../../services/UserContext';
-import {UserRole} from '../../models/User';
-import {useNavigate} from 'react-router-dom';
-import {routes} from '../../constants/routes';
+import { useContext, useEffect } from 'react';
+import { CancelFlightTab } from '../AdminPortal/CancelFlightTab';
+import { SponsorAirlineTab } from '../AdminPortal/SponsorAirlineTab';
+import { CovidHotspotTab } from '../AdminPortal/CovidHotspotTab';
+import { ManageUserTab } from '../AdminPortal/ManageUserTab';
+import { UserContext } from '../../services/UserContext';
+import { UserRole } from '../../models/User';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
 
 export const AdminPage = () => {
   const { user } = useContext(UserContext);

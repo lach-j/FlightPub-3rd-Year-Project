@@ -1,4 +1,4 @@
-import {TicketClass} from './Passenger';
+import { TicketClass } from './Passenger';
 
 export interface Price {
   ticketClass: TicketClass;

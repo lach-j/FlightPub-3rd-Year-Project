@@ -1,17 +1,17 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {Box, Button, Center, Grid, Heading, HStack, StackDivider, VStack} from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Box, Button, Center, Grid, Heading, HStack, StackDivider, VStack } from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import plane from '../HomePageStockShot.jpg';
-import {useApi} from '../services/ApiService';
-import {endpoints} from '../constants/endpoints';
-import {Airline, ColumnDefinition, Flight, Price} from '../models';
-import {Airport, findNearestAirport} from '../utility/geolocation';
-import {convertMinsToHM, formatDateTime} from '../utility/formatting';
-import {ResultsTable} from '../components/ResultsTable';
-import {NavLink} from 'react-router-dom';
-import {routes} from '../constants/routes';
-import {HolidayPackage} from '../models/HolidayCardProps';
-import {HolidayCardSmall} from '../components/HolidayCardSmall';
+import { useApi } from '../services/ApiService';
+import { endpoints } from '../constants/endpoints';
+import { Airline, ColumnDefinition, Flight, Price } from '../models';
+import { Airport, findNearestAirport } from '../utility/geolocation';
+import { convertMinsToHM, formatDateTime } from '../utility/formatting';
+import { ResultsTable } from '../components/ResultsTable';
+import { NavLink } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { HolidayPackage } from '../models/HolidayCardProps';
+import { HolidayCardSmall } from '../components/HolidayCardSmall';
 
 export function HomePage({
   cartState

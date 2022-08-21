@@ -1,7 +1,7 @@
-import {useToast} from '@chakra-ui/react';
-import {useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
-import {routes} from '../constants/routes';
+import { useToast } from '@chakra-ui/react';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
 
 const apiBaseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development'

@@ -1,10 +1,19 @@
-import {Button, FormControl, FormLabel, HStack, Input, Select, Text, VStack} from '@chakra-ui/react';
-import React, {useContext, useEffect, useState} from 'react';
-import {BiLinkExternal} from 'react-icons/bi';
-import {endpoints} from '../constants/endpoints';
-import {PaymentType, SavedPayment, SavedPaymentType} from '../models/SavedPaymentTypes';
-import {useApi} from '../services/ApiService';
-import {UserContext} from '../services/UserContext';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Input,
+  Select,
+  Text,
+  VStack
+} from '@chakra-ui/react';
+import React, { useContext, useEffect, useState } from 'react';
+import { BiLinkExternal } from 'react-icons/bi';
+import { endpoints } from '../constants/endpoints';
+import { PaymentType, SavedPayment, SavedPaymentType } from '../models/SavedPaymentTypes';
+import { useApi } from '../services/ApiService';
+import { UserContext } from '../services/UserContext';
 
 export const PaymentDetailsForm = ({
   paymentType,

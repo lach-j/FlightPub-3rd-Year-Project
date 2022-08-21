@@ -16,16 +16,16 @@ import {
   useToast,
   VStack
 } from '@chakra-ui/react';
-import React, {useContext, useEffect, useState} from 'react';
-import {CustomEditible} from '../../components/CustomEditable';
-import {routes} from '../../constants/routes';
-import {useNavigate} from 'react-router-dom';
-import {UserContext} from '../../services/UserContext';
-import {User} from '../../models';
+import React, { useContext, useEffect, useState } from 'react';
+import { CustomEditible } from '../../components/CustomEditable';
+import { routes } from '../../constants/routes';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../services/UserContext';
+import { User } from '../../models';
 import _ from 'lodash';
-import {useApi} from '../../services/ApiService';
-import {endpoints} from '../../constants/endpoints';
-import {UserRole} from '../../models/User';
+import { useApi } from '../../services/ApiService';
+import { endpoints } from '../../constants/endpoints';
+import { UserRole } from '../../models/User';
 
 export const MyDetailsTab = ({ setIsLoading }: { setIsLoading: (value: boolean) => void }) => {
   const { user, setUser } = useContext(UserContext);

@@ -1,21 +1,21 @@
 import {
-    Box,
-    Button,
-    Center,
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Heading,
-    Input,
-    Link,
-    Stack,
-    useToast
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Link,
+  Stack,
+  useToast
 } from '@chakra-ui/react';
-import React, {SyntheticEvent, useEffect, useState} from 'react';
-import {ApiError, useApi} from '../services/ApiService';
-import {Link as RouteLink, useNavigate} from 'react-router-dom';
-import {routes} from '../constants/routes';
-import {endpoints} from '../constants/endpoints';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { ApiError, useApi } from '../services/ApiService';
+import { Link as RouteLink, useNavigate } from 'react-router-dom';
+import { routes } from '../constants/routes';
+import { endpoints } from '../constants/endpoints';
 
 export const ForgotPasswordPage = ({ redirectPath }: { redirectPath?: string }) => {
   useEffect(() => {

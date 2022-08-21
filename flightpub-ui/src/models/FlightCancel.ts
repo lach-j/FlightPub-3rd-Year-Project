@@ -1,4 +1,4 @@
 export interface FlightCancel {
-    id: number;
-    flightId: number;
+  id: number;
+  flightId: number;
 }
