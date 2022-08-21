@@ -95,7 +95,7 @@ CREATE TABLE `Flights` (
   `PlaneCode` varchar(20) NOT NULL,
   `Duration` int NOT NULL,
   `DurationSecondLeg` int DEFAULT NULL,
-  `Cancelled` BIT DEFAULT 0
+  `Cancelled` BIT DEFAULT 0,
   PRIMARY KEY (`Id`),
   KEY `FlightsDepartureCode_FK` (`DepartureCode`),
   KEY `FlightsStopOverCode_FK` (`StopOverCode`),
