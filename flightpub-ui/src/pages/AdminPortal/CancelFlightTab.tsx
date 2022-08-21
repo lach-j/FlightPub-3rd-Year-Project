@@ -115,6 +115,10 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
     }
   ];
 
+  useEffect(() => {
+    setPage(0);
+  }, [cancelledView]);
+
   return (
     <>
       <HStack gap={'5em'} justify='space-between'>
@@ -132,7 +136,12 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
             onClick={() => setPage((page) => Math.max(page - 1, 0))}
             icon={<FaArrowLeft />}
           />
-          <Input onBlur={(e) => setPage(_.toInteger(e.target.value))}>{page + 1}</Input>
+          <Input
+            type={'number'}
+            w={20}
+            onChange={(e) => setPage(parseInt(e.target.value))}
+            value={page}
+          />
           <IconButton
             aria-label='next-page'
             onClick={() => setPage((page) => page + 1)}
