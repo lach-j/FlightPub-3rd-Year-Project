@@ -65,7 +65,7 @@ public class EmailSenderService implements IEmailSenderService {
     }
   }
 
-  public Response sendEmail(Mail mail) throws IOException {
+  private Response sendEmail(Mail mail) throws IOException {
 
     // Use the SendGrid API to send the email
     SendGrid sg = new SendGrid(SENDGRID_API_KEY);

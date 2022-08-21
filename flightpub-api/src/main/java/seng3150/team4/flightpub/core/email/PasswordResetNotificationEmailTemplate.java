@@ -21,10 +21,10 @@ public class PasswordResetNotificationEmailTemplate extends EmailTemplate {
 
     @Override
     public Map<String, Object> getMappedValues() {
-        return Map.of("firstName", firstName, "resetLink", getResetTokenUrl());
+        return Map.of("firstName", firstName, "resetLink", getForgotPasswordUrl());
     }
 
-    private String getResetTokenUrl() {
+    private String getForgotPasswordUrl() {
         return UriComponentsBuilder.fromHttpUrl(UI_URL)
                 .path("forgot")
                 .build()
