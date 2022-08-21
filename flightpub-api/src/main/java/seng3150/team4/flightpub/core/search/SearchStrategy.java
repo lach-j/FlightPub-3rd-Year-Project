@@ -40,7 +40,16 @@ public abstract class SearchStrategy {
 
   // Execute query and return results ordered by departure time
   protected List<Flight> getResults() {
-    query.orderBy(cb.desc(flight.get("departureTime")));
+    var sortColumn = flight.get("departureTime");
+
+    try {
+      sortColumn = flight.get(flightQuery.getOrderBy());
+    } catch (IllegalArgumentException ex) {
+    }
+
+    if (flightQuery.getDescending() != null)
+      query.orderBy(flightQuery.getDescending() ? cb.desc(sortColumn) : cb.asc(sortColumn));
+
     TypedQuery<Flight> results = em.createQuery(query);
     paginate(results);
     return results.getResultList();

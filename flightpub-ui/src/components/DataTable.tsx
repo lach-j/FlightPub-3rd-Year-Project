@@ -1,8 +1,19 @@
-import {HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr} from '@chakra-ui/react';
+import {
+  HStack,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useEditable
+} from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, {useState} from 'react';
-import {ColumnDefinition} from '../models';
-import {TriangleDownIcon, TriangleUpIcon} from '@chakra-ui/icons';
+import React, { useEffect, useState } from 'react';
+import { ColumnDefinition } from '../models';
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 type DataTableProps<T> = {
   columns: ColumnDefinition<T>[];
@@ -10,12 +21,21 @@ type DataTableProps<T> = {
   sortable?: boolean;
   keyAccessor: string;
   extraRow?: (item: T) => React.ReactNode;
+  sortingColumnChanged?: (column: ColumnDefinition<T>, descending: boolean) => void;
 };
 
 export let DataTable: React.FC<DataTableProps<any>>;
-DataTable = ({ columns, data, children, sortable = false, keyAccessor, extraRow }) => {
+DataTable = ({
+  columns,
+  data,
+  children,
+  sortable = false,
+  keyAccessor,
+  extraRow,
+  sortingColumnChanged
+}) => {
   const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>(
-    columns.find((c) => c.accessor === keyAccessor) || { accessor: '', Header: '' }
+    columns?.[0] || { accessor: '', Header: '' }
   );
   const [descending, setDescending] = useState<boolean>(false);
 
@@ -39,15 +59,18 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor, extraRow 
   const handleColumnSort = (column: ColumnDefinition<any>) => {
     if (!sortable) return;
 
-    if (column === sortingColumn) {
+    if (column.accessor === sortingColumn.accessor) {
       setDescending(!descending);
     } else {
       setSortingColumn(column);
     }
   };
 
-  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
+  useEffect(() => {
+    sortingColumnChanged && sortingColumnChanged(sortingColumn, descending);
+  }, [sortingColumn, descending]);
 
+  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
   return (
     <Table width='100%'>
       <TableCaption>Prices subject to change. T&C's apply</TableCaption>
@@ -57,7 +80,7 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor, extraRow 
             <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
-                {column === sortingColumn && sortIcon()}
+                {column.accessor === sortingColumn.accessor && sortIcon()}
               </HStack>
             </Th>
           ))}

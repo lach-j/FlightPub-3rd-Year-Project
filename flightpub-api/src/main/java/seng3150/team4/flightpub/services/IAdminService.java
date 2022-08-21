@@ -5,20 +5,15 @@ import seng3150.team4.flightpub.domain.models.*;
 /** Interface to define AdminService methods */
 public interface IAdminService {
 
-    Airline SponsorAirline(Airline airline);
+  Airline SponsorAirline(Airline airline);
 
-    Destination MarkCovid(Destination destination);
+  Destination MarkCovid(Destination destination);
 
-    Flight CancelFlight(Flight flight);
+  Flight CancelFlight(Flight flight);
 
-    Flight getCanceledFlightById(long id);
+  Flight getCanceledFlightById(long id);
 
-    SponsoredAirline getSponsoredAirlineById(long id);
+  SponsoredAirline getSponsoredAirlineById(long id);
 
-    CovidDestination getCovidLocationById(long id);
-
-
-
-
-
+  CovidDestination getCovidLocationById(long id);
 }
