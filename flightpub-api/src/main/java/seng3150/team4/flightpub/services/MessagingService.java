@@ -116,13 +116,16 @@ public class MessagingService {
   public void addMessageToSession(long sessionId, String message) {
     var session = getSessionByIdSecure(sessionId);
 
-    var messageEntity = new Message();
-    messageEntity.setContent(message);
-    messageEntity.setSession(session);
-    messageEntity.setDateSent(LocalDateTime.now(ZoneOffset.UTC));
-    messageEntity.setUser(resolveCurrentUser());
+    var messages = message.split("(?<=\\G.{" + 255 + "})");
+    for (var msg : messages) {
+      var messageEntity = new Message();
+      messageEntity.setContent(msg);
+      messageEntity.setSession(session);
+      messageEntity.setDateSent(LocalDateTime.now(ZoneOffset.UTC));
+      messageEntity.setUser(resolveCurrentUser());
 
-    session.getMessages().add(messageEntity);
+      session.getMessages().add(messageEntity);
+    }
 
     messagingRepository.save(session);
   }
