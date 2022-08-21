@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import seng3150.team4.flightpub.core.email.RegisterEmailTemplate;
 import seng3150.team4.flightpub.domain.models.*;
-import seng3150.team4.flightpub.domain.repositories.IPaymentRepository;
 import seng3150.team4.flightpub.domain.repositories.ISavedPaymentRepository;
 import seng3150.team4.flightpub.domain.repositories.IUserRepository;
 import seng3150.team4.flightpub.security.CurrentUserContext;
@@ -108,10 +107,10 @@ public class UserService implements IUserService {
     var user = getUserByEmail(email);
 
     if (currentUserContext.getCurrentUserId() != user.getId()
-            && currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
-            && currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT)
+        && currentUserContext.getCurrentUserRole() != UserRole.ADMINISTRATOR
+        && currentUserContext.getCurrentUserRole() != UserRole.TRAVEL_AGENT)
       throw new ResponseStatusException(
-              HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
+          HttpStatus.FORBIDDEN, "The current user does not have access to this users details");
 
     return user;
   }
@@ -141,7 +140,10 @@ public class UserService implements IUserService {
   @Override
   public List<User> getUsersById(Collection<Long> userIds) {
     // If the users does not exist that throw an exception
-    var users = userRepository.findAllById(userIds).stream().filter(u -> !u.isDeleted()).collect(Collectors.toList());
+    var users =
+        userRepository.findAllById(userIds).stream()
+            .filter(u -> !u.isDeleted())
+            .collect(Collectors.toList());
     if (users.isEmpty())
       throw new EntityNotFoundException("No users were found matching provided Ids");
 
@@ -162,13 +164,14 @@ public class UserService implements IUserService {
   public SavedPayment updatePayment(long userId, long paymentId, SavedPayment payment) {
     var user = getUserByIdSecure(userId);
 
-    var existingPayment = user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
+    var existingPayment =
+        user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
 
     if (existingPayment.isEmpty())
-      throw new EntityNotFoundException(String.format("A payment with id %d was not found.", paymentId));
+      throw new EntityNotFoundException(
+          String.format("A payment with id %d was not found.", paymentId));
 
     var updatablePayment = existingPayment.get();
-
 
     if (!payment.getClass().equals(updatablePayment.getClass()))
       throw new UnsupportedOperationException();
@@ -182,34 +185,36 @@ public class UserService implements IUserService {
   public void deletePayment(long userId, long paymentId) {
     var user = getUserByIdSecure(userId);
 
-    var existingPayment = user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
+    var existingPayment =
+        user.getPayments().stream().filter(p -> p.getId() == paymentId).findFirst();
 
     if (existingPayment.isEmpty())
-      throw new EntityNotFoundException(String.format("A payment with id %d was not found.", paymentId));
+      throw new EntityNotFoundException(
+          String.format("A payment with id %d was not found.", paymentId));
 
     var deletablePayment = existingPayment.get();
 
     savedPaymentRepository.delete(deletablePayment);
   }
 
-  private static void updateChangedDetails(SavedPayment updatableSavedPayment, SavedPayment savedPayment) {
+  private static void updateChangedDetails(
+      SavedPayment updatableSavedPayment, SavedPayment savedPayment) {
 
     updateIfNotNull(savedPayment.getNickname(), updatableSavedPayment::setNickname);
 
     var updatablePayment = updatableSavedPayment.getPayment();
     var payment = savedPayment.getPayment();
 
-
     if (updatablePayment instanceof PaymentPaypal) {
-      var up = (PaymentPaypal)updatablePayment;
-      var p = (PaymentPaypal)payment;
+      var up = (PaymentPaypal) updatablePayment;
+      var p = (PaymentPaypal) payment;
 
       updateIfNotNull(p.getEmail(), up::setEmail);
     }
 
     if (updatablePayment instanceof PaymentCard) {
-      var up = (PaymentCard)updatablePayment;
-      var p = (PaymentCard)payment;
+      var up = (PaymentCard) updatablePayment;
+      var p = (PaymentCard) payment;
 
       updateIfNotNull(p.getCardNumber(), up::setCardNumber);
       updateIfNotNull(p.getCardholder(), up::setCardholder);
@@ -218,8 +223,8 @@ public class UserService implements IUserService {
     }
 
     if (updatablePayment instanceof PaymentDirectDebit) {
-      var up = (PaymentDirectDebit)updatablePayment;
-      var p = (PaymentDirectDebit)payment;
+      var up = (PaymentDirectDebit) updatablePayment;
+      var p = (PaymentDirectDebit) payment;
 
       updateIfNotNull(p.getAccountName(), up::setAccountName);
       updateIfNotNull(p.getAccountNumber(), up::setAccountNumber);
@@ -231,5 +236,4 @@ public class UserService implements IUserService {
     if (isNullOrEmpty(value)) return;
     setter.accept(value);
   }
-
 }

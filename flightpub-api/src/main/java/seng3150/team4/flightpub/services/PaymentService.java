@@ -11,20 +11,19 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final IPaymentRepository paymentRepository;
+  private final IPaymentRepository paymentRepository;
 
-    public Payment addPayment(Payment payment) {
-        return paymentRepository.save(payment);
-    }
+  public Payment addPayment(Payment payment) {
+    return paymentRepository.save(payment);
+  }
 
-    public Payment updatePayment(long paymentId, Payment payment) {
-        var existing = paymentRepository.findById(paymentId);
+  public Payment updatePayment(long paymentId, Payment payment) {
+    var existing = paymentRepository.findById(paymentId);
 
-        payment.setId(paymentId);
+    payment.setId(paymentId);
 
-        if (existing.isPresent())
-            paymentRepository.save(payment);
+    if (existing.isPresent()) paymentRepository.save(payment);
 
-        throw new EntityNotFoundException(String.format("Payment with id %d was not found", paymentId));
-    }
+    throw new EntityNotFoundException(String.format("Payment with id %d was not found", paymentId));
+  }
 }

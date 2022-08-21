@@ -9,17 +9,18 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @Getter
 @Setter
 public class ResetPasswordInternalRequest extends Validatable {
-    private String password;
+  private String password;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var result = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var result = new ValidationResult();
 
-        if (isNullOrEmpty(password)) {
-            result.addError(new ValidationError("password").addError(ErrorConstants.REQUIRED));
-        } else {
-            result.addError(new ValidationError("password").addErrors(Validators.passwordValidator(password)));
-        }
-        return result;
+    if (isNullOrEmpty(password)) {
+      result.addError(new ValidationError("password").addError(ErrorConstants.REQUIRED));
+    } else {
+      result.addError(
+          new ValidationError("password").addErrors(Validators.passwordValidator(password)));
     }
+    return result;
+  }
 }

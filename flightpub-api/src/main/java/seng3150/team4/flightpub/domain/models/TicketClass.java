@@ -16,10 +16,10 @@ import javax.persistence.Table;
 @Setter
 public class TicketClass implements IEntity {
 
-    @Id
-    @Column(name = "ClassCode")
-    private String classCode;
+  @Id
+  @Column(name = "ClassCode")
+  private String classCode;
 
-    @Column(name = "Details")
-    private String details;
+  @Column(name = "Details")
+  private String details;
 }

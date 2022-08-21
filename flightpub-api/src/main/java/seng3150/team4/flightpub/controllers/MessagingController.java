@@ -77,6 +77,5 @@ public class MessagingController {
     var messages = messagingService.getLatestMessages(sessionId, date);
 
     return new EntityCollectionResponse<>(messages);
-
   }
 }

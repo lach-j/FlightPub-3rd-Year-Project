@@ -71,13 +71,12 @@ public class AirlineController {
 
   @Authorized(allowedRoles = {UserRole.ADMINISTRATOR})
   @DeleteMapping("/{sponsorId}/sponsor")
-  public Response deleteAirlineSponsorship(
-          @PathVariable Long sponsorId) {
+  public Response deleteAirlineSponsorship(@PathVariable Long sponsorId) {
     var listing = sponsorRepository.findById(sponsorId);
 
     if (listing.isEmpty())
       throw new EntityNotFoundException(
-              String.format("Sponsorship with id %d was not found", sponsorId));
+          String.format("Sponsorship with id %d was not found", sponsorId));
 
     sponsorRepository.delete(listing.get());
 

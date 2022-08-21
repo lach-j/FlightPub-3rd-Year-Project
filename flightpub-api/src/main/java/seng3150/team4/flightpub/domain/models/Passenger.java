@@ -13,27 +13,26 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Passenger implements IEntity {
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "FirstName")
-    private String firstName;
+  @Column(name = "FirstName")
+  private String firstName;
 
-    @Column(name = "LastName")
-    private String lastName;
+  @Column(name = "LastName")
+  private String lastName;
 
-    @Column(name = "Email")
-    private String email;
+  @Column(name = "Email")
+  private String email;
 
-    @JoinColumn(name = "ClassCode")
-    @ManyToOne()
-    private TicketClass ticketClass;
+  @JoinColumn(name = "ClassCode")
+  @ManyToOne()
+  private TicketClass ticketClass;
 
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "BookingId")
-    private Booking booking;
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "BookingId")
+  private Booking booking;
 }

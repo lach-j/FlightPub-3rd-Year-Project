@@ -11,16 +11,16 @@ import seng3150.team4.flightpub.core.validation.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageRequest extends Validatable {
-    private String content;
+  private String content;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var result = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var result = new ValidationResult();
 
-        if (Validators.isNullOrEmpty(content)) {
-            result.addError(new ValidationError("content").addError(ErrorConstants.REQUIRED));
-        }
-
-        return result;
+    if (Validators.isNullOrEmpty(content)) {
+      result.addError(new ValidationError("content").addError(ErrorConstants.REQUIRED));
     }
+
+    return result;
+  }
 }

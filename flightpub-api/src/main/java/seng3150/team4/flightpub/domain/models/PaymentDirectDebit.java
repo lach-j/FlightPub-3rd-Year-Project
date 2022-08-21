@@ -17,12 +17,12 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "PaymentId")
 public class PaymentDirectDebit extends Payment {
 
-    @Column(name = "BSB")
-    private String bsb;
+  @Column(name = "BSB")
+  private String bsb;
 
-    @Column(name = "AccountName")
-    private String accountName;
+  @Column(name = "AccountName")
+  private String accountName;
 
-    @Column(name = "AccountNumber")
-    private String accountNumber;
+  @Column(name = "AccountNumber")
+  private String accountNumber;
 }

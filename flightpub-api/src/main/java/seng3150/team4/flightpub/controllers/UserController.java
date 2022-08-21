@@ -82,7 +82,8 @@ public class UserController {
 
     if (!isNullOrEmpty(request.getLastName())) user.setLastName(request.getLastName());
 
-    if (!isNullOrEmpty(request.getRole()) && currentUserContext.getCurrentUserRole() == UserRole.ADMINISTRATOR)
+    if (!isNullOrEmpty(request.getRole())
+        && currentUserContext.getCurrentUserRole() == UserRole.ADMINISTRATOR)
       user.setRole(request.getRole());
 
     return new EntityResponse<>(userService.updateUser(user));

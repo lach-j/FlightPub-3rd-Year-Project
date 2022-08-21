@@ -12,6 +12,6 @@ import seng3150.team4.flightpub.domain.models.UserRole;
 @Getter
 @Setter
 public class CurrentUserContext {
-    private Long currentUserId;
-    private UserRole currentUserRole;
+  private Long currentUserId;
+  private UserRole currentUserRole;
 }

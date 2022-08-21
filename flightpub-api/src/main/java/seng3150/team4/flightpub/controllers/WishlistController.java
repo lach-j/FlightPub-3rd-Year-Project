@@ -17,16 +17,16 @@ import seng3150.team4.flightpub.services.IWishlistService;
 @RequestMapping("/wishlist")
 public class WishlistController {
 
-    private final IWishlistService wishlistService;
+  private final IWishlistService wishlistService;
 
-    @Authorized(allowedRoles = UserRole.STANDARD_USER)
-    @PostMapping
-    public EntityResponse<Wishlist> createWishlist(@RequestBody WishlistRequest request) {
-        request.validate();
+  @Authorized(allowedRoles = UserRole.STANDARD_USER)
+  @PostMapping
+  public EntityResponse<Wishlist> createWishlist(@RequestBody WishlistRequest request) {
+    request.validate();
 
-        var wishlist = wishlistService.createWishlist(request.getDepartureCode(), request.getDestinations());
+    var wishlist =
+        wishlistService.createWishlist(request.getDepartureCode(), request.getDestinations());
 
-        return new EntityResponse<>(wishlist);
-    }
-
+    return new EntityResponse<>(wishlist);
+  }
 }

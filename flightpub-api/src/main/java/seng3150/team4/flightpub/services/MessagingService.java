@@ -47,7 +47,8 @@ public class MessagingService {
     var found = session.get();
 
     if (!currentUserCanAccessSession(found))
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "User not authorized to access this session");
 
     return found;
   }
@@ -57,19 +58,22 @@ public class MessagingService {
 
     if (session.isEmpty())
       throw new EntityNotFoundException(
-              String.format("Session with id %d does not exist.", sessionId));
+          String.format("Session with id %d does not exist.", sessionId));
 
     var found = session.get();
 
     if (!currentUserCanJoinSession())
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to access this session");
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "User not authorized to access this session");
 
     return found;
   }
 
   public List<Message> getLatestMessages(long sessionId, LocalDateTime messagesSince) {
-      var session = getSessionByIdSecure(sessionId);
-      return session.getMessages().stream().filter(m -> m.getDateSent().isAfter(messagesSince)).collect(Collectors.toList());
+    var session = getSessionByIdSecure(sessionId);
+    return session.getMessages().stream()
+        .filter(m -> m.getDateSent().isAfter(messagesSince))
+        .collect(Collectors.toList());
   }
 
   public List<MessagingSession> getAllSessions() {

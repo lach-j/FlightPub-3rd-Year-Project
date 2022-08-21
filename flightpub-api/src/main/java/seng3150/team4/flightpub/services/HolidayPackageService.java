@@ -16,32 +16,36 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class HolidayPackageService implements IHolidayPackageService {
 
-    private final IHolidayPackageRepository holidayPackageRepository;
+  private final IHolidayPackageRepository holidayPackageRepository;
 
-    private final IFlightRepository flightRepository;
+  private final IFlightRepository flightRepository;
 
-    @Override
-    public HolidayPackage makePackage(HolidayPackage holidayPackage, Set<Long> flightIds) {
-        var flights = new HashSet<Flight>();
-        flightRepository.findAllById(flightIds).forEach(flights::add);
-        holidayPackage.setFlights(flights);
-        HolidayPackage savedHolidayPackage = holidayPackageRepository.save(holidayPackage);
-        return savedHolidayPackage;
-    }
-    public List<HolidayPackage> getRecommendedPackages(String departure) {
+  @Override
+  public HolidayPackage makePackage(HolidayPackage holidayPackage, Set<Long> flightIds) {
+    var flights = new HashSet<Flight>();
+    flightRepository.findAllById(flightIds).forEach(flights::add);
+    holidayPackage.setFlights(flights);
+    HolidayPackage savedHolidayPackage = holidayPackageRepository.save(holidayPackage);
+    return savedHolidayPackage;
+  }
 
-        return holidayPackageRepository.findByDestination(departure);
-    }
-    @Override
-    public void deletePackage(HolidayPackage holidayPackage) {
-        holidayPackageRepository.delete(holidayPackage);
-    }
-    @Override
-    public HolidayPackage getHolidayPackageById(long holidayPackageId) {
-        var holidayPackage = holidayPackageRepository.findById(holidayPackageId);
-        if (holidayPackage.isEmpty())
-            throw new EntityNotFoundException(String.format("Booking with id %s not found", holidayPackage));
+  public List<HolidayPackage> getRecommendedPackages(String departure) {
 
-        return holidayPackage.get();
-    }
+    return holidayPackageRepository.findByDestination(departure);
+  }
+
+  @Override
+  public void deletePackage(HolidayPackage holidayPackage) {
+    holidayPackageRepository.delete(holidayPackage);
+  }
+
+  @Override
+  public HolidayPackage getHolidayPackageById(long holidayPackageId) {
+    var holidayPackage = holidayPackageRepository.findById(holidayPackageId);
+    if (holidayPackage.isEmpty())
+      throw new EntityNotFoundException(
+          String.format("Booking with id %s not found", holidayPackage));
+
+    return holidayPackage.get();
+  }
 }

@@ -1,14 +1,11 @@
 package seng3150.team4.flightpub.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Table(name = "HolidayPackageBooking")
 @Entity
@@ -16,27 +13,27 @@ import java.util.Set;
 @Getter
 @Setter
 public class HolidayPackageBooking implements IEntity {
-    @Column(name = "Id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Column(name = "Id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "UserId")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "UserId")
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "HolidayPackageId", referencedColumnName = "Id")
-    private HolidayPackage holidayPackage;
+  @ManyToOne
+  @JoinColumn(name = "HolidayPackageId", referencedColumnName = "Id")
+  private HolidayPackage holidayPackage;
 
-    @Column(name = "DateBooked")
-    private LocalDateTime dateBooked;
+  @Column(name = "DateBooked")
+  private LocalDateTime dateBooked;
 
-    @ManyToOne
-    @JoinColumn(name = "PaymentId", referencedColumnName = "Id")
-    private Payment payment;
+  @ManyToOne
+  @JoinColumn(name = "PaymentId", referencedColumnName = "Id")
+  private Payment payment;
 
-    @ManyToOne
-    @JoinColumn(name = "BookingId", referencedColumnName = "Id")
-    private Booking booking;
+  @ManyToOne
+  @JoinColumn(name = "BookingId", referencedColumnName = "Id")
+  private Booking booking;
 }

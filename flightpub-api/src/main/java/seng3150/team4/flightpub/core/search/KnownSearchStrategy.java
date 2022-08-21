@@ -40,7 +40,9 @@ public class KnownSearchStrategy extends SearchStrategy {
     }
 
     if (flightQuery.getFlightNumber() != null && !flightQuery.getFlightNumber().isEmpty())
-      predicates.add(cb.like(flight.get("flightNumber"), "%"+flightQuery.getFlightNumber().toUpperCase()+"%"));
+      predicates.add(
+          cb.like(
+              flight.get("flightNumber"), "%" + flightQuery.getFlightNumber().toUpperCase() + "%"));
 
     // If the departure location is included in the request, add to query
     // For exact search this is a required field

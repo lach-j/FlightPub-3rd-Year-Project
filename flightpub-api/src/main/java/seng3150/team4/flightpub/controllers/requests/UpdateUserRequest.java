@@ -16,24 +16,23 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @NoArgsConstructor
 public class UpdateUserRequest extends Validatable {
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private UserRole role;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private UserRole role;
 
-    @Override
-    protected ValidationResult getErrors() {
-        var result = new ValidationResult();
+  @Override
+  protected ValidationResult getErrors() {
+    var result = new ValidationResult();
 
-        if (isNullOrEmpty(firstName) && isNullOrEmpty(lastName) && isNullOrEmpty(email))
-        {
-            result.addError(new ValidationError("error").addError("At least one field is required"));
-        }
-
-        if (!isNullOrEmpty(email)) {
-            result.addError(new ValidationError("email").addErrors(emailValidator(email)));
-        }
-
-        return result;
+    if (isNullOrEmpty(firstName) && isNullOrEmpty(lastName) && isNullOrEmpty(email)) {
+      result.addError(new ValidationError("error").addError("At least one field is required"));
     }
+
+    if (!isNullOrEmpty(email)) {
+      result.addError(new ValidationError("email").addErrors(emailValidator(email)));
+    }
+
+    return result;
+  }
 }

@@ -10,12 +10,14 @@ import seng3150.team4.flightpub.controllers.responses.StatusResponse;
 
 @ControllerAdvice
 public class StatusExceptionAdvice {
-    @ResponseBody
-    @ExceptionHandler(ResponseStatusException.class)
-    ResponseEntity<Response> responseStatusExceptionAdvice(ResponseStatusException ex) {
-        return new ResponseEntity<>(new StatusResponse(ex.getStatus(), ex.getLocalizedMessage()), ex.getStatus());
-    }
+  @ResponseBody
+  @ExceptionHandler(ResponseStatusException.class)
+  ResponseEntity<Response> responseStatusExceptionAdvice(ResponseStatusException ex) {
+    return new ResponseEntity<>(
+        new StatusResponse(ex.getStatus(), ex.getLocalizedMessage()), ex.getStatus());
+  }
 }
 
-// TODO: implement specific ControllerAdvice for exceptions rather than throwing ResponseStatusExceptions
+// TODO: implement specific ControllerAdvice for exceptions rather than throwing
+// ResponseStatusExceptions
 // as this tightly couples the API layer to the rest of the application
