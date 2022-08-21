@@ -54,12 +54,14 @@ export const TravelAgentMessagingPage = () => {
       });
   }, [sessionId]);
 
+  // Ensures that messages are no longer fetched once the user leaves the page.
   useEffect(() => {
     return () => {
       if (messageSubscription?.current) clearInterval(messageSubscription.current);
     };
   }, []);
 
+  // When the session changes, cancel the message interval requests and begin a new interval with the new session.
   useEffect(() => {
     if (!sessionData) return;
 
@@ -83,6 +85,9 @@ export const TravelAgentMessagingPage = () => {
     if (!content) return;
     sendNewMessage(content);
 
+    // Update the displayed messages to include the newly sent message.
+    // This ensures that the message is immediately visisble to the user who sent
+    // the message and they dont have to wait till the message is fetched from the API.
     setMessages((m) => _.uniqBy([...m, { content, user, dateSent: new Date() } as Message], 'id'));
   };
 
@@ -118,7 +123,7 @@ export const TravelAgentMessagingPage = () => {
       )}
       <MessageSendBar
         onMessageSent={handleSendMessage}
-        disabled={sessionData?.status === SessionStatus.RESOLVED}
+        disabled={sessionData?.status === SessionStatus.RESOLVED} // Disable messaging if the session is resolved.
       />
     </Box>
   );
@@ -178,6 +183,7 @@ const MessageComponent = ({
   const dateSent =
     message.dateSent instanceof Date ? message.dateSent : new Date(`${message.dateSent}Z`);
 
+  // Finds text within the message that contains a link and converts it to a clickable link.
   const convertLinks = (text: string) => {
     const regex = /(https?:\/\/(?:[a-zA-Z]|:|[0-9]|\/|-)+)/;
 

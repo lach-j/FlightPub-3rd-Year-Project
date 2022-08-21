@@ -63,6 +63,7 @@ export const SessionListComponent = () => {
     loadSessions();
   }, []);
 
+  // Get all sessions that the user has access to view and display them in a table.
   const loadSessions = () => {
     getAllUserSessions().then(setSessions);
   };

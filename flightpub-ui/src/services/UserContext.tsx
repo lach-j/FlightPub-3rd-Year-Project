@@ -13,6 +13,7 @@ const iUserContextState = {
   setUser: () => {}
 };
 
+// UserContext provides the entire app with information about the logged in user.
 const UserContext = createContext<UserContextType>(iUserContextState);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -20,6 +21,8 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { httpGet } = useApi(endpoints.users);
 
   useEffect(() => {
+    // If the user is logged in, their id will be stored in the local storage.
+    // This allows the user to refresh their browser without needing to login again.
     const userId = localStorage.getItem('user-id');
     if (!userId) return;
 

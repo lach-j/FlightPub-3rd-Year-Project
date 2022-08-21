@@ -36,6 +36,7 @@ export const useMessaging = (_sessionId?: number) => {
     return await httpPatch(`${BASE_ENDPOINT}/${sessionId}/join`);
   };
 
+  // Interval based request method for retrieving new messages from the session.
   const subscribeToMessages = (
     callback: (data: Message[]) => void,
     error?: (error: any) => void,
@@ -43,15 +44,17 @@ export const useMessaging = (_sessionId?: number) => {
   ) => {
     hasSessionId();
     const getMessages = () => {
+      // Get the last time the messages were fetched
       let since = prevDate.toISOString();
       httpGet(`${BASE_ENDPOINT}/${sessionId}/messages`, { since })
         .then((data: Message[]) => {
-          setDate(new Date());
-          callback(data);
+          setDate(new Date()); // Update prevDate so only new messages are retrieved on the next request
+          callback(data); // return the messages as a callback function.
         })
         .catch((e) => error && error(e));
     };
 
+    // Run the getMessages function every 'delay' milliseconds
     return setInterval(getMessages, delay);
   };
 
