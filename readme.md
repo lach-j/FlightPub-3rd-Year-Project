@@ -42,3 +42,15 @@ To setup the API and database first ensure that a the following software is inst
 ### Configuration
 
 To enable email sending either navigate to the `src/main/resources/application.properties` file and set the `ENABLE_EMAIL` value to true. Or set the `ENABLE_EMAIL` environment variable to true in the "Edit Configurations" window.
+
+## Default Logins
+
+There are 2 default logins containing privileged roles as described below.
+|Email|Password|Role|
+|-|-|-|
+|admin@admin.com|#Access123|Administrator|
+|agent@agent.com|#Access123|Travel Agent|
+
+To add more users with privileged roles, register the user with the regular register user form - this will create a user with standard registered user privileges. While logged into the Administrator account, navigate to the "Administrator Portal" -> "Manage Users" and find the user by entering their email. This will allow you to change their role and update the role to either a Travel Agent or Administrator.
+
+> **NOTE:** Changing a users role requires the user to fully log out and back in before these changes take effect. The user may be able to access certain restricted areas, however these requests will fail as the token needs to be regenerated.
