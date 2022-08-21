@@ -132,7 +132,7 @@ export const CancelFlightTab = ({ setIsLoading }: { setIsLoading: (value: boolea
             onClick={() => setPage((page) => Math.max(page - 1, 0))}
             icon={<FaArrowLeft />}
           />
-          <Text>{page + 1}</Text>
+          <Input onBlur={(e) => setPage(_.toInteger(e.target.value))}>{page + 1}</Input>
           <IconButton
             aria-label='next-page'
             onClick={() => setPage((page) => page + 1)}
