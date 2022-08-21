@@ -32,12 +32,17 @@ public class HolidayPackageController {
         holidayPackages.addAll(holidayPackageRepository.findAll());
         return new EntityCollectionResponse<>(holidayPackages);
     }
+    @GetMapping("/getByDeparture/{destination}")
+    public Response getByDeparture(@PathVariable String destination) {
+
+        var recommended = holidayPackageService.getRecommendedPackages(destination);
+        return new EntityCollectionResponse<>(recommended);
+    }
     @GetMapping("/{holidayPackageId}")
     public EntityResponse<HolidayPackage> getHolidayPackageById(@PathVariable long holidayPackageId) {
         var holidayPackage = holidayPackageService.getHolidayPackageById(holidayPackageId);
         return new EntityResponse<>(holidayPackage);
     }
-    //TODO: Add validation
     @PostMapping("/holiday-packages")
     public ResponseEntity<? extends Response> makeBooking(
             @RequestBody CreateHolidayPackageRequest holidayPackageRequest) {

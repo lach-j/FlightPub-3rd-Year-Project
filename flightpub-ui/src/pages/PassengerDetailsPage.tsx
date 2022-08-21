@@ -1,46 +1,32 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  useToast,
-  VStack,
-  Input,
-  Select,
-  Button,
-  UnorderedList,
-  ListItem
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    HStack,
+    Input,
+    ListItem,
+    Select,
+    Stat,
+    StatHelpText,
+    StatLabel,
+    StatNumber,
+    Text,
+    UnorderedList,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
 
-import React, {
-  Dispatch,
-  SetStateAction,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useContext
-} from 'react';
-import { Flight } from '../models/Flight';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
+import {Flight} from '../models/Flight';
+import {useNavigate} from 'react-router-dom';
 import * as yup from 'yup';
-import { BiLinkExternal, HiOutlineArrowNarrowRight, BsFillPlusCircleFill } from 'react-icons/all';
-import { useNavigate } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { UserContext } from '../services/UserContext';
-import { ClassCode, Passenger, PassengerDTO } from '../models/Passenger';
-import { FlightListAccordian } from '../components/FlightListAccordian';
+import {BsFillPlusCircleFill} from 'react-icons/all';
+import {routes} from '../constants/routes';
+import {UserContext} from '../services/UserContext';
+import {ClassCode, PassengerDTO} from '../models/Passenger';
+import {FlightListAccordian} from '../components/FlightListAccordian';
 
 export const PassengerDetailsPage = ({
   cartState
@@ -53,7 +39,7 @@ export const PassengerDetailsPage = ({
   const [passengerCount, setPassengerCount] = useState<number>(1);
 
   const [firstNames, setFirstNames] = useState<string[]>(['']);
-  const [ticketClasses, setTicketClass] = useState<ClassCode[]>([ClassCode.Business]);
+  const [ticketClasses, setTicketClass] = useState<string[]>(['BUS']);
   const [lastNames, setLastNames] = useState<string[]>(['']);
   const [emails, setEmails] = useState<string[]>(['']);
   const [confEmails, setConfEmails] = useState<string[]>(['']);
@@ -122,14 +108,14 @@ export const PassengerDetailsPage = ({
     }
 
     if (!success)
-    toast({
+      toast({
         title: 'Incorrectly filled for Passenger ' + index,
         description: (
-            <UnorderedList>
-                {errorArray.map(e => (
-                    <ListItem>{e}</ListItem>
-                ))}
-            </UnorderedList>
+          <UnorderedList>
+            {errorArray.map((e) => (
+              <ListItem>{e}</ListItem>
+            ))}
+          </UnorderedList>
         ),
         status: 'error',
         duration: 9000,
@@ -198,7 +184,7 @@ export const PassengerDetailsPage = ({
 
         case 'ticketClass':
           let tempTicketClasses = [...ticketClasses];
-          tempTicketClasses[0] = ClassCode[event.target.value as keyof typeof ClassCode];
+          tempTicketClasses[index] = event.target.value;
           setTicketClass(tempTicketClasses);
           break;
       }
@@ -246,6 +232,7 @@ export const PassengerDetailsPage = ({
     lastNames.push('');
     emails.push('');
     confEmails.push('');
+    ticketClasses.push('BUS');
   };
 
   const handleRemovePassenger = (index: number) => {
@@ -328,7 +315,7 @@ export const PassengerDetailsPage = ({
             </HStack>
             <FormControl>
               <FormLabel>Class</FormLabel>
-              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(0)}>
+              <Select value={ticketClasses[i]} name='ticketClass' onChange={handleChange(i)}>
                 {ticketOptions.map((o) => (
                   <option value={o.key}>{o.label}</option>
                 ))}

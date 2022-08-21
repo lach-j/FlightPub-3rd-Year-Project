@@ -1,21 +1,10 @@
-import {
-  Button,
-  HStack,
-  Table,
-  TableCaption,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useToast
-} from '@chakra-ui/react';
+import {Button, HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr, useToast} from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { ColumnDefinition, Flight } from '../models';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import React, {Dispatch, SetStateAction, useState} from 'react';
+import {Airline, ColumnDefinition, Flight} from '../models';
+import {TriangleDownIcon, TriangleUpIcon} from '@chakra-ui/icons';
+import {useNavigate} from 'react-router-dom';
+import moment from 'moment';
 
 type ResultsTableProps = {
   columns: ColumnDefinition<any>[];
@@ -35,13 +24,29 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
 }) => {
   const toast = useToast();
   const [cart, setCart] = cartState;
-  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
+  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>(
+    columns.find((c) => c.accessor === keyAccessor) || { accessor: '', Header: '' }
+  );
   const [descending, setDescending] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const isSponsored = (airline: Airline) => {
+    return (
+      ((airline?.sponsorships?.length || 0 > 0) &&
+        airline?.sponsorships?.filter(
+          (s) => moment(s.endDate).isAfter(new Date()) && moment(s.startDate).isBefore(new Date())
+        )?.length) ||
+      0 > 0
+    );
+  };
 
   const sortFunc = (a: any, b: any): number => {
     let o1 = _.get(a, sortingColumn?.accessor);
     let o2 = _.get(b, sortingColumn?.accessor);
+
+    let flight = (a?.flight || a) as Flight;
+
+    if (isSponsored(flight.airline)) return -1;
 
     if (sortingColumn?.sortValue) {
       o1 = sortingColumn.sortValue(o1, descending);

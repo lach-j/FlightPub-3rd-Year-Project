@@ -1,16 +1,17 @@
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Badge,
   Box,
   Flex,
   HStack,
-  AccordionIcon,
-  AccordionPanel,
   Stat,
+  StatHelpText,
   StatLabel,
   StatNumber,
-  StatHelpText,
   Text,
   VStack
 } from '@chakra-ui/react';
@@ -65,13 +66,14 @@ export const FlightListAccordian = ({ flights }: { flights: Flight[] }) => {
               <AccordionButton>
                 <Box flex='1' textAlign='left'>
                   <Flex width='full' justifyContent='space-between'>
+                    {flight?.cancelled && <Badge colorScheme='red'>CANCELLED</Badge>}
                     <HStack>
                       <Text fontWeight='bold'>{flight.departureLocation.destinationCode}</Text>
                       <HiOutlineArrowNarrowRight />
                       <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
                     </HStack>
                     <Text>{`$${priceSorted.at(0)?.price} - ${priceSorted.at(-1)?.price}`}</Text>
-                    <Text>{flight.airlineCode}</Text>
+                    <Text>{flight.airline.airlineCode}</Text>
                   </Flex>
                 </Box>
                 <AccordionIcon />
@@ -110,8 +112,8 @@ export const FlightListAccordian = ({ flights }: { flights: Flight[] }) => {
                   {flight.prices.map((price) => {
                     return (
                       <HStack>
-                        <Text title={price.ticketClass.details} fontWeight='bold'>
-                          {price.ticketClass.classCode}:
+                        <Text title={price.ticketClass?.details} fontWeight='bold'>
+                          {price.ticketClass?.classCode}:
                         </Text>
                         <Text>${price.price}</Text>
                       </HStack>

@@ -1,15 +1,17 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Box, Button, Center, Grid, Heading, StackDivider, VStack, HStack } from '@chakra-ui/react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Box, Button, Center, Grid, Heading, HStack, StackDivider, VStack} from '@chakra-ui/react';
 import logo from '../FlightPubLogo.png';
 import plane from '../HomePageStockShot.jpg';
-import { useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airline, ColumnDefinition, Flight, Price } from '../models';
-import { Airport, findNearestAirport } from '../utility/geolocation';
-import { convertMinsToHM, formatDateTime } from '../utility/formatting';
-import { ResultsTable } from '../components/ResultsTable';
-import { NavLink } from 'react-router-dom';
-import { routes } from '../constants/routes';
+import {useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Airline, ColumnDefinition, Flight, Price} from '../models';
+import {Airport, findNearestAirport} from '../utility/geolocation';
+import {convertMinsToHM, formatDateTime} from '../utility/formatting';
+import {ResultsTable} from '../components/ResultsTable';
+import {NavLink} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {HolidayPackage} from '../models/HolidayCardProps';
+import {HolidayCardSmall} from '../components/HolidayCardSmall';
 
 export function HomePage({
   cartState
@@ -27,12 +29,10 @@ export function HomePage({
 
   //airport: User's nearest airport for reccomendations
   const [airport, setAirport] = useState<Airport | undefined>();
+  const [holidayPackageList, setHolidayPackageList] = useState<HolidayPackage[]>([]);
 
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
-
-  const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpGet: httpGetRecommended } = useApi(endpoints.recommended);
+  const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
 
   //takes price and returns cheapest price value as a string
   const getMinPriceString = (prices: Price[]) => {
@@ -42,10 +42,9 @@ export function HomePage({
     return `$${minPrice}`;
   };
 
-  //Gets users current position and retrieves list of airlines
+  //Gets users current position
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
   }, []);
 
   //Takes user location and finds nearest airport on load
@@ -58,9 +57,8 @@ export function HomePage({
   // Defines columns for DataTable in correct format
   const columns: ColumnDefinition<any>[] = [
     {
-      accessor: 'airlineCode',
-      Header: 'Airline',
-      transform: (value) => airlines.find((a) => a.airlineCode === value)?.airlineName || value
+      accessor: 'airline.airlineName',
+      Header: 'Airline'
     },
     { accessor: 'departureLocation.airport', Header: 'Departure Airport' },
     { accessor: 'departureTime', Header: 'Departure Time', transform: formatDateTime },
@@ -79,6 +77,7 @@ export function HomePage({
   useEffect(() => {
     if (!airport) return;
     httpGetRecommended('/' + airport.code).then(setRecommended);
+    httpGetHolidayPackages('/getByDeparture/' + airport.code).then(setHolidayPackageList);
   }, [airport]);
 
   return (
@@ -128,6 +127,24 @@ export function HomePage({
           </VStack>
         </VStack>
       </Center>
+      <VStack align={'center'}>
+        <Heading as='h1' size='lg'>
+          Recommended Holiday Packages
+        </Heading>
+        <Box overflowX='auto' maxWidth={'100%'}>
+          <HStack spacing={1} align='center'>
+            {holidayPackageList.length !== 0 ? (
+              holidayPackageList.slice(0, 3).map((value) => (
+                <Box>
+                  <HolidayCardSmall data={value} showBookButton={true}></HolidayCardSmall>
+                </Box>
+              ))
+            ) : (
+              <h1>No holiday packages have been created yet.</h1>
+            )}
+          </HStack>
+        </Box>
+      </VStack>
     </Grid>
   );
 }

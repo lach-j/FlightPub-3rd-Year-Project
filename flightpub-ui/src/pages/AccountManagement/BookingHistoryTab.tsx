@@ -9,7 +9,6 @@ import {
   VStack
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
 import { useApi } from '../../services/ApiService';
 import { endpoints } from '../../constants/endpoints';
 import { Booking } from '../../models/Booking';
@@ -50,13 +49,10 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
   const getTotalCost = (booking: Booking) => {
     let total = 0;
     booking.passengers.forEach((passenger) => {
-      console.log(passenger.ticketClass?.classCode);
       booking.flights.forEach((flight) => {
-        console.log(flight.prices);
         let price = flight.prices.find(
-          (p) => p.ticketClass.classCode === passenger.ticketClass?.classCode
+          (p) => p.ticketClass?.classCode === passenger.ticketClass?.classCode
         );
-        console.log(price);
         total += price?.price || 0;
       });
     });
@@ -79,6 +75,7 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
         </Select>
       </Box>
       <VStack gap='4'>
+        {bookings.length === 0 && <Text>You have no bookings.</Text>}
         {bookings.sort(getSortMethod()).map((booking) => {
           const date =
             booking?.dateBooked instanceof Date
@@ -103,8 +100,8 @@ export const BookingHistoryTab = ({ setIsLoading }: { setIsLoading: (value: bool
                       <ListItem>
                         <HStack>
                           <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
-                          <Text decoration='underline' title={p.ticketClass.details}>
-                            [{p.ticketClass.classCode}]
+                          <Text decoration='underline' title={p.ticketClass?.details}>
+                            [{p.ticketClass?.classCode}]
                           </Text>
                         </HStack>
                       </ListItem>

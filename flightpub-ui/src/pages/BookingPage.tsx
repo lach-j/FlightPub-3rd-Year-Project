@@ -1,10 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
   Button,
   Flex,
   FormControl,
@@ -15,46 +9,30 @@ import {
   ListItem,
   Modal,
   ModalOverlay,
+  OrderedList,
   Select,
   Spinner,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   Switch,
   Text,
+  UnorderedList,
   useDisclosure,
   useToast,
-  VStack,
-  UnorderedList
+  VStack
 } from '@chakra-ui/react';
-import { BiLinkExternal, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import React, {
-  Dispatch,
-  SetStateAction,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useContext,
-  ChangeEvent
-} from 'react';
-import { useApi } from '../services/ApiService';
-import { ApiError } from '../services/ApiService';
-import { countries } from '../data/countries';
-import { SavedPayment } from '../models';
-import { useNavigate, NavLink, useLocation } from 'react-router-dom';
-import { routes } from '../constants/routes';
-import { Booking } from '../models/Booking';
-import { Flight } from '../models/Flight';
-import { endpoints } from '../constants/endpoints';
-import { Passenger } from '../models/Passenger';
-import { PaymentType, SavedPaymentType } from '../models/SavedPaymentTypes';
-import { UserContext } from '../services/UserContext';
-import { FlightListAccordian } from '../components/FlightListAccordian';
-import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
-import { TypeOf } from 'yup';
+import React, {ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
+import {ApiError, useApi} from '../services/ApiService';
+import {countries} from '../data/countries';
+import {NavLink, useLocation, useNavigate} from 'react-router-dom';
+import {routes} from '../constants/routes';
+import {Flight} from '../models/Flight';
+import {endpoints} from '../constants/endpoints';
+import {Passenger, PassengerDTO} from '../models/Passenger';
+import {SavedPaymentType} from '../models/SavedPaymentTypes';
+import {UserContext} from '../services/UserContext';
+import {FlightListAccordian} from '../components/FlightListAccordian';
+import {PaymentDetailsForm} from '../components/PaymentDetailsForm';
 import * as yup from 'yup';
-import { ObjectShape } from 'yup/lib/object';
+import {ObjectShape} from 'yup/lib/object';
 
 export interface BillingDetails {
   firstName: string;
@@ -85,6 +63,18 @@ export const BookingPage = ({
 }: {
   cartState: [Flight[], Dispatch<SetStateAction<Flight[]>>];
 }) => {
+  useEffect(() => {
+    if (cartState[0].length <= 0) {
+      toast({
+        title: 'No Items In Cart',
+        description: 'You must have at least 1 flight in your cart to checkout.',
+        status: 'error',
+        position: 'top'
+      });
+      navigate(routes.home);
+    }
+  }, [cartState[0]]);
+
   useEffect(() => {
     document.title = 'FlightPub - Bookings';
   });
@@ -180,7 +170,7 @@ export const BookingPage = ({
   const submitEvent = async () => {
     let success = true;
     let pType = paymentType?.toString();
-    if (pType) {
+    if (pType && bookingRequest?.payment) {
       let billingDetails = {
         firstName: billingForm.firstName,
         lastName: billingForm.lastName,
@@ -265,21 +255,21 @@ export const BookingPage = ({
       }
     }
 
-    if (!success) 
-    toast({
-      title: formName + " filled out incorrectly:",
-      description: (
-        <UnorderedList>
-          {errorArray.map((e) => (
-            <ListItem>{e}</ListItem>
-          ))}
-        </UnorderedList>
-      ),
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-      position: 'top'
-    });
+    if (!success)
+      toast({
+        title: formName + ' filled out incorrectly:',
+        description: (
+          <UnorderedList>
+            {errorArray.map((e) => (
+              <ListItem>{e}</ListItem>
+            ))}
+          </UnorderedList>
+        ),
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+        position: 'top'
+      });
 
     return await schema.isValid(value);
   };
@@ -361,13 +351,29 @@ export const BookingPage = ({
   }, [state]);
 
   useEffect(() => {
-    if (paymentType)
-      setBookingRequest((br: any) => ({ ...br, payment: { ...br.payment, type: paymentType } }));
+    if (paymentType && paymentType !== SavedPaymentType.SAVED)
+      setBookingRequest((br: any) => ({ ...br, payment: { type: paymentType } }));
   }, [paymentType]);
 
   if (!user) {
     navigate(routes.login, { state: { redirectUrl: routes.home } });
   }
+
+  const getTotalCost = () => {
+    const booking: { passengers: [{ ticketClass: string }]; flights: Flight[] } = {
+      passengers: bookingRequest.passengers,
+      flights: cart
+    };
+
+    let total = 0;
+    booking.passengers.forEach((passenger) => {
+      booking.flights.forEach((flight) => {
+        let price = flight.prices.find((p) => p.ticketClass.classCode === passenger.ticketClass);
+        total += price?.price || 0;
+      });
+    });
+    return total;
+  };
 
   return (
     <Flex justifyContent='center' p='5em'>
@@ -377,10 +383,24 @@ export const BookingPage = ({
         </Heading>
         <Text>Flights:</Text>
         <FlightListAccordian flights={cart} />
-        <Text mb='4em'>{`Subtotal: $${cart.reduce(
-          (partialSum, a) => partialSum + a.prices[0].price,
-          0
-        )}`}</Text>
+        <Text mt='4' mb='2'>
+          Passengers:
+        </Text>
+        <OrderedList mb='3'>
+          {bookingRequest.passengers?.map((p: PassengerDTO) => (
+            <ListItem>
+              <HStack>
+                <Text>{`${p.firstName} ${p.lastName} - ${p.email}`}</Text>
+                <Text decoration='underline'>[{p.ticketClass}]</Text>
+              </HStack>
+            </ListItem>
+          ))}
+        </OrderedList>
+        <Text
+          fontSize='xl'
+          textDecoration='underline'
+          mb='4em'
+        >{`Subtotal: $${getTotalCost()}`}</Text>
         <form>
           <Heading fontSize='xl'>Billing Details</Heading>
           <VStack>
@@ -453,11 +473,27 @@ export const BookingPage = ({
               </Select>
             </FormControl>
             {paymentType && (
-              <PaymentDetailsForm onFieldChange={onPaymentFieldChange} paymentType={paymentType} />
+              <PaymentDetailsForm
+                savedPaymentSelected={(p) => {
+                  setBookingRequest((br: any) => ({
+                    ...br,
+                    payment: p ? { ...p, type: p.type } : undefined
+                  }));
+                }}
+                onFieldChange={onPaymentFieldChange}
+                paymentType={paymentType}
+              />
             )}
           </VStack>
-          {paymentType !== SavedPaymentType.SAVED && (
-            <Switch mt='2em'>Save payment for future transactions?</Switch>
+          {paymentType && paymentType !== SavedPaymentType.SAVED && (
+            <Switch
+              mt='2em'
+              onChange={(e) => {
+                setBookingRequest((br: any) => ({ ...br, savePayment: e.target.checked }));
+              }}
+            >
+              Save payment for future transactions?
+            </Switch>
           )}
           <HStack w='full' gap='1em' mt='2em'>
             <Button

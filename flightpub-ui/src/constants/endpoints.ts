@@ -5,16 +5,19 @@ export const endpoints = {
   users: '/users',
   flights: '/flights',
   flightSearch: '/flights/search',
-  flightById: '/flights/fetchById',
   mapSearch: '/flights/search/map',
   departureCount: '/flights/search/count/departure',
   airlines: '/airlines',
   recommended: '/flights/recommended',
   book: '/book',
+  airlineUpdate: '/airlineUpdate',
+  flightUpdate: '/flightUpdate',
   bookHolidayPackage: '/bookHolidayPackage',
   bookings: '/bookings',
   createHolidayPackage: '/holidayPackages/holiday-packages',
   holidayPackages: '/holidayPackages',
-  packageBookings: '/packageBookings',
-  wishlist: '/wishlist'
+  wishlist: '/wishlist',
+  covid: '/admin/covid',
+  getCanceled: '/admin/cancelled-flights',
+  packageBookings: '/packageBookings'
 };

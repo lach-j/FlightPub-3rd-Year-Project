@@ -1,57 +1,57 @@
 import {
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  useToast,
-  VStack,
-  Input,
-  Select,
-  Center,
-  Td,
-  Table,
-  Thead,
-  Th,
-  TableContainer,
-  Tbody,
-  Tr,
-  useDisclosure,
-  Button,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
-  Switch,
-  Modal,
-  ModalOverlay,
-  Spinner
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
+    Box,
+    Button,
+    Center,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    HStack,
+    Input,
+    Modal,
+    ModalOverlay,
+    Select,
+    Spinner,
+    Stat,
+    StatHelpText,
+    StatLabel,
+    StatNumber,
+    Switch,
+    Table,
+    TableContainer,
+    Tbody,
+    Td,
+    Text,
+    Th,
+    Thead,
+    Tr,
+    useDisclosure,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
 
-import React, { useEffect, useState, useContext, ChangeEvent } from 'react';
-import { BsFillPlusCircleFill, HiOutlineArrowNarrowRight } from 'react-icons/all';
-import { UserContext } from '../services/UserContext';
-import { HolidayCard } from '../components/HolidayCard';
-import { HolidayPackage } from '../models/HolidayCardProps';
-import { ApiError, useApi } from '../services/ApiService';
-import { endpoints } from '../constants/endpoints';
-import { Airline, Flight } from '../models';
-import { Airport, findNearestAirport } from '../utility/geolocation';
-import { routes } from '../constants/routes';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { Passenger, PassengerDTO } from '../models/Passenger';
-import { SavedPaymentType } from '../models/SavedPaymentTypes';
+import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
+import {BsFillPlusCircleFill, HiOutlineArrowNarrowRight} from 'react-icons/all';
+import {UserContext} from '../services/UserContext';
+import {HolidayCard} from '../components/HolidayCard';
+import {HolidayPackage} from '../models/HolidayCardProps';
+import {ApiError, useApi} from '../services/ApiService';
+import {endpoints} from '../constants/endpoints';
+import {Flight} from '../models';
+import {Airport, findNearestAirport} from '../utility/geolocation';
+import {routes} from '../constants/routes';
+import {NavLink, useNavigate, useParams} from 'react-router-dom';
+import {PassengerDTO} from '../models/Passenger';
+import {SavedPaymentType} from '../models/SavedPaymentTypes';
 import * as yup from 'yup';
-import { ObjectShape } from 'yup/lib/object';
-import { countries } from '../data/countries';
-import { PaymentDetailsForm } from '../components/PaymentDetailsForm';
+import {ObjectShape} from 'yup/lib/object';
+import {countries} from '../data/countries';
+import {PaymentDetailsForm} from '../components/PaymentDetailsForm';
 
 export interface BillingDetails {
   firstName: string;
@@ -98,7 +98,6 @@ export const HolidayPackageBookingPage = () => {
   };
 
   useEffect(() => {
-    console.log(packageId);
     getPackage()
       .then(setHolidayPackage)
       .catch((err: ApiError) => {
@@ -339,7 +338,6 @@ export const HolidayPackageBookingPage = () => {
           isClosable: true,
           position: 'top'
         });
-        console.log(bookingRequest);
         navigate(routes.home);
       })
       .catch((err: ApiError) => {
@@ -376,7 +374,6 @@ export const HolidayPackageBookingPage = () => {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => setUserLocation(position.coords));
-    httpGetAirlines('').then(setAirlines);
   }, [packageId]);
 
   useEffect(() => {
@@ -413,7 +410,6 @@ export const HolidayPackageBookingPage = () => {
   const [userLocation, setUserLocation] = useState<any>();
 
   const { httpGet: httpGetHolidayPackages } = useApi(endpoints.holidayPackages);
-  const { httpGet: httpGetAirlines } = useApi(endpoints.airlines);
   const { httpPost } = useApi(endpoints.bookHolidayPackage);
 
   const ticketOptions = [
@@ -431,9 +427,6 @@ export const HolidayPackageBookingPage = () => {
     let airport = findNearestAirport([userLocation.longitude, userLocation.latitude]);
     setAirport(airport);
   }, [userLocation]);
-
-  //airlines : list of all airlines from models/Airline
-  const [airlines, setAirlines] = useState<Airline[]>([]);
 
   const renderStopOver = (flight: Flight) => {
     if (flight?.stopOverLocation) {
@@ -556,7 +549,7 @@ export const HolidayPackageBookingPage = () => {
                         <Text fontWeight='bold'>{flight.arrivalLocation.destinationCode}</Text>
                       </HStack>
                       <Text>{`$${flight.prices[0].price}`}</Text>
-                      <Text>{flight.airlineCode}</Text>
+                      <Text>{flight.airline.airlineCode}</Text>
                     </Flex>
                   </Box>
                   <AccordionIcon />
@@ -746,7 +739,6 @@ export const HolidayPackageBookingPage = () => {
               name={i.toString()}
               onClick={(e) => {
                 let index = Number(e.currentTarget.getAttribute('id'));
-                console.log(index);
                 handleRemovePassenger(index);
                 setPassengerCount(passengerCount - 1);
               }}
@@ -762,8 +754,8 @@ export const HolidayPackageBookingPage = () => {
   };
 
   return (
-    <Flex justifyContent='center' p='5em'>
-      <Flex justifyContent='center' direction='column' w='50em'>
+    <Flex justifyContent='center' p='2em'>
+      <Flex justifyContent='center' direction='column' w='60em'>
         <Center>
           <Box>
             {holidayPackage ? (
@@ -771,23 +763,10 @@ export const HolidayPackageBookingPage = () => {
             ) : (
               <h1>Nothing here, please check back later!</h1>
             )}
-            <Text>HolidayPackageId: {bookingRequest?.holidayPackageId}</Text>
-            <h1>Selected Flights: </h1>
-            <div>
-              {bookingRequest.flightIds.map((entry: any) => (
-                <div>{entry}</div>
-              ))}
-            </div>
-
-            <h1>Selected Passengers: </h1>
-            <div>
-              {bookingRequest.passengers.map((entry: PassengerDTO) => (
-                <div>{entry.firstName}</div>
-              ))}
-            </div>
           </Box>
         </Center>
-        <Box boxShadow='dark-lg' p='6' rounded='md' bg='white'>
+        <br />
+        <Box p='6' rounded='md'>
           {renderPackageInfo()}
           {renderPassengerForms()}
           <Button

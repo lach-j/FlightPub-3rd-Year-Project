@@ -17,11 +17,15 @@ import static seng3150.team4.flightpub.core.validation.Validators.isNullOrEmpty;
 @Getter
 @Setter
 public class FlightQueryRequest extends Validatable {
+  private String flightNumber;
   private FlexiDate departureDate;
   private String departureCode;
   private String destinationCode;
   private Map<String, Integer> tickets;
   private Boolean returnFlight;
+  private boolean cancelled = false;
+  private String orderBy;
+  private Boolean descending;
 
   private int page;
 

@@ -1,24 +1,47 @@
-import { HStack, Table, TableCaption, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  HStack,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useEditable
+} from '@chakra-ui/react';
 import * as _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ColumnDefinition } from '../models';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
-type DataTableProps = {
-  columns: ColumnDefinition<any>[];
-  data: any[];
+type DataTableProps<T> = {
+  columns: ColumnDefinition<T>[];
+  data: T[];
   sortable?: boolean;
   keyAccessor: string;
+  extraRow?: (item: T) => React.ReactNode;
+  sortingColumnChanged?: (column: ColumnDefinition<T>, descending: boolean) => void;
 };
 
-export let DataTable: React.FC<DataTableProps>;
-DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
-  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>();
+export let DataTable: React.FC<DataTableProps<any>>;
+DataTable = ({
+  columns,
+  data,
+  children,
+  sortable = false,
+  keyAccessor,
+  extraRow,
+  sortingColumnChanged
+}) => {
+  const [sortingColumn, setSortingColumn] = useState<ColumnDefinition<any>>(
+    columns?.[0] || { accessor: '', Header: '' }
+  );
   const [descending, setDescending] = useState<boolean>(false);
 
   const sortFunc = (a: any, b: any): number => {
-    let o1 = _.get(a, sortingColumn?.accessor);
-    let o2 = _.get(b, sortingColumn?.accessor);
+    let o1 = _.get(a, sortingColumn.accessor);
+    let o2 = _.get(b, sortingColumn.accessor);
 
     if (sortingColumn?.sortValue) {
       o1 = sortingColumn.sortValue(o1, descending);
@@ -36,15 +59,18 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
   const handleColumnSort = (column: ColumnDefinition<any>) => {
     if (!sortable) return;
 
-    if (column === sortingColumn) {
+    if (column.accessor === sortingColumn.accessor) {
       setDescending(!descending);
     } else {
       setSortingColumn(column);
     }
   };
 
-  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
+  useEffect(() => {
+    sortingColumnChanged && sortingColumnChanged(sortingColumn, descending);
+  }, [sortingColumn, descending]);
 
+  const sortIcon = () => (descending ? <TriangleDownIcon /> : <TriangleUpIcon />);
   return (
     <Table width='100%'>
       <TableCaption>Prices subject to change. T&C's apply</TableCaption>
@@ -54,7 +80,7 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
             <Th userSelect='none' onClick={() => handleColumnSort(column)} key={column.accessor}>
               <HStack spacing={3}>
                 <Text>{column.Header}</Text>
-                {column === sortingColumn && sortIcon()}
+                {column.accessor === sortingColumn.accessor && sortIcon()}
               </HStack>
             </Th>
           ))}
@@ -71,7 +97,7 @@ DataTable = ({ columns, data, children, sortable = false, keyAccessor }) => {
                     : _.get(result, column.accessor)}
                 </Td>
               ))}
-              {children}
+              {extraRow && <Td>{extraRow(result)}</Td>}
             </Tr>
           );
         })}

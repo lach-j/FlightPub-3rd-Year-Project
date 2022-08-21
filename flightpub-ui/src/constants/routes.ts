@@ -10,6 +10,7 @@ export const routes = {
   account: '/account',
   booking: '/booking',
   searchResults: '/searchResults',
+  admin: '/admin',
   holidayPackages: {
     base: '/holidays',
     book: {

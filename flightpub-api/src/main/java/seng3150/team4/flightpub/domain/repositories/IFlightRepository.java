@@ -13,12 +13,12 @@ public interface IFlightRepository extends JpaRepository<Flight, Long> {
 
   // Find all flights that depart from the specified destination and are in the future
   @Query(
-      "SELECT f FROM Flight f WHERE f.departureLocation.destinationCode = ?1 AND f.departureTime > current_date AND f.prices.size > 0 ORDER BY f.departureTime")
+      "SELECT f FROM Flight f WHERE f.departureLocation.destinationCode = ?1 AND f.departureTime > current_date AND f.prices.size > 0 AND f.cancelled <> true ORDER BY f.departureTime")
   List<Flight> findByDestination(String destination, Pageable pageable);
 
   // Get the number of flights in the future that depart from each destination
   @Query(
-      "SELECT new seng3150.team4.flightpub.core.search.DestinationCount(f.departureLocation.destinationCode, count(f)) FROM Flight f WHERE f.departureTime > CURRENT_DATE GROUP BY f.departureLocation.destinationCode")
+      "SELECT new seng3150.team4.flightpub.core.search.DestinationCount(f.departureLocation.destinationCode, count(f)) FROM Flight f WHERE f.departureTime > CURRENT_DATE AND f.cancelled <> true GROUP BY f.departureLocation.destinationCode")
   List<DestinationCount> getDepartureCounts();
 
   // Get the top 3 flights departing from the provided destination and order by cheapest flight

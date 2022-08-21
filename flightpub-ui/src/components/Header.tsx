@@ -82,10 +82,19 @@ export default function Header({
                     My Account
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  {user?.role === UserRole.TRAVEL_AGENT || user?.role === UserRole.ADMINISTRATOR ? (
+                  {user?.role === UserRole.TRAVEL_AGENT ? (
                     <MenuItem as={NavLink} to={routes.travelAgents.base}>
                       Travel Agent Portal
                     </MenuItem>
+                  ) : user?.role === UserRole.ADMINISTRATOR ? (
+                    <>
+                      <MenuItem as={NavLink} to={routes.travelAgents.base}>
+                        Travel Agent Portal
+                      </MenuItem>
+                      <MenuItem as={NavLink} to={routes.admin}>
+                        Admin Portal
+                      </MenuItem>
+                    </>
                   ) : (
                     <MenuItem as={NavLink} to={routes.wishlist.base}>
                       My Wishlist
