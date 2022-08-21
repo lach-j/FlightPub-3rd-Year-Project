@@ -17,6 +17,6 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
   List<Long> getBookingFlights(long bookingId);
 
 
-  @Query("SELECT p FROM Booking b JOIN b.flights f join b.passengers p WHERE f = ?1 AND f.departureTime > current_time")
+  @Query("SELECT p FROM Booking b JOIN b.flights f join b.passengers p WHERE f = ?1 AND f.departureTime > current_date")
   List<Passenger> getPassengersWithFlightBookings(Flight f);
 }
