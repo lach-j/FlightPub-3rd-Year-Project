@@ -18,7 +18,7 @@ import java.util.Set;
 public class Booking implements IEntity {
   @Column(name = "Id")
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
   @ManyToOne

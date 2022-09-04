@@ -21,7 +21,7 @@ public class Message implements IEntity {
   private MessagingSession session;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "Id")
   private long id;
 

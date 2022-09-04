@@ -18,7 +18,7 @@ import java.util.Set;
 public class Wishlist implements IEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "Id")
   private Long id;
 

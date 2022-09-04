@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class WishlistItem {
   @Column(name = "Id")
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long Id;
 
   @JoinColumn(name = "DestinationCode")

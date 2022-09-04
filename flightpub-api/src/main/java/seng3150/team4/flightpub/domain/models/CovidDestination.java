@@ -21,7 +21,7 @@ public class CovidDestination implements IEntity, Serializable {
 
   @Column(name = "Id")
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
   @Column(name = "CovidStartDate")
